@@ -1,0 +1,14 @@
+{
+  "url": "/",
+  "title": "Sports Gear Reviews for India",
+  "description": "Research-backed reviews and buying guides for sports and fitness gear in India: badminton rackets, running shoes, gym equipment and more.",
+  "css": [
+    "buttons",
+    "cards"
+  ],
+  "page_css": "home",
+  "js": [],
+  "og_type": "website",
+  "schema": "home",
+  "updated": "2026-10-14"
+}

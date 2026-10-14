@@ -1,0 +1,16 @@
+{
+  "url": "/contact/",
+  "title": "Contact Us",
+  "description": "Get in touch for review suggestions, corrections, or partnership queries.",
+  "css": [
+    "breadcrumb",
+    "content-page"
+  ],
+  "breadcrumbs": [
+    [
+      "Contact",
+      "/contact/"
+    ]
+  ],
+  "updated": "2026-10-14"
+}

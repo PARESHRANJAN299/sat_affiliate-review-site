@@ -1,0 +1,5 @@
+/* Generic long-form content page */
+.content-page h1 { font-size: 1.9rem; margin-bottom: 6px; }
+.content-page .updated { color: var(--color-text-muted); font-size: 0.85rem; margin-bottom: 28px; }
+.content-page h2 { font-size: 1.25rem; margin-top: 32px; }
+.content-page p, .content-page li { font-size: 0.98rem; }

@@ -1,0 +1,4 @@
+/* Review article page */
+.content-page h2,
+.content-page h3 { scroll-margin-top: 80px; }
+.content-page .product-block h3 { margin-top: 0; }

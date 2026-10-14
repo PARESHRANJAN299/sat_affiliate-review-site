@@ -1,0 +1,47 @@
+{
+  "site_name": "SAT Sports Gear",
+  "logo_primary": "SAT",
+  "logo_secondary": "Sports Gear",
+  "site_url": "https://sat.net.in",
+  "contact_email": "hello@sat.net.in",
+  "language": "en",
+  "locale": "en_IN",
+  "nav": [
+    {
+      "label": "Home",
+      "url": "/"
+    },
+    {
+      "label": "Reviews",
+      "url": "/badminton/"
+    },
+    {
+      "label": "About",
+      "url": "/about/"
+    },
+    {
+      "label": "Contact",
+      "url": "/contact/"
+    }
+  ],
+  "footer_site": [
+    {
+      "label": "About Us",
+      "url": "/about/"
+    },
+    {
+      "label": "Contact",
+      "url": "/contact/"
+    }
+  ],
+  "footer_legal": [
+    {
+      "label": "Privacy Policy",
+      "url": "/privacy-policy/"
+    },
+    {
+      "label": "Affiliate Disclosure",
+      "url": "/affiliate-disclosure/"
+    }
+  ]
+}

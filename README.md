@@ -1,62 +1,70 @@
 # Sports & Gear Review Site (name and domain not decided yet)
 
-Independent sports & fitness gear review site for Indian buyers. Working name in the code is "SAT Sports Gear" and the placeholder domain is sat.net.in; both are temporary. Monetized via Amazon Associates, Flipkart Affiliate, and direct sports-brand affiliate programs (Decathlon, Puma, etc.).
+Independent sports & fitness gear review site for Indian buyers, monetised through affiliate programs. The code uses the working name "SAT Sports Gear" and the placeholder domain `sat.net.in`; both live in one file (`frontend/src/site.config.json`), so renaming is a one-file change.
 
-## Folder structure
+## Repository layout
 
 ```
-.
-├── index.html                      # Homepage
-├── about.html
-├── contact.html
-├── privacy-policy.html
-├── affiliate-disclosure.html
-├── css/
-│   └── style.css                   # Shared styles for all pages
-├── articles/
-│   └── best-badminton-rackets.html # First review article
-├── robots.txt                      # Points to the placeholder sitemap URL
-├── sitemap.xml                     # All 6 current pages
-└── .nojekyll                       # Skips Jekyll processing on GitHub Pages
+frontend/
+├── build.py                  # builds src/ into dist/ (stdlib only)
+├── src/
+│   ├── site.config.json      # site name, URL, email, nav, footer links
+│   ├── templates/base.html   # shared page shell (head, SEO tags)
+│   ├── partials/             # header.html, footer.html
+│   ├── css/
+│   │   ├── base/             # variables, reset, accessibility, print
+│   │   ├── layout/           # container, section, header, footer
+│   │   ├── components/       # buttons, cards, product-block, faq, ...
+│   │   └── pages/            # home, article, hub, not-found
+│   ├── js/
+│   │   ├── core/             # main.js (every page)
+│   │   ├── components/       # outbound-links.js
+│   │   └── pages/            # page-specific JS (add when needed)
+│   ├── pages/                # one folder per URL: index.html (body) + page.json (SEO meta)
+│   └── static/               # copied to the site root (favicon.svg)
+└── dist/                     # generated, git-ignored, what gets deployed
+backend/                      # planned: Python API (affiliate redirects, contact form)
 ```
 
-No build step: plain HTML/CSS, deployable as-is.
-
-## Run locally
+## Build and preview
 
 ```bash
-cd sat_affiliate-review-site
-python3 -m http.server 8000
+cd frontend
+python3 build.py            # writes dist/
+python3 build.py --serve    # build, then serve http://localhost:8000
 ```
 
-Open `http://localhost:8000`.
+The build bundles and minifies the split CSS/JS into one file per page (fast pages), renders every page through the template, and generates `sitemap.xml`, `robots.txt` and `_headers`. It fails on broken internal links or missing sources and warns when a title or description is too long.
 
-## Deploy
+## Adding a page
 
-**Production: Cloudflare Pages** (works with a private repo)
+1. Create `frontend/src/pages/<folder>/index.html` (page body only) and `page.json` (url, title, description, which component CSS to include, breadcrumbs, dates).
+2. Use `{{breadcrumb}}`, `{{site_name}}` and `{{contact_email}}` placeholders in the body.
+3. Run the build. The page gets its canonical URL, Open Graph tags, structured data and sitemap entry automatically.
 
-Cloudflare dashboard → **Workers & Pages → Create → Pages → Connect to Git** → select this repo.
-Build command: *(blank)* · Build output directory: `/`
-Then **Custom domains → Add domain** → your final domain.
+## URLs
 
-Every push to `main` redeploys automatically.
+Clean folder URLs, no `.html`: `/badminton/best-badminton-rackets/`. Do not change these after launch.
 
-**GitHub Pages** needs a public repo on a free GitHub account, so it is not used while this repo is private.
+## Deploy (Cloudflare Pages, works with a private repo)
 
-## Status
+Cloudflare dashboard -> Workers & Pages -> Create -> Pages -> Connect to Git -> select this repo.
+- Root directory: `frontend`
+- Build command: `python3 build.py`
+- Build output directory: `dist`
+- Environment variable: `PYTHON_VERSION` = `3.11`
 
-Done:
-- Article written from manufacturer/retailer specs and published buyer ratings (research-based, not hands-on; the article says so)
-- No ₹ prices anywhere: tier labels only
-- FAQ and buying guide written; privacy policy dated
+Then add the final domain under Custom domains. GitHub Pages is not used while the repo is private.
 
-Still to do before promoting the site:
-- [ ] Decide the final site name and domain, then rename everywhere (header logo, page titles, footer, About, Privacy, `robots.txt`, `sitemap.xml`)
-- [ ] Attach the final domain (affiliate networks reject free/sub-path domains)
-- [ ] Apply to affiliate networks (Amazon Associates, Flipkart, vCommission/Cuelinks for Puma, MyProtein, etc.)
-- [ ] Replace the retailer search-page links in `articles/best-badminton-rackets.html` with approved affiliate links, and add `sponsored` to their `rel`
-- [ ] Add hands-on impressions once the rackets have actually been played with
+## Still to do before promoting the site
+
+- [ ] Decide the final name and domain; edit `site.config.json`, rebuild
+- [ ] Add real play-testing notes and photos, a named author and bio (the biggest ranking factor for review sites)
+- [ ] Apply to affiliate networks; swap retailer search links for affiliate links and add `sponsored` to their `rel`
+- [ ] After Amazon Associates approval, add Amazon's required statement to the affiliate disclosure and footer (not claimed yet)
+- [ ] Add an Open Graph image
 - [ ] Re-check Decathlon BR 100 specs on the India page (weight/balance are UAE-only today)
+- [ ] Build `backend/` (affiliate redirect route, contact form)
 
 ## Rules to remember (Amazon Associates compliance)
 
@@ -65,7 +73,3 @@ Still to do before promoting the site:
 - Keep the affiliate disclosure visible on every article and on its own page.
 - Write original copy. Do not reuse Amazon's titles, bullets, descriptions or images.
 - 3 qualifying Amazon sales within 180 days of approval are needed to keep account/API access.
-
-## Expansion plan
-
-Sports first (narrow-first strategy). Next: personal & beauty care, then musical instruments and devices, only after the first category has traffic and a few ranking articles.

@@ -1,0 +1,12 @@
+{
+  "url": "/404.html",
+  "title": "Page Not Found",
+  "description": "The page you are looking for could not be found.",
+  "css": [
+    "buttons"
+  ],
+  "page_css": "not-found",
+  "noindex": true,
+  "output": "404.html",
+  "updated": "2026-10-14"
+}

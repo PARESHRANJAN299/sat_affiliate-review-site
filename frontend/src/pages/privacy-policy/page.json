@@ -1,0 +1,16 @@
+{
+  "url": "/privacy-policy/",
+  "title": "Privacy Policy",
+  "description": "How we collect, use, and protect information from visitors to this site.",
+  "css": [
+    "breadcrumb",
+    "content-page"
+  ],
+  "breadcrumbs": [
+    [
+      "Privacy Policy",
+      "/privacy-policy/"
+    ]
+  ],
+  "updated": "2026-10-14"
+}

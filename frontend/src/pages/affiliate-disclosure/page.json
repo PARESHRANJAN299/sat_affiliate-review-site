@@ -1,0 +1,16 @@
+{
+  "url": "/affiliate-disclosure/",
+  "title": "Affiliate Disclosure",
+  "description": "How this site earns commission through affiliate links, and what that means for you as a reader.",
+  "css": [
+    "breadcrumb",
+    "content-page"
+  ],
+  "breadcrumbs": [
+    [
+      "Affiliate Disclosure",
+      "/affiliate-disclosure/"
+    ]
+  ],
+  "updated": "2026-10-14"
+}

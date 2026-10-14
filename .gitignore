@@ -1,1 +1,4 @@
 .DS_Store
+frontend/dist/
+__pycache__/
+.env

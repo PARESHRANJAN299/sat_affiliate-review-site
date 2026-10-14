@@ -1,0 +1,19 @@
+{
+  "url": "/badminton/",
+  "title": "Badminton Gear Reviews and Buying Guides",
+  "description": "Badminton rackets and gear compared for Indian players, with plain-language buying guides for every skill level.",
+  "css": [
+    "buttons",
+    "cards",
+    "breadcrumb",
+    "content-page"
+  ],
+  "page_css": "hub",
+  "breadcrumbs": [
+    [
+      "Badminton",
+      "/badminton/"
+    ]
+  ],
+  "updated": "2026-10-14"
+}

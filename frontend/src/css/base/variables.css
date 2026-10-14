@@ -1,0 +1,16 @@
+/* Design tokens */
+:root {
+  --color-bg: #ffffff;
+  --color-bg-alt: #f6f7f9;
+  --color-text: #1a1d23;
+  --color-text-muted: #5b6270;
+  --color-border: #e4e7ec;
+  --color-primary: #d9480f;      /* sporty orange */
+  --color-primary-dark: #b8390c;
+  --color-navy: #10213f;         /* deep navy for header/footer */
+  --color-navy-light: #1c3463;
+  --color-success: #1a7f4e;
+  --radius: 10px;
+  --shadow: 0 2px 10px rgba(16, 33, 63, 0.08);
+  --max-width: 1100px;
+}

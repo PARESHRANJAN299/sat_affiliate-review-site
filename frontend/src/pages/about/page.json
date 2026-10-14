@@ -1,0 +1,16 @@
+{
+  "url": "/about/",
+  "title": "About Us",
+  "description": "Who we are and how we research and recommend sports and fitness gear for Indian buyers.",
+  "css": [
+    "breadcrumb",
+    "content-page"
+  ],
+  "breadcrumbs": [
+    [
+      "About",
+      "/about/"
+    ]
+  ],
+  "updated": "2026-10-14"
+}
