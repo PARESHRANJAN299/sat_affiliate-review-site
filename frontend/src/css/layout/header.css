@@ -1,6 +1,6 @@
 /* Site header and navigation */
 header.site-header {
-  background: var(--color-navy);
+  background: var(--color-header);
   color: #fff;
   position: sticky;
   top: 0;
@@ -41,7 +41,7 @@ nav.main-nav a {
 }
 nav.main-nav a:hover { color: #fff; text-decoration: none; }
 .logo:hover { text-decoration: none; }
-.logo img { display: block; width: auto; height: 40px; }
+.logo img { display: block; width: auto; height: 40px; clip-path: inset(0 2px 0 2px); }
 @media (max-width: 560px) {
   nav.main-nav ul { gap: 16px; }
 }

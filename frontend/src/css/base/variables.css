@@ -9,6 +9,7 @@
   --color-primary-dark: #9a3412;
   --color-primary-light: #ff8a4c;
   --color-navy: #10213f;         /* deep navy for header/footer */
+  --color-header: #070b14;     /* near-black, matches the logo background */
   --color-navy-light: #1c3463;
   --color-success: #1a7f4e;
   --radius: 10px;
