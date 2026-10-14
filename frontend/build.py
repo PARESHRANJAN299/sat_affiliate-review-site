@@ -33,7 +33,7 @@ ALWAYS_CSS = [
 ]
 # Loaded after component/page CSS so they win the cascade.
 LAST_CSS = ["base/accessibility", "base/print"]
-ALWAYS_JS = ["core/main"]
+ALWAYS_JS = ["core/main", "core/menu"]
 
 TITLE_MAX = 60
 DESCRIPTION_MAX = 160
@@ -144,10 +144,34 @@ def bundle(kind, names, key):
     return write_asset(kind, key, minify_css(joined) if kind == "css" else minify_js(joined))
 
 
+def category_menu(item, current_url=None):
+    """Amazon-style 'Shop by Category' dropdown; the toggle still links to /products/ without JavaScript."""
+    cats = [{"label": "All products", "url": "/products/"}] + [
+        c for c in CONFIG.get("categories", []) if c.get("enabled") is not False]
+    def cur(url):
+        return ' aria-current="page"' if url == current_url else ""
+    rows = "\n".join(
+        f'              <li><a href="{c["url"]}"{cur(c["url"])}>{esc(c["label"])} <span class="chev" aria-hidden="true">\u203a</span></a></li>'
+        for c in cats)
+    return (
+        '        <li class="has-menu">\n'
+        f'          <a href="{item["url"]}" class="menu-toggle"{cur(item["url"])}>'
+        f'{esc(item["label"])} <span class="caret" aria-hidden="true">\u25be</span></a>\n'
+        '          <div class="category-menu" id="category-menu">\n'
+        f'            <p class="category-menu-title">{esc(item["label"])}</p>\n'
+        '            <ul>\n' + rows + '\n            </ul>\n'
+        '            <p class="category-menu-note">More categories are planned.</p>\n'
+        '          </div>\n'
+        '        </li>')
+
+
 def link_list(items, current_url=None):
     lines = []
     for item in items:
         if item.get("enabled") is False:
+            continue
+        if item.get("menu") == "categories":
+            lines.append(category_menu(item, current_url))
             continue
         cur = ' aria-current="page"' if item["url"] == current_url else ""
         lines.append(f'        <li><a href="{item["url"]}"{cur}>{esc(item["label"])}</a></li>')

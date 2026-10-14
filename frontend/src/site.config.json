@@ -12,7 +12,8 @@
     },
     {
       "label": "Shop by Category",
-      "url": "/products/"
+      "url": "/products/",
+      "menu": "categories"
     },
     {
       "label": "About",
