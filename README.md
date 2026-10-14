@@ -46,15 +46,18 @@ The build bundles and minifies the split CSS/JS into one file per page (fast pag
 
 Clean folder URLs, no `.html`: `/badminton/best-badminton-rackets/`. Do not change these after launch.
 
-## Deploy (Cloudflare Pages, works with a private repo)
+## Deploy (Cloudflare, works with a private repo)
 
-Cloudflare dashboard -> Workers & Pages -> Create -> Pages -> Connect to Git -> select this repo.
-- Root directory: `frontend`
+`frontend/wrangler.jsonc` tells Cloudflare to serve `frontend/dist` as a static site, with `404.html` for missing pages.
+
+Cloudflare dashboard -> Workers & Pages -> Create -> Import a repository -> select this repo:
+- Project name: `sat-affiliate-review-site`
+- Path (advanced settings): `frontend`
 - Build command: `python3 build.py`
-- Build output directory: `dist`
-- Environment variable: `PYTHON_VERSION` = `3.11`
+- Deploy command: `npx wrangler deploy`
+- Preview builds: off
 
-Then add the final domain under Custom domains. GitHub Pages is not used while the repo is private.
+Then add the final domain under the project's Settings -> Domains & Routes. GitHub Pages is not used while the repo is private.
 
 ## Still to do before promoting the site
 
