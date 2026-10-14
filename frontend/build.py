@@ -63,6 +63,12 @@ def esc(value):
     return html.escape(value, quote=True)
 
 
+def logo_html(text):
+    """Animated wordmark: one span per letter (styled in layout/header.css)."""
+    letters = "".join(f'<span style="--i:{i}">{esc(c)}</span>' for i, c in enumerate(text))
+    return f'<span class="logo-mark" aria-hidden="true">{letters}</span>'
+
+
 def human_date(iso):
     d = datetime.date.fromisoformat(iso)
     return f"{d.day} {d.strftime('%B %Y')}"
@@ -105,7 +111,7 @@ def bundle(kind, names, key):
             continue
         parts.append(read(path))
     joined = "\n".join(parts)
-    if kind == "css" and re.search(r"(?<![\w-])content\s*:|url\(", joined):
+    if kind == "css" and re.search(r"(?<![\w-])content\s*:(?!\s*[\"']{2}\s*[;}])|url\(", joined):
         errors.append(f"{key}: the CSS minifier is not string-aware; avoid content: and url( or upgrade it")
     return write_asset(kind, key, minify_css(joined) if kind == "css" else minify_js(joined))
 
@@ -211,6 +217,7 @@ def build_page(meta, base, header_t, footer_t, year):
     base_ctx = {
         "site_name": esc(CONFIG["site_name"]), "contact_email": esc(CONFIG["contact_email"]),
         "logo_primary": esc(CONFIG["logo_primary"]),
+        "logo_html": logo_html(CONFIG["logo_primary"]),
         "year": year, "updated_human": human_date(meta["updated"]),
     }
     content = render(meta["_body"], {**base_ctx, "breadcrumb": breadcrumb_html(meta.get("breadcrumbs"))})

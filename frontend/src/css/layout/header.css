@@ -17,13 +17,6 @@ header.site-header {
   gap: 10px;
 }
 
-.logo {
-  text-decoration: none;
-  font-size: 1.4rem;
-  font-weight: 800;
-  color: #fff;
-  letter-spacing: 0.5px;
-}
 
 nav.main-nav ul {
   list-style: none;
@@ -40,8 +33,78 @@ nav.main-nav a {
   font-weight: 600;
 }
 nav.main-nav a:hover { color: #fff; text-decoration: none; }
-.logo:hover { text-decoration: none; }
-.logo img { display: block; width: auto; height: 40px; clip-path: inset(0 2px 0 2px); }
 @media (max-width: 560px) {
   nav.main-nav ul { gap: 16px; }
+}
+
+/* ---------- Animated wordmark ---------- */
+
+.logo {
+  position: relative;
+  display: inline-block;
+  padding-bottom: 5px;
+  text-decoration: none;
+  line-height: 1;
+}
+.logo:hover { text-decoration: none; }
+
+.logo-mark {
+  display: inline-flex;
+  font-size: 2rem;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  color: #fff;
+}
+.logo-mark span {
+  display: inline-block;
+  transition: transform .2s ease;
+}
+.logo:hover .logo-mark span { transform: translateY(-3px); }
+.logo:hover .logo-mark span:nth-child(2) { transition-delay: .05s; }
+.logo:hover .logo-mark span:nth-child(3) { transition-delay: .1s; }
+
+/* accent bar under the wordmark */
+.logo::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 3px;
+  width: 100%;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--color-primary-light), var(--color-primary));
+  transform-origin: left;
+}
+
+@supports ((-webkit-background-clip: text) or (background-clip: text)) {
+  .logo-mark span {
+    color: transparent;
+    background: linear-gradient(110deg, #fff 0%, #fff 38%, var(--color-primary-light) 50%, #fff 62%, #fff 100%);
+    background-size: 260% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .logo-mark span {
+    animation:
+      logo-in .7s cubic-bezier(.2, .8, .2, 1) both,
+      logo-shine 4.5s ease-in-out infinite;
+    animation-delay: calc(var(--i) * .14s), calc(1.2s + var(--i) * .18s);
+  }
+  .logo::after { animation: logo-bar .8s cubic-bezier(.2, .8, .2, 1) .5s both; }
+}
+
+@keyframes logo-in {
+  from { opacity: 0; transform: translateY(-14px) scale(.9); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes logo-shine {
+  0%   { background-position: 130% 0; }
+  45%, 100% { background-position: -30% 0; }
+}
+@keyframes logo-bar {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
 }
