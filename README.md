@@ -1,6 +1,6 @@
-# SAT Sports Gear (sat.net.in)
+# Sports & Gear Review Site (name and domain not decided yet)
 
-Independent sports & fitness gear review site for Indian buyers. Monetized via Amazon Associates, Flipkart Affiliate, and direct sports-brand affiliate programs (Decathlon, Puma, etc.). Part of the **SAT** brand, separate from the SAT India device-recovery project.
+Independent sports & fitness gear review site for Indian buyers. Working name in the code is "SAT Sports Gear" and the placeholder domain is sat.net.in; both are temporary. Monetized via Amazon Associates, Flipkart Affiliate, and direct sports-brand affiliate programs (Decathlon, Puma, etc.).
 
 ## Folder structure
 
@@ -15,7 +15,7 @@ Independent sports & fitness gear review site for Indian buyers. Monetized via A
 │   └── style.css                   # Shared styles for all pages
 ├── articles/
 │   └── best-badminton-rackets.html # First review article
-├── robots.txt                      # Points to sat.net.in sitemap
+├── robots.txt                      # Points to the placeholder sitemap URL
 ├── sitemap.xml                     # All 6 current pages
 └── .nojekyll                       # Skips Jekyll processing on GitHub Pages
 ```
@@ -37,7 +37,7 @@ Open `http://localhost:8000`.
 
 Cloudflare dashboard → **Workers & Pages → Create → Pages → Connect to Git** → select this repo.
 Build command: *(blank)* · Build output directory: `/`
-Then **Custom domains → Add domain** → `sat.net.in`.
+Then **Custom domains → Add domain** → your final domain.
 
 Every push to `main` redeploys automatically.
 
@@ -51,7 +51,8 @@ Done:
 - FAQ and buying guide written; privacy policy dated
 
 Still to do before promoting the site:
-- [ ] Attach `sat.net.in` (affiliate networks reject free/sub-path domains)
+- [ ] Decide the final site name and domain, then rename everywhere (header logo, page titles, footer, About, Privacy, `robots.txt`, `sitemap.xml`)
+- [ ] Attach the final domain (affiliate networks reject free/sub-path domains)
 - [ ] Apply to affiliate networks (Amazon Associates, Flipkart, vCommission/Cuelinks for Puma, MyProtein, etc.)
 - [ ] Replace the retailer search-page links in `articles/best-badminton-rackets.html` with approved affiliate links, and add `sponsored` to their `rel`
 - [ ] Add hands-on impressions once the rackets have actually been played with
