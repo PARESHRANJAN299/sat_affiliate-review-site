@@ -1,0 +1,14 @@
+/* Category filter chips */
+.chips { display: flex; flex-wrap: wrap; gap: 10px; margin: 0 0 28px; }
+.chip {
+  display: inline-block;
+  padding: 8px 16px;
+  border: 1.5px solid var(--color-border);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--color-text);
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+.chip:hover { border-color: var(--color-primary); color: var(--color-primary-dark); text-decoration: none; }
+.chip[aria-current="page"] { background: var(--color-navy); border-color: var(--color-navy); color: #fff; }

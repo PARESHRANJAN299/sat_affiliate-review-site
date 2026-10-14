@@ -11,20 +11,8 @@
       "url": "/"
     },
     {
-      "label": "Sports & Fitness",
-      "url": "/sports-fitness/"
-    },
-    {
-      "label": "Beauty & Personal Care",
-      "url": "/beauty-personal-care/",
-      "enabled": false,
-      "note": "enable once it has at least 3 articles"
-    },
-    {
-      "label": "Baby Care",
-      "url": "/baby-care/",
-      "enabled": false,
-      "note": "enable when its first guides are ready"
+      "label": "Products",
+      "url": "/products/"
     },
     {
       "label": "About",
@@ -53,6 +41,24 @@
     {
       "label": "Affiliate Disclosure",
       "url": "/affiliate-disclosure/"
+    }
+  ],
+  "categories": [
+    {
+      "label": "Sports & Fitness",
+      "url": "/sports-fitness/"
+    },
+    {
+      "label": "Beauty & Personal Care",
+      "url": "/beauty-personal-care/",
+      "enabled": false,
+      "note": "enable once it has at least 3 articles"
+    },
+    {
+      "label": "Baby Care",
+      "url": "/baby-care/",
+      "enabled": false,
+      "note": "enable when its first guides are ready"
     }
   ]
 }

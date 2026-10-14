@@ -42,9 +42,17 @@ The build bundles and minifies the split CSS/JS into one file per page (fast pag
 2. Use `{{breadcrumb}}`, `{{site_name}}` and `{{contact_email}}` placeholders in the body.
 3. Run the build. The page gets its canonical URL, Open Graph tags, structured data and sitemap entry automatically.
 
-## Categories and the header
+## Products and categories
 
-Header items live in `frontend/src/site.config.json` under `nav`. An item with `"enabled": false` is skipped, so Beauty & Personal Care and Baby Care stay hidden. To show one: create its hub page (`src/pages/<category>/`), add at least 3 articles for Beauty & Personal Care, then set `enabled` to `true` (or delete the flag) and rebuild.
+The header has one category, **Products** (`/products/`). It lists every article automatically, with filter chips for each category. Categories are defined in `frontend/src/site.config.json` under `categories`. One with `"enabled": false` (Beauty & Personal Care, Baby Care) stays hidden until it is ready.
+
+**Add an article:** create `src/pages/<topic>/<article>/index.html` and `page.json`, and give `page.json` an `"article"` block:
+
+```json
+"article": {"category": "Sports & Fitness", "tag": "Badminton", "summary": "One or two plain sentences."}
+```
+
+It then appears on `/products/`, on its category page, and on the home page (latest three) with no other edits. A new category also needs a hub page (copy `src/pages/sports-fitness/`, and use `{{articles_<category_slug>}}`).
 
 ## URLs
 

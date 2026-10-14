@@ -18,6 +18,10 @@
   "schema": "article",
   "breadcrumbs": [
     [
+      "Products",
+      "/products/"
+    ],
+    [
       "Sports & Fitness",
       "/sports-fitness/"
     ],
@@ -27,5 +31,10 @@
     ]
   ],
   "published": "2026-10-14",
-  "updated": "2026-10-14"
+  "updated": "2026-10-14",
+  "article": {
+    "category": "Sports & Fitness",
+    "tag": "Badminton",
+    "summary": "Three rackets matched to skill level, with who each one suits. Based on specs and buyer ratings, not hand-tested."
+  }
 }

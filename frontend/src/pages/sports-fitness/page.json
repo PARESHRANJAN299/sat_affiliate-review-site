@@ -3,13 +3,18 @@
   "title": "Sports & Fitness Gear Guides",
   "description": "Plain-language buying guides for sports and fitness gear in India, starting with badminton rackets.",
   "css": [
+    "breadcrumb",
     "buttons",
     "cards",
-    "breadcrumb",
+    "category-chips",
     "content-page"
   ],
   "page_css": "hub",
   "breadcrumbs": [
+    [
+      "Products",
+      "/products/"
+    ],
     [
       "Sports & Fitness",
       "/sports-fitness/"

@@ -1,0 +1,20 @@
+{
+  "url": "/products/",
+  "title": "Product Reviews and Buying Guides",
+  "description": "All our buying guides in one place. Pick a category and find the right product for you.",
+  "css": [
+    "buttons",
+    "cards",
+    "breadcrumb",
+    "content-page",
+    "category-chips"
+  ],
+  "page_css": "hub",
+  "breadcrumbs": [
+    [
+      "Products",
+      "/products/"
+    ]
+  ],
+  "updated": "2026-10-15"
+}

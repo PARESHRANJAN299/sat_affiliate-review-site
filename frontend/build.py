@@ -69,6 +69,34 @@ def logo_html(text):
     return f'<span class="logo-mark" aria-hidden="true">{letters}</span>'
 
 
+def slugify(text):
+    return re.sub(r"[^a-z0-9]+", "_", text.lower()).strip("_")
+
+
+def article_cards(articles):
+    cards = []
+    for a in articles:
+        info = a["article"]
+        cards.append(
+            '      <div class="article-card">\n'
+            f'        <span class="tag">{esc(info["tag"])}</span>\n'
+            f'        <h3>{esc(a["title"])}</h3>\n'
+            f'        <p>{esc(info["summary"])}</p>\n'
+            f'        <a href="{a["url"]}" class="read-link">Read the guide \u2192</a>\n'
+            '      </div>')
+    return '    <div class="article-grid">\n' + "\n".join(cards) + "\n    </div>"
+
+
+def category_chips(current_url):
+    items = [{"label": "All products", "url": "/products/"}] + [
+        c for c in CONFIG.get("categories", []) if c.get("enabled") is not False]
+    links = []
+    for item in items:
+        cur = ' aria-current="page"' if item["url"] == current_url else ""
+        links.append(f'<a class="chip" href="{item["url"]}"{cur}>{esc(item["label"])}</a>')
+    return '<nav class="chips" aria-label="Product categories">' + "".join(links) + "</nav>"
+
+
 def human_date(iso):
     d = datetime.date.fromisoformat(iso)
     return f"{d.day} {d.strftime('%B %Y')}"
@@ -196,7 +224,7 @@ def output_path(meta):
     return DIST / meta["url"].strip("/") / "index.html"
 
 
-def build_page(meta, base, header_t, footer_t, year):
+def build_page(meta, base, header_t, footer_t, year, articles):
     site_url = CONFIG["site_url"].rstrip("/")
     canonical = site_url + meta["url"]
     title = f'{meta["title"]} — {CONFIG["site_name"]}' if not meta.get("title_full") else meta["title"]
@@ -222,7 +250,14 @@ def build_page(meta, base, header_t, footer_t, year):
         "logo_html": logo_html(CONFIG["logo_primary"]),
         "year": year, "updated_human": human_date(meta["updated"]),
     }
-    content = render(meta["_body"], {**base_ctx, "breadcrumb": breadcrumb_html(meta.get("breadcrumbs"))})
+    article_ctx = {
+        "articles_all": article_cards(articles),
+        "articles_latest": article_cards(articles[:3]),
+        "category_chips": category_chips(meta["url"]),
+    }
+    for cat in {a["article"]["category"] for a in articles}:
+        article_ctx["articles_" + slugify(cat)] = article_cards([a for a in articles if a["article"]["category"] == cat])
+    content = render(meta["_body"], {**base_ctx, **article_ctx, "breadcrumb": breadcrumb_html(meta.get("breadcrumbs"))})
     header = render(header_t, {**base_ctx, "nav_items": link_list(CONFIG["nav"], meta["url"])})
     footer = render(footer_t, {**base_ctx,
                                "footer_site_items": link_list(CONFIG["footer_site"], meta["url"]),
@@ -298,8 +333,10 @@ def build():
     year = datetime.date.today().year
 
     pages = load_pages()
+    articles = sorted((p for p in pages if p.get("article")),
+                      key=lambda p: p.get("published", p["updated"]), reverse=True)
     for meta in pages:
-        build_page(meta, base, header_t, footer_t, year)
+        build_page(meta, base, header_t, footer_t, year, articles)
     static = SRC / "static"
     if static.exists():
         shutil.copytree(static, DIST, dirs_exist_ok=True)
