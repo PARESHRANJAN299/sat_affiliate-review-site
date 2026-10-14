@@ -1,4 +1,29 @@
-/* FAQ */
-.faq-item { border-bottom: 1px solid var(--color-border); padding: 16px 0; }
-.faq-item h3 { margin: 0 0 8px; font-size: 1.02rem; }
-.faq-item p { margin: 0; color: var(--color-text-muted); }
+/* FAQ (native details/summary, works without JavaScript) */
+.faq-item { border-bottom: 1px solid var(--color-border); }
+.faq-item summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  min-height: 52px;
+  padding: 10px 0;
+  cursor: pointer;
+  list-style: none;
+}
+.faq-item summary::-webkit-details-marker { display: none; }
+.faq-item summary h3 { margin: 0; font-size: var(--step-1); }
+.faq-item summary:hover h3 { color: var(--color-primary-dark); }
+
+.faq-chev {
+  flex: none;
+  width: 9px;
+  height: 9px;
+  margin-right: 4px;
+  border: solid var(--color-text-muted);
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+  transition: transform .15s ease;
+}
+.faq-item[open] .faq-chev { transform: rotate(-135deg); }
+
+.faq-item p { margin: 0 0 var(--space-4); color: var(--color-text-muted); }

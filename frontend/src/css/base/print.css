@@ -1,2 +1,7 @@
 /* Print */
-@media print { .site-header, .site-footer, .cta-row { display: none; } }
+@media print {
+  .site-header, .site-footer, .cta-row, .pick-bar, .toc-col, .share, .read-progress, .quick-picks { display: none; }
+  .product-block, .faq-item, .compare-table tr { break-inside: avoid; }
+  .faq-item > * { display: block; }
+  a { color: inherit; }
+}

@@ -8,11 +8,19 @@
     "content-page",
     "compare-table",
     "product-block",
-    "faq"
+    "faq",
+    "toc",
+    "quick-picks",
+    "method-note",
+    "share",
+    "pick-bar"
   ],
   "page_css": "article",
   "js": [
-    "outbound-links"
+    "outbound-links",
+    "toc",
+    "share",
+    "pick-bar"
   ],
   "og_type": "article",
   "schema": "article",
@@ -36,5 +44,7 @@
     "category": "Sports & Fitness",
     "tag": "Badminton",
     "summary": "Three rackets matched to skill level, with who each one suits. Based on specs and buyer ratings, not hand-tested."
-  }
+  },
+  "toc": true,
+  "share": true
 }

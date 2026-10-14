@@ -1,15 +1,10 @@
 /* Page sections */
-.section { padding: 48px 0; }
+.section { padding: clamp(36px, 6vw, 56px) 0; }
 .section-alt { background: var(--color-bg-alt); }
 
-.section h2 {
-  font-size: 1.6rem;
-  margin: 0 0 6px;
-}
-.section .section-sub {
-  color: var(--color-text-muted);
-  margin: 0 0 28px;
-}
-@media (max-width: 560px) {
-  .section { padding: 36px 0; }
-}
+.section h2 { font-size: var(--step-3); margin: 0 0 6px; }
+.section .section-sub { color: var(--color-text-muted); margin: 0 0 var(--space-5); }
+
+.section-head { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-4); flex-wrap: wrap; margin-bottom: var(--space-4); }
+.section-head h2 { margin: 0; }
+.see-all { font-weight: 700; }

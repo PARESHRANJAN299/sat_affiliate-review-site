@@ -2,8 +2,17 @@
   <div class="container content-page">
     {{breadcrumb}}
     <h1>Shop by Category</h1>
-    <p class="hub-intro">Every buying guide on the site, in one place. Pick a category, or read them all.</p>
+    <p class="hub-intro">Every buying guide on the site, in one place. Pick a category, or search.</p>
     {{category_chips}}
+
+    <div class="product-search" hidden>
+      <label for="product-search">Search guides</label>
+      <div class="search-field">
+        <svg class="ic" aria-hidden="true"><use href="#i-search"/></svg>
+        <input type="search" id="product-search" placeholder="Try badminton" autocomplete="off">
+      </div>
+    </div>
+    <p class="no-results" id="no-results" hidden>No guides match your search.</p>
 
 {{articles_all}}
   </div>

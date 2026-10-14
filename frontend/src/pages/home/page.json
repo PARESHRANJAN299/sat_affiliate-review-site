@@ -4,7 +4,8 @@
   "description": "Plain-language buying guides for sports and fitness gear in India. Start with our badminton racket guide: three picks matched to skill level.",
   "css": [
     "buttons",
-    "cards"
+    "cards",
+    "trust-strip"
   ],
   "page_css": "home",
   "js": [],

@@ -38,6 +38,26 @@
     if (event.relatedTarget && !item.contains(event.relatedTarget)) setOpen(false);
   });
 
+  var links = menu.querySelectorAll('a');
+  item.addEventListener('keydown', function (event) {
+    var keys = ['ArrowDown', 'ArrowUp', 'Home', 'End'];
+    if (keys.indexOf(event.key) === -1) return;
+    var i = Array.prototype.indexOf.call(links, document.activeElement);
+    if (event.key === 'ArrowDown') {
+      if (!isOpen()) setOpen(true);
+      i = i + 1 >= links.length ? 0 : i + 1;
+    } else if (event.key === 'ArrowUp') {
+      if (!isOpen()) return;
+      i = i <= 0 ? links.length - 1 : i - 1;
+    } else if (event.key === 'Home') {
+      i = 0;
+    } else {
+      i = links.length - 1;
+    }
+    event.preventDefault();
+    links[i].focus();
+  });
+
   document.addEventListener('keydown', function (event) {
     if (event.key === 'Escape' && isOpen()) {
       var hadFocus = item.contains(document.activeElement);

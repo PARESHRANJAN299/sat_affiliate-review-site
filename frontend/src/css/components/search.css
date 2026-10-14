@@ -1,0 +1,17 @@
+/* Product search box */
+.product-search { margin: 0 0 var(--space-5); max-width: 520px; }
+.product-search label { display: block; font-weight: 700; margin-bottom: 6px; }
+.product-search .search-field { position: relative; }
+.product-search .ic { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--color-text-muted); }
+.product-search input {
+  width: 100%;
+  min-height: 48px;
+  padding: 10px 14px 10px 42px;
+  font: inherit;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  color: var(--color-text);
+}
+.product-search input:focus { border-color: var(--color-navy-light); outline: 3px solid rgba(28, 52, 99, 0.2); outline-offset: 0; }
+.no-results { color: var(--color-text-muted); margin: var(--space-4) 0; }

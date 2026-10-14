@@ -7,7 +7,8 @@
     "cards",
     "breadcrumb",
     "content-page",
-    "category-chips"
+    "category-chips",
+    "search"
   ],
   "page_css": "hub",
   "breadcrumbs": [
@@ -16,5 +17,6 @@
       "/products/"
     ]
   ],
-  "updated": "2026-10-15"
+  "updated": "2026-10-15",
+  "page_js": "hub"
 }

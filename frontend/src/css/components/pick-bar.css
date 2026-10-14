@@ -1,0 +1,32 @@
+/* Phone-only jump bar that appears once you scroll past the intro */
+.pick-bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 40;
+  display: flex;
+  gap: 8px;
+  padding: 8px 12px calc(8px + env(safe-area-inset-bottom));
+  background: var(--color-header);
+  transform: translateY(100%);
+  transition: transform .2s ease;
+}
+.pick-bar.is-visible { transform: none; }
+.pick-bar a {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0 6px;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-align: center;
+}
+.pick-bar a:hover { text-decoration: none; background: rgba(255, 255, 255, 0.2); }
+@media (min-width: 900px) { .pick-bar { display: none; } }
+@media (prefers-reduced-motion: reduce) { .pick-bar { transition: none; } }

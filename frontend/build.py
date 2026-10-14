@@ -12,6 +12,7 @@ Usage:
 Standard library only.
 """
 import datetime
+import urllib.parse
 import hashlib
 import html
 import json
@@ -29,7 +30,7 @@ CONFIG = json.loads((SRC / "site.config.json").read_text(encoding="utf-8"))
 # Included in every page's CSS/JS bundle, in this order.
 ALWAYS_CSS = [
     "base/variables", "base/reset",
-    "layout/container", "layout/section", "layout/header", "layout/footer",
+    "base/icons", "layout/container", "layout/section", "layout/header", "layout/footer",
 ]
 # Loaded after component/page CSS so they win the cascade.
 LAST_CSS = ["base/accessibility", "base/print"]
@@ -74,17 +75,92 @@ def slugify(text):
 
 
 def article_cards(articles):
+    featured = len(articles) == 1
     cards = []
     for a in articles:
         info = a["article"]
+        search = esc(f'{a["title"]} {info["tag"]} {info["category"]} {info["summary"]}'.lower())
+        art = '        <div class="article-art" aria-hidden="true"></div>\n' if featured else ""
         cards.append(
-            '      <div class="article-card">\n'
-            f'        <span class="tag">{esc(info["tag"])}</span>\n'
-            f'        <h3>{esc(a["title"])}</h3>\n'
-            f'        <p>{esc(info["summary"])}</p>\n'
-            f'        <a href="{a["url"]}" class="read-link">Read the guide \u2192</a>\n'
+            f'      <div class="article-card" data-search="{search}">\n' + art +
+            '        <div class="article-body">\n'
+            f'          <span class="tag">{esc(info["tag"])}</span>\n'
+            f'          <h3>{esc(a["title"])}</h3>\n'
+            f'          <p>{esc(info["summary"])}</p>\n'
+            f'          <a href="{a["url"]}" class="read-link">Read the guide <svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></a>\n'
+            '        </div>\n'
             '      </div>')
-    return '    <div class="article-grid">\n' + "\n".join(cards) + "\n    </div>"
+    cls = "article-grid is-featured" if featured else "article-grid"
+    return f'    <div class="{cls}">\n' + "\n".join(cards) + "\n    </div>"
+
+
+def category_sections(articles):
+    """Home page: one section per enabled category that has articles."""
+    out = []
+    for cat in CONFIG.get("categories", []):
+        if cat.get("enabled") is False:
+            continue
+        items = [a for a in articles if a["article"]["category"] == cat["label"]]
+        if not items:
+            continue
+        out.append(
+            '<section class="section">\n  <div class="container">\n'
+            f'    <div class="section-head"><h2>{esc(cat["label"])}</h2>'
+            f'<a class="see-all" href="{cat["url"]}">See all {esc(cat["label"])} guides \u2192</a></div>\n'
+            + article_cards(items[:3]) + '\n  </div>\n</section>')
+    return "\n\n".join(out)
+
+
+def slugify_heading(text, seen):
+    base = re.sub(r"[^a-z0-9]+", "-", text.lower()).strip("-") or "section"
+    slug, n = base, 2
+    while slug in seen:
+        slug, n = f"{base}-{n}", n + 1
+    seen.add(slug)
+    return slug
+
+
+def decorate(content):
+    """Give h2 headings and ranked product h3 headings ids; return (content, table-of-contents html)."""
+    seen = set(re.findall(r'\sid="([^"]+)"', content))
+    entries = []
+
+    def add_ids(m):
+        if m.group(0).startswith("<h2"):
+            level, attrs, inner, prefix = 1, m.group(1), m.group(2), ""
+        else:
+            level, attrs, inner, prefix = 2, "", m.group(4), m.group(3)
+        text = re.sub(r"<[^>]+>", "", inner).strip()
+        slug = slugify_heading(text, seen)
+        entries.append((level, text, slug))
+        tag = "h2" if level == 1 else "h3"
+        return f'{prefix}<{tag}{attrs} id="{slug}">{inner}</{tag}>'
+
+    # one pass over both patterns keeps the table of contents in document order
+    pattern = re.compile(r'<h2([^>]*)>(.*?)</h2>|(<span class="rank">.*?</span>\s*)<h3>(.*?)</h3>', re.S)
+    content = pattern.sub(add_ids, content)
+
+    items, i = [], 0
+    while i < len(entries):
+        _, text, slug = entries[i]
+        kids, j = [], i + 1
+        while j < len(entries) and entries[j][0] == 2:
+            kids.append(f'<li><a href="#{entries[j][2]}">{esc(entries[j][1])}</a></li>')
+            j += 1
+        sub = "<ol>" + "".join(kids) + "</ol>" if kids else ""
+        items.append(f'<li><a href="#{slug}">{esc(text)}</a>{sub}</li>')
+        i = j
+    toc = ('<nav class="toc-col" aria-label="On this page"><details class="toc" open><summary>On this page</summary>'
+           "<ol>" + "".join(items) + "</ol></details></nav>") if entries else ""
+    return content, toc
+
+
+def share_html(canonical, title):
+    text = urllib.parse.quote(f"{title} {canonical}")
+    return ('<div class="share"><span class="share-label">Share this guide:</span>'
+            f'<a class="btn btn-outline btn-small" href="https://wa.me/?text={text}" target="_blank" rel="noopener noreferrer">WhatsApp</a>'
+            '<button type="button" class="btn btn-outline btn-small" data-share hidden>Copy link</button>'
+            '<span class="visually-hidden" role="status" aria-live="polite" data-share-status></span></div>')
 
 
 def category_chips(current_url):
@@ -139,7 +215,7 @@ def bundle(kind, names, key):
             continue
         parts.append(read(path))
     joined = "\n".join(parts)
-    if kind == "css" and re.search(r"(?<![\w-])content\s*:(?!\s*[\"']{2}\s*[;}])|url\(", joined):
+    if kind == "css" and re.search(r"(?<![\w-])content\s*:(?!\s*([\"']{2}\s*[;}]|attr\())|url\(", joined):
         errors.append(f"{key}: the CSS minifier is not string-aware; avoid content: and url( or upgrade it")
     return write_asset(kind, key, minify_css(joined) if kind == "css" else minify_js(joined))
 
@@ -281,10 +357,20 @@ def build_page(meta, base, header_t, footer_t, year, articles):
         "articles_all": article_cards(articles),
         "articles_latest": article_cards(articles[:3]),
         "category_chips": category_chips(meta["url"]),
+        "category_sections": category_sections(articles),
+        "toc": "@@TOC@@" if meta.get("toc") else "",
+        "share": share_html(canonical, meta["title"]) if meta.get("share") else "",
+        "read_time": "@@READ@@",
     }
     for cat in {a["article"]["category"] for a in articles}:
         article_ctx["articles_" + slugify(cat)] = article_cards([a for a in articles if a["article"]["category"] == cat])
     content = render(meta["_body"], {**base_ctx, **article_ctx, "breadcrumb": breadcrumb_html(meta.get("breadcrumbs"))})
+    toc_html = ""
+    if meta.get("toc"):
+        content, toc_html = decorate(content)
+    content = content.replace("@@TOC@@", toc_html)
+    words = len(re.sub(r"<[^>]+>", " ", content).split())
+    content = content.replace("@@READ@@", f"{max(1, round(words / 200))} min read")
     header = render(header_t, {**base_ctx, "nav_items": link_list(CONFIG["nav"], meta["url"])})
     footer = render(footer_t, {**base_ctx,
                                "footer_site_items": link_list(CONFIG["footer_site"], meta["url"]),
@@ -339,6 +425,12 @@ def check_links():
     for page in DIST.rglob("*.html"):
         text = page.read_text(encoding="utf-8")
         rel = page.relative_to(DIST).as_posix()
+        ids = re.findall(r'\sid="([^"]+)"', text)
+        for dup in {i for i in ids if ids.count(i) > 1}:
+            errors.append(f"{rel}: duplicate id {dup!r}")
+        for m in re.finditer(r'href="#([^"]+)"', text):
+            if m.group(1) not in ids:
+                errors.append(f"{rel}: link to missing section #{m.group(1)}")
         for m in re.finditer(r'(?:href|src)="([^"]*)"', text):
             url = m.group(1)
             if url in ("#", ""):

@@ -1,0 +1,17 @@
+/* Three plain facts under the home hero (all true today) */
+.trust-strip { position: relative; margin-top: calc(-1 * var(--space-6)); z-index: 2; }
+.trust-strip ul { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-3); grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+.trust-strip li {
+  display: flex;
+  gap: var(--space-3);
+  align-items: flex-start;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 16px;
+  box-shadow: var(--shadow-lift);
+  font-size: 0.93rem;
+}
+.trust-strip .ic { margin-top: 0.15em; color: var(--color-primary); width: 1.4em; height: 1.4em; }
+.trust-strip strong { display: block; font-size: 1rem; }
+.trust-strip span { color: var(--color-text-muted); }

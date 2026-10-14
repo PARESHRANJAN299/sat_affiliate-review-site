@@ -1,14 +1,17 @@
 /* Category filter chips */
-.chips { display: flex; flex-wrap: wrap; gap: 10px; margin: 0 0 28px; }
+.chips { display: flex; flex-wrap: wrap; gap: 10px; margin: 0 0 var(--space-5); }
 .chip {
-  display: inline-block;
-  padding: 8px 16px;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 16px;
   border: 1.5px solid var(--color-border);
   border-radius: 999px;
-  background: #fff;
+  background: var(--color-surface);
   color: var(--color-text);
   font-size: 0.9rem;
   font-weight: 600;
+  transition: border-color .15s, background-color .15s;
 }
-.chip:hover { border-color: var(--color-primary); color: var(--color-primary-dark); text-decoration: none; }
+.chip:hover { border-color: var(--color-primary); background: var(--color-bg-alt); color: var(--color-primary-dark); text-decoration: none; }
 .chip[aria-current="page"] { background: var(--color-navy); border-color: var(--color-navy); color: #fff; }

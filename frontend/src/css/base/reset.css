@@ -1,19 +1,29 @@
 /* Reset and element defaults */
 * { box-sizing: border-box; }
 
-html { scroll-behavior: smooth; }
+[hidden] { display: none !important; }
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: calc(var(--header-h) + 12px);
+}
 
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-family: var(--font-sans);
+  font-size: var(--step-0);
   color: var(--color-text);
   background: var(--color-bg);
-  line-height: 1.6;
+  line-height: 1.65;
+  -webkit-text-size-adjust: 100%;
+  text-rendering: optimizeLegibility;
 }
 
-a { color: var(--color-primary); text-decoration: none; }
+h1, h2, h3, h4 { line-height: 1.2; letter-spacing: -0.01em; text-wrap: balance; }
+p, li { text-wrap: pretty; }
+
+a { color: var(--color-link); text-decoration: none; }
 a:hover { text-decoration: underline; }
 
 img { max-width: 100%; display: block; }
-
-h1, h2, h3, h4 { line-height: 1.25; }
+table, .price-tag { font-variant-numeric: tabular-nums; }

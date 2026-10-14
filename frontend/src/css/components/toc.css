@@ -1,0 +1,16 @@
+/* "On this page" list */
+.article-layout { display: block; }
+.toc-col { margin: var(--space-5) 0; }
+details.toc { border: 1px solid var(--color-border); border-radius: var(--radius); background: var(--color-surface); padding: 0 16px; }
+details.toc summary { min-height: 48px; display: flex; align-items: center; font-weight: 700; cursor: pointer; }
+.toc ol { margin: 0; padding: 0 0 12px 20px; font-size: 0.95rem; }
+.toc ol ol { padding: 4px 0 0 16px; list-style: circle; }
+.toc li { margin: 6px 0; }
+.toc a { color: var(--color-text); }
+.toc a:hover { color: var(--color-link); }
+
+@media (min-width: 1100px) {
+  .article-layout { display: grid; grid-template-columns: minmax(0, 1fr) 250px; gap: var(--space-7); align-items: start; }
+  .toc-col { grid-column: 2; grid-row: 1; position: sticky; top: calc(var(--header-h) + 16px); margin: 0; }
+  .article-main { grid-column: 1; grid-row: 1; }
+}

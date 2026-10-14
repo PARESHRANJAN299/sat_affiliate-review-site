@@ -1,14 +1,16 @@
 /* Comparison table */
-.compare-table-wrap { overflow-x: auto; margin: 28px 0; }
+.compare-table-wrap { overflow-x: auto; margin: var(--space-5) 0; }
 
 table.compare-table {
   width: 100%;
-  border-collapse: collapse;
   min-width: 640px;
-  background: #fff;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius);
   overflow: hidden;
+  box-shadow: var(--shadow);
 }
 
 table.compare-table th,
@@ -19,13 +21,42 @@ table.compare-table td {
   font-size: 0.92rem;
   vertical-align: top;
 }
-
 table.compare-table thead th {
   background: var(--color-bg-alt);
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   text-transform: uppercase;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.04em;
   color: var(--color-text-muted);
 }
-
+table.compare-table tbody th { font-weight: 700; color: var(--color-text); }
+table.compare-table tbody tr:last-child th,
 table.compare-table tbody tr:last-child td { border-bottom: none; }
+table.compare-table tbody tr:hover { background: var(--color-bg-alt); }
+
+/* phones: one card per product */
+@media (max-width: 720px) {
+  .compare-table-wrap { overflow: visible; }
+  table.compare-table { min-width: 0; border: 0; background: transparent; box-shadow: none; }
+  .compare-table thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  .compare-table tbody tr {
+    display: block;
+    margin: 0 0 14px;
+    padding-bottom: 6px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+  }
+  .compare-table tbody th { display: block; padding: 14px 16px 8px; font-size: 1rem; border-bottom: 1px solid var(--color-border); }
+  .compare-table tbody td { display: flex; gap: 12px; padding: 8px 16px; border: 0; }
+  .compare-table tbody td::before {
+    content: attr(data-label);
+    flex: 0 0 90px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--color-text-muted);
+  }
+  .compare-table tbody tr:hover { background: var(--color-surface); }
+}
