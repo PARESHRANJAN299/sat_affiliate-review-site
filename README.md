@@ -25,7 +25,7 @@ No build step: plain HTML/CSS, deployable as-is.
 ## Run locally
 
 ```bash
-cd sat-sports-site
+cd sat_affiliate-review-site
 python3 -m http.server 8000
 ```
 
