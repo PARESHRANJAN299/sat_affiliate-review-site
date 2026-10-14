@@ -36,3 +36,5 @@ footer.site-footer {
   font-size: 0.82rem;
   color: #8893ad;
 }
+
+.footer-note { margin: 12px 0 0; font-size: 0.8rem; line-height: 1.5; color: #8893ad; max-width: 260px; }

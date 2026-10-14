@@ -8,8 +8,7 @@
     "content-page",
     "compare-table",
     "product-block",
-    "faq",
-    "disclosure-note"
+    "faq"
   ],
   "page_css": "article",
   "js": [
