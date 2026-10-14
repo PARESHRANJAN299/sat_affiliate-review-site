@@ -17,7 +17,7 @@ footer.site-footer {
   .footer-grid { grid-template-columns: 1fr; }
 }
 
-.footer-grid h4 {
+.footer-title {
   color: #fff;
   font-size: 0.85rem;
   text-transform: uppercase;

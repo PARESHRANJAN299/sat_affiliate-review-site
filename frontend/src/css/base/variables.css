@@ -5,8 +5,9 @@
   --color-text: #1a1d23;
   --color-text-muted: #5b6270;
   --color-border: #e4e7ec;
-  --color-primary: #d9480f;      /* sporty orange */
-  --color-primary-dark: #b8390c;
+  --color-primary: #c2410c;      /* sporty orange */
+  --color-primary-dark: #9a3412;
+  --color-primary-light: #ff8a4c;
   --color-navy: #10213f;         /* deep navy for header/footer */
   --color-navy-light: #1c3463;
   --color-success: #1a7f4e;

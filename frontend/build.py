@@ -28,9 +28,11 @@ CONFIG = json.loads((SRC / "site.config.json").read_text(encoding="utf-8"))
 
 # Included in every page's CSS/JS bundle, in this order.
 ALWAYS_CSS = [
-    "base/variables", "base/reset", "base/accessibility", "base/print",
+    "base/variables", "base/reset",
     "layout/container", "layout/section", "layout/header", "layout/footer",
 ]
+# Loaded after component/page CSS so they win the cascade.
+LAST_CSS = ["base/accessibility", "base/print"]
 ALWAYS_JS = ["core/main"]
 
 TITLE_MAX = 60
@@ -59,6 +61,11 @@ def render(template, ctx):
 
 def esc(value):
     return html.escape(value, quote=True)
+
+
+def human_date(iso):
+    d = datetime.date.fromisoformat(iso)
+    return f"{d.day} {d.strftime('%B %Y')}"
 
 
 def minify_css(css):
@@ -98,6 +105,8 @@ def bundle(kind, names, key):
             continue
         parts.append(read(path))
     joined = "\n".join(parts)
+    if kind == "css" and re.search(r"(?<![\w-])content\s*:|url\(", joined):
+        errors.append(f"{key}: the CSS minifier is not string-aware; avoid content: and url( or upgrade it")
     return write_asset(kind, key, minify_css(joined) if kind == "css" else minify_js(joined))
 
 
@@ -192,6 +201,7 @@ def build_page(meta, base, header_t, footer_t, year):
     css_names = ALWAYS_CSS + [f"components/{n}" for n in meta.get("css", [])]
     if meta.get("page_css"):
         css_names.append(f'pages/{meta["page_css"]}')
+    css_names += LAST_CSS
     js_names = ALWAYS_JS + [f"components/{n}" for n in meta.get("js", [])]
     if meta.get("page_js"):
         js_names.append(f'pages/{meta["page_js"]}')
@@ -199,9 +209,9 @@ def build_page(meta, base, header_t, footer_t, year):
     js_src = bundle("js", js_names, key)
 
     base_ctx = {
-        "site_name": CONFIG["site_name"], "contact_email": CONFIG["contact_email"],
-        "logo_primary": CONFIG["logo_primary"], "logo_secondary": CONFIG["logo_secondary"],
-        "year": year,
+        "site_name": esc(CONFIG["site_name"]), "contact_email": esc(CONFIG["contact_email"]),
+        "logo_primary": esc(CONFIG["logo_primary"]), "logo_secondary": esc(CONFIG["logo_secondary"]),
+        "year": year, "updated_human": human_date(meta["updated"]),
     }
     content = render(meta["_body"], {**base_ctx, "breadcrumb": breadcrumb_html(meta.get("breadcrumbs"))})
     header = render(header_t, {**base_ctx, "nav_items": link_list(CONFIG["nav"], meta["url"])})
@@ -213,6 +223,8 @@ def build_page(meta, base, header_t, footer_t, year):
         "language": CONFIG["language"], "locale": CONFIG["locale"],
         "title": esc(title), "description": esc(meta["description"]),
         "canonical": canonical,
+        "canonical_tag": "" if meta.get("noindex") else f'<link rel="canonical" href="{canonical}">\n',
+        "og_url_tag": "" if meta.get("noindex") else f'<meta property="og:url" content="{canonical}">\n',
         "robots_tag": '<meta name="robots" content="noindex, follow">\n' if meta.get("noindex") else "",
         "og_type": meta.get("og_type", "website"),
         "css_href": css_href, "js_src": js_src,

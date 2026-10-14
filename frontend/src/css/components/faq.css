@@ -1,4 +1,4 @@
 /* FAQ */
 .faq-item { border-bottom: 1px solid var(--color-border); padding: 16px 0; }
-.faq-item h4 { margin: 0 0 8px; font-size: 1.02rem; }
+.faq-item h3 { margin: 0 0 8px; font-size: 1.02rem; }
 .faq-item p { margin: 0; color: var(--color-text-muted); }
