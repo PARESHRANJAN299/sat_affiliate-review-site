@@ -24,7 +24,6 @@ header.site-header {
   color: #fff;
   letter-spacing: 0.5px;
 }
-.logo span { color: var(--color-primary-light); }
 
 nav.main-nav ul {
   list-style: none;

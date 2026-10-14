@@ -1,6 +1,6 @@
 # Sports & Gear Review Site (name and domain not decided yet)
 
-Independent sports & fitness gear review site for Indian buyers, monetised through affiliate programs. The code uses the working name "SAT Sports Gear" and the placeholder domain `sat.net.in`; both live in one file (`frontend/src/site.config.json`), so renaming is a one-file change.
+Independent sports & fitness gear review site for Indian buyers, monetised through affiliate programs. The code uses the working name "SAT" and the placeholder domain `sat.net.in`; both live in one file (`frontend/src/site.config.json`), so renaming is a one-file change.
 
 ## Repository layout
 

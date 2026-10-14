@@ -210,7 +210,7 @@ def build_page(meta, base, header_t, footer_t, year):
 
     base_ctx = {
         "site_name": esc(CONFIG["site_name"]), "contact_email": esc(CONFIG["contact_email"]),
-        "logo_primary": esc(CONFIG["logo_primary"]), "logo_secondary": esc(CONFIG["logo_secondary"]),
+        "logo_primary": esc(CONFIG["logo_primary"]),
         "year": year, "updated_human": human_date(meta["updated"]),
     }
     content = render(meta["_body"], {**base_ctx, "breadcrumb": breadcrumb_html(meta.get("breadcrumbs"))})
