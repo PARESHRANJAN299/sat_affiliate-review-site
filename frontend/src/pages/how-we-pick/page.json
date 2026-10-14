@@ -1,0 +1,16 @@
+{
+  "url": "/how-we-pick/",
+  "title": "How We Pick Products",
+  "description": "How we research and compare products, what we check, and what we do not do yet.",
+  "css": [
+    "breadcrumb",
+    "content-page"
+  ],
+  "breadcrumbs": [
+    [
+      "How We Pick",
+      "/how-we-pick/"
+    ]
+  ],
+  "updated": "2026-10-15"
+}

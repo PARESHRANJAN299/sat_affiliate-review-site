@@ -272,6 +272,9 @@ def build_page(meta, base, header_t, footer_t, year, articles):
         "site_name": esc(CONFIG["site_name"]), "contact_email": esc(CONFIG["contact_email"]),
         "logo_primary": esc(CONFIG["logo_primary"]),
         "logo_html": logo_html(CONFIG["logo_primary"]),
+        "affiliate_note": ("Some links on this site are affiliate links. We may earn a commission if you buy, at no extra cost to you."
+                           if CONFIG.get("affiliate_active") else
+                           "No ads. Our links go to shop search pages and earn us nothing yet. See the Affiliate Disclosure."),
         "year": year, "updated_human": human_date(meta["updated"]),
     }
     article_ctx = {

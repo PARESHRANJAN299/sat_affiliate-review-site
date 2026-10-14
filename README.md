@@ -54,6 +54,10 @@ The header has one category, **Products** (`/products/`). It lists every article
 
 It then appears on `/products/`, on its category page, and on the home page (latest three) with no other edits. A new category also needs a hub page (copy `src/pages/sports-fitness/`, and use `{{articles_<category_slug>}}`).
 
+## When affiliate approval comes
+
+Set `"affiliate_active": true` in `frontend/src/site.config.json` (switches the footer note), then update the Affiliate Disclosure and Privacy pages with the real programs and tracking, add the programme's required statement (for Amazon, only after approval, using the exact wording in Associates Central), add `sponsored` to the retailer links' `rel`, and replace search links with approved affiliate links.
+
 ## URLs
 
 Clean folder URLs, no `.html`: `/badminton/best-badminton-rackets/`. Do not change these after launch.

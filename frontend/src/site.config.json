@@ -30,6 +30,10 @@
       "url": "/about/"
     },
     {
+      "label": "How We Pick",
+      "url": "/how-we-pick/"
+    },
+    {
       "label": "Contact",
       "url": "/contact/"
     }
@@ -61,5 +65,6 @@
       "enabled": false,
       "note": "enable when its first guides are ready"
     }
-  ]
+  ],
+  "affiliate_active": false
 }
