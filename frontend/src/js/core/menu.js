@@ -49,6 +49,8 @@
     } else if (event.key === 'ArrowUp') {
       if (!isOpen()) return;
       i = i <= 0 ? links.length - 1 : i - 1;
+    } else if (!isOpen()) {
+      return;
     } else if (event.key === 'Home') {
       i = 0;
     } else {

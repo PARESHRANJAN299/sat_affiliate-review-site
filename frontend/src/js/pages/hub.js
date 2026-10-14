@@ -4,6 +4,7 @@
   var box = document.querySelector('.product-search');
   var input = document.getElementById('product-search');
   var empty = document.getElementById('no-results');
+  var live = document.getElementById('search-count');
   var cards = document.querySelectorAll('.article-card[data-search]');
   if (!box || !input || !cards.length) return;
   box.hidden = false;
@@ -16,5 +17,6 @@
       if (match) shown += 1;
     });
     if (empty) empty.hidden = shown !== 0;
+    if (live) live.textContent = q ? shown + (shown === 1 ? ' guide shown' : ' guides shown') : '';
   });
 })();

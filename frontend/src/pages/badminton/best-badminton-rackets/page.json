@@ -13,14 +13,18 @@
     "quick-picks",
     "method-note",
     "share",
-    "pick-bar"
+    "pick-bar",
+    "tools"
   ],
   "page_css": "article",
   "js": [
     "outbound-links",
     "toc",
     "share",
-    "pick-bar"
+    "pick-bar",
+    "table-scroll",
+    "finder",
+    "compare"
   ],
   "og_type": "article",
   "schema": "article",
@@ -39,7 +43,7 @@
     ]
   ],
   "published": "2026-10-14",
-  "updated": "2026-10-14",
+  "updated": "2026-10-15",
   "article": {
     "category": "Sports & Fitness",
     "tag": "Badminton",

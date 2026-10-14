@@ -54,7 +54,7 @@
 }
 
 @media (hover: hover) {
-  .article-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lift); border-color: var(--color-primary); }
+  .article-card:has(.read-link):hover { transform: translateY(-3px); box-shadow: var(--shadow-lift); border-color: var(--color-primary); }
 }
 @media (prefers-reduced-motion: reduce) { .article-card { transition: none; } }
 

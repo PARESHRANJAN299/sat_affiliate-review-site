@@ -15,3 +15,4 @@
 .trust-strip .ic { margin-top: 0.15em; color: var(--color-primary); width: 1.4em; height: 1.4em; }
 .trust-strip strong { display: block; font-size: 1rem; }
 .trust-strip span { color: var(--color-text-muted); }
+@media (min-width: 720px) { .trust-strip ul { grid-template-columns: repeat(3, 1fr); } }

@@ -87,7 +87,7 @@ def article_cards(articles):
             f'          <span class="tag">{esc(info["tag"])}</span>\n'
             f'          <h3>{esc(a["title"])}</h3>\n'
             f'          <p>{esc(info["summary"])}</p>\n'
-            f'          <a href="{a["url"]}" class="read-link">Read the guide <svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></a>\n'
+            f'          <a href="{a["url"]}" class="read-link">Read the guide<span class="visually-hidden">: {esc(a["title"])}</span> <svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></a>\n'
             '        </div>\n'
             '      </div>')
     cls = "article-grid is-featured" if featured else "article-grid"
@@ -127,6 +127,8 @@ def decorate(content):
 
     def add_ids(m):
         if m.group(0).startswith("<h2"):
+            if 'data-toc="skip"' in m.group(1):
+                return m.group(0)
             level, attrs, inner, prefix = 1, m.group(1), m.group(2), ""
         else:
             level, attrs, inner, prefix = 2, "", m.group(4), m.group(3)
@@ -420,6 +422,16 @@ def write_headers():
         encoding="utf-8")
 
 
+def check_affiliate_rel():
+    """When affiliate links are live, every outbound shop link must say sponsored."""
+    if not CONFIG.get("affiliate_active"):
+        return
+    for page in DIST.rglob("*.html"):
+        for m in re.finditer(r'<a [^>]*target="_blank"[^>]*>', page.read_text(encoding="utf-8")):
+            if "sponsored" not in m.group(0) and "wa.me" not in m.group(0):
+                errors.append(f"{page.relative_to(DIST).as_posix()}: affiliate_active is true but a shop link lacks rel=sponsored")
+
+
 def check_links():
     """Every root-relative href/src must resolve to a built file; '#' links are errors."""
     for page in DIST.rglob("*.html"):
@@ -452,6 +464,13 @@ def build():
     year = datetime.date.today().year
 
     pages = load_pages()
+    for meta in pages:
+        minimum = meta.get("hub_min_articles")
+        if minimum:
+            cat = meta.get("hub_category")
+            count = sum(1 for p in pages if p.get("article") and (not cat or p["article"]["category"] == cat))
+            if count < minimum:
+                meta["noindex"] = True
     articles = sorted((p for p in pages if p.get("article")),
                       key=lambda p: p.get("published", p["updated"]), reverse=True)
     for meta in pages:
@@ -463,6 +482,7 @@ def build():
     write_robots()
     write_headers()
     check_links()
+    check_affiliate_rel()
 
     for w in warnings:
         print("warning:", w)

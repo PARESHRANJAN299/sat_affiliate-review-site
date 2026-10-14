@@ -2,7 +2,11 @@
 .article-layout { display: block; }
 .toc-col { margin: var(--space-5) 0; }
 details.toc { border: 1px solid var(--color-border); border-radius: var(--radius); background: var(--color-surface); padding: 0 16px; }
-details.toc summary { min-height: 48px; display: flex; align-items: center; font-weight: 700; cursor: pointer; }
+details.toc summary { min-height: 48px; display: flex; align-items: center; justify-content: space-between; font-weight: 700; cursor: pointer; list-style: none; }
+details.toc summary::-webkit-details-marker { display: none; }
+details.toc summary::after { content: ""; width: 9px; height: 9px; border: solid var(--color-text-muted); border-width: 0 2px 2px 0; transform: rotate(45deg); transition: transform .15s ease; }
+details.toc[open] summary::after { transform: rotate(-135deg); }
+.toc a[aria-current="location"] { color: var(--color-link); font-weight: 700; }
 .toc ol { margin: 0; padding: 0 0 12px 20px; font-size: 0.95rem; }
 .toc ol ol { padding: 4px 0 0 16px; list-style: circle; }
 .toc li { margin: 6px 0; }

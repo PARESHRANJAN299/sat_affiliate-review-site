@@ -1,6 +1,6 @@
 {
   "url": "/",
-  "title": "Sports Gear Reviews for India",
+  "title": "Sports Gear Buying Guides for India",
   "description": "Plain-language buying guides for sports and fitness gear in India. Start with our badminton racket guide: three picks matched to skill level.",
   "css": [
     "buttons",
@@ -11,5 +11,5 @@
   "js": [],
   "og_type": "website",
   "schema": "home",
-  "updated": "2026-10-14"
+  "updated": "2026-10-15"
 }

@@ -10,6 +10,11 @@
   box-shadow: var(--shadow);
   scroll-margin-top: calc(var(--header-h) + 12px);
 }
+.product-block h3[id] { scroll-margin-top: calc(var(--header-h) + 70px); }
+.product-block:has(h3:target) { animation: target-flash 1.8s ease; }
+@keyframes target-flash { 0%, 40% { box-shadow: 0 0 0 4px rgba(255, 138, 76, 0.55), var(--shadow); } 100% { box-shadow: var(--shadow); } }
+.product-block.is-match { box-shadow: 0 0 0 4px rgba(255, 138, 76, 0.55), var(--shadow-lift); }
+@media (prefers-reduced-motion: reduce) { .product-block:has(h3:target) { animation: none; outline: 3px solid var(--color-primary-light); } }
 
 .product-block .rank {
   display: inline-block;

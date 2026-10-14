@@ -32,3 +32,4 @@
 @media (max-width: 720px) { .hero-art { opacity: 0.08; right: -90px; height: 110%; } }
 
 .how-grid { display: grid; gap: var(--space-5); grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+@media (min-width: 720px) { .how-grid { grid-template-columns: repeat(3, 1fr); } }

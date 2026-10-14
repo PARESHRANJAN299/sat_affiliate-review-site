@@ -1,6 +1,6 @@
 /* Review article page */
-.content-article { max-width: none; }
-.content-article .lead { margin: 0 0 var(--space-4); }
+.content-article .lead { margin: 0 0 var(--space-4); max-width: var(--measure); }
+.content-article .method-note { max-width: var(--measure); }
 .content-article h2 { position: relative; padding-top: var(--space-3); }
 .content-article h2::before { content: ""; display: block; width: 36px; height: 3px; border-radius: 2px; background: var(--color-primary); margin-bottom: 0.5em; }
 .content-article .article-main { max-width: var(--measure); }

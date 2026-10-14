@@ -42,3 +42,5 @@ footer.site-footer::before {
   font-size: 0.82rem;
   color: #98a3bd;
 }
+
+main:has(> .section-alt:last-child) + footer.site-footer { margin-top: 0; }

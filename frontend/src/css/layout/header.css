@@ -12,7 +12,7 @@ header.site-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 0;
+  padding-block: 10px;
   flex-wrap: wrap;
   gap: 8px;
 }
@@ -99,7 +99,7 @@ nav.main-nav a[aria-current="page"] { color: #fff; border-radius: 0; box-shadow:
 @media (prefers-reduced-motion: no-preference) {
   .logo-mark span {
     animation:
-      logo-in .7s cubic-bezier(.2, .8, .2, 1) both,
+      logo-in .7s cubic-bezier(.2, .8, .2, 1) backwards,
       logo-shine 4.5s ease-in-out 2;
     animation-delay: calc(var(--i) * .14s), calc(1.2s + var(--i) * .18s);
   }

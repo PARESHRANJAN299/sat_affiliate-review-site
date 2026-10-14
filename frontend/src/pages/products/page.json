@@ -1,7 +1,7 @@
 {
   "url": "/products/",
-  "title": "Product Reviews and Buying Guides",
-  "description": "All our buying guides in one place. Pick a category and find the right product for you.",
+  "title": "All Buying Guides",
+  "description": "Every buying guide in one place. Pick a category or search.",
   "css": [
     "buttons",
     "cards",
@@ -18,5 +18,6 @@
     ]
   ],
   "updated": "2026-10-15",
-  "page_js": "hub"
+  "page_js": "hub",
+  "hub_min_articles": 3
 }

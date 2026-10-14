@@ -36,7 +36,9 @@ table.compare-table tbody tr:hover { background: var(--color-bg-alt); }
 /* phones: one card per product */
 @media (max-width: 720px) {
   .compare-table-wrap { overflow: visible; }
-  table.compare-table { min-width: 0; border: 0; background: transparent; box-shadow: none; }
+  table.compare-table { min-width: 0; border: 0; background: transparent; box-shadow: none; overflow: visible; }
+  table.compare-table tbody tr:hover { background: var(--color-surface); }
+  table.compare-table tbody tr:last-child th { border-bottom: 1px solid var(--color-border); }
   .compare-table thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
   .compare-table tbody tr {
     display: block;

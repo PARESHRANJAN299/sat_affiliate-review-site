@@ -10,9 +10,12 @@
   padding: 8px 12px calc(8px + env(safe-area-inset-bottom));
   background: var(--color-header);
   transform: translateY(100%);
-  transition: transform .2s ease;
+  visibility: hidden;
+  transition: transform .2s ease, visibility 0s .2s;
 }
-.pick-bar.is-visible { transform: none; }
+.pick-bar.is-visible { transform: none; visibility: visible; transition: transform .2s ease; }
+.pick-bar a[aria-current="true"] { background: var(--color-primary); }
+@media (max-width: 899px) { html { scroll-padding-bottom: 72px; } }
 .pick-bar a {
   flex: 1;
   display: flex;

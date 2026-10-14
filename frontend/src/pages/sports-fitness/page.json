@@ -20,5 +20,7 @@
       "/sports-fitness/"
     ]
   ],
-  "updated": "2026-10-14"
+  "updated": "2026-10-15",
+  "hub_min_articles": 3,
+  "hub_category": "Sports & Fitness"
 }

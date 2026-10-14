@@ -10,61 +10,93 @@
 
     <aside class="method-note">
       <svg class="ic" aria-hidden="true"><use href="#i-info"/></svg>
-      <p><strong>How we picked these:</strong> we read the maker and shop details and what buyers say online. We have not played with these rackets ourselves yet. Details can change from seller to seller, so check the racket and its listing before you pay. The buttons below open each shop's own search page. Read <a href="/how-we-pick/">how we pick</a>.</p>
+      <p><strong>How we picked these:</strong> we read the maker and shop details and what buyers say online. We have not played with these rackets ourselves yet. Details can change from seller to seller, so check the racket and its listing before you pay. The buttons below open each shop's own search page. These three are a short list for different players, not a ranking of every racket, and price levels are only a rough guide. Read <a href="/how-we-pick/">how we pick</a>.</p>
     </aside>
 
     <ol class="quick-picks">
-      <li><a href="#yonex-arcsaber-11-play"><span class="qp-rank">#1 Best overall</span><strong>Yonex Arcsaber 11 Play</strong><span class="qp-for">Most players, a few games a week</span></a></li>
-      <li><a href="#decathlon-perfly-br-100-set-starter"><span class="qp-rank">#2 Best budget</span><strong>Decathlon Perfly BR 100</strong><span class="qp-for">First-time and casual players</span></a></li>
-      <li><a href="#yonex-astrox-99-pro"><span class="qp-rank">#3 Strong players</span><strong>Yonex Astrox 99 Pro</strong><span class="qp-for">Hard smashes, back of the court</span></a></li>
+      <li><a href="#yonex-arcsaber-11-play"><span class="qp-rank">Best for most players</span><strong>Yonex Arcsaber 11 Play</strong><span class="qp-for">A few games a week</span></a></li>
+      <li><a href="#decathlon-perfly-br-100-set-starter"><span class="qp-rank">First-timers, low budget</span><strong>Decathlon Perfly BR 100</strong><span class="qp-for">First-time and casual play</span></a></li>
+      <li><a href="#yonex-astrox-99-pro"><span class="qp-rank">Best for strong players</span><strong>Yonex Astrox 99 Pro</strong><span class="qp-for">Hard smashes, back of the court</span></a></li>
     </ol>
 
     <div class="article-layout">
       {{toc}}
       <div class="article-main">
-    <div class="compare-table-wrap" tabindex="0" role="region" aria-label="Racket comparison table">
-      <table class="compare-table">
+    <section class="finder" aria-labelledby="finder-title" hidden>
+      <h2 id="finder-title" data-toc="skip">Find your racket</h2>
+      <p>Two quick questions. This only repeats what the guide says below. It is not a test.</p>
+      <fieldset>
+        <legend>How well do you play?</legend>
+        <div class="choices">
+          <label><input type="radio" name="finder-level" value="new"> Just starting</label>
+          <label><input type="radio" name="finder-level" value="regular"> A few games a week</label>
+          <label><input type="radio" name="finder-level" value="strong"> Strong or competitive</label>
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend>What matters most?</legend>
+        <div class="choices">
+          <label><input type="radio" name="finder-want" value="cost"> Low cost</label>
+          <label><input type="radio" name="finder-want" value="control"> Control</label>
+          <label><input type="radio" name="finder-want" value="power"> Power</label>
+        </div>
+      </fieldset>
+      <div class="finder-result" role="status" aria-live="polite"></div>
+    </section>
+
+    <div class="compare-table-wrap">
+      <table class="compare-table" role="table">
         <caption class="visually-hidden">Comparison of three badminton rackets by who they suit, weight, balance and price level</caption>
         <thead>
-          <tr>
-            <th scope="col">Racket</th>
-            <th scope="col">Good for</th>
-            <th scope="col">Weight</th>
-            <th scope="col">Feel</th>
-            <th scope="col">Price level</th>
+          <tr role="row">
+            <th scope="col" role="columnheader">Racket</th>
+            <th scope="col" role="columnheader">Good for</th>
+            <th scope="col" role="columnheader">Weight</th>
+            <th scope="col" role="columnheader">Feel</th>
+            <th scope="col" role="columnheader">Price level</th>
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <th scope="row">Yonex Arcsaber 11 Play</th>
-            <td data-label="Good for">Beginners who want to improve, and regular players</td>
-            <td data-label="Weight">Light (4U, about 83 g)</td>
-            <td data-label="Feel">Balanced, medium stiffness</td>
-            <td data-label="Price level">Mid-range</td>
+          <tr role="row">
+            <th scope="row" role="rowheader">Yonex Arcsaber 11 Play</th>
+            <td role="cell" data-label="Good for">Beginners who want to improve, and regular players</td>
+            <td role="cell" data-label="Weight">Light (4U, about 83 g)</td>
+            <td role="cell" data-label="Feel">Balanced, medium stiffness</td>
+            <td role="cell" data-label="Price level">Mid-range</td>
           </tr>
-          <tr>
-            <th scope="row">Decathlon Perfly BR 100 Set Starter</th>
-            <td data-label="Good for">First-time and casual players</td>
-            <td data-label="Weight">Not listed for India</td>
-            <td data-label="Feel">Heavy at the top (per Decathlon UAE)</td>
-            <td data-label="Price level">Budget</td>
+          <tr role="row">
+            <th scope="row" role="rowheader">Decathlon Perfly BR 100 Set Starter</th>
+            <td role="cell" data-label="Good for">First-time and casual players</td>
+            <td role="cell" data-label="Weight">Not listed for India</td>
+            <td role="cell" data-label="Feel">Heavy at the top (per Decathlon UAE)</td>
+            <td role="cell" data-label="Price level">Budget</td>
           </tr>
-          <tr>
-            <th scope="row">Yonex Astrox 99 Pro</th>
-            <td data-label="Good for">Strong players who smash a lot</td>
-            <td data-label="Weight">Light (4U, about 83–85 g)</td>
-            <td data-label="Feel">Heavy at the top, very stiff</td>
-            <td data-label="Price level">Premium</td>
+          <tr role="row">
+            <th scope="row" role="rowheader">Yonex Astrox 99 Pro</th>
+            <td role="cell" data-label="Good for">Strong players who smash a lot</td>
+            <td role="cell" data-label="Weight">Light (4U, about 83–85 g)</td>
+            <td role="cell" data-label="Feel">Heavy at the top, very stiff</td>
+            <td role="cell" data-label="Price level">Premium</td>
           </tr>
         </tbody>
       </table>
     </div>
 
+    <section class="compare-tool" aria-labelledby="compare-title" hidden>
+      <h2 id="compare-title" data-toc="skip">Compare two rackets</h2>
+      <p>Pick any two. The details come from the table above.</p>
+      <div class="pickers">
+        <div><label for="compare-a">First racket</label><select id="compare-a" name="compare-a"></select></div>
+        <div><label for="compare-b">Second racket</label><select id="compare-b" name="compare-b"></select></div>
+      </div>
+      <div class="compare-out" aria-live="polite"></div>
+    </section>
+
     <h2>Our three picks</h2>
     <span id="picks-start"></span>
 
     <div class="product-block">
-      <span class="rank">#1 Best Overall</span>
+      <span class="rank">Best for most players</span>
       <h3>Yonex Arcsaber 11 Play</h3>
       <p class="verdict">Verdict: a light, easy racket for most people. A good choice if you play a few times a week.</p>
       <p>The Arcsaber 11 Play is Yonex's entry racket in its Arcsaber line, which is made for control. It is light, so it is easy to swing and move, which helps at the net and in doubles. Yonex says its head shape makes the "sweet spot" about 7% bigger. The sweet spot is the part of the strings that hits the shuttle best, so a bigger one forgives small mistakes. In India it is usually sold with strings already fitted, so you can play right away.</p>
@@ -92,14 +124,14 @@
 
       <div class="cta-row">
         <span class="price-tag">Mid-range <span class="approx">(check the price at the shop)</span></span>
-        <a href="https://www.amazon.in/s?k=Yonex+Arcsaber+11+Play+badminton+racket" class="btn btn-primary btn-small" target="_blank" rel="nofollow noopener" aria-label="Search for Yonex Arcsaber 11 Play on Amazon (opens in a new tab)">Search on Amazon <svg class="ic" aria-hidden="true"><use href="#i-external"/></svg></a>
-        <a href="https://www.flipkart.com/search?q=Yonex+Arcsaber+11+Play+badminton+racket" class="btn btn-outline btn-small" target="_blank" rel="nofollow noopener" aria-label="Search for Yonex Arcsaber 11 Play on Flipkart (opens in a new tab)">Search on Flipkart <svg class="ic" aria-hidden="true"><use href="#i-external"/></svg></a>
+        <a href="https://www.amazon.in/s?k=Yonex+Arcsaber+11+Play+badminton+racket" class="btn btn-primary btn-small" target="_blank" rel="nofollow noopener" aria-label="Search on Amazon for Yonex Arcsaber 11 Play (opens in a new tab)">Search on Amazon <svg class="ic" aria-hidden="true"><use href="#i-external"/></svg></a>
+        <a href="https://www.flipkart.com/search?q=Yonex+Arcsaber+11+Play+badminton+racket" class="btn btn-outline btn-small" target="_blank" rel="nofollow noopener" aria-label="Search on Flipkart for Yonex Arcsaber 11 Play (opens in a new tab)">Search on Flipkart <svg class="ic" aria-hidden="true"><use href="#i-external"/></svg></a>
       </div>
       <p class="cta-note">Opens a search on the shop. We do not sell products or take payments.</p>
     </div>
 
     <div class="product-block">
-      <span class="rank">#2 Best Budget Pick</span>
+      <span class="rank">Best for first-timers on a budget</span>
       <h3>Decathlon Perfly BR 100 Set Starter</h3>
       <p class="verdict">Verdict: a cheap way to try the sport. Fine for playing in the garden or with family. You will likely outgrow it if you get serious.</p>
       <p>The BR 100 is Decathlon's starter set for adults. Decathlon says it is made for beginners and casual play, and that its large head helps when you miss the centre. On Decathlon India it comes with a 2-year warranty and 30-day returns, and buyers rate it about 4.5 out of 5.</p>
@@ -126,13 +158,13 @@
 
       <div class="cta-row">
         <span class="price-tag">Budget <span class="approx">(check the price at the shop)</span></span>
-        <a href="https://www.decathlon.in/search?Ntt=Decathlon+Perfly+BR+100+badminton+racket+set" class="btn btn-primary btn-small" target="_blank" rel="nofollow noopener" aria-label="Search for Decathlon Perfly BR 100 Set Starter on Decathlon (opens in a new tab)">Search on Decathlon <svg class="ic" aria-hidden="true"><use href="#i-external"/></svg></a>
+        <a href="https://www.decathlon.in/search?Ntt=Decathlon+Perfly+BR+100+badminton+racket+set" class="btn btn-primary btn-small" target="_blank" rel="nofollow noopener" aria-label="Search on Decathlon for Decathlon Perfly BR 100 Set Starter (opens in a new tab)">Search on Decathlon <svg class="ic" aria-hidden="true"><use href="#i-external"/></svg></a>
       </div>
       <p class="cta-note">Opens a search on the shop. We do not sell products or take payments.</p>
     </div>
 
     <div class="product-block">
-      <span class="rank">#3 Best for Strong Players</span>
+      <span class="rank">Best for strong players</span>
       <h3>Yonex Astrox 99 Pro</h3>
       <p class="verdict">Verdict: a powerful racket for hard smashes. Only worth it if you already play well, especially singles or from the back of the court.</p>
       <p>The Astrox 99 Pro is a top Yonex power racket. It is a little longer than normal, heavy at the top, and very stiff. Together these help you hit deep clears and fast smashes. Shop reviews rate its smash and clear very highly. Yonex also says a part at the base of the shaft softens vibration, which is said to help touch shots at the net. The downside is that flat drives and defence take more effort, and net play is slower than with Yonex's Astrox 88S Pro.</p>
@@ -159,14 +191,14 @@
 
       <div class="cta-row">
         <span class="price-tag">Premium <span class="approx">(check the price at the shop)</span></span>
-        <a href="https://www.amazon.in/s?k=Yonex+Astrox+99+Pro+3rd+Gen+badminton+racket" class="btn btn-primary btn-small" target="_blank" rel="nofollow noopener" aria-label="Search for Yonex Astrox 99 Pro on Amazon (opens in a new tab)">Search on Amazon <svg class="ic" aria-hidden="true"><use href="#i-external"/></svg></a>
-        <a href="https://www.flipkart.com/search?q=Yonex+Astrox+99+Pro+3rd+Gen+badminton+racket" class="btn btn-outline btn-small" target="_blank" rel="nofollow noopener" aria-label="Search for Yonex Astrox 99 Pro on Flipkart (opens in a new tab)">Search on Flipkart <svg class="ic" aria-hidden="true"><use href="#i-external"/></svg></a>
+        <a href="https://www.amazon.in/s?k=Yonex+Astrox+99+Pro+3rd+Gen+badminton+racket" class="btn btn-primary btn-small" target="_blank" rel="nofollow noopener" aria-label="Search on Amazon for Yonex Astrox 99 Pro (opens in a new tab)">Search on Amazon <svg class="ic" aria-hidden="true"><use href="#i-external"/></svg></a>
+        <a href="https://www.flipkart.com/search?q=Yonex+Astrox+99+Pro+3rd+Gen+badminton+racket" class="btn btn-outline btn-small" target="_blank" rel="nofollow noopener" aria-label="Search on Flipkart for Yonex Astrox 99 Pro (opens in a new tab)">Search on Flipkart <svg class="ic" aria-hidden="true"><use href="#i-external"/></svg></a>
       </div>
       <p class="cta-note">Opens a search on the shop. We do not sell products or take payments.</p>
     </div>
 
     <h2>How to choose a badminton racket</h2>
-    <p><strong>Weight.</strong> Rackets are marked 3U, 4U and so on. 4U is about 80–84 g and 3U is about 85–89 g. A lighter 4U racket is quicker and easier on the wrist, so most players pick it. Heavier rackets add power but tire you faster.</p>
+    <p><strong>Weight.</strong> Rackets are marked 3U, 4U and so on. 4U is roughly 80–85 g and 3U is roughly 85–90 g. A lighter 4U racket is quicker and easier on the wrist, so most players pick it. Heavier rackets add power but tire you faster.</p>
     <p><strong>Balance.</strong> This is where the weight sits. A racket that is heavy at the top gives more power for clears and smashes. One that is light at the top is quicker for defence and net shots. A balanced racket is in between and works for most players.</p>
     <p><strong>Stiffness.</strong> A bendy shaft helps if your swing is slow. A stiff shaft suits fast swings and gives sharper control, but it feels hard and tiring if your technique is not ready.</p>
     <p><strong>String tension.</strong> Tighter strings give more control but need better timing and put more strain on the frame. Every racket has a maximum tension printed on it. Never go above it. Beginners should stay at the lower end.</p>
