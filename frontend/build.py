@@ -119,6 +119,8 @@ def bundle(kind, names, key):
 def link_list(items, current_url=None):
     lines = []
     for item in items:
+        if item.get("enabled") is False:
+            continue
         cur = ' aria-current="page"' if item["url"] == current_url else ""
         lines.append(f'        <li><a href="{item["url"]}"{cur}>{esc(item["label"])}</a></li>')
     return "\n".join(lines)
