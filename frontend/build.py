@@ -232,6 +232,8 @@ def build_page(meta, base, header_t, footer_t, year):
         "canonical": canonical,
         "canonical_tag": "" if meta.get("noindex") else f'<link rel="canonical" href="{canonical}">\n',
         "og_url_tag": "" if meta.get("noindex") else f'<meta property="og:url" content="{canonical}">\n',
+        "verification_tag": (f'<meta name="google-site-verification" content="{esc(CONFIG["google_site_verification"])}">\n'
+                             if CONFIG.get("google_site_verification") else ""),
         "robots_tag": '<meta name="robots" content="noindex, follow">\n' if meta.get("noindex") else "",
         "og_type": meta.get("og_type", "website"),
         "css_href": css_href, "js_src": js_src,
