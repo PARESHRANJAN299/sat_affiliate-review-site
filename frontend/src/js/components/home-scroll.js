@@ -23,7 +23,7 @@
 
   // 2) cards and sections fade up as they come into view
   if (!('IntersectionObserver' in window)) return;
-  var items = document.querySelectorAll('.home-section-head, .directory-item, .home-approach');
+  var items = document.querySelectorAll('.home-section-head, .home-cat-strip > li, .home-approach');
   var seen = 0;
   var io = new IntersectionObserver(function (entries) {
     entries.forEach(function (entry) {
@@ -35,7 +35,7 @@
   }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
   Array.prototype.forEach.call(items, function (el, i) {
     el.classList.add('reveal');
-    el.style.transitionDelay = (el.classList.contains('directory-item') ? (i % 5) * 70 : 0) + 'ms';
+    el.style.transitionDelay = (el.parentNode && el.parentNode.classList.contains('home-cat-strip') ? (i % 6) * 60 : 0) + 'ms';
     io.observe(el);
     seen += 1;
   });
