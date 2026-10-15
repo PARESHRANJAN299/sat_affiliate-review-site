@@ -1,0 +1,106 @@
+/* Contact page: dark hero with the email, a form card with live checks, and two small help cards */
+.contact-page { padding-bottom: var(--space-7); }
+.contact-hero { position: relative; overflow: hidden; background: linear-gradient(160deg, #0a1020, #12213f 60%, #0b1428); color: #fff; padding: 20px 0 30px; }
+.contact-hero::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(520px 320px at 8% 115%, rgba(194, 65, 12, .38), transparent 70%), radial-gradient(520px 320px at 95% -10%, rgba(255, 138, 76, .22), transparent 70%); }
+.contact-hero-inner { position: relative; z-index: 1; }
+.contact-hero .breadcrumb, .contact-hero .breadcrumb a { color: #b9c3da; }
+.contact-hero .breadcrumb a:hover { color: #fff; }
+.contact-hero h1 { margin: 0 0 8px; color: #fff; font-size: clamp(1.7rem, 1.2rem + 2.4vw, 3rem); line-height: 1.1; }
+.contact-lead { max-width: 60ch; margin: 0 0 18px; color: #d7ddea; font-size: clamp(.95rem, .9rem + .3vw, 1.1rem); line-height: 1.55; }
+.contact-mail { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.contact-mail-link { display: inline-flex; align-items: center; gap: 10px; min-height: 52px; padding: 8px 18px 8px 14px; max-width: 100%; color: #fff; font-weight: 700; font-size: clamp(.95rem, .85rem + .5vw, 1.15rem); background: rgba(255, 255, 255, 0.1); border-radius: 999px; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.28); text-decoration: none; transition: background .18s ease, transform .18s ease, box-shadow .18s ease; }
+.contact-mail-link:hover { color: #fff; text-decoration: none; background: rgba(255, 255, 255, 0.18); transform: translateY(-2px); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.5), 0 10px 24px rgba(0, 0, 0, 0.3); }
+.contact-email-text { min-width: 0; overflow-wrap: anywhere; }
+.cm-ic { flex: none; width: 22px; height: 22px; fill: none; stroke: var(--color-primary-light); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.contact-copy { min-height: 44px; padding: 0 16px; font: inherit; font-size: .88rem; font-weight: 700; color: #fff; background: transparent; border: 1.5px solid rgba(255, 255, 255, 0.5); border-radius: 999px; cursor: pointer; transition: background .15s ease, border-color .15s ease; }
+.contact-copy[hidden] { display: none; }
+.contact-copy:hover { background: rgba(255, 255, 255, 0.14); }
+.contact-copy:focus-visible, .contact-mail-link:focus-visible { outline: 3px solid var(--color-primary-light); outline-offset: 3px; }
+
+.contact-body { margin-top: -18px; position: relative; z-index: 2; }
+.contact-grid { display: grid; gap: var(--space-4); }
+@media (min-width: 900px) { .contact-hero { padding: 28px 0 64px; } .contact-grid { grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); gap: var(--space-5); align-items: start; } .contact-body { margin-top: -26px; } }
+
+/* form card */
+.cf-card { padding: clamp(18px, 4vw, 34px); background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 22px; box-shadow: var(--shadow-lift); }
+.cf-card h2 { margin: 0 0 6px; font-size: var(--step-3); }
+.cf-intro { margin: 0 0 18px; color: var(--color-text-muted); line-height: 1.6; }
+.cf { display: grid; gap: 16px; }
+.cf[hidden] { display: none; }
+.cf-topics { display: flex; gap: 8px; margin: 0 -4px; padding: 2px 4px 4px; overflow-x: auto; scrollbar-width: none; scroll-snap-type: x proximity; }
+.cf-topics::-webkit-scrollbar { display: none; }
+.cf-topic { flex: none; min-height: 38px; padding: 0 14px; font: inherit; font-size: .86rem; font-weight: 700; color: var(--color-text); background: var(--color-bg); border: 1px solid var(--color-border); border-radius: 999px; cursor: pointer; scroll-snap-align: start; transition: background .15s ease, color .15s ease, border-color .15s ease, transform .12s ease; }
+.cf-topic:hover { border-color: var(--color-primary); background: var(--color-accent-soft); }
+.cf-topic:active { transform: scale(.96); }
+.cf-topic.is-on { color: #fff; background: linear-gradient(135deg, var(--color-primary-light), var(--color-primary)); border-color: transparent; box-shadow: 0 6px 14px rgba(194, 65, 12, 0.3); }
+.cf-topic:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+
+.cf-field { display: grid; gap: 6px; }
+.cf-field label { font-weight: 700; font-size: .9rem; transition: color .15s ease; }
+.cf-field:focus-within label { color: var(--color-primary-dark); }
+.cf-input { position: relative; display: flex; align-items: center; }
+.cf-ic { position: absolute; left: 14px; width: 20px; height: 20px; fill: none; stroke: var(--color-text-muted); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; pointer-events: none; transition: stroke .15s ease; }
+.cf-input-area .cf-ic { top: 15px; }
+.cf-input:focus-within .cf-ic { stroke: var(--color-primary); }
+.cf-input input, .cf-input textarea { width: 100%; min-height: 54px; padding: 12px 44px 12px 44px; font: inherit; font-size: 1rem; color: var(--color-text); background: var(--color-bg); border: 1.5px solid var(--color-border); border-radius: 14px; -webkit-appearance: none; appearance: none; transition: border-color .15s ease, box-shadow .15s ease, background .15s ease; }
+.cf-input textarea { min-height: 130px; padding-top: 14px; resize: none; line-height: 1.5; overflow: hidden; }
+.cf-input input::placeholder, .cf-input textarea::placeholder { color: var(--color-text-muted); opacity: 1; }
+.cf-input input:focus, .cf-input textarea:focus { outline: none; background: #fff; border-color: var(--color-primary); box-shadow: 0 0 0 4px rgba(194, 65, 12, 0.14); }
+.cf-tick { position: absolute; right: 14px; width: 20px; height: 20px; fill: none; stroke: var(--color-success); stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; opacity: 0; transform: scale(.5); transition: opacity .2s ease, transform .25s cubic-bezier(.2, .8, .2, 1); pointer-events: none; }
+.cf-field.is-valid .cf-tick { opacity: 1; transform: none; }
+.cf-field.is-valid .cf-input input, .cf-field.is-valid .cf-input textarea { border-color: #8fd0b0; }
+.cf-field.is-bad .cf-input input, .cf-field.is-bad .cf-input textarea { border-color: #d64545; background: #fff7f6; }
+.cf-field.is-bad .cf-input { animation: cf-shake .35s ease; }
+.cf-err { margin: 0; font-size: .84rem; font-weight: 600; color: #b42318; }
+.cf-err[hidden] { display: none; }
+.cf-meta { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+.cf-count { margin-left: auto; font-size: .78rem; color: var(--color-text-muted); font-variant-numeric: tabular-nums; }
+.cf-count.is-near { color: #b45309; font-weight: 700; }
+
+.cf-submit { position: relative; display: inline-flex; align-items: center; justify-content: center; gap: 10px; justify-self: start; min-height: 54px; padding: 0 26px; font: inherit; font-size: 1rem; font-weight: 800; color: #fff; background: linear-gradient(135deg, var(--color-primary-light), var(--color-primary) 55%, var(--color-primary-dark)); border: 0; border-radius: 16px; box-shadow: 0 10px 22px rgba(194, 65, 12, 0.35); cursor: pointer; transition: transform .15s ease, box-shadow .15s ease; }
+.cf-submit:hover { transform: translateY(-2px); box-shadow: 0 14px 28px rgba(194, 65, 12, 0.42); }
+.cf-submit:active { transform: scale(.98); }
+.cf-submit:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+.cf-submit-ic { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; transition: transform .18s ease; }
+.cf-submit:hover .cf-submit-ic { transform: translateX(4px); }
+.cf-spin { display: none; width: 18px; height: 18px; border: 2.5px solid rgba(255, 255, 255, 0.4); border-top-color: #fff; border-radius: 50%; animation: cf-spin .7s linear infinite; }
+.cf-submit.is-busy { pointer-events: none; opacity: .92; }
+.cf-submit.is-busy .cf-spin { display: inline-block; }
+.cf-submit.is-busy .cf-submit-ic { display: none; }
+
+.cf-result { padding: 14px 16px; background: #eefaf3; border: 1px solid #b9e4cb; border-radius: 14px; animation: cf-rise .35s cubic-bezier(.2, .8, .2, 1) both; }
+.cf-result[hidden] { display: none; }
+.cf-result-text { margin: 0 0 10px; color: #14532d; font-weight: 600; line-height: 1.5; }
+.cf-result-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.cf-mini { min-height: 40px; padding: 0 14px; font: inherit; font-size: .86rem; font-weight: 700; color: #14532d; background: #fff; border: 1px solid #b9e4cb; border-radius: 999px; cursor: pointer; }
+.cf-mini:hover { background: #e2f5ea; }
+
+/* side cards */
+.contact-side { display: grid; gap: var(--space-4); }
+.side-card { padding: 20px; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 20px; box-shadow: var(--shadow); }
+.side-card h2 { margin: 10px 0 6px; font-size: 1.15rem; }
+.side-card p { margin: 0; color: var(--color-text-muted); line-height: 1.6; }
+.side-ic { display: inline-flex; align-items: center; justify-content: center; width: 42px; height: 42px; color: var(--color-primary-dark); background: var(--color-accent-soft); border-radius: 12px; }
+.side-ic svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.side-card:not(:has(h2)) { display: flex; align-items: center; gap: 14px; }
+
+/* entrance (added by script, so nothing is hidden without JavaScript) */
+.contact-page .reveal-up { opacity: 0; transform: translateY(16px); transition: opacity .5s ease, transform .5s cubic-bezier(.2, .8, .2, 1); }
+.contact-page .reveal-up.is-in { opacity: 1; transform: none; }
+
+@keyframes cf-shake { 0%, 100% { transform: none; } 25% { transform: translateX(-5px); } 50% { transform: translateX(5px); } 75% { transform: translateX(-3px); } }
+@keyframes cf-spin { to { transform: rotate(360deg); } }
+@keyframes cf-rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+@media (max-width: 599px) {
+  .contact-hero { padding-bottom: 36px; }
+  .contact-mail-link { width: 100%; }
+  .contact-copy { flex: 1 1 100%; }
+  .cf-submit { justify-self: stretch; }
+  .side-card { padding: 16px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .contact-page .reveal-up { opacity: 1; transform: none; transition: none; }
+  .cf-field.is-bad .cf-input, .cf-result, .cf-spin { animation: none; }
+  .contact-mail-link, .cf-submit, .cf-topic, .cf-tick, .cf-input input, .cf-input textarea { transition: none; }
+}
