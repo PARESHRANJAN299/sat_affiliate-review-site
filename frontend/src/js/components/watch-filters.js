@@ -37,7 +37,7 @@
       if (ok) shown += 1;
     });
     var total = activeTotal();
-    if (count) count.textContent = 'Showing ' + shown + ' of ' + cards.length + ' watches';
+    if (count) count.textContent = __('Showing {a} of {b} watches', { a: shown, b: cards.length });
     if (badge) badge.textContent = total ? String(total) : '';
     if (empty) empty.hidden = shown !== 0;
   }

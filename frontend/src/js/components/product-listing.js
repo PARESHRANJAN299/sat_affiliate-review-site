@@ -31,8 +31,8 @@
   function buildDialog() {
     dialog = document.createElement('dialog');
     dialog.className = 'pl-dialog';
-    dialog.setAttribute('aria-label', 'Product details');
-    dialog.innerHTML = '<div class="pl-dialog-bar"><button type="button" class="pl-dialog-close">Close</button></div><div class="pl-dialog-body"></div>';
+    dialog.setAttribute('aria-label', __('Product details'));
+    dialog.innerHTML = '<div class="pl-dialog-bar"><button type="button" class="pl-dialog-close">' + __('Close') + '</button></div><div class="pl-dialog-body"></div>';
     document.body.appendChild(dialog);
     dialogBody = dialog.querySelector('.pl-dialog-body');
     dialog.querySelector('.pl-dialog-close').addEventListener('click', function () { dialog.close(); });
@@ -83,7 +83,7 @@
       types.forEach(function (b) { b.hidden = words(b.getAttribute('data-types')).indexOf(code) === -1; });
       if (heading) {
         var label = tabs.filter(function (t) { return t.getAttribute('data-seg') === code; })[0];
-        heading.textContent = (label ? label.textContent + ': p' : 'P') + 'roducts are being researched';
+        heading.textContent = label ? __('{label}: products are being researched', { label: label.textContent }) : __('Products are being researched');
       }
     }
     bindTabKeys(tabs, select);
@@ -217,29 +217,29 @@
       var total = vis.length;
       var shownNow = Math.min(state.shown, total);
       var picked0 = totalSelected();
-      countEl.textContent = !total ? (picked0 ? 'No products match these filters' : 'No products yet') : (total > shownNow ? 'Showing ' + shownNow + ' of ' + total + ' products' : total + (total === 1 ? ' product' : ' products'));
-      if (showN) showN.textContent = total ? 'Show ' + total + (total === 1 ? ' product' : ' products') : 'Close';
+      countEl.textContent = !total ? (picked0 ? __('No products match these filters') : __('No products yet')) : (total > shownNow ? __('Showing {a} of {b} products', { a: shownNow, b: total }) : (total === 1 ? __('1 product') : __('{n} products', { n: total })));
+      if (showN) showN.textContent = total ? (total === 1 ? __('Show 1 product') : __('Show {n} products', { n: total })) : __('Close');
       var picked = totalSelected();
       if (badgeEl) badgeEl.textContent = picked ? '(' + picked + ')' : '';
       moreBtn.hidden = total <= state.shown;
-      if (!moreBtn.hidden) moreBtn.textContent = 'Show ' + Math.min(limit, total - state.shown) + ' more';
+      if (!moreBtn.hidden) moreBtn.textContent = __('Show {n} more', { n: Math.min(limit, total - state.shown) });
       if (emptyEl) {
         emptyEl.hidden = total !== 0;
         if (total === 0) {
           emptyEl.innerHTML = picked
-            ? 'No products match these filters. <button type="button" class="linklike" data-clear>Clear filters</button>'
-            : (segMode && state.seg ? 'No ' + esc(segLabel()) + ' products yet. We add a product only after we have read the shop listing.' : 'No products yet.');
+            ? esc(__('No products match these filters.')) + ' <button type="button" class="linklike" data-clear>' + esc(__('Clear filters')) + '</button>'
+            : (segMode && state.seg ? esc(__('No {label} products yet. We add a product only after we have read the shop listing.', { label: segLabel() })) : esc(__('No products yet.')));
         }
       }
       // removable chips for what is ticked
       var html = '';
       Object.keys(state.sel).forEach(function (key) {
         state.sel[key].forEach(function (v) {
-          html += '<button type="button" class="pl-chip" data-unset="' + esc(key) + '" data-val="' + esc(v) + '" aria-label="Remove filter ' + esc(labels[key + ':' + v] || v) + '">' +
+          html += '<button type="button" class="pl-chip" data-unset="' + esc(key) + '" data-val="' + esc(v) + '" aria-label="' + esc(__('Remove filter {name}', { name: labels[key + ':' + v] || v })) + '">' +
             esc(labels[key + ':' + v] || v) + '<span aria-hidden="true">×</span></button>';
         });
       });
-      if (html) html += '<button type="button" class="pl-chip pl-chip-clear" data-clear>Clear all</button>';
+      if (html) html += '<button type="button" class="pl-chip pl-chip-clear" data-clear>' + esc(__('Clear all')) + '</button>';
       chipsBox.innerHTML = html;
       chipsBox.hidden = !html;
       writeUrl();
@@ -313,7 +313,7 @@
       if (!wide.matches) {
         panel.setAttribute('role', 'dialog');
         panel.setAttribute('aria-modal', 'true');
-        panel.setAttribute('aria-label', 'Filters');
+        panel.setAttribute('aria-label', __('Filters'));
       }
       if (openBtn) openBtn.setAttribute('aria-expanded', 'true');
       var close = panel.querySelector('.pl-panel-close');

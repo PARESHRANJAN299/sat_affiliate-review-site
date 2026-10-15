@@ -17,6 +17,6 @@
       if (match) shown += 1;
     });
     if (empty) empty.hidden = shown !== 0;
-    if (live) live.textContent = q ? shown + (shown === 1 ? ' guide shown' : ' guides shown') : '';
+    if (live) live.textContent = q ? shown + (shown === 1 ? __(' guide shown') : __(' guides shown')) : '';
   });
 })();

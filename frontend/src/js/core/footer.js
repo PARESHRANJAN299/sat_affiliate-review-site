@@ -31,14 +31,14 @@
     copy.disabled = true;
     clearTimeout(resetTimer);
     navigator.clipboard.writeText(email.textContent.trim()).then(function () {
-      label.textContent = 'Copied';
-      status.textContent = 'Email address copied.';
+      label.textContent = __('Copied');
+      status.textContent = __('Email address copied.');
     }).catch(function () {
-      label.textContent = 'Copy email';
-      status.textContent = 'Please select and copy the email address above.';
+      label.textContent = __('Copy email');
+      status.textContent = __('Please select and copy the email address above.');
     }).finally(function () {
       copy.disabled = false;
-      resetTimer = setTimeout(function () { label.textContent = 'Copy email'; status.textContent = ''; }, 4000);
+      resetTimer = setTimeout(function () { label.textContent = __('Copy email'); status.textContent = ''; }, 4000);
     });
   });
 })();

@@ -26,11 +26,21 @@ ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT))
 import watches  # noqa: E402
 import listing  # noqa: E402
+import i18n  # noqa: E402
 SRC = ROOT / "src"
 DIST = ROOT / "dist"
 
 CONFIG = json.loads((SRC / "site.config.json").read_text(encoding="utf-8"))
 CATEGORIES = json.loads((SRC / "categories.json").read_text(encoding="utf-8"))["categories"]
+LANGS = [l for l in (CONFIG.get("languages") or [{"code": "en", "label": "English", "native": "English", "path": "",
+                                                    "locale": CONFIG.get("locale", "en_IN"), "indexable": True}])
+         if l.get("enabled", True) or "--all-languages" in sys.argv]
+LANG_BY = {l["code"]: l for l in LANGS}
+CATALOGUES = {}        # language code -> i18n.Catalogue
+I18N_MISSING = {}      # language code -> {English sentence: kind}
+I18N_INVALID = {}      # language code -> [(sentence, reason)]
+EXTRACT = {}           # English sentence -> kind (filled by --i18n-extract)
+EXTRACT_PAGES = []     # English pages kept for --i18n-extract
 CONFIG["categories"] = [{"label": c["name"], "url": c["url"], "slug": c["slug"]} for c in CATEGORIES]
 
 # Included in every page's CSS/JS bundle, in this order.
@@ -469,12 +479,15 @@ def product_buttons(p):
     return " ".join(out), note
 
 
+NOTR = ' translate="no"'
+
+
 def product_review_html(p):
     """The reusable review template. Every field is optional except name; missing fields are skipped."""
     def lst(items):
-        return "<ul>" + "".join(f"<li>{esc(i)}</li>" for i in items) + "</ul>" if items else ""
-    def row(label, value):
-        return f'<div><dt>{esc(label)}</dt><dd>{value}</dd></div>' if value else ""
+        return '<ul translate="no">' + "".join(f"<li>{esc(i)}</li>" for i in items) + "</ul>" if items else ""
+    def row(label, value, own=True):
+        return f'<div><dt>{esc(label)}</dt><dd{NOTR if own else ""}>{value}</dd></div>' if value else ""
     facts = "".join([
         row("Product type", esc(p.get("product_type", ""))),
         row("Category", esc(p.get("category", ""))),
@@ -486,7 +499,7 @@ def product_review_html(p):
         row("Size or capacity", esc(p.get("size", ""))),
         row("Best for", esc(p.get("best_for", ""))),
         row("Skin, hair or use case", esc(p.get("suits", ""))),
-        row("Price band", esc(p.get("price_band", ""))),
+        row("Price band", esc(p.get("price_band", "")), own=False),
         row("Value for money", esc(p.get("value_for_money", ""))),
         row("Best use case", esc(p.get("best_use_case", ""))),
         row("Who should buy it", esc(p.get("who_should_buy", ""))),
@@ -496,9 +509,9 @@ def product_review_html(p):
     buttons, note = product_buttons(p)
     sample = '<span class="sample-flag">Sample</span> ' if p.get("sample") else ""
     parts = [f'<article class="beauty-review" id="r-{esc(p["id"])}">',
-             f'  <h3>{sample}{esc(p["name"])}</h3>']
+             f'  <h3 translate="no">{sample}{esc(p["name"])}</h3>']
     if p.get("brand"):
-        parts.append(f'  <p class="review-brand">{esc(p["brand"])}</p>')
+        parts.append(f'  <p class="review-brand" translate="no">{esc(p["brand"])}</p>')
     parts.append(f'  <dl class="review-facts">{facts}</dl>')
     if p.get("features"):
         parts.append(f'  <h4>Main features</h4>{lst(p["features"])}')
@@ -507,11 +520,11 @@ def product_review_html(p):
     parts.append('  <div class="pros-cons"><div class="pros"><h4>Pros</h4>' + lst(p.get("pros", [])) +
                  '</div><div class="cons"><h4>Cons</h4>' + lst(p.get("cons", [])) + '</div></div>')
     if p.get("how_to_choose"):
-        parts.append(f'  <h4>How to choose</h4><p>{esc(p["how_to_choose"])}</p>')
+        parts.append(f'  <h4>How to choose</h4><p translate="no">{esc(p["how_to_choose"])}</p>')
     if p.get("alternatives"):
         parts.append(f'  <h4>Alternatives</h4>{lst(p["alternatives"])}')
     if p.get("final_recommendation"):
-        parts.append(f'  <p class="verdict"><strong>Final recommendation:</strong> {esc(p["final_recommendation"])}</p>')
+        parts.append(f'  <p class="verdict"><strong>Final recommendation:</strong> <span translate="no">{esc(p["final_recommendation"])}</span></p>')
     parts.append(f'  <div class="cta-row">{buttons}</div>{note}')
     parts.append(f'  <p class="cta-note">{esc(PRICE_NOTE)}</p>')
     if p.get("sources") and not p.get("sample"):
@@ -998,7 +1011,7 @@ def bundle(kind, names, key):
 
 _MENU_ARTICLES = []
 SHOP = [None]
-SEARCH_URL = [""]
+SEARCH_URL = {}
 SEARCH_ASSETS = {"js": "", "css": ""}
 
 
@@ -1357,15 +1370,116 @@ def load_pages():
     return pages
 
 
-def output_path(meta):
+def output_path(meta, lang="en"):
+    prefix = LANG_BY[lang]["path"].strip("/")
     if meta.get("output"):
         return DIST / meta["output"]
-    return DIST / meta["url"].strip("/") / "index.html"
+    return DIST / prefix / meta["url"].strip("/") / "index.html"
 
 
-def build_page(meta, base, header_t, footer_t, year, articles):
+CUR = ' aria-current="true"'
+
+
+def lang_url(lang, url):
+    return LANG_BY[lang]["path"] + url
+
+
+def lang_indexable(lang):
+    return bool(LANG_BY[lang].get("indexable"))
+
+
+def catalogue(lang):
+    if lang not in CATALOGUES:
+        CATALOGUES[lang] = i18n.Catalogue(SRC / "i18n" / f"{lang}.json", lang)
+    return CATALOGUES[lang]
+
+
+def tr_text(lang, text, kind="index"):
+    """Translate one plain string (search index, menu data). Falls back to English and records what is missing."""
+    if lang == "en" or not text:
+        return text
+    key = i18n.norm(text)
+    value = catalogue(lang).get(key)
+    if value is None or not value.strip():
+        I18N_MISSING.setdefault(lang, {}).setdefault(key, kind)
+        return text
+    return value
+
+
+def hreflang_tags(meta, lang):
+    """Links between a page and its translations. Only languages that are open to Google are listed."""
+    if meta.get("noindex") or not lang_indexable(lang):
+        return ""
     site_url = CONFIG["site_url"].rstrip("/")
-    canonical = site_url + meta["url"]
+    open_langs = [l["code"] for l in LANGS if l.get("indexable")]
+    if len(open_langs) < 2:
+        return ""
+    tags = [f'<link rel="alternate" hreflang="{l.get("hreflang", l["code"] + "-IN")}" href="{site_url}{lang_url(l["code"], meta["url"])}">\n'
+            for l in LANGS if l["code"] in open_langs]
+    tags.append(f'<link rel="alternate" hreflang="x-default" href="{site_url}{meta["url"]}">\n')
+    return "".join(tags)
+
+
+def lang_menu_html(meta, lang):
+    """Desktop language menu in the header (phones use the logo menu and the footer)."""
+    if len(LANGS) < 2:
+        return ""
+    items = "".join(
+        f'<li><a href="{esc(lang_url(l["code"], "/" if meta.get("output") else meta["url"]))}" hreflang="{l["code"]}" lang="{l["code"]}" translate="no"'
+        f'{CUR if l["code"] == lang else ""}>{esc(l["native"])}</a></li>' for l in LANGS)
+    short = {"en": "EN", "hi": "\u0939\u093f", "ta": "\u0ba4"}.get(lang, lang.upper())
+    return ('    <details class="lang-menu" data-lang-menu><summary aria-label="Language">'
+            '<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.2 3 14.8 0 18M12 3c-3 3.2-3 14.8 0 18"/></svg>'
+            f'<span translate="no">{esc(short)}</span></summary><ul class="lang-list">{items}</ul></details>\n')
+
+
+def lang_mobile_items(meta, lang):
+    if len(LANGS) < 2:
+        return ""
+    return "\n".join(
+        f'        <li class="lang-row"><a href="{esc(lang_url(l["code"], "/" if meta.get("output") else meta["url"]))}" hreflang="{l["code"]}" lang="{l["code"]}" translate="no"'
+        f'{CUR if l["code"] == lang else ""}>{esc(l["native"])}</a></li>' for l in LANGS)
+
+
+def footer_lang_html(meta, lang):
+    if len(LANGS) < 2:
+        return ""
+    links = " ".join(
+        f'<a href="{esc(lang_url(l["code"], "/" if meta.get("output") else meta["url"]))}" hreflang="{l["code"]}" lang="{l["code"]}" translate="no"'
+        f'{CUR if l["code"] == lang else ""}>{esc(l["native"])}</a>' for l in LANGS)
+    return f'<p class="footer-lang"><span>Language</span> {links}</p>'
+
+
+def i18n_script(lang):
+    if lang == "en":
+        return ""
+    path = SRC / "i18n" / f"{lang}.js.json"
+    data = json.loads(read(path)) if path.exists() else {}
+    units = data.get("units", data)
+    if not units:
+        return ""
+    blob = json.dumps(units, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
+    return f"<script>window.SATI18N={blob};</script>\n"
+
+
+def translate_page(page, lang, url, known_urls):
+    """Turn a finished English page into its Hindi or Tamil version."""
+    tr = i18n.Translator(catalogue(lang))
+    out = tr.translate(page)
+    for key, kind in tr.missing.items():
+        I18N_MISSING.setdefault(lang, {}).setdefault(key, kind)
+    for item in tr.invalid:
+        if item not in I18N_INVALID.setdefault(lang, []):
+            I18N_INVALID[lang].append(item)
+    return i18n.localize_links(out, LANG_BY[lang]["path"], known_urls)
+
+
+def build_page(meta, base, header_t, footer_t, year, articles, lang="en", known_urls=frozenset()):
+    if meta.get("output") and lang != "en":
+        return
+    site_url = CONFIG["site_url"].rstrip("/")
+    noindex = bool(meta.get("noindex")) or not lang_indexable(lang)
+    canonical = site_url + lang_url(lang, meta["url"])
     title = f'{meta["title"]} — {CONFIG["site_name"]}' if not meta.get("title_full") else meta["title"]
     if len(title) > TITLE_MAX:
         warnings.append(f'{meta["_slug"]}: title is {len(title)} chars (aim for <= {TITLE_MAX})')
@@ -1392,7 +1506,7 @@ def build_page(meta, base, header_t, footer_t, year, articles):
                            if CONFIG.get("affiliate_active") else
                            "SAT does not currently earn commissions from product links. If this changes, affiliate relationships will be clearly disclosed."),
         "year": year, "updated_human": human_date(meta["updated"]),
-        "search_index_url": SEARCH_URL[0],
+        "search_index_url": SEARCH_URL.get(lang, ""),
         "search_js_url": SEARCH_ASSETS["js"], "search_css_url": SEARCH_ASSETS["css"],
     }
     article_ctx = {
@@ -1433,42 +1547,55 @@ def build_page(meta, base, header_t, footer_t, year, articles):
         "nav_items": link_list(CONFIG["nav"], meta["url"], mobile_split=True),
         "mobile_nav_items": link_list(
             [item for item in CONFIG["nav"] if item["url"] != "/" and item.get("menu") != "categories"],
-            meta["url"]),
+            meta["url"]) + "\n" + lang_mobile_items(meta, lang),
+        "lang_menu": lang_menu_html(meta, lang),
     })
     footer = render(footer_t, {**base_ctx,
                                "footer_site_items": link_list(CONFIG["footer_site"], meta["url"]),
                                "footer_category_items": link_list([{"label": c["name"], "url": c["url"]} for c in CATEGORIES], meta["url"]),
-                               "footer_legal_items": link_list(CONFIG["footer_legal"], meta["url"])})
+                               "footer_legal_items": link_list(CONFIG["footer_legal"], meta["url"]),
+                               "footer_lang": footer_lang_html(meta, lang)})
     page = render(base, {
         **base_ctx,
-        "language": CONFIG["language"], "locale": CONFIG["locale"],
+        "language": lang, "locale": LANG_BY[lang].get("locale", CONFIG["locale"]),
+        "hreflang_tags": hreflang_tags(meta, lang), "i18n_script": i18n_script(lang),
         "title": esc(title), "description": esc(meta["description"]),
         "canonical": canonical,
-        "canonical_tag": "" if meta.get("noindex") else f'<link rel="canonical" href="{canonical}">\n',
-        "og_url_tag": "" if meta.get("noindex") else f'<meta property="og:url" content="{canonical}">\n',
+        "canonical_tag": "" if noindex else f'<link rel="canonical" href="{canonical}">\n',
+        "og_url_tag": "" if noindex else f'<meta property="og:url" content="{canonical}">\n',
         "verification_tag": (f'<meta name="google-site-verification" content="{esc(CONFIG["google_site_verification"])}">\n'
                              if CONFIG.get("google_site_verification") else ""),
-        "robots_tag": '<meta name="robots" content="noindex, follow">\n' if meta.get("noindex") else "",
+        "robots_tag": '<meta name="robots" content="noindex, follow">\n' if noindex else "",
         "og_type": meta.get("og_type", "website"),
         "css_href": css_href, "js_src": js_src,
         "body_class": ("theme-" + meta["theme"]) if meta.get("theme") else "",
         "jsonld": json_ld(structured_data(meta, canonical, title)),
         "header": header, "content": content, "footer": footer,
     })
-    out = output_path(meta)
+    if lang == "en":
+        EXTRACT_PAGES.append(page) if "--i18n-extract" in sys.argv else None
+    else:
+        page = translate_page(page, lang, meta["url"], known_urls)
+    out = output_path(meta, lang)
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(page, encoding="utf-8")
 
 
 def write_sitemap(pages):
     site_url = CONFIG["site_url"].rstrip("/")
+    open_langs = [l for l in LANGS if l.get("indexable")]
     entries = []
     for meta in pages:
-        if meta.get("noindex"):
+        if meta.get("noindex") or meta.get("output"):
             continue
-        entries.append(f'  <url>\n    <loc>{site_url}{meta["url"]}</loc>\n    <lastmod>{meta["updated"]}</lastmod>\n  </url>')
+        for l in open_langs:
+            alts = ""
+            if len(open_langs) > 1:
+                alts = "".join(f'\n    <xhtml:link rel="alternate" hreflang="{o.get("hreflang", o["code"] + "-IN")}" href="{site_url}{lang_url(o["code"], meta["url"])}"/>' for o in open_langs)
+                alts += f'\n    <xhtml:link rel="alternate" hreflang="x-default" href="{site_url}{meta["url"]}"/>'
+            entries.append(f'  <url>\n    <loc>{site_url}{lang_url(l["code"], meta["url"])}</loc>\n    <lastmod>{meta["updated"]}</lastmod>{alts}\n  </url>')
     xml = ('<?xml version="1.0" encoding="UTF-8"?>\n'
-           '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+           '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n'
            + "\n".join(entries) + "\n</urlset>\n")
     (DIST / "sitemap.xml").write_text(xml, encoding="utf-8")
 
@@ -1587,14 +1714,52 @@ def search_entries(pages):
     return out
 
 
+def index_payload(pages, lang):
+    entries = search_entries(pages)
+    groups = search_keyword_groups()
+    examples = SEARCH_KEYWORDS["popular"][:4]
+    if lang == "en":
+        return {"v": 1, "ex": examples, "kw": groups, "e": entries}
+    out = []
+    for e in entries:
+        t = dict(e)
+        t["t"] = tr_text(lang, e["t"])
+        if e.get("d"):
+            t["d"] = tr_text(lang, e["d"])
+        if e.get("c"):
+            t["c"] = tr_text(lang, e["c"])
+        t["x"] = (e.get("x", "") + " " + e["t"]).strip()      # English words still find the page
+        t["u"] = lang_url(lang, e["u"])
+        out.append(t)
+    kw = [{**g, "label": tr_text(lang, g["label"]), "q": [tr_text(lang, q) for q in g["q"]],
+           **({"name": tr_text(lang, g["name"])} if g.get("name") else {}),
+           **({"url": lang_url(lang, g["url"])} if g.get("url") else {})} for g in groups]
+    return {"v": 1, "ex": [tr_text(lang, q) for q in examples], "kw": kw, "e": out}
+
+
 def write_search_index(pages):
-    payload = {"v": 1, "ex": SEARCH_KEYWORDS["popular"][:4], "kw": search_keyword_groups(), "e": search_entries(pages)}
-    text = json.dumps(payload, ensure_ascii=False, separators=(",", ":"))
-    digest = hashlib.sha1(text.encode("utf-8")).hexdigest()[:8]
-    name = f"search-index.{digest}.json"
-    (DIST / name).write_text(text, encoding="utf-8")
-    SEARCH_URL[0] = "/" + name
-    return len(payload["e"])
+    total = 0
+    for l in LANGS:
+        lang = l["code"]
+        payload = index_payload(pages, lang)
+        if "--i18n-extract" in sys.argv and lang == "en":
+            for e in payload["e"]:
+                for k in ("t", "d", "c"):
+                    if e.get(k):
+                        EXTRACT.setdefault(i18n.norm(e[k]), "index")
+            for g in payload["kw"]:
+                EXTRACT.setdefault(i18n.norm(g["label"]), "index")
+                if g.get("name"):
+                    EXTRACT.setdefault(i18n.norm(g["name"]), "index")
+                for q in g["q"]:
+                    EXTRACT.setdefault(i18n.norm(q), "index")
+        text = json.dumps(payload, ensure_ascii=False, separators=(",", ":"))
+        digest = hashlib.sha1(text.encode("utf-8")).hexdigest()[:8]
+        name = f"search-index.{digest}.json" if lang == "en" else f"search-index.{lang}.{digest}.json"
+        (DIST / name).write_text(text, encoding="utf-8")
+        SEARCH_URL[lang] = "/" + name
+        total += len(payload["e"])
+    return total
 
 
 def write_robots():
@@ -1670,8 +1835,11 @@ def build():
     write_search_index(pages)
     SEARCH_ASSETS["js"] = bundle("js", ["components/search"], "search")
     SEARCH_ASSETS["css"] = bundle("css", ["components/search-panel"], "search")
-    for meta in pages:
-        build_page(meta, base, header_t, footer_t, year, articles)
+    known_urls = frozenset(p["url"] for p in pages if not p.get("output"))
+    for lang in (["en"] if "--i18n-extract" in sys.argv else [l["code"] for l in LANGS]):
+        for meta in pages:
+            build_page(meta, base, header_t, footer_t, year, articles, lang, known_urls)
+    report_i18n()
     static = SRC / "static"
     if static.exists():
         shutil.copytree(static, DIST, dirs_exist_ok=True)
@@ -1698,6 +1866,61 @@ def build():
     print(f"built {len(pages)} pages into {DIST.relative_to(ROOT)}/ "
           f"({len(warnings)} warnings, {len(errors)} errors)")
     return not errors
+
+
+def report_i18n():
+    """Say how complete each translation is. A language that is open to Google must be complete."""
+    for l in LANGS:
+        lang = l["code"]
+        if lang == "en":
+            continue
+        missing = I18N_MISSING.get(lang, {})
+        invalid = I18N_INVALID.get(lang, [])
+        if l.get("indexable"):
+            for key in list(missing)[:20]:
+                errors.append(f"{lang}: not translated: {key[:100]}")
+            for key, why in invalid[:20]:
+                errors.append(f"{lang}: bad translation ({why}): {key[:100]}")
+        else:
+            if missing:
+                warnings.append(f"{lang}: {len(missing)} sentences are not translated yet (the page shows them in English)")
+            if invalid:
+                warnings.append(f"{lang}: {len(invalid)} translations have broken markers and were skipped")
+
+
+def write_i18n_source():
+    for page in EXTRACT_PAGES:
+        t = i18n.Translator(None)
+        t.translate(page)
+        for k, v in t.found.items():
+            EXTRACT.setdefault(k, v)
+    out = SRC / "i18n"
+    out.mkdir(exist_ok=True)
+    units = dict(EXTRACT)
+    (out / "source.json").write_text(json.dumps({"_note": "Every English sentence on the site, in page order. Generated by python3 build.py --i18n-extract.", "units": units},
+                                                ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
+    print(f"wrote {len(units)} sentences to src/i18n/source.json")
+    js = js_strings()
+    (out / "js-source.json").write_text(json.dumps({"_note": "Every English text used by the scripts: __('...') calls. Generated by python3 build.py --i18n-extract.", "units": js},
+                                                   ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
+    print(f"wrote {len(js)} script strings to src/i18n/js-source.json")
+
+
+JS_STR = re.compile(r"__\(\s*'((?:[^'\\\n]|\\.)*)'")
+SEARCH_KINDS = ["Product", "Watch list", "Product type", "Guide", "Brand", "Style", "Category", "FAQ", "Page"]
+
+
+def js_strings():
+    """English texts that the scripts show, found by their __('...') calls."""
+    found = {}
+    for path in sorted((SRC / "js").rglob("*.js")):
+        for m in JS_STR.finditer(read(path)):
+            raw = m.group(1)
+            text = re.sub(r"\\u([0-9a-fA-F]{4})", lambda x: chr(int(x.group(1), 16)), raw).replace("\\'", "'").replace("\\\\", "\\")
+            found.setdefault(text, path.relative_to(SRC / "js").as_posix())
+    for k in SEARCH_KINDS:
+        found.setdefault(k, "components/search.js (result kind)")
+    return found
 
 
 def serve():
@@ -1768,6 +1991,8 @@ if __name__ == "__main__":
     if "--check" in sys.argv:
         sys.exit(0 if check_products() else 1)
     ok = build()
+    if "--i18n-extract" in sys.argv:
+        write_i18n_source()
     if not ok:
         sys.exit(1)
     if "--serve" in sys.argv:

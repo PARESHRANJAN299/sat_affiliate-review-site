@@ -26,8 +26,8 @@
     copyMail.hidden = false;
     copyMail.addEventListener('click', function () {
       copyText(to).then(function () {
-        flash(copyMail, 'Copied ✓', 'Copy email');
-        if (note) note.textContent = 'Email address copied';
+        flash(copyMail, __('Copied') + ' ✓', __('Copy email'));
+        if (note) note.textContent = __('Email address copied');
       });
     });
   }
@@ -57,10 +57,10 @@
 
   // ---------- live checks ----------
   var MESSAGES = {
-    name: 'Please enter your name.',
-    email: 'Please enter a valid email address.',
-    subject: 'Please add a subject.',
-    message: 'Please write your message.'
+    name: __('Please enter your name.'),
+    email: __('Please enter a valid email address.'),
+    subject: __('Please add a subject.'),
+    message: __('Please write your message.')
   };
   function valid(el) {
     var v = el.value.trim();
@@ -126,12 +126,12 @@
     composed = compose();
     var href = 'mailto:' + to + '?subject=' + encodeURIComponent(f.subject.value.trim()) + '&body=' + encodeURIComponent(body);
     submit.classList.add('is-busy');
-    submit.querySelector('.cf-submit-label').textContent = 'Opening your email app…';
+    submit.querySelector('.cf-submit-label').textContent = __('Opening your email app…');
     window.location.href = href;
     window.setTimeout(function () {
       submit.classList.remove('is-busy');
-      submit.querySelector('.cf-submit-label').textContent = 'Open email to send';
-      resultText.textContent = 'Your email app should open now. If it does not, write to ' + to + '.';
+      submit.querySelector('.cf-submit-label').textContent = __('Open email to send');
+      resultText.textContent = __('Your email app should open now. If it does not, write to {to}.', { to: to });
       result.hidden = false;
       if (!reduce && result.scrollIntoView) result.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
     }, 1200);
@@ -140,8 +140,8 @@
   copyMsg.hidden = !canCopy;
   copyMail2.hidden = !canCopy;
   if (canCopy) {
-    copyMsg.addEventListener('click', function () { copyText(composed || compose()).then(function () { flash(copyMsg, 'Copied ✓', 'Copy message'); }); });
-    copyMail2.addEventListener('click', function () { copyText(to).then(function () { flash(copyMail2, 'Copied ✓', 'Copy email'); }); });
+    copyMsg.addEventListener('click', function () { copyText(composed || compose()).then(function () { flash(copyMsg, __('Copied') + ' ✓', __('Copy message')); }); });
+    copyMail2.addEventListener('click', function () { copyText(to).then(function () { flash(copyMail2, __('Copied') + ' ✓', __('Copy email')); }); });
   }
 
   // ---------- entrance ----------

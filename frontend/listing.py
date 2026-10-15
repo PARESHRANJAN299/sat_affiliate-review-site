@@ -318,7 +318,7 @@ class Kit:
             attrs[f"data-f-{key}"] = " ".join(values)
         attr_html = " ".join(f'{k}="{esc(v)}"' for k, v in attrs.items())
         pros = "".join(f"<li>{esc(x)}</li>" for x in (p.get("pros") or [])[:2])
-        best = f'<p class="pl-best">{esc(p["best_for"])}</p>' if p.get("best_for") else ""
+        best = f'<p class="pl-best" translate="no">{esc(p["best_for"])}</p>' if p.get("best_for") else ""
         badge = ""
         if p.get("sample"):
             badge = '<span class="pl-badge pl-badge-sample">Sample</span>'
@@ -328,7 +328,7 @@ class Kit:
         if p.get("checked"):
             try:
                 d = datetime.date.fromisoformat(p["checked"])
-                checked = f'<span class="pl-checked">Checked {d.day} {d.strftime("%b %Y")}</span>'
+                checked = f'<span class="pl-checked"><span>Checked</span> <span translate="no">{d.day} {d.strftime("%b %Y")}</span></span>'
             except ValueError:
                 pass
         type_name = fam_names.get(p["family"], "")
@@ -341,10 +341,10 @@ class Kit:
             f'<li class="pl-item"><article class="pl-card" {attr_html}>\n'
             f'  <a class="pl-media" href="#r-{esc(p["id"])}" data-details tabindex="-1" aria-hidden="true">{self._media(cat, p)}{badge}</a>\n'
             '  <div class="pl-body">\n'
-            f'    <p class="pl-brand">{aud_label}{esc(p["brand"])}{(" · " + esc(type_name)) if type_name else ""}</p>\n'
-            f'    <h3 class="pl-name"><a href="#r-{esc(p["id"])}" data-details>{esc(p["name"])}</a></h3>\n'
+            f'    <p class="pl-brand">{aud_label}<span translate="no">{esc(p["brand"])}</span>{(" · " + esc(type_name)) if type_name else ""}</p>\n'
+            f'    <h3 class="pl-name" translate="no"><a href="#r-{esc(p["id"])}" data-details>{esc(p["name"])}</a></h3>\n'
             f'    {best}\n'
-            f'    <ul class="pl-pros">{pros}</ul>\n'
+            f'    <ul class="pl-pros" translate="no">{pros}</ul>\n'
             f'    <p class="pl-band"><span class="pl-band-v">{esc(p["price_band"])}</span>{checked}</p>\n'
             f'    <div class="pl-actions">{self._buttons(p)}'
             f'<a class="btn btn-outline btn-small pl-more-info" href="#r-{esc(p["id"])}" data-details>Details</a></div>\n'

@@ -61,5 +61,33 @@
     }
   ],
   "affiliate_active": false,
-  "amazon_associate_approved": false
+  "amazon_associate_approved": false,
+  "languages": [
+    {
+      "code": "en",
+      "label": "English",
+      "native": "English",
+      "path": "",
+      "locale": "en_IN",
+      "indexable": true
+    },
+    {
+      "code": "hi",
+      "label": "Hindi",
+      "native": "हिन्दी",
+      "path": "/hi",
+      "locale": "hi_IN",
+      "indexable": false,
+      "enabled": false
+    },
+    {
+      "code": "ta",
+      "label": "Tamil",
+      "native": "தமிழ்",
+      "path": "/ta",
+      "locale": "ta_IN",
+      "indexable": false,
+      "enabled": false
+    }
+  ]
 }
