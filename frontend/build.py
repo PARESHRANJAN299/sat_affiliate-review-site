@@ -337,7 +337,7 @@ def family_pages():
             '<section class="section">\n  <div class="container content-page family-page">\n'
             '    {{breadcrumb}}\n'
             f'    <h1>{esc(cat["name"])}</h1>\n'
-            f'    <p class="lead">{esc(cat["description"])} Choose a product type to see how we are researching it.</p>\n'
+            f'    <p class="lead">{esc(cat.get("tagline") or cat["description"])}</p>\n'
             + "\n".join(blocks) +
             '\n  </div>\n</section>')
         pages.append({
