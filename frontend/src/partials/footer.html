@@ -2,30 +2,39 @@
   <div class="container">
     <div class="footer-grid">
       <div class="footer-brand-col">
-        <p class="footer-brand">{{site_name}}</p>
+        <a class="footer-brand" href="/" aria-label="{{site_name}} home">{{site_name}}<span aria-hidden="true">.</span></a>
         <p class="footer-about">Independent buying guides and product recommendations for shoppers in India. SAT does not sell products or take payments.</p>
       </div>
-      <nav aria-label="Categories">
-        <p class="footer-title">Categories</p>
+      <details class="footer-group" open>
+        <summary><span class="footer-title">Categories</span><svg class="footer-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+        <nav aria-label="Footer categories">
         <ul>
 {{footer_category_items}}
         </ul>
-      </nav>
-      <nav aria-label="Site">
-        <p class="footer-title">Site</p>
+        </nav>
+      </details>
+      <details class="footer-group" open>
+        <summary><span class="footer-title">Explore SAT</span><svg class="footer-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+        <nav aria-label="Footer site links">
         <ul>
 {{footer_site_items}}
         </ul>
-      </nav>
-      <nav aria-label="Legal">
-        <p class="footer-title">Legal</p>
+        </nav>
+      </details>
+      <details class="footer-group" open>
+        <summary><span class="footer-title">Legal</span><svg class="footer-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+        <nav aria-label="Footer legal links">
         <ul class="footer-legal">
 {{footer_legal_items}}
         </ul>
-      </nav>
-      <div>
+        </nav>
+      </details>
+      <div class="footer-contact-col">
         <p class="footer-title">Contact</p>
-        <p class="footer-contact"><a href="mailto:{{contact_email}}">{{contact_email}}</a></p>
+        <p class="footer-contact-note">Questions or suggestions? We’d like to hear from you.</p>
+        <p class="footer-contact"><a href="mailto:{{contact_email}}" data-footer-email>{{contact_email}}</a></p>
+        <button class="footer-copy" type="button" data-footer-copy hidden><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V4H4v12h4"/></svg><span>Copy email</span></button>
+        <p class="footer-copy-status" role="status" aria-live="polite" data-footer-copy-status></p>
       </div>
     </div>
     <div class="footer-bottom">

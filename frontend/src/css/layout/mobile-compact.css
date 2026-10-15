@@ -41,12 +41,4 @@
   .directory-body { padding: 12px; }
   .directory-body h3 { min-height: 0; font-size: 1.02rem; margin-bottom: 4px; }
 
-  /* footer: two columns instead of one long list */
-  footer.site-footer { padding: 28px 0 20px; margin-top: 32px; }
-  .footer-grid, .footer-grid:is(*) { grid-template-columns: 1fr 1fr; gap: 18px 16px; margin-bottom: 16px; }
-  .footer-brand-col { grid-column: 1 / -1; }
-  .footer-contact a { overflow-wrap: anywhere; }
-  .footer-brand { font-size: 1.2rem; margin-bottom: 8px; }
-  .footer-title { margin-bottom: 4px; }
-  .footer-grid a { padding: 5px 0; }
 }
