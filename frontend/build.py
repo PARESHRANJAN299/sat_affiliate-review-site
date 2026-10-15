@@ -686,6 +686,19 @@ def about_faq():
             '<div class="faq-list">' + "".join(rows) + '</div>\n</section>')
 
 
+def home_category_strip():
+    """Compact one-row category shortcuts for the home page (the full cards live on /products/)."""
+    items = []
+    for c in CATEGORIES:
+        thumb = c.get("thumb") or c.get("image")
+        pic = (f'<img src="{esc(thumb)}" alt="" width="40" height="40" loading="lazy">' if thumb
+               else category_icon(c, "home-cat-ic"))
+        items.append(f'<li><a class="home-cat" href="{esc(c["url"])}" style="--hue:{c["hue"]}">'
+                     f'<span class="home-cat-pic" aria-hidden="true">{pic}</span>'
+                     f'<span class="home-cat-name">{esc(c["name"])}</span></a></li>')
+    return '<ul class="home-cat-strip">' + "".join(items) + '</ul>'
+
+
 def about_cover_cards():
     items = []
     for c in CATEGORIES:
@@ -1150,6 +1163,7 @@ def build_page(meta, base, header_t, footer_t, year, articles):
         "category_cards": category_cards(meta["url"]),
         "about_cover_cards": about_cover_cards(),
         "about_faq": about_faq(),
+        "home_category_strip": home_category_strip(),
         "home_collage": home_collage(),
         "home_video": home_video(),
         "category_directory": category_directory(),
