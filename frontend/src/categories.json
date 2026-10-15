@@ -57,8 +57,9 @@
       "art": "clothing",
       "hue": 268,
       "status": "placeholder",
-      "image": null,
-      "families": []
+      "image": "/images/categories/clothing-accessories.jpg",
+      "families": [],
+      "thumb": "/images/categories/clothing-accessories-thumb.jpg"
     }
   ]
 }
