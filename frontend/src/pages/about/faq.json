@@ -1,0 +1,69 @@
+[
+  {
+    "id": "faq-what-is-sat",
+    "q": "What is SAT?",
+    "a": "SAT is an independent buying-guide website for shoppers in India. We research products and help users compare options based on features, pros, cons, price range and practical needs."
+  },
+  {
+    "id": "faq-does-sat-sell",
+    "q": "Does SAT sell products?",
+    "a": "No. SAT does not sell products, take orders or process payments. If you choose to buy something, the purchase happens on the retailer or brand website."
+  },
+  {
+    "id": "faq-does-sat-test",
+    "q": "Does SAT test every product?",
+    "a": "No. We do not claim that a product has been personally tested unless the relevant page clearly says so. Most recommendations are based on research, specifications, publicly available product information, customer feedback and comparison with alternatives."
+  },
+  {
+    "id": "faq-how-sat-chooses",
+    "q": "How does SAT choose products?",
+    "a": "We look at factors such as usefulness, features, specifications, value for money, typical price range, customer feedback, brand reputation and competing products. Read more on the <a href=\"/how-we-pick/\">How We Pick</a> page."
+  },
+  {
+    "id": "faq-prices-current",
+    "q": "Are the prices on SAT always current?",
+    "a": "No. Product prices can change frequently. Any price range shown on SAT should be treated as a guide. Always check the retailer for the latest price and availability."
+  },
+  {
+    "id": "faq-earn-money",
+    "q": "Does SAT currently earn money from product links?",
+    "a": "Not currently. SAT does not currently earn commissions from the product links shown on the website.",
+    "a_affiliate": "Some links on SAT are affiliate links. If you buy through one, SAT may earn a commission from qualifying purchases. Affiliate links are clearly marked."
+  },
+  {
+    "id": "faq-future-affiliate",
+    "q": "Will SAT use affiliate links in the future?",
+    "a": "SAT may participate in affiliate programs in the future. If affiliate links are introduced, they will be clearly disclosed to users.",
+    "a_affiliate": "SAT uses affiliate links where they are marked. Any new affiliate relationship will be clearly disclosed to users."
+  },
+  {
+    "id": "faq-affiliate-price",
+    "q": "Will an affiliate link increase the price I pay?",
+    "a": "Normally, no. If SAT later earns a commission from a qualifying purchase, the customer typically pays the retailer’s normal purchase price. Any affiliate relationship will be clearly disclosed."
+  },
+  {
+    "id": "faq-affiliate-bias",
+    "q": "Will affiliate commissions affect SAT recommendations?",
+    "a": "Recommendations should be based on product usefulness, research and suitability for users. Affiliate relationships should not determine whether a product receives a positive recommendation."
+  },
+  {
+    "id": "faq-associated",
+    "q": "Is SAT associated with Amazon, Flipkart or any product brand?",
+    "a": "No, unless specifically stated. SAT is an independent website. Product names and trademarks belong to their respective owners."
+  },
+  {
+    "id": "faq-guarantee",
+    "q": "Can SAT guarantee that a recommended product will be right for me?",
+    "a": "No. Product needs differ from person to person. SAT provides research and buying guidance, but users should review the product details and decide what best fits their needs."
+  },
+  {
+    "id": "faq-buy-direct",
+    "q": "Can I buy a product directly from SAT?",
+    "a": "No. SAT only provides product information and buying guidance. Purchases are completed on third-party retailer or brand websites."
+  },
+  {
+    "id": "faq-report-error",
+    "q": "How can I report incorrect information?",
+    "a": "Email <a href=\"mailto:{{contact_email}}\">{{contact_email}}</a> or use the <a href=\"/contact/\">Contact page</a>. We welcome corrections if product details or other information have changed."
+  }
+]

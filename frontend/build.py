@@ -665,6 +665,27 @@ def family_pages():
     return pages
 
 
+def faq_items():
+    items = json.loads(read(SRC / "pages" / "about" / "faq.json"))
+    for it in items:
+        text = it["a_affiliate"] if CONFIG.get("affiliate_active") and it.get("a_affiliate") else it["a"]
+        it["html"] = text.replace("{{contact_email}}", esc(CONFIG["contact_email"]))
+    return items
+
+
+def about_faq():
+    rows = []
+    for n, it in enumerate(faq_items(), 1):
+        rows.append(
+            f'<details class="faq-item" id="{esc(it["id"])}">'
+            f'<summary><span class="faq-num" aria-hidden="true">{n:02d}</span>'
+            f'<span class="faq-q">{esc(it["q"])}</span><span class="faq-plus" aria-hidden="true"></span></summary>'
+            f'<div class="faq-a"><p>{it["html"]}</p></div></details>')
+    return ('<section class="about-faq" id="faq" aria-labelledby="faq-title">\n'
+            '<h2 id="faq-title">Frequently Asked Questions</h2>\n'
+            '<div class="faq-list">' + "".join(rows) + '</div>\n</section>')
+
+
 def about_cover_cards():
     items = []
     for c in CATEGORIES:
@@ -1117,7 +1138,7 @@ def build_page(meta, base, header_t, footer_t, year, articles):
         "affiliate_disclosure_body": affiliate_disclosure_body(),
         "affiliate_note": ("Some links on this site are affiliate links. We may earn a commission from qualifying purchases, at no extra cost to you. See our Affiliate Disclosure."
                            if CONFIG.get("affiliate_active") else
-                           "SAT does not currently use affiliate links or earn commissions from product recommendations. This may change in the future and will be clearly disclosed."),
+                           "SAT does not currently earn commissions from product links. If this changes, affiliate relationships will be clearly disclosed."),
         "year": year, "updated_human": human_date(meta["updated"]),
         "search_index_url": SEARCH_URL[0],
         "search_js_url": SEARCH_ASSETS["js"], "search_css_url": SEARCH_ASSETS["css"],
@@ -1128,6 +1149,7 @@ def build_page(meta, base, header_t, footer_t, year, articles):
         "category_chips": category_chips(meta["url"]),
         "category_cards": category_cards(meta["url"]),
         "about_cover_cards": about_cover_cards(),
+        "about_faq": about_faq(),
         "home_collage": home_collage(),
         "home_video": home_video(),
         "category_directory": category_directory(),
@@ -1259,6 +1281,8 @@ def search_entries(pages):
         elif url in SEARCH_PAGES:
             add(t=title, u=url, k="Page", d=desc)
 
+    for it in faq_items():
+        add(t=it["q"], u="/about/#" + it["id"], k="FAQ", c="About", d=re.sub(r"<[^>]+>", "", it["html"]), x="faq question")
     shop = SHOP[0]
     if shop is not None:
         for p in shop.products:
