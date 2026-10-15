@@ -255,15 +255,25 @@ def home_video():
 
 
 def home_collage():
-    """The category pictures as tiles for the home hero (replace the wrapper with a video later)."""
-    tiles = []
-    for c in CATEGORIES:
-        if c.get("image"):
-            inner = f'<img src="{esc(c["image"])}" alt="" width="608" height="456">'
-        else:
-            inner = f'<span class="category-art" style="--hue:{c["hue"]}">{category_art(c)}</span>'
-        tiles.append(f'<span class="tile tile-{esc(c["slug"])}">{inner}</span>')
-    return '<div class="home-collage">\n      ' + "\n      ".join(tiles) + "\n    </div>"
+    """Home hero background: drifting rows of lifestyle pictures from static/images/home (a video can sit under it)."""
+    folder = SRC / "static" / "images" / "home"
+    names = sorted(p.name for p in folder.glob("*.jpg")) if folder.exists() else []
+    if not names:
+        return ""
+    rows = [names[k::3] for k in range(3)]
+    out = []
+    for n, row in enumerate(rows):
+        if not row:
+            continue
+        # the row is written twice so the loop never shows a gap; the copy is hidden from assistive tech
+        def tiles(copy):
+            return "".join(
+                f'<span class="tile"><img src="/images/home/{esc(name)}" alt="" width="320" height="400" '
+                f'loading="{"eager" if (n == 0 and not copy) else "lazy"}" decoding="async"></span>'
+                for name in row)
+        out.append(f'<div class="home-row home-row-{n + 1}"><div class="home-track">{tiles(False)}'
+                   f'<span class="home-dup" aria-hidden="true">{tiles(True)}</span></div></div>')
+    return '<div class="home-collage">\n      ' + "\n      ".join(out) + "\n    </div>"
 
 
 def category_placeholder_pages():
