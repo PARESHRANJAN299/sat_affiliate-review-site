@@ -52,13 +52,30 @@ nav.main-nav a[aria-current="page"] { color: #fff; border-radius: 0; box-shadow:
 .site-header .mobile-site-links :focus-visible { outline-color: var(--focus); }
 
 @media (max-width: 719px) {
-  header.site-header { position: static; }
+  header.site-header { position: relative; }
   .site-header .desktop-logo { display: none; }
-  .mobile-site-menu { display: block; }
+  .mobile-site-menu { display: block; flex: none; }
   nav.main-nav > ul > li.mobile-secondary { display: none; }
-  nav.main-nav { width: 100%; border-top: 1px solid rgba(255,255,255,0.1); }
-  nav.main-nav > ul { justify-content: space-between; gap: 12px; }
-  nav.main-nav a { padding: 0 6px; font-size: 0.9rem; }
+  .nav-row { flex-wrap: nowrap; justify-content: flex-start; gap: 8px; padding-block: 8px; }
+  nav.main-nav { flex: 1; min-width: 0; border: 0; }
+  nav.main-nav > ul { justify-content: flex-start; flex-wrap: nowrap; gap: 6px; }
+  nav.main-nav > ul > li { flex: none; }
+  nav.main-nav a { min-height: 40px; padding: 0 10px; font-size: 0.82rem; white-space: nowrap; }
+  /* Home and Shop by Category read as tappable pills, right next to the logo */
+  nav.main-nav > ul > li > a { background: rgba(255,255,255,0.09); border-radius: 999px; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.12); color: #eef1f8; }
+  nav.main-nav > ul > li > a[aria-current="page"] { background: linear-gradient(135deg, var(--color-primary-light), var(--color-primary)); box-shadow: none; border-radius: 999px; color: #fff; }
+  nav.main-nav .menu-toggle { gap: 5px; padding-right: 7px; }
+  nav.main-nav a.menu-toggle .caret { display: inline-flex; align-items: center; justify-content: center; width: 18px; height: 18px; margin: 0; border-radius: 50%; background: rgba(255,255,255,0.2); font-size: 0.7rem; line-height: 1; }
+  .logo-mark { font-size: 1.35rem; letter-spacing: 0.12em; }
+  .logo { padding-bottom: 4px; }
+  .logo::after { height: 2px; }
+  .mobile-site-menu > summary { gap: 5px; min-height: 40px; }
+  .logo-caret { display: inline-flex; align-items: center; justify-content: center; width: 18px; height: 18px; border-radius: 50%; background: rgba(255,255,255,0.18); color: #fff; font-size: 0.7rem; line-height: 1; }
+}
+@media (max-width: 359px) {
+  .nav-row { gap: 6px; }
+  nav.main-nav a { padding: 0 7px; font-size: 0.76rem; }
+  .logo-mark { font-size: 1.15rem; }
 }
 
 /* ---------- Animated wordmark ---------- */
@@ -136,7 +153,6 @@ nav.main-nav a[aria-current="page"] { color: #fff; border-radius: 0; box-shadow:
 /* ---------- "Shop by Category" dropdown: compact list with small colour icons ---------- */
 
 header.site-header { position: sticky; }
-@media (max-width: 719px) { header.site-header { position: relative; } }
 .nav-row { position: static; }
 nav.main-nav li.has-menu { position: static; }
 @media (min-width: 720px) { nav.main-nav li.has-menu { position: relative; } }
@@ -216,4 +232,42 @@ nav.main-nav .category-menu a.menu-all:hover { background: var(--color-bg-alt); 
 
 @media (forced-colors: active) {
   .logo-mark span { background: none; color: CanvasText; -webkit-text-fill-color: CanvasText; }
+}
+
+/* ---------- Mobile: advanced, scroll-aware header (JS adds .js-smart) ---------- */
+
+.nav-backdrop { display: none; }
+@media (max-width: 719px) {
+  header.site-header.js-smart { position: sticky; top: 0; transition: transform .32s cubic-bezier(.2, .8, .2, 1), box-shadow .2s ease; }
+  header.site-header.js-smart.is-hidden { transform: translateY(-100%); }
+  header.site-header.js-smart.is-scrolled { box-shadow: 0 8px 22px rgba(3, 6, 14, 0.4); }
+
+  .nav-backdrop { position: fixed; inset: 0; z-index: 40; display: block; background: rgba(4, 7, 15, 0.58); opacity: 0; visibility: hidden; transition: opacity .25s ease, visibility .25s; }
+  .nav-backdrop.is-on { opacity: 1; visibility: visible; }
+  @supports (backdrop-filter: blur(4px)) or (-webkit-backdrop-filter: blur(4px)) {
+    .nav-backdrop { -webkit-backdrop-filter: blur(5px); backdrop-filter: blur(5px); }
+  }
+
+  /* panels drop in from the trigger, rows follow one by one */
+  .category-menu.is-open, .mobile-site-menu[open] .mobile-site-links { animation: panel-in .28s cubic-bezier(.2, .8, .2, 1) both; transform-origin: top center; }
+  .category-menu { max-height: calc(100vh - 90px); overflow-y: auto; overscroll-behavior: contain; }
+  .category-menu.is-open .menu-list > li, .mobile-site-menu[open] .mobile-site-links li { animation: row-in .38s cubic-bezier(.2, .8, .2, 1) both; animation-delay: calc(var(--i, 0) * 55ms + 70ms); }
+  .category-menu.is-open .menu-all { animation: row-in .38s cubic-bezier(.2, .8, .2, 1) .42s both; }
+  .category-menu::before { content: ""; display: block; width: 38px; height: 4px; margin: 2px auto 8px; border-radius: 3px; background: var(--color-border); }
+
+  /* one-time pulse that says "there are options here" */
+  .site-header.js-smart .hint-ring { position: relative; }
+  .site-header.js-smart .hint-ring::before { content: ""; position: absolute; inset: -3px; border-radius: 999px; border: 2px solid var(--color-primary-light); opacity: 0; pointer-events: none; animation: hint-ring 1.6s ease-out .9s 3; }
+  .site-header.js-smart .mobile-site-menu .hint-ring::before { inset: -4px -6px; }
+  .site-header.js-smart .hint-ring .caret, .site-header.js-smart .hint-ring .logo-caret { animation: hint-bob 1.6s ease-in-out .9s 3; }
+}
+@keyframes panel-in { from { opacity: 0; transform: translateY(-8px) scale(.97); } to { opacity: 1; transform: none; } }
+@keyframes row-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+@keyframes hint-ring { 0% { opacity: .9; transform: scale(.94); } 100% { opacity: 0; transform: scale(1.12); } }
+@keyframes hint-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(2px); } }
+@media (prefers-reduced-motion: reduce) {
+  header.site-header.js-smart { transition: none; }
+  .nav-backdrop { transition: none; }
+  .category-menu.is-open, .mobile-site-menu[open] .mobile-site-links, .category-menu.is-open .menu-list > li, .mobile-site-menu[open] .mobile-site-links li, .category-menu.is-open .menu-all,
+  .site-header.js-smart .hint-ring::before, .site-header.js-smart .hint-ring .caret, .site-header.js-smart .hint-ring .logo-caret { animation: none; }
 }
