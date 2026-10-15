@@ -3191,7 +3191,30 @@
       "pending_note": "Recommendations coming after product research.",
       "more_label": "More clothing guides",
       "landing_meta": "Clothing buying guides for women, girls and men in India: Gen Z tops, kurtas, home wear, nightwear, jeans, shirts, joggers and more.",
-      "menu_hint": "T-shirts, kurtas, jeans, jackets"
+      "menu_hint": "T-shirts, kurtas, jeans, jackets",
+      "audience_tabs": [
+        {
+          "slug": "women",
+          "label": "Women",
+          "sections": [
+            "women"
+          ]
+        },
+        {
+          "slug": "girls",
+          "label": "Girls",
+          "sections": [
+            "women"
+          ]
+        },
+        {
+          "slug": "men",
+          "label": "Men",
+          "sections": [
+            "men"
+          ]
+        }
+      ]
     }
   ]
 }
