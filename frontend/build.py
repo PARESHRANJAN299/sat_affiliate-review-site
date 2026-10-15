@@ -200,6 +200,12 @@ CATEGORY_ICON = {
 
 
 CATEGORY_ICON.update({
+    "skin-care": '<path d="M10 3h4v4h-4zM9 7h6v3H9zM8.5 10h7l-.7 10a1 1 0 0 1-1 1h-3.6a1 1 0 0 1-1-1z"/>',
+    "hair-care": '<rect x="3" y="6" width="18" height="5.5" rx="1.5"/><path d="M6 11.5v7M9 11.5v7M12 11.5v7M15 11.5v7M18 11.5v7"/>',
+    "makeup": '<rect x="7" y="13" width="10" height="8" rx="1.5"/><path d="M9 13V8.5L14.5 4v9"/><path d="M18 5.5l1.6-1.6M19.5 9H22"/>',
+    "mens-grooming": '<rect x="4" y="3.5" width="16" height="5.5" rx="1.5"/><path d="M12 9v12M10 21h4M8 6.2h8"/>',
+    "bath-body": '<circle cx="9" cy="13.5" r="5.5"/><circle cx="17.5" cy="7.5" r="3"/><circle cx="18.5" cy="17" r="2"/>',
+    "sun-care": '<circle cx="12" cy="12" r="4"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/>',
     "badminton-rackets": '<ellipse cx="14.5" cy="9.5" rx="5" ry="6.5" transform="rotate(-35 14.5 9.5)"/><path d="M10.6 13.4 4 20M12 6.5l5 5M9.8 9.2l5 5"/>',
     "cricket-bats": '<rect x="11" y="2.5" width="5" height="12.5" rx="1.5" transform="rotate(35 13.5 8.7)"/><path d="M10.5 14.5 5 20"/><circle cx="18.5" cy="18.5" r="2"/>',
     "footballs": '<circle cx="12" cy="12" r="9"/><path d="M12 8.2l3.4 2.4-1.3 4H9.9l-1.3-4z"/><path d="M12 8.2V3M15.4 10.6l4.8-1.6M14.1 14.6l3 4M9.9 14.6l-3 4M8.6 10.6 3.8 9"/>',
@@ -296,7 +302,9 @@ def home_collage():
 
 
 def family_url(cat, fam):
-    return f'{cat["url"]}{fam["section"]}/{fam["slug"]}/'
+    if fam.get("section"):
+        return f'{cat["url"]}{fam["section"]}/{fam["slug"]}/'
+    return f'{cat["url"]}{fam["slug"]}/'
 
 
 def family_entries(cat):
@@ -305,12 +313,218 @@ def family_entries(cat):
     out = []
     for f in cat["families"]:
         out.append({"slug": f["slug"], "name": f["name"], "description": f["description"], "art": f["slug"],
-                    "hue": sections.get(f["section"], {}).get("hue", cat["hue"]), "image": f.get("image"),
+                    "hue": sections.get(f.get("section"), {}).get("hue", cat["hue"]), "image": f.get("image"),
                     "url": family_url(cat, f)})
     return out
 
 
 PICK_SLOTS = ["Editor's picks", "Best overall", "Best value", "Best for beginners", "Best under budget"]
+
+
+# ---------- retailers and product data (shared by every category that has product reviews) ----------
+
+PRICE_BANDS = ["Under \u20b9500", "\u20b9500\u2013\u20b91,000", "\u20b91,000\u2013\u20b92,000", "Premium"]
+PRICE_NOTE = "Prices may change. Check the retailer for the latest price."
+RETAILER_ORDER = ["amazon", "flipkart", "brand_store", "other"]
+RETAILER_LABEL = {"amazon": "Amazon", "flipkart": "Flipkart", "brand_store": "Brand website", "other": "Other retailer"}
+SLOT_KEYS = {"Best overall": "best_overall", "Best budget pick": "best_budget", "Best value": "best_value",
+             "Best for daily use": "best_daily", "Best premium pick": "best_premium", "Best for beginners": "best_beginner"}
+
+
+def load_products(cat_slug):
+    folder = SRC / "products" / cat_slug
+    items = []
+    for p in sorted(folder.glob("*.json")) if folder.exists() else []:
+        try:
+            items.append(json.loads(read(p)))
+        except ValueError as exc:
+            errors.append(f"product file {p.name}: {exc}")
+    return items
+
+
+def product_buttons(p):
+    """One button per retailer that has a link: Product > Amazon > Flipkart > Brand website > Other retailer.
+    Plain links until affiliate_active is set; then rel=sponsored and a disclosure line are added."""
+    active = bool(CONFIG.get("affiliate_active"))
+    rel = "sponsored nofollow noopener" if active else "nofollow noopener"
+    retailers = p.get("retailers") or {}
+    out, have_amazon = [], False
+    for k, key in enumerate(RETAILER_ORDER):
+        url = (retailers.get(key) or {}).get("url", "")
+        if not url:
+            continue
+        have_amazon = have_amazon or key == "amazon"
+        verb = "View Product" if k == 0 or not out else ("See Options" if key != "brand_store" else "Visit brand website")
+        label = f'{verb} \u00b7 {RETAILER_LABEL[key]}' if len(retailers) > 1 else verb
+        cls = "btn-primary" if not out else "btn-outline"
+        out.append(f'<a class="btn {cls} btn-small" href="{esc(url)}" target="_blank" rel="{rel}" '
+                   f'aria-label="{esc(label)} for {esc(p["name"])} (opens in a new tab)">{esc(label)}</a>')
+    if not out:
+        if p.get("sample"):
+            return ('<span class="btn btn-primary btn-small is-disabled" aria-disabled="true">View Product</span> '
+                    '<span class="btn btn-outline btn-small is-disabled" aria-disabled="true">See Options</span> '
+                    '<span class="btn btn-outline btn-small is-disabled" aria-disabled="true">Check Availability</span>'), ""
+        return '<span class="no-store">Retailer link coming soon.</span>', ""
+    note = ""
+    if active:
+        note = '<p class="cta-note"><strong>Affiliate links.</strong> We may earn a commission if you buy, at no extra cost to you.</p>'
+        if CONFIG.get("amazon_associate_approved") and have_amazon:
+            note += '<p class="cta-note">As an Amazon Associate I earn from qualifying purchases.</p>'
+    return " ".join(out), note
+
+
+def product_review_html(p):
+    """The reusable review template. Every field is optional except name; missing fields are skipped."""
+    def lst(items):
+        return "<ul>" + "".join(f"<li>{esc(i)}</li>" for i in items) + "</ul>" if items else ""
+    def row(label, value):
+        return f'<div><dt>{esc(label)}</dt><dd>{value}</dd></div>' if value else ""
+    facts = "".join([
+        row("Product type", esc(p.get("product_type", ""))),
+        row("Best for", esc(p.get("best_for", ""))),
+        row("Skin, hair or use case", esc(p.get("suits", ""))),
+        row("Price band", esc(p.get("price_band", ""))),
+        row("Value for money", esc(p.get("value_for_money", ""))),
+        row("Best use case", esc(p.get("best_use_case", ""))),
+        row("Who should avoid it", esc(p.get("avoid", "")))])
+    buttons, note = product_buttons(p)
+    sample = '<span class="sample-flag">Sample</span> ' if p.get("sample") else ""
+    parts = [f'<article class="beauty-review" id="r-{esc(p["id"])}">',
+             f'  <h3>{sample}{esc(p["name"])}</h3>']
+    if p.get("brand"):
+        parts.append(f'  <p class="review-brand">{esc(p["brand"])}</p>')
+    parts.append(f'  <dl class="review-facts">{facts}</dl>')
+    if p.get("features"):
+        parts.append(f'  <h4>Main features</h4>{lst(p["features"])}')
+    if p.get("key_ingredients"):
+        parts.append(f'  <h4>Key ingredients</h4>{lst(p["key_ingredients"])}')
+    parts.append('  <div class="pros-cons"><div class="pros"><h4>Pros</h4>' + lst(p.get("pros", [])) +
+                 '</div><div class="cons"><h4>Cons</h4>' + lst(p.get("cons", [])) + '</div></div>')
+    if p.get("how_to_choose"):
+        parts.append(f'  <h4>How to choose</h4><p>{esc(p["how_to_choose"])}</p>')
+    if p.get("alternatives"):
+        parts.append(f'  <h4>Alternatives</h4>{lst(p["alternatives"])}')
+    if p.get("final_recommendation"):
+        parts.append(f'  <p class="verdict"><strong>Final recommendation:</strong> {esc(p["final_recommendation"])}</p>')
+    parts.append(f'  <div class="cta-row">{buttons}</div>{note}')
+    parts.append(f'  <p class="cta-note">{esc(PRICE_NOTE)}</p>')
+    if p.get("sources") and not p.get("sample"):
+        items = "".join(f'<li><a href="{esc(s["url"])}" target="_blank" rel="nofollow noopener">{esc(s["label"])}</a></li>' for s in p["sources"])
+        parts.append(f'  <details class="watch-sources"><summary>Pages we read</summary><ul>{items}</ul></details>')
+    parts.append('</article>')
+    return "\n".join(parts)
+
+
+def product_table_html(products, caption):
+    rows = []
+    for p in products:
+        buttons, _ = product_buttons(p)
+        rows.append(
+            f'<tr role="row"><th scope="row" role="rowheader">{esc(p["name"])}</th>'
+            f'<td role="cell" data-label="Type">{esc(p.get("product_type", ""))}</td>'
+            f'<td role="cell" data-label="Best for">{esc(p.get("best_for", ""))}</td>'
+            f'<td role="cell" data-label="Price band">{esc(p.get("price_band", ""))}</td>'
+            f'<td role="cell" data-label="Value">{esc(p.get("value_for_money", ""))}</td>'
+            f'<td role="cell" data-label="Links">{buttons}</td></tr>')
+    head = "".join(f'<th scope="col" role="columnheader">{h}</th>' for h in ["Product", "Type", "Best for", "Price band", "Value", "Links"])
+    return ('<div class="compare-table-wrap"><table class="compare-table" role="table">'
+            f'<caption class="visually-hidden">{esc(caption)}</caption><thead><tr role="row">{head}</tr></thead>'
+            f'<tbody>{"".join(rows)}</tbody></table></div>')
+
+
+def beauty_family_body(cat, f, products, sibling_cards):
+    slots = cat.get("pick_slots", [])
+    by_slot = {p.get("slot"): p for p in products if p.get("slot")}
+    slot_html = []
+    for label in slots:
+        p = by_slot.get(SLOT_KEYS.get(label, ""))
+        if p:
+            slot_html.append(f'<li class="pick-slot is-filled"><span class="pick-slot-label">{esc(label)}</span>'
+                             f'<a href="#r-{esc(p["id"])}"><strong>{esc(p["name"])}</strong></a></li>')
+        else:
+            slot_html.append(f'<li class="pick-slot"><span class="pick-slot-label">{esc(label)}</span>'
+                             '<span class="pick-slot-state">Being researched</span></li>')
+    needs = "".join(f'<li><strong>{esc(n["name"])}.</strong> {esc(n["text"])}</li>' for n in f.get("needs", []))
+    tips = "".join(f'<li><strong>{esc(h)}.</strong> {esc(x)}</li>' for h, x in f["tips"])
+    faqs = "".join(
+        f'<details class="faq-item"><summary><h3>{esc(q["q"])}</h3><span class="faq-chev" aria-hidden="true"></span></summary><p>{esc(q["a"])}</p></details>'
+        for q in f["faqs"])
+    types = "".join(f"<li>{esc(x)}</li>" for x in f.get("product_types", []))
+    bands = "".join(f'<span class="band">{esc(b)}</span>' for b in PRICE_BANDS)
+    if products:
+        picks = ('<h2>Our picks</h2>\n<ul class="pick-slots">' + "".join(slot_html) + '</ul>\n'
+                 '<h2>Comparison</h2>\n' + product_table_html(products, f["h1"]) + '\n'
+                 '<h2>Reviews</h2>\n' + "\n".join(product_review_html(p) for p in products))
+        status = '<p class="family-status"><strong>How we picked these:</strong> we read the maker\'s and the shops\' pages. We have not tested these products ourselves. Read <a href="/how-we-pick/">how we pick</a>.</p>'
+    else:
+        picks = ('<h2>Our picks</h2>\n<ul class="pick-slots">' + "".join(slot_html) + '</ul>\n'
+                 '<h2>Comparison</h2>\n<div class="empty-state"><p>A comparison table appears here once the first picks are added.</p></div>')
+        status = (f'<p class="family-status"><strong>{esc(cat.get("pending_note", "Picks coming soon."))}</strong> '
+                  'We add a product only after we have read the maker\'s page and the shop listings. Read <a href="/how-we-pick/">how we pick</a>.</p>')
+    affiliate = ('We have no approved affiliate accounts yet, and this page earns us nothing today. If that changes, we will say so here first.'
+                 if not CONFIG.get("affiliate_active") else
+                 'Some links on this page are affiliate links. We may earn a commission if you buy, at no extra cost to you.')
+    return (
+        '<section class="section">\n  <div class="container content-page family-page">\n'
+        '    {{breadcrumb}}\n'
+        f'    <p class="family-kicker">{esc(cat["name"])}</p>\n    <h1>{esc(f["h1"])}</h1>\n    <p class="lead">{esc(f["intro"])}</p>\n'
+        f'    {status}\n'
+        f'    <h2>Start with what you need</h2>\n    <ul class="family-tips">{needs}</ul>\n'
+        f'    {picks}\n'
+        f'    <h2>Buying guide</h2>\n    <ul class="family-tips">{tips}</ul>\n'
+        f'    <p class="family-note">Typical price bands we use: <span class="band-list">{bands}</span> {esc(PRICE_NOTE)}</p>\n'
+        f'    <h2>Common questions</h2>\n{faqs}\n'
+        f'    <aside class="medical-note"><svg class="ic" aria-hidden="true"><use href="#i-info"/></svg><p>{esc(f["caution"])}</p></aside>\n'
+        f'    <h2>More beauty guides</h2>\n    <ul class="related-links">{sibling_cards}</ul>\n'
+        f'    <aside class="affiliate-box" id="affiliate-note"><svg class="ic" aria-hidden="true"><use href="#i-info"/></svg>'
+        f'<p><strong>Affiliate disclosure.</strong> {esc(affiliate)} <a href="/affiliate-disclosure/">Read the full disclosure</a>.</p></aside>\n'
+        '  </div>\n</section>')
+
+
+def beauty_pages(cat):
+    entries = family_entries(cat)
+    all_products = load_products(cat["slug"])
+    min_index = 3
+    pages = []
+    cards = category_directory(entries, grid_id="family-results")
+    body = (
+        '<section class="section">\n  <div class="container content-page family-page">\n'
+        '    {{breadcrumb}}\n'
+        f'    <h1>{esc(cat["name"])}</h1>\n    <p class="lead">{esc(cat.get("tagline") or cat["description"])}</p>\n'
+        f'    <div class="family-cards family-cards-3">{cards}</div>\n'
+        f'    <p class="family-note">{esc(PRICE_NOTE)} This section is general information, not medical advice.</p>\n'
+        '  </div>\n</section>')
+    pages.append({
+        "url": cat["url"], "title": f'{cat["name"]} Buying Guides for India',
+        "description": "Buying guides for skin care, hair care, makeup, men's grooming, bath and body, and sun care, chosen by skin and hair type.",
+        "css": ["buttons", "breadcrumb", "content-page", "category-directory", "families"], "js": [],
+        "breadcrumbs": [["Shop by Category", "/products/"], [cat["name"], cat["url"]]],
+        "updated": "2026-10-16", "_slug": cat["slug"], "_body": body})
+    for f in cat["families"]:
+        url = family_url(cat, f)
+        products = [p for p in all_products if p.get("family") == f["slug"]]
+        sib = "".join(f'<li><a href="{esc(e["url"])}">{esc(e["name"])}</a></li>' for e in entries if e["slug"] != f["slug"])
+        pages.append({
+            "url": url, "title": f["h1"], "description": f["meta"],
+            "css": ["buttons", "breadcrumb", "content-page", "faq", "compare-table", "product-block", "watches", "families"], "js": [],
+            "noindex": len(products) < min_index,
+            "breadcrumbs": [["Shop by Category", "/products/"], [cat["name"], cat["url"]], [f["name"], url]],
+            "updated": "2026-10-16", "_slug": f'{cat["slug"]}-{f["slug"]}',
+            "_body": beauty_family_body(cat, f, products, sib)})
+    sample = json.loads(read(SRC / "products" / "_sample" / "beauty-sample.json")) if (SRC / "products" / "_sample" / "beauty-sample.json").exists() else None
+    if sample:
+        body = (
+            '<section class="section">\n  <div class="container content-page family-page">\n'
+            '    {{breadcrumb}}\n    <h1>Review template preview</h1>\n'
+            '    <p class="lead">This page shows the review template with <strong>sample content</strong>. It is not a real product and nothing here is a recommendation.</p>\n'
+            f'    {product_review_html(sample)}\n  </div>\n</section>')
+        pages.append({
+            "url": f'{cat["url"]}review-template/', "title": "Beauty Review Template Preview",
+            "description": "Sample content showing the beauty review template. Not a real product.",
+            "css": ["buttons", "breadcrumb", "content-page", "product-block", "watches", "families"], "js": [], "noindex": True,
+            "breadcrumbs": [["Shop by Category", "/products/"], [cat["name"], cat["url"]], ["Review template", f'{cat["url"]}review-template/']],
+            "updated": "2026-10-16", "_slug": f'{cat["slug"]}-review-template', "_body": body})
+    return pages
 
 
 def family_pages():
@@ -321,6 +535,9 @@ def family_pages():
         for s in PICK_SLOTS)
     for cat in CATEGORIES:
         if not cat.get("families"):
+            continue
+        if cat.get("template") == "beauty":
+            pages.extend(beauty_pages(cat))
             continue
         sections = cat.get("sections", [])
         entries = family_entries(cat)

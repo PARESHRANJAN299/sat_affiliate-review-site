@@ -48,5 +48,6 @@
       "url": "/affiliate-disclosure/"
     }
   ],
-  "affiliate_active": false
+  "affiliate_active": false,
+  "amazon_associate_approved": false
 }

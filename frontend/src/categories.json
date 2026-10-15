@@ -626,10 +626,387 @@
       "description": "Everyday beauty, grooming and personal-care products.",
       "art": "beauty",
       "hue": 335,
-      "status": "placeholder",
+      "status": "families",
       "image": "/images/categories/beauty-personal-care.jpg",
-      "families": [],
-      "thumb": "/images/categories/beauty-personal-care-thumb.jpg"
+      "families": [
+        {
+          "slug": "skin-care",
+          "name": "Skin Care",
+          "description": "Cleansers, moisturisers and serums matched to your skin type.",
+          "h1": "Best Skin Care Products in India",
+          "meta": "How to choose skin care products in India by skin type: oily, dry, sensitive, acne-prone and combination. Recommendations coming after product research.",
+          "intro": "The right skin care starts with your skin type and what you want from a product, not with what is popular. This page will list our researched picks by need, with pros, cons and a short buying guide.",
+          "needs": [
+            {
+              "name": "Oily skin",
+              "text": "Light gel or water-based textures are usually more comfortable. If you want it, look for a product described as non-comedogenic."
+            },
+            {
+              "name": "Dry skin",
+              "text": "Richer creams and products with moisturising ingredients are usually more comfortable. Check how heavy the texture feels in reviews."
+            },
+            {
+              "name": "Sensitive skin",
+              "text": "Fewer ingredients and no added fragrance are common starting points. Patch-test a new product before using it on your face."
+            },
+            {
+              "name": "Acne-prone skin",
+              "text": "Keep the routine simple and gentle. For frequent or severe breakouts, a dermatologist can advise you better than any product page."
+            },
+            {
+              "name": "Combination skin",
+              "text": "You may need a lightweight moisturiser overall, and extra care on drier areas. Look for a texture that does not feel greasy."
+            }
+          ],
+          "tips": [
+            [
+              "Match the product to your skin type",
+              "Start with whether your skin is oily, dry, sensitive, acne-prone or combination, then look at texture and ingredients."
+            ],
+            [
+              "Read the ingredients list",
+              "Look at the full ingredients list on the maker's page, especially if you have known allergies."
+            ],
+            [
+              "Patch-test first",
+              "Try a small amount on your inner arm or behind the ear for a day before using a new product on your face."
+            ]
+          ],
+          "faqs": [
+            {
+              "q": "Which skin care product should I start with?",
+              "a": "A gentle cleanser, a moisturiser that suits your skin type and a sunscreen for the daytime are a simple starting routine."
+            },
+            {
+              "q": "How do I know my skin type?",
+              "a": "Notice how your skin feels a few hours after washing it: shiny all over is usually oily, tight is usually dry, shiny only in the middle is usually combination."
+            }
+          ],
+          "caution": "This page is general information about cosmetic and personal-care products. It is not medical advice. If you have severe acne, eczema, psoriasis or a skin reaction, please talk to a doctor or dermatologist.",
+          "product_types": [
+            "Cleanser",
+            "Moisturiser",
+            "Serum",
+            "Face mask",
+            "Toner"
+          ]
+        },
+        {
+          "slug": "hair-care",
+          "name": "Hair Care",
+          "description": "Shampoos, conditioners and oils for your hair and scalp type.",
+          "h1": "Best Hair Care Products in India",
+          "meta": "How to choose hair care products in India by hair and scalp type: dry, oily, dandruff, hair fall and curly hair. Recommendations coming after research.",
+          "intro": "The right hair care depends on your hair type, your scalp and how you style your hair. This page will list our researched picks by need, with pros, cons and a short buying guide.",
+          "needs": [
+            {
+              "name": "Dry hair",
+              "text": "Look for conditioners and products that describe moisturising or smoothing. Check how heavy the product feels in reviews."
+            },
+            {
+              "name": "Oily scalp",
+              "text": "A lighter shampoo used regularly is a common choice. Heavy conditioners are usually applied to the lengths, not the scalp."
+            },
+            {
+              "name": "Dandruff",
+              "text": "Anti-dandruff shampoos list their active ingredient on the label. If flaking is severe or keeps returning, see a doctor or dermatologist."
+            },
+            {
+              "name": "Hair fall",
+              "text": "Some shedding is normal. A shampoo can help clean and condition the hair, but it cannot treat hair loss. For significant hair loss, see a doctor."
+            },
+            {
+              "name": "Damaged hair",
+              "text": "Repair-style conditioners and masks, and less heat styling, are common first steps."
+            },
+            {
+              "name": "Curly hair",
+              "text": "Many curly hair routines focus on moisture and gentle handling. Check whether a product is made for curls."
+            }
+          ],
+          "tips": [
+            [
+              "Know your hair and scalp",
+              "Decide whether your main need is dryness, oiliness, flaking, damage or curls before comparing products."
+            ],
+            [
+              "Check the label",
+              "Look at the ingredients and whether the product is made for your hair type."
+            ],
+            [
+              "Do not expect miracles",
+              "Hair products change how hair looks and feels. They do not treat medical conditions."
+            ]
+          ],
+          "faqs": [
+            {
+              "q": "How often should I wash my hair?",
+              "a": "It depends on your scalp and hair type. Many people wash a few times a week. Wash more often if your scalp gets oily or you sweat a lot."
+            },
+            {
+              "q": "Can a shampoo stop hair fall?",
+              "a": "A shampoo cannot treat hair loss. If you are losing a lot of hair, please speak to a doctor."
+            }
+          ],
+          "caution": "This page is general information about cosmetic and personal-care products. It is not medical advice. If you have severe acne, eczema, psoriasis or a skin reaction, please talk to a doctor or dermatologist.",
+          "product_types": [
+            "Shampoo",
+            "Conditioner",
+            "Hair oil",
+            "Hair mask",
+            "Styling products"
+          ]
+        },
+        {
+          "slug": "makeup",
+          "name": "Makeup",
+          "description": "Foundation, lipstick, kajal and more, with shade and finish in mind.",
+          "h1": "Best Makeup Products in India",
+          "meta": "How to choose makeup products in India: shade, undertone, finish and everyday wear explained. Recommendations coming after product research.",
+          "intro": "Good makeup picks depend on your skin tone, your finish and how long you need it to last. This page will list our researched picks, with pros, cons and a short buying guide.",
+          "needs": [
+            {
+              "name": "Shade and undertone",
+              "text": "Check the brand's shade chart and swatches on skin tones close to yours. Shade names differ between brands."
+            },
+            {
+              "name": "Finish",
+              "text": "Matte, natural and dewy finishes suit different skin types and occasions."
+            },
+            {
+              "name": "Everyday wear",
+              "text": "Look at how a product wears over a full day, and how easy it is to remove."
+            },
+            {
+              "name": "Sensitive skin",
+              "text": "Patch-test new products, and stop using one that irritates your skin."
+            }
+          ],
+          "tips": [
+            [
+              "Match the shade",
+              "Shade is the biggest reason makeup disappoints. Use the shade guide and read reviews from people with a similar skin tone."
+            ],
+            [
+              "Think about the finish",
+              "Choose the finish that suits your skin type and the look you want."
+            ],
+            [
+              "Check expiry and hygiene",
+              "Check the shelf-life symbol on the pack, and keep brushes and sponges clean."
+            ]
+          ],
+          "faqs": [
+            {
+              "q": "How do I pick a foundation shade online?",
+              "a": "Use the brand's shade guide, compare swatches with your skin tone, and read reviews from people with a similar tone."
+            },
+            {
+              "q": "How long does makeup last once opened?",
+              "a": "Look for the small open-jar symbol on the pack, which shows the number of months a product stays good after opening."
+            }
+          ],
+          "caution": "This page is general information about cosmetics. Stop using any product that irritates your skin, and speak to a doctor if the reaction continues.",
+          "product_types": [
+            "Foundation",
+            "Lipstick",
+            "Kajal and eyeliner",
+            "Compact and powder",
+            "Makeup tools"
+          ]
+        },
+        {
+          "slug": "mens-grooming",
+          "name": "Men's Grooming",
+          "description": "Shaving, beard care and everyday grooming for men.",
+          "h1": "Best Men's Grooming Products in India",
+          "meta": "How to choose men's grooming products in India: shaving, beard care and skin care explained. Recommendations coming after product research.",
+          "intro": "The right grooming products depend on your skin, your facial hair and how often you groom. This page will list our researched picks, with pros, cons and a short buying guide.",
+          "needs": [
+            {
+              "name": "Shaving",
+              "text": "Choose a razor you can handle comfortably, and a foam, gel or cream that suits your skin. Sensitive skin may prefer fewer added fragrances."
+            },
+            {
+              "name": "Beard care",
+              "text": "Beard oils and balms soften and style facial hair. Pick a product by how thick and long your beard is."
+            },
+            {
+              "name": "Sensitive skin",
+              "text": "Patch-test new products, and look at the ingredients list if you have known allergies."
+            },
+            {
+              "name": "Everyday routine",
+              "text": "A simple face wash, moisturiser and sunscreen cover most people's daily needs."
+            }
+          ],
+          "tips": [
+            [
+              "Start with your skin and hair",
+              "Decide whether your priority is shaving comfort, beard care or everyday skin care."
+            ],
+            [
+              "Check what is in the box",
+              "Compare the number of blades, cartridges and accessories, not just the headline product."
+            ],
+            [
+              "Look at replacement costs",
+              "For razors, check how easy it is to find replacement blades."
+            ]
+          ],
+          "faqs": [
+            {
+              "q": "Electric or manual razor?",
+              "a": "Electric razors are quicker and need no foam. Manual razors can give a closer shave, but need more care to avoid irritation."
+            },
+            {
+              "q": "How do I prevent razor irritation?",
+              "a": "Use a sharp, clean blade, a good shaving lather and gentle strokes. Do not press hard."
+            }
+          ],
+          "caution": "This page is general information about cosmetic and personal-care products. It is not medical advice. If you have severe acne, eczema, psoriasis or a skin reaction, please talk to a doctor or dermatologist.",
+          "product_types": [
+            "Razors and trimmers",
+            "Shaving foam and gel",
+            "Beard oil and balm",
+            "Face wash",
+            "Deodorant"
+          ]
+        },
+        {
+          "slug": "bath-body",
+          "name": "Bath & Body",
+          "description": "Body wash, soaps, lotions and everyday body care.",
+          "h1": "Best Bath & Body Products in India",
+          "meta": "How to choose bath and body products in India: body wash, soap, lotion and fragrance explained by skin type. Recommendations coming after product research.",
+          "intro": "Good bath and body products feel comfortable on your skin and fit your daily routine. This page will list our researched picks, with pros, cons and a short buying guide.",
+          "needs": [
+            {
+              "name": "Dry skin",
+              "text": "Creamy body washes and richer lotions are usually more comfortable. Apply lotion while skin is still slightly damp."
+            },
+            {
+              "name": "Oily or sweaty skin",
+              "text": "A light body wash and a quick-absorbing lotion are common choices."
+            },
+            {
+              "name": "Sensitive skin",
+              "text": "Fewer ingredients and no added fragrance are common starting points. Patch-test first."
+            },
+            {
+              "name": "Fragrance",
+              "text": "Strong fragrance is a personal choice. Check the notes on the maker's page and what buyers say."
+            }
+          ],
+          "tips": [
+            [
+              "Pick by skin type",
+              "Choose richer products for dry skin and lighter ones for oily skin."
+            ],
+            [
+              "Check the label",
+              "Look at the ingredients and any fragrance information, especially if you have allergies."
+            ],
+            [
+              "Compare value by quantity",
+              "Compare how much product you get in the pack, not only the pack price."
+            ]
+          ],
+          "faqs": [
+            {
+              "q": "Body wash or soap?",
+              "a": "Both clean well. Body wash is often gentler and creamier, while a bar of soap lasts longer and is simple."
+            },
+            {
+              "q": "When should I apply body lotion?",
+              "a": "Right after a bath, while your skin is still slightly damp, helps it feel less dry."
+            }
+          ],
+          "caution": "This page is general information about cosmetic and personal-care products. It is not medical advice. If you have severe acne, eczema, psoriasis or a skin reaction, please talk to a doctor or dermatologist.",
+          "product_types": [
+            "Body wash",
+            "Soap",
+            "Body lotion",
+            "Hand cream",
+            "Fragrance"
+          ]
+        },
+        {
+          "slug": "sun-care",
+          "name": "Sun Care",
+          "description": "Sunscreens by SPF, PA rating, texture and skin type.",
+          "h1": "Best Sunscreen in India",
+          "meta": "How to choose a sunscreen in India: SPF, PA rating, skin type, texture and white cast explained. Recommendations coming after product research.",
+          "intro": "The right sunscreen is the one you will actually wear every day. This page will list our researched picks by need, with pros, cons and a short buying guide.",
+          "needs": [
+            {
+              "name": "SPF",
+              "text": "SPF mainly shows protection from UVB rays. Many dermatologists suggest SPF 30 or higher for daily use."
+            },
+            {
+              "name": "PA rating",
+              "text": "PA+ to PA++++ shows UVA protection. More plus signs means stronger UVA protection."
+            },
+            {
+              "name": "Skin type",
+              "text": "Oily skin often prefers gel or fluid textures. Dry skin often prefers creamier ones. Sensitive skin may prefer fragrance-free options."
+            },
+            {
+              "name": "Texture and white cast",
+              "text": "Some sunscreens leave a pale cast on deeper skin tones. Read reviews from people with a similar skin tone."
+            },
+            {
+              "name": "Outdoor or daily use",
+              "text": "For long hours outdoors, look for water-resistant products and reapply as directed on the pack."
+            }
+          ],
+          "tips": [
+            [
+              "Read SPF and PA together",
+              "Look for both an SPF and a PA rating on the pack."
+            ],
+            [
+              "Choose a texture you like",
+              "A sunscreen you enjoy wearing is one you will use every day."
+            ],
+            [
+              "Reapply",
+              "Follow the maker's directions, which usually suggest reapplying after a couple of hours outdoors or after sweating or swimming."
+            ]
+          ],
+          "faqs": [
+            {
+              "q": "Do I need sunscreen indoors?",
+              "a": "Light from windows can still reach you. Many people wear sunscreen daily if they sit near windows or step outside often."
+            },
+            {
+              "q": "How much sunscreen should I use?",
+              "a": "Use the amount the maker recommends. Using too little gives less protection than the number on the pack."
+            }
+          ],
+          "caution": "This page is general information about cosmetic and personal-care products. It is not medical advice. If you have severe acne, eczema, psoriasis or a skin reaction, please talk to a doctor or dermatologist.",
+          "product_types": [
+            "Face sunscreen",
+            "Body sunscreen",
+            "Sunscreen sticks",
+            "Lip balm with SPF",
+            "After-sun care"
+          ]
+        }
+      ],
+      "thumb": "/images/categories/beauty-personal-care-thumb.jpg",
+      "tagline": "Best picks for beauty and personal care.",
+      "template": "beauty",
+      "sections": [],
+      "pick_slots": [
+        "Best overall",
+        "Best budget pick",
+        "Best value",
+        "Best for daily use",
+        "Best premium pick",
+        "Best for beginners"
+      ],
+      "pending_note": "Recommendations coming after product research."
     },
     {
       "slug": "home-kitchen",

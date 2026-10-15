@@ -1,0 +1,36 @@
+{
+  "id": "sample",
+  "sample": true,
+  "family": "skin-care",
+  "name": "Sample product name",
+  "brand": "Sample brand",
+  "product_type": "Moisturiser (sample)",
+  "best_for": "Describe who it suits, in plain words",
+  "suits": "Skin type, hair type or use case, where it matters",
+  "features": [
+    "Main feature one",
+    "Main feature two"
+  ],
+  "key_ingredients": [
+    "Key ingredient (where it matters)"
+  ],
+  "pros": [
+    "A real strength",
+    "Another real strength"
+  ],
+  "cons": [
+    "A real limit",
+    "Another real limit"
+  ],
+  "price_band": "₹500–₹1,000",
+  "value_for_money": "Short, honest comment on value",
+  "best_use_case": "When it works best",
+  "avoid": "Who should avoid it, including people with known allergies",
+  "how_to_choose": "What to check on the label and listing before you buy.",
+  "alternatives": [
+    "Alternative one",
+    "Alternative two"
+  ],
+  "final_recommendation": "One honest sentence that matches the pros and cons above.",
+  "retailers": {}
+}
