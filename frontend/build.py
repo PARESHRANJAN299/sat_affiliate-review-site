@@ -239,6 +239,19 @@ def category_directory():
 
 
 
+def start_here(articles):
+    """One line that points shoppers to the category with the most guides ready (updates itself)."""
+    best, count = None, 0
+    for c in CATEGORIES:
+        n = sum(1 for a in articles if a["article"]["category"] == c["name"])
+        if n > count:
+            best, count = c, n
+    if not best:
+        return ""
+    return (f'<p class="start-here">Not sure where to start? <a href="{best["url"]}">{esc(best["name"])}</a> '
+            f'has {count} guides ready. The other categories are added as their guides are researched.</p>')
+
+
 def category_placeholder_pages():
     pages = []
     for c in CATEGORIES:
@@ -649,6 +662,7 @@ def build_page(meta, base, header_t, footer_t, year, articles):
         "articles_latest": article_cards(articles[:3]),
         "category_chips": category_chips(meta["url"]),
         "category_cards": category_cards(meta["url"]),
+        "start_here": start_here(articles),
         "category_directory": category_directory(),
         "category_sections": category_sections(articles),
         "toc": "@@TOC@@" if meta.get("toc") else "",
