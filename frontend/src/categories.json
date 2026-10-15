@@ -1006,7 +1006,9 @@
         "Best premium pick",
         "Best for beginners"
       ],
-      "pending_note": "Recommendations coming after product research."
+      "pending_note": "Recommendations coming after product research.",
+      "more_label": "More beauty guides",
+      "landing_meta": "Buying guides for skin care, hair care, makeup, men's grooming, bath and body, and sun care, chosen by skin and hair type."
     },
     {
       "slug": "home-kitchen",
@@ -1015,10 +1017,923 @@
       "description": "Useful products for a smarter and better home.",
       "art": "home",
       "hue": 165,
-      "status": "placeholder",
+      "status": "families",
       "image": "/images/categories/home-kitchen.jpg",
-      "families": [],
-      "thumb": "/images/categories/home-kitchen-thumb.jpg"
+      "families": [
+        {
+          "section": "kitchen",
+          "slug": "pressure-cookers",
+          "name": "Pressure Cookers",
+          "description": "Stainless steel and aluminium cookers by size and lid type.",
+          "h1": "Best Pressure Cookers in India",
+          "meta": "How to choose a pressure cooker in India: size, material, lid type and safety features explained. Recommendations coming after product research.",
+          "intro": "The right pressure cooker depends on how many people you cook for, what you cook on and how you plan to clean it. This page will list our researched picks, with pros, cons and a short buying guide.",
+          "needs": [
+            {
+              "name": "Family size",
+              "text": "As a rough guide, about 2 to 3 litres suits one or two people, and about 5 litres suits a family of three to five. Check the maker's capacity note."
+            },
+            {
+              "name": "Material",
+              "text": "Aluminium is light and heats quickly. Stainless steel is heavier, does not react with acidic food, and is easier to keep looking new."
+            },
+            {
+              "name": "Your stove",
+              "text": "Check that the base suits your gas stove or induction cooktop. Not every cooker works on induction."
+            },
+            {
+              "name": "Lid type",
+              "text": "Outer-lid and inner-lid cookers handle differently. Check how easy the lid is to open, close and clean."
+            },
+            {
+              "name": "Small kitchens",
+              "text": "A smaller cooker, or one with a compact handle, is easier to store and carry."
+            }
+          ],
+          "tips": [
+            [
+              "Look at the safety features",
+              "Check for a safety valve, a gasket that is easy to replace and a clear maker's manual."
+            ],
+            [
+              "Check the spares",
+              "Gaskets and whistles wear out. Make sure replacements are easy to find."
+            ],
+            [
+              "Think about cleaning",
+              "Wide mouths and smooth insides are easier to wash."
+            ]
+          ],
+          "faqs": [
+            {
+              "q": "Stainless steel or aluminium pressure cooker?",
+              "a": "Aluminium is lighter and heats quickly. Stainless steel is sturdier and does not react with acidic food, but it is heavier."
+            },
+            {
+              "q": "How do I choose the right size?",
+              "a": "Pick by the number of people you cook for and the quantity you cook at once. A cooker should not be filled to the brim."
+            }
+          ],
+          "caution": "This page is general information, not safety advice. Always read the maker's manual, and replace worn gaskets and valves before using a cooker.",
+          "product_types": [
+            "Aluminium cookers",
+            "Stainless steel cookers",
+            "Induction-base cookers"
+          ],
+          "planned_guides": [
+            {
+              "title": "Best Pressure Cookers in India"
+            },
+            {
+              "title": "Best Pressure Cooker Under ₹2,000"
+            },
+            {
+              "title": "Best 3 L Pressure Cookers"
+            },
+            {
+              "title": "Best 5 L Pressure Cookers"
+            },
+            {
+              "title": "Stainless Steel vs Aluminium Pressure Cooker"
+            },
+            {
+              "title": "Best Hawkins Pressure Cookers"
+            },
+            {
+              "title": "Best Prestige Pressure Cookers"
+            }
+          ]
+        },
+        {
+          "section": "kitchen",
+          "slug": "mixer-grinders",
+          "name": "Mixer Grinders",
+          "description": "Mixer grinders by motor power, jars and everyday use.",
+          "h1": "Best Mixer Grinders in India",
+          "meta": "How to choose a mixer grinder in India: motor power, jars, blades and safety features explained. Recommendations coming after product research.",
+          "intro": "A good mixer grinder fits the way you cook, from chutneys to dosa batter. This page will list our researched picks, with pros, cons and a short buying guide.",
+          "needs": [
+            {
+              "name": "Daily wet grinding",
+              "text": "Look at motor power, jar quality and how long the maker says the motor can run continuously."
+            },
+            {
+              "name": "Dry grinding for masalas",
+              "text": "Check that a dry jar is included and that the blades are made for dry spices."
+            },
+            {
+              "name": "Small families",
+              "text": "A compact model with fewer jars is easier to store."
+            },
+            {
+              "name": "Larger families",
+              "text": "More jars and a stronger motor handle bigger batches."
+            }
+          ],
+          "tips": [
+            [
+              "Motor power",
+              "Motor power is listed in watts. A stronger motor copes better with heavy loads, but check the duty cycle."
+            ],
+            [
+              "Jars and lids",
+              "Look at the material of the jars and how well the lids seal. Leaking lids are a common complaint."
+            ],
+            [
+              "Overload protection",
+              "An overload cut-off helps protect the motor. Check that the listing mentions it."
+            ]
+          ],
+          "faqs": [
+            {
+              "q": "How many jars do I need?",
+              "a": "A wet jar and a dry jar cover most needs. More jars suit people who grind often or in different sizes."
+            },
+            {
+              "q": "Can I run a mixer grinder for a long time?",
+              "a": "Follow the maker's limits on running time and let the motor rest between batches."
+            }
+          ],
+          "caution": "This page is general information, not professional or safety advice. Always follow the maker's instructions for use, cleaning and safety.",
+          "product_types": []
+        },
+        {
+          "section": "kitchen",
+          "slug": "cookware-sets",
+          "name": "Cookware Sets",
+          "description": "Pans, kadhais and pots sold as sets.",
+          "h1": "Best Cookware Sets in India",
+          "meta": "How to choose a cookware set in India: material, induction compatibility and care explained. Recommendations coming after product research.",
+          "intro": "A cookware set is good value when you actually use every piece. This page will list our researched picks, with pros, cons and a short buying guide.",
+          "needs": [
+            {
+              "name": "Material",
+              "text": "Non-stick is easy to cook with but needs gentle care. Stainless steel is durable. Hard-anodised and cast iron are heavy and sturdy."
+            },
+            {
+              "name": "Your stove",
+              "text": "Check that the base suits gas or induction cooktops."
+            },
+            {
+              "name": "Pieces you will use",
+              "text": "Count the pieces you really need. A set with fewer, better pieces can beat a long list."
+            },
+            {
+              "name": "Care",
+              "text": "Non-stick pans usually need wooden or silicone spoons and moderate heat."
+            }
+          ],
+          "tips": [
+            [
+              "Handles and lids",
+              "Check that handles stay comfortable and that lids fit well."
+            ],
+            [
+              "Base thickness",
+              "A thick, flat base heats more evenly."
+            ],
+            [
+              "Warranty",
+              "Read what the warranty covers, especially for non-stick coatings."
+            ]
+          ],
+          "faqs": [
+            {
+              "q": "Is a cookware set better than buying single pieces?",
+              "a": "A set can be better value if you will use most pieces. If you only need one or two, single pieces are often a better choice."
+            },
+            {
+              "q": "Can I use metal spoons on non-stick pans?",
+              "a": "It is better not to. Metal can scratch non-stick coatings, so use wooden or silicone spoons."
+            }
+          ],
+          "caution": "This page is general information, not professional or safety advice. Always follow the maker's instructions for use, cleaning and safety.",
+          "product_types": []
+        },
+        {
+          "section": "kitchen",
+          "slug": "air-fryers",
+          "name": "Air Fryers",
+          "description": "Air fryers by capacity, power and ease of cleaning.",
+          "h1": "Best Air Fryers in India",
+          "meta": "How to choose an air fryer in India: capacity, power, controls and cleaning explained. Recommendations coming after product research.",
+          "intro": "An air fryer is only useful if it fits your kitchen and your meals. This page will list our researched picks, with pros, cons and a short buying guide.",
+          "needs": [
+            {
+              "name": "Capacity",
+              "text": "Capacity is listed in litres. Smaller models suit one or two people, and larger ones suit families."
+            },
+            {
+              "name": "Counter space",
+              "text": "Check the size and weight of the fryer against the space you have."
+            },
+            {
+              "name": "Controls",
+              "text": "Simple dials are easy to use. Digital controls with presets can help if you cook many things."
+            },
+            {
+              "name": "Cleaning",
+              "text": "A removable, dishwasher-safe or easy-to-wash basket makes daily use easier."
+            }
+          ],
+          "tips": [
+            [
+              "Power",
+              "Power is listed in watts. Check that your home wiring can handle it."
+            ],
+            [
+              "Basket size",
+              "The basket decides how much food you can cook at once."
+            ],
+            [
+              "Noise and smell",
+              "Read what buyers say about noise and any smell when new."
+            ]
+          ],
+          "faqs": [
+            {
+              "q": "Does an air fryer use less oil?",
+              "a": "Air fryers can cook crisp food with much less oil than deep frying, but results depend on the food and the model."
+            },
+            {
+              "q": "What size air fryer should I buy?",
+              "a": "Choose by the number of people you cook for. Many families prefer a larger basket so they do not need to cook in batches."
+            }
+          ],
+          "caution": "This page is general information, not professional or safety advice. Always follow the maker's instructions for use, cleaning and safety.",
+          "product_types": []
+        },
+        {
+          "section": "kitchen",
+          "slug": "electric-kettles",
+          "name": "Electric Kettles",
+          "description": "Electric kettles by capacity, material and safety.",
+          "h1": "Best Electric Kettles in India",
+          "meta": "How to choose an electric kettle in India: capacity, body material, auto cut-off and cleaning explained. Recommendations coming after product research.",
+          "intro": "A good electric kettle boils safely and is easy to clean. This page will list our researched picks, with pros, cons and a short buying guide.",
+          "needs": [
+            {
+              "name": "Capacity",
+              "text": "Around 1 to 1.8 litres is common. Pick by how many cups you make at once."
+            },
+            {
+              "name": "Body material",
+              "text": "Stainless steel is sturdy. Check what the inside is made of, and read how any plastic parts feel in reviews."
+            },
+            {
+              "name": "Safety",
+              "text": "Auto cut-off and boil-dry protection are useful features. Check the listing."
+            },
+            {
+              "name": "Cleaning",
+              "text": "A wide mouth makes scale easier to clean."
+            }
+          ],
+          "tips": [
+            [
+              "Power",
+              "Higher watts boil faster. Check the listed power."
+            ],
+            [
+              "Lid and spout",
+              "Look for a lid that closes well and a spout that pours cleanly."
+            ],
+            [
+              "Descaling",
+              "Hard water leaves scale. Follow the maker's descaling advice."
+            ]
+          ],
+          "faqs": [
+            {
+              "q": "Stainless steel or plastic kettle?",
+              "a": "Stainless steel bodies are sturdier. Check the inside material and what buyers say about taste and smell."
+            },
+            {
+              "q": "How often should I clean an electric kettle?",
+              "a": "Descale it regularly if you have hard water, following the maker's instructions."
+            }
+          ],
+          "caution": "This page is general information, not professional or safety advice. Always follow the maker's instructions for use, cleaning and safety.",
+          "product_types": []
+        },
+        {
+          "section": "kitchen",
+          "slug": "storage-containers",
+          "name": "Storage Containers",
+          "description": "Airtight containers for dry food and leftovers.",
+          "h1": "Best Storage Containers in India",
+          "meta": "How to choose kitchen storage containers in India: material, airtight lids and stacking explained. Recommendations coming after product research.",
+          "intro": "Good containers keep food fresh and stack neatly. This page will list our researched picks, with pros, cons and a short buying guide.",
+          "needs": [
+            {
+              "name": "Material",
+              "text": "Plastic is light, glass is easy to clean and steel is durable. Check any food-safe statement on the listing."
+            },
+            {
+              "name": "Airtight lids",
+              "text": "Check how the lid seals. Read what buyers say about leaks and loose lids."
+            },
+            {
+              "name": "Stacking",
+              "text": "Containers with matching sizes stack and fit shelves better."
+            },
+            {
+              "name": "Use case",
+              "text": "Check whether the container is labelled for the microwave or freezer if you need that."
+            }
+          ],
+          "tips": [
+            [
+              "Capacity",
+              "Pick sizes that suit your groceries, from small spice jars to large rice containers."
+            ],
+            [
+              "Transparent or not",
+              "Clear containers let you see the contents. Opaque ones can protect food from light."
+            ],
+            [
+              "Washing",
+              "Check whether the lids and seals can be washed easily."
+            ]
+          ],
+          "faqs": [
+            {
+              "q": "Are plastic containers safe for food?",
+              "a": "Look for a food-grade statement on the listing and follow the maker's temperature limits."
+            },
+            {
+              "q": "How do I keep containers from smelling?",
+              "a": "Wash them soon after use, dry them fully and leave the lid off for a while."
+            }
+          ],
+          "caution": "This page is general information, not professional or safety advice. Always follow the maker's instructions for use, cleaning and safety.",
+          "product_types": []
+        },
+        {
+          "section": "kitchen",
+          "slug": "lunch-boxes",
+          "name": "Lunch Boxes",
+          "description": "Lunch boxes for school, office and travel.",
+          "h1": "Best Lunch Boxes in India",
+          "meta": "How to choose a lunch box in India: leak-proofing, insulation, compartments and size explained. Recommendations coming after product research.",
+          "intro": "A good lunch box keeps food in place and fits your bag. This page will list our researched picks, with pros, cons and a short buying guide.",
+          "needs": [
+            {
+              "name": "School",
+              "text": "Look for a secure lid, easy-to-open latches and a size that fits the bag."
+            },
+            {
+              "name": "Office",
+              "text": "Insulated boxes or boxes with several containers suit hot meals and rotis."
+            },
+            {
+              "name": "Travel",
+              "text": "Leak-proof lids and a sturdy build matter more on the move."
+            },
+            {
+              "name": "Hot or cold food",
+              "text": "Insulated boxes may keep food warm for a while. Check what the maker claims and what buyers report."
+            }
+          ],
+          "tips": [
+            [
+              "Leak-proofing",
+              "Look for sealing rings and tight locks, and read what buyers say."
+            ],
+            [
+              "Compartments",
+              "Separate compartments keep dry and wet food apart."
+            ],
+            [
+              "Material",
+              "Check whether the box is steel, plastic or glass, and how heavy it is."
+            ]
+          ],
+          "faqs": [
+            {
+              "q": "Stainless steel or plastic lunch box?",
+              "a": "Steel is durable and easy to keep clean. Plastic is lighter but may stain or hold smells."
+            },
+            {
+              "q": "Can I microwave a lunch box?",
+              "a": "Only if the maker says it is microwave-safe. Steel boxes should not go in the microwave."
+            }
+          ],
+          "caution": "This page is general information, not professional or safety advice. Always follow the maker's instructions for use, cleaning and safety.",
+          "product_types": []
+        },
+        {
+          "section": "kitchen",
+          "slug": "kitchen-organizers",
+          "name": "Kitchen Organizers",
+          "description": "Racks, shelves and organisers that save counter space.",
+          "h1": "Best Kitchen Organizers in India",
+          "meta": "How to choose kitchen organizers in India: type, size, material and mounting explained. Recommendations coming after product research.",
+          "intro": "The right organiser fits your space and holds what you actually use. This page will list our researched picks, with pros, cons and a short buying guide.",
+          "needs": [
+            {
+              "name": "Small kitchens",
+              "text": "Wall-mounted or stackable racks save counter space."
+            },
+            {
+              "name": "Cabinets",
+              "text": "Measure the cabinet before you buy an organiser."
+            },
+            {
+              "name": "Counters",
+              "text": "Choose racks that are stable and easy to wipe clean."
+            },
+            {
+              "name": "Heavy items",
+              "text": "Check the weight limit before loading a rack with jars or pans."
+            }
+          ],
+          "tips": [
+            [
+              "Measure first",
+              "Check the width, depth and height against your space."
+            ],
+            [
+              "Rust resistance",
+              "In humid kitchens, look for rust-resistant materials and coatings."
+            ],
+            [
+              "Assembly and mounting",
+              "Check whether it needs drilling and what fittings are included."
+            ]
+          ],
+          "faqs": [
+            {
+              "q": "How do I organise a small kitchen?",
+              "a": "Use vertical space with wall racks and stackable containers, and keep daily items within easy reach."
+            },
+            {
+              "q": "Do kitchen racks need drilling?",
+              "a": "Some do and some use adhesive. Check the listing and your wall type."
+            }
+          ],
+          "caution": "This page is general information, not professional or safety advice. Always follow the maker's instructions for use, cleaning and safety.",
+          "product_types": []
+        },
+        {
+          "section": "kitchen",
+          "slug": "tawas-frying-pans",
+          "name": "Tawas / Frying Pans",
+          "description": "Tawas, dosa pans and frying pans by material.",
+          "h1": "Best Tawas and Frying Pans in India",
+          "meta": "How to choose a tawa or frying pan in India: iron, non-stick and hard-anodised pans explained. Recommendations coming after product research.",
+          "intro": "The right tawa or pan depends on what you cook most. This page will list our researched picks, with pros, cons and a short buying guide.",
+          "needs": [
+            {
+              "name": "Rotis and dosas",
+              "text": "Iron and cast-iron tawas hold heat well but need seasoning. Non-stick tawas are easier for beginners."
+            },
+            {
+              "name": "Everyday frying",
+              "text": "Check the pan diameter, depth and handle comfort."
+            },
+            {
+              "name": "Your stove",
+              "text": "Check that the base suits gas or induction."
+            },
+            {
+              "name": "Care",
+              "text": "Non-stick pans need gentle tools and moderate heat. Iron pans need drying and seasoning."
+            }
+          ],
+          "tips": [
+            [
+              "Material",
+              "Iron is durable, non-stick is easy, and hard-anodised is a middle path. Pick the one you will look after."
+            ],
+            [
+              "Size and weight",
+              "A heavy pan can be tiring to flip, and a very small one limits what you cook."
+            ],
+            [
+              "Handle",
+              "A handle that stays cool and feels secure matters for daily use."
+            ]
+          ],
+          "faqs": [
+            {
+              "q": "Iron or non-stick tawa?",
+              "a": "Iron tawas last long and suit rotis and dosas, but need seasoning. Non-stick tawas are easier to use and clean."
+            },
+            {
+              "q": "How do I season an iron tawa?",
+              "a": "Follow the maker's instructions. Many suggest cleaning, drying and rubbing a thin layer of oil before heating."
+            }
+          ],
+          "caution": "This page is general information, not professional or safety advice. Always follow the maker's instructions for use, cleaning and safety.",
+          "product_types": []
+        },
+        {
+          "section": "home",
+          "slug": "cleaning-tools",
+          "name": "Cleaning Tools",
+          "description": "Mops, brooms, brushes and scrubbers for the home.",
+          "h1": "Best Cleaning Tools for Home in India",
+          "meta": "How to choose home cleaning tools in India: mops, brooms, brushes and scrubbers explained. Recommendations coming after product research.",
+          "intro": "The right cleaning tool depends on your floors and how often you clean. This page will list our researched picks, with pros, cons and a short buying guide.",
+          "needs": [
+            {
+              "name": "Tile and marble floors",
+              "text": "Flat or spin mops with microfibre heads are common choices."
+            },
+            {
+              "name": "Rough floors and balconies",
+              "text": "A sturdy broom or brush handles dust and dirt better."
+            },
+            {
+              "name": "Bathrooms",
+              "text": "Look for brushes with stiff bristles and comfortable handles."
+            },
+            {
+              "name": "Small homes",
+              "text": "Light, compact tools are easier to store."
+            }
+          ],
+          "tips": [
+            [
+              "Refills",
+              "Check that refills or replacement heads are easy to find."
+            ],
+            [
+              "Handle",
+              "A telescopic handle helps if you are tall or short."
+            ],
+            [
+              "Cleaning the tool",
+              "Choose tools that are easy to rinse and dry."
+            ]
+          ],
+          "faqs": [
+            {
+              "q": "What is the best type of mop for tiles?",
+              "a": "Flat and spin mops with microfibre heads are common for tile floors. Choose one with replaceable heads."
+            },
+            {
+              "q": "How often should I replace a mop head?",
+              "a": "When it stops absorbing well or smells even after washing."
+            }
+          ],
+          "caution": "This page is general information, not professional or safety advice. Always follow the maker's instructions for use, cleaning and safety.",
+          "product_types": []
+        },
+        {
+          "section": "home",
+          "slug": "storage-organizers",
+          "name": "Storage & Organizers",
+          "description": "Shelves, racks and boxes for wardrobes and rooms.",
+          "h1": "Best Storage and Organizers for Home in India",
+          "meta": "How to choose home storage and organizers in India: shelves, racks, boxes and shoe racks explained. Recommendations coming after product research.",
+          "intro": "Good storage makes a home feel larger. This page will list our researched picks, with pros, cons and a short buying guide.",
+          "needs": [
+            {
+              "name": "Wardrobes",
+              "text": "Look for stackable boxes and hanging organisers that fit your shelves."
+            },
+            {
+              "name": "Shoes",
+              "text": "Shoe racks should suit the space and the number of pairs."
+            },
+            {
+              "name": "Small rooms",
+              "text": "Slim, vertical units save floor space."
+            },
+            {
+              "name": "Heavy items",
+              "text": "Check the weight limit and the material before loading a unit."
+            }
+          ],
+          "tips": [
+            [
+              "Measure the space",
+              "Write down the width, depth and height before you buy."
+            ],
+            [
+              "Assembly",
+              "Check whether assembly is easy and what tools you need."
+            ],
+            [
+              "Build",
+              "Look at the material and how stable the unit feels in reviews."
+            ]
+          ],
+          "faqs": [
+            {
+              "q": "How do I choose a shoe rack?",
+              "a": "Count your pairs, measure the space and check the weight each shelf can hold."
+            },
+            {
+              "q": "Are plastic storage boxes sturdy?",
+              "a": "It depends on the thickness and the lid. Check the maker's weight limit and what buyers report."
+            }
+          ],
+          "caution": "This page is general information, not professional or safety advice. Always follow the maker's instructions for use, cleaning and safety.",
+          "product_types": []
+        },
+        {
+          "section": "home",
+          "slug": "bathroom-accessories",
+          "name": "Bathroom Accessories",
+          "description": "Holders, racks, hooks and dispensers for the bathroom.",
+          "h1": "Best Bathroom Accessories in India",
+          "meta": "How to choose bathroom accessories in India: material, mounting and rust resistance explained. Recommendations coming after product research.",
+          "intro": "Bathroom accessories live in damp conditions, so build and mounting matter. This page will list our researched picks, with pros, cons and a short buying guide.",
+          "needs": [
+            {
+              "name": "Rust resistance",
+              "text": "Look for stainless steel, brass or good-quality plastic, and read what buyers say about rust."
+            },
+            {
+              "name": "Mounting",
+              "text": "Some fit with screws and some with adhesive. Check what your wall can take."
+            },
+            {
+              "name": "Tile surfaces",
+              "text": "Adhesive mounts work best on smooth tiles. Rough surfaces may need drilling."
+            },
+            {
+              "name": "Weight",
+              "text": "Check the weight limit before hanging towels or heavy items."
+            }
+          ],
+          "tips": [
+            [
+              "Material",
+              "Check the material and finish on the listing."
+            ],
+            [
+              "What is in the box",
+              "Check which screws, plugs or adhesive pads are included."
+            ],
+            [
+              "Size",
+              "Measure the space so racks and holders do not crowd the bathroom."
+            ]
+          ],
+          "faqs": [
+            {
+              "q": "Do adhesive bathroom hooks work?",
+              "a": "They can work on clean, smooth tiles, but check the weight limit and the maker's instructions."
+            },
+            {
+              "q": "How do I stop bathroom accessories from rusting?",
+              "a": "Choose rust-resistant materials and wipe them dry now and then."
+            }
+          ],
+          "caution": "This page is general information, not professional or safety advice. Always follow the maker's instructions for use, cleaning and safety.",
+          "product_types": []
+        },
+        {
+          "section": "home",
+          "slug": "bedsheets-bedding",
+          "name": "Bedsheets & Bedding",
+          "description": "Bedsheets, covers and comforters by size and fabric.",
+          "h1": "Best Bedsheets in India",
+          "meta": "How to choose bedsheets and bedding in India: bed size, fabric, thread count and care explained. Recommendations coming after product research.",
+          "intro": "The right bedsheet fits your bed and feels comfortable in your weather. This page will list our researched picks, with pros, cons and a short buying guide.",
+          "needs": [
+            {
+              "name": "Bed size",
+              "text": "Check your mattress size and depth, and pick a sheet made for it."
+            },
+            {
+              "name": "Fabric",
+              "text": "Cotton is breathable and common. Microfibre is soft and low-cost to keep. Blends mix both."
+            },
+            {
+              "name": "Hot weather",
+              "text": "Breathable cotton is a common choice."
+            },
+            {
+              "name": "Easy care",
+              "text": "Check the care label for washing and shrinkage notes."
+            }
+          ],
+          "tips": [
+            [
+              "Thread count is not everything",
+              "Fabric type, weave and finishing also affect how a sheet feels."
+            ],
+            [
+              "Check the size",
+              "Measure your mattress and compare it with the sheet's listed size."
+            ],
+            [
+              "Read the care label",
+              "Washing instructions affect how long the sheet looks good."
+            ]
+          ],
+          "faqs": [
+            {
+              "q": "Does a higher thread count mean a better bedsheet?",
+              "a": "Not always. Fabric type and finishing matter as well. Read what buyers say about feel and durability."
+            },
+            {
+              "q": "How do I stop bedsheets from shrinking?",
+              "a": "Follow the care label, and wash in cool water if the maker suggests it."
+            }
+          ],
+          "caution": "This page is general information, not professional or safety advice. Always follow the maker's instructions for use, cleaning and safety.",
+          "product_types": []
+        },
+        {
+          "section": "home",
+          "slug": "pillows-cushions",
+          "name": "Pillows & Cushions",
+          "description": "Pillows and cushions by filling and firmness.",
+          "h1": "Best Pillows in India",
+          "meta": "How to choose pillows and cushions in India: filling, firmness, size and washing explained. Recommendations coming after product research.",
+          "intro": "A good pillow suits how you sleep. This page will list our researched picks, with pros, cons and a short buying guide.",
+          "needs": [
+            {
+              "name": "Back sleepers",
+              "text": "Medium firmness is a common starting point."
+            },
+            {
+              "name": "Side sleepers",
+              "text": "Many side sleepers prefer a firmer or higher pillow to fill the gap at the neck."
+            },
+            {
+              "name": "Stomach sleepers",
+              "text": "A softer, flatter pillow is a common choice."
+            },
+            {
+              "name": "Cushions",
+              "text": "Check the cover fabric, the filling and whether the cover can be washed."
+            }
+          ],
+          "tips": [
+            [
+              "Filling",
+              "Fibre, foam and cotton feel different. Read what buyers say about firmness."
+            ],
+            [
+              "Washing",
+              "Check whether the pillow or only the cover can be washed."
+            ],
+            [
+              "Size",
+              "Check the dimensions against your pillowcase."
+            ]
+          ],
+          "faqs": [
+            {
+              "q": "How do I choose a pillow?",
+              "a": "Think about how you sleep, then compare firmness and filling."
+            },
+            {
+              "q": "How often should I replace a pillow?",
+              "a": "When it stays flat, lumpy or uncomfortable even after fluffing or washing."
+            }
+          ],
+          "caution": "This page is general comfort information, not medical advice. If you have neck or back pain, please talk to a doctor.",
+          "product_types": []
+        },
+        {
+          "section": "home",
+          "slug": "floor-mats",
+          "name": "Floor Mats",
+          "description": "Door mats, bathroom mats and living-room mats.",
+          "h1": "Best Floor Mats in India",
+          "meta": "How to choose floor mats in India: material, size, grip and washing explained. Recommendations coming after product research.",
+          "intro": "The right mat depends on where it goes and how much it is used. This page will list our researched picks, with pros, cons and a short buying guide.",
+          "needs": [
+            {
+              "name": "Doorways",
+              "text": "Coir and rubber mats trap dirt. Check that the thickness clears your door."
+            },
+            {
+              "name": "Bathrooms",
+              "text": "Look for a non-slip backing and quick-drying material."
+            },
+            {
+              "name": "Living rooms",
+              "text": "Washable fabric and a non-slip backing suit busy rooms."
+            },
+            {
+              "name": "Kitchens",
+              "text": "A mat that wipes clean and stays flat is more practical."
+            }
+          ],
+          "tips": [
+            [
+              "Non-slip backing",
+              "A grip backing helps keep the mat in place."
+            ],
+            [
+              "Size",
+              "Measure the area before you buy."
+            ],
+            [
+              "Washing",
+              "Check whether the mat can be machine-washed or only wiped."
+            ]
+          ],
+          "faqs": [
+            {
+              "q": "What mat is best for a bathroom?",
+              "a": "A quick-drying mat with a non-slip backing is a common choice."
+            },
+            {
+              "q": "How do I keep a mat from sliding?",
+              "a": "Choose one with a rubber or grip backing, and use it on a clean, dry floor."
+            }
+          ],
+          "caution": "This page is general information, not professional or safety advice. Always follow the maker's instructions for use, cleaning and safety.",
+          "product_types": []
+        },
+        {
+          "section": "home",
+          "slug": "mosquito-insect-protection",
+          "name": "Mosquito & Insect Protection",
+          "description": "Nets, repellents and insect control products.",
+          "h1": "Best Mosquito Protection Products in India",
+          "meta": "How to choose mosquito and insect protection in India: nets, repellents, rackets and safety explained. Recommendations coming after product research.",
+          "intro": "The right protection depends on your room, your family and how you prefer to use it. This page will list our researched picks, with pros, cons and a short buying guide.",
+          "needs": [
+            {
+              "name": "Chemical-free",
+              "text": "Nets and screens act as a physical barrier."
+            },
+            {
+              "name": "Repellents",
+              "text": "Vaporisers, coils and sprays use chemicals. Read the label and follow the directions."
+            },
+            {
+              "name": "Rackets",
+              "text": "Electric rackets need care, and should be kept away from children."
+            },
+            {
+              "name": "Families with children",
+              "text": "Check the maker's safety information, keep ventilation in mind and keep products out of reach of children."
+            }
+          ],
+          "tips": [
+            [
+              "Read the label",
+              "Check ingredients, room size and how long a refill is meant to last."
+            ],
+            [
+              "Ventilation",
+              "Follow directions on using products in closed rooms."
+            ],
+            [
+              "Safety",
+              "Keep repellents, coils and rackets away from children and pets."
+            ]
+          ],
+          "faqs": [
+            {
+              "q": "Are mosquito nets effective?",
+              "a": "They physically block mosquitoes, if they fit well and have no gaps."
+            },
+            {
+              "q": "Is it safe to use a mosquito coil indoors?",
+              "a": "Follow the maker's directions and keep the room ventilated. If anyone has breathing problems, ask a doctor first."
+            }
+          ],
+          "caution": "This page is general information, not medical or safety advice. Follow the product label, keep products away from children and pets, and talk to a doctor if anyone has a reaction or breathing problems.",
+          "product_types": []
+        }
+      ],
+      "thumb": "/images/categories/home-kitchen-thumb.jpg",
+      "template": "reviews",
+      "tagline": "Best picks for everyday home and kitchen use.",
+      "sections": [
+        {
+          "slug": "kitchen",
+          "name": "Kitchen",
+          "blurb": "Cookers, appliances, cookware and storage for the kitchen.",
+          "hue": 28
+        },
+        {
+          "slug": "home",
+          "name": "Home",
+          "blurb": "Cleaning, storage, bedding and everyday home essentials.",
+          "hue": 195
+        }
+      ],
+      "pick_slots": [
+        "Best overall",
+        "Best budget pick",
+        "Best value",
+        "Best for daily use",
+        "Best premium pick",
+        "Best for small homes"
+      ],
+      "pending_note": "Recommendations coming after product research.",
+      "price_bands": [
+        "Under ₹1,000",
+        "₹1,000–₹3,000",
+        "₹3,000–₹6,000",
+        "Premium"
+      ],
+      "more_label": "More home and kitchen guides",
+      "landing_meta": "Buying guides for pressure cookers, mixer grinders, cookware, air fryers, kettles, storage, cleaning tools, bedding and more, for Indian homes."
     },
     {
       "slug": "clothing-accessories",

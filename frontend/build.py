@@ -220,6 +220,22 @@ CATEGORY_ICON.update({
     "foam-rollers": '<rect x="3" y="8" width="18" height="8" rx="4"/><path d="M8 8v8M12 8v8M16 8v8"/>',
     "shaker-bottles": '<path d="M8 3h8v3H8zM9 6l-1 14a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1L15 6"/><path d="M9 11h6"/>',
     "weighing-scales": '<rect x="3" y="3" width="18" height="18" rx="4"/><path d="M8 9.5a4 4 0 0 1 8 0z"/><path d="M12 9.5l1.6-2.2"/>',
+    "pressure-cookers": '<path d="M5 10h14v9a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2z"/><path d="M4 10h16M9 10V7h6v3M12 7V4M3 14h2M19 14h2"/>',
+    "mixer-grinders": '<path d="M8 3h8l-1 10H9z"/><rect x="6" y="13" width="12" height="8" rx="2"/><path d="M12 16.5v1"/>',
+    "cookware-sets": '<rect x="3" y="11" width="12" height="9" rx="2"/><path d="M15 14h4a2 2 0 0 1 0 4h-4M5 8h8M7 8V6h4v2"/>',
+    "air-fryers": '<rect x="5" y="3" width="14" height="18" rx="4"/><circle cx="12" cy="13.5" r="4"/><path d="M8.5 7h7"/>',
+    "electric-kettles": '<path d="M6 8h10l1 12H5z"/><path d="M16 11h2a2 2 0 0 1 0 4h-1M6 8l3-4h4l3 4"/>',
+    "storage-containers": '<rect x="4" y="9" width="16" height="11" rx="2"/><path d="M5 9V6h14v3M10 14h4"/>',
+    "lunch-boxes": '<rect x="3" y="9" width="18" height="10" rx="2"/><path d="M7 9V6h10v3M9 14h6"/>',
+    "kitchen-organizers": '<path d="M4 3v18M20 3v18M4 21h16M4 12h16"/><rect x="7" y="6" width="3" height="6"/><rect x="13" y="8" width="4" height="4"/><rect x="8" y="15" width="8" height="6"/>',
+    "tawas-frying-pans": '<circle cx="10" cy="12" r="6"/><path d="M16 12h6"/>',
+    "cleaning-tools": '<path d="M12 3v11M7 14h10l1 7H6z"/>',
+    "storage-organizers": '<rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 12h16M10 8h4M10 16h4"/>',
+    "bathroom-accessories": '<path d="M5 21V6a3 3 0 0 1 3-3h4"/><path d="M12 3a5 5 0 0 1 5 5H9a5 5 0 0 1 3-5zM10 12v2M13 12v3M16 12v2"/>',
+    "bedsheets-bedding": '<path d="M3 19V7M3 15h18v4M21 15v-3a3 3 0 0 0-3-3h-7v6"/><circle cx="7" cy="11" r="2"/>',
+    "pillows-cushions": '<path d="M4 8c4-2 12-2 16 0-1.5 2.5-1.5 5.5 0 8-4 2-12 2-16 0 1.5-2.5 1.5-5.5 0-8z"/>',
+    "floor-mats": '<rect x="3" y="8" width="18" height="9" rx="1.5"/><path d="M6 8v9M9 8v9M12 8v9M15 8v9M18 8v9"/>',
+    "mosquito-insect-protection": '<ellipse cx="12" cy="13" rx="4" ry="6"/><path d="M12 7V4M8 11 4 9M16 11l4-2M8 15l-4 2M16 15l4 2"/>',
     "kettlebells": '<circle cx="12" cy="15" r="6"/><path d="M8.2 10.4C7 4 17 4 15.8 10.4"/>',
 })
 
@@ -328,7 +344,7 @@ PRICE_NOTE = "Prices may change. Check the retailer for the latest price."
 RETAILER_ORDER = ["amazon", "flipkart", "brand_store", "other"]
 RETAILER_LABEL = {"amazon": "Amazon", "flipkart": "Flipkart", "brand_store": "Brand website", "other": "Other retailer"}
 SLOT_KEYS = {"Best overall": "best_overall", "Best budget pick": "best_budget", "Best value": "best_value",
-             "Best for daily use": "best_daily", "Best premium pick": "best_premium", "Best for beginners": "best_beginner"}
+             "Best for daily use": "best_daily", "Best premium pick": "best_premium", "Best for beginners": "best_beginner", "Best for small homes": "best_small_home"}
 
 
 def load_products(cat_slug):
@@ -381,12 +397,16 @@ def product_review_html(p):
         return f'<div><dt>{esc(label)}</dt><dd>{value}</dd></div>' if value else ""
     facts = "".join([
         row("Product type", esc(p.get("product_type", ""))),
+        row("Material and build", esc(p.get("material", ""))),
+        row("Size or capacity", esc(p.get("size", ""))),
         row("Best for", esc(p.get("best_for", ""))),
         row("Skin, hair or use case", esc(p.get("suits", ""))),
         row("Price band", esc(p.get("price_band", ""))),
         row("Value for money", esc(p.get("value_for_money", ""))),
         row("Best use case", esc(p.get("best_use_case", ""))),
-        row("Who should avoid it", esc(p.get("avoid", "")))])
+        row("Who should buy it", esc(p.get("who_should_buy", ""))),
+        row("Who should avoid it", esc(p.get("avoid", ""))),
+        row("Maintenance and cleaning", esc(p.get("maintenance", "")))])
     buttons, note = product_buttons(p)
     sample = '<span class="sample-flag">Sample</span> ' if p.get("sample") else ""
     parts = [f'<article class="beauty-review" id="r-{esc(p["id"])}">',
@@ -449,8 +469,14 @@ def beauty_family_body(cat, f, products, sibling_cards):
     faqs = "".join(
         f'<details class="faq-item"><summary><h3>{esc(q["q"])}</h3><span class="faq-chev" aria-hidden="true"></span></summary><p>{esc(q["a"])}</p></details>'
         for q in f["faqs"])
-    types = "".join(f"<li>{esc(x)}</li>" for x in f.get("product_types", []))
-    bands = "".join(f'<span class="band">{esc(b)}</span>' for b in PRICE_BANDS)
+    sec_names = {s["slug"]: s["name"] for s in cat.get("sections", [])}
+    kicker = sec_names.get(f.get("section"), cat["name"])
+    planned = ""
+    if f.get("planned_guides"):
+        items = "".join(f'<li><span>{esc(g["title"])}</span><span class="planned-tag">Planned</span></li>' for g in f["planned_guides"])
+        planned = ('    <h2>Guides we plan to write</h2>\n    <p class="family-note">These are not written yet. Each one will use the same buying-guide template: picks, comparison, buying guide and FAQs.</p>\n'
+                   f'    <ul class="planned-list">{items}</ul>\n')
+    bands = "".join(f'<span class="band">{esc(b)}</span>' for b in cat.get("price_bands", PRICE_BANDS))
     if products:
         picks = ('<h2>Our picks</h2>\n<ul class="pick-slots">' + "".join(slot_html) + '</ul>\n'
                  '<h2>Comparison</h2>\n' + product_table_html(products, f["h1"]) + '\n'
@@ -467,7 +493,7 @@ def beauty_family_body(cat, f, products, sibling_cards):
     return (
         '<section class="section">\n  <div class="container content-page family-page">\n'
         '    {{breadcrumb}}\n'
-        f'    <p class="family-kicker">{esc(cat["name"])}</p>\n    <h1>{esc(f["h1"])}</h1>\n    <p class="lead">{esc(f["intro"])}</p>\n'
+        f'    <p class="family-kicker">{esc(kicker)}</p>\n    <h1>{esc(f["h1"])}</h1>\n    <p class="lead">{esc(f["intro"])}</p>\n'
         f'    {status}\n'
         f'    <h2>Start with what you need</h2>\n    <ul class="family-tips">{needs}</ul>\n'
         f'    {picks}\n'
@@ -475,7 +501,8 @@ def beauty_family_body(cat, f, products, sibling_cards):
         f'    <p class="family-note">Typical price bands we use: <span class="band-list">{bands}</span> {esc(PRICE_NOTE)}</p>\n'
         f'    <h2>Common questions</h2>\n{faqs}\n'
         f'    <aside class="medical-note"><svg class="ic" aria-hidden="true"><use href="#i-info"/></svg><p>{esc(f["caution"])}</p></aside>\n'
-        f'    <h2>More beauty guides</h2>\n    <ul class="related-links">{sibling_cards}</ul>\n'
+        f'{planned}'
+        f'    <h2>{esc(cat.get("more_label", "More guides"))}</h2>\n    <ul class="related-links">{sibling_cards}</ul>\n'
         f'    <aside class="affiliate-box" id="affiliate-note"><svg class="ic" aria-hidden="true"><use href="#i-info"/></svg>'
         f'<p><strong>Affiliate disclosure.</strong> {esc(affiliate)} <a href="/affiliate-disclosure/">Read the full disclosure</a>.</p></aside>\n'
         '  </div>\n</section>')
@@ -486,24 +513,37 @@ def beauty_pages(cat):
     all_products = load_products(cat["slug"])
     min_index = 3
     pages = []
-    cards = category_directory(entries, grid_id="family-results")
+    sections = cat.get("sections", [])
+    if sections:
+        blocks = []
+        for s in sections:
+            sec_entries = [e for e, f in zip(entries, cat["families"]) if f.get("section") == s["slug"]]
+            blocks.append(
+                f'<section class="family-section family-section-{esc(s["slug"])}" id="{esc(s["slug"])}" aria-labelledby="{esc(s["slug"])}-title" style="--hue:{s["hue"]}">\n'
+                f'  <div class="family-section-head"><h2 id="{esc(s["slug"])}-title">{esc(s["name"])}</h2>'
+                f'<span class="family-count">{len(sec_entries)} product types</span></div>\n'
+                f'  <p class="family-section-blurb">{esc(s["blurb"])}</p>\n  {category_directory(sec_entries, grid_id=s["slug"] + "-results")}\n</section>')
+        cards_html = "\n".join(blocks)
+    else:
+        cards_html = f'<div class="family-cards family-cards-3">{category_directory(entries, grid_id="family-results")}</div>'
     body = (
         '<section class="section">\n  <div class="container content-page family-page">\n'
         '    {{breadcrumb}}\n'
         f'    <h1>{esc(cat["name"])}</h1>\n    <p class="lead">{esc(cat.get("tagline") or cat["description"])}</p>\n'
-        f'    <div class="family-cards family-cards-3">{cards}</div>\n'
+        f'    {cards_html}\n'
         f'    <p class="family-note">{esc(PRICE_NOTE)} This section is general information, not medical advice.</p>\n'
         '  </div>\n</section>')
     pages.append({
         "url": cat["url"], "title": f'{cat["name"]} Buying Guides for India',
-        "description": "Buying guides for skin care, hair care, makeup, men's grooming, bath and body, and sun care, chosen by skin and hair type.",
+        "description": cat.get("landing_meta") or f'{cat["name"]} buying guides for Indian shoppers.',
         "css": ["buttons", "breadcrumb", "content-page", "category-directory", "families"], "js": [],
         "breadcrumbs": [["Shop by Category", "/products/"], [cat["name"], cat["url"]]],
         "updated": "2026-10-16", "_slug": cat["slug"], "_body": body})
     for f in cat["families"]:
         url = family_url(cat, f)
         products = [p for p in all_products if p.get("family") == f["slug"]]
-        sib = "".join(f'<li><a href="{esc(e["url"])}">{esc(e["name"])}</a></li>' for e in entries if e["slug"] != f["slug"])
+        sib = "".join(f'<li><a href="{esc(e["url"])}">{esc(e["name"])}</a></li>' for e, g in zip(entries, cat["families"]) if e["slug"] != f["slug"] and g.get("section") == f.get("section"))
+        sib += f'<li><a href="{esc(cat["url"])}">All {esc(cat["name"])}</a></li>'
         pages.append({
             "url": url, "title": f["h1"], "description": f["meta"],
             "css": ["buttons", "breadcrumb", "content-page", "faq", "compare-table", "product-block", "watches", "families"], "js": [],
@@ -511,7 +551,8 @@ def beauty_pages(cat):
             "breadcrumbs": [["Shop by Category", "/products/"], [cat["name"], cat["url"]], [f["name"], url]],
             "updated": "2026-10-16", "_slug": f'{cat["slug"]}-{f["slug"]}',
             "_body": beauty_family_body(cat, f, products, sib)})
-    sample = json.loads(read(SRC / "products" / "_sample" / "beauty-sample.json")) if (SRC / "products" / "_sample" / "beauty-sample.json").exists() else None
+    sample_path = SRC / "products" / "_sample" / f'{cat["slug"]}-sample.json'
+    sample = json.loads(read(sample_path)) if sample_path.exists() else None
     if sample:
         body = (
             '<section class="section">\n  <div class="container content-page family-page">\n'
@@ -519,8 +560,8 @@ def beauty_pages(cat):
             '    <p class="lead">This page shows the review template with <strong>sample content</strong>. It is not a real product and nothing here is a recommendation.</p>\n'
             f'    {product_review_html(sample)}\n  </div>\n</section>')
         pages.append({
-            "url": f'{cat["url"]}review-template/', "title": "Beauty Review Template Preview",
-            "description": "Sample content showing the beauty review template. Not a real product.",
+            "url": f'{cat["url"]}review-template/', "title": f'{cat["name"]} Review Template Preview',
+            "description": "Sample content showing the review template. Not a real product.",
             "css": ["buttons", "breadcrumb", "content-page", "product-block", "watches", "families"], "js": [], "noindex": True,
             "breadcrumbs": [["Shop by Category", "/products/"], [cat["name"], cat["url"]], ["Review template", f'{cat["url"]}review-template/']],
             "updated": "2026-10-16", "_slug": f'{cat["slug"]}-review-template', "_body": body})
@@ -536,7 +577,7 @@ def family_pages():
     for cat in CATEGORIES:
         if not cat.get("families"):
             continue
-        if cat.get("template") == "beauty":
+        if cat.get("template") in ("beauty", "reviews"):
             pages.extend(beauty_pages(cat))
             continue
         sections = cat.get("sections", [])

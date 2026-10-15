@@ -1,0 +1,35 @@
+{
+  "id": "sample",
+  "sample": true,
+  "family": "pressure-cookers",
+  "name": "Sample product name",
+  "brand": "Sample brand",
+  "product_type": "Pressure cooker (sample)",
+  "best_for": "Best use case, in plain words",
+  "material": "Material and build quality, as listed",
+  "size": "Size or capacity",
+  "features": [
+    "Main feature one",
+    "Main feature two"
+  ],
+  "pros": [
+    "A real strength",
+    "Another real strength"
+  ],
+  "cons": [
+    "A real limit",
+    "Another real limit"
+  ],
+  "price_band": "₹1,000–₹3,000",
+  "value_for_money": "Short, honest comment on value",
+  "who_should_buy": "Who it suits",
+  "avoid": "Who should avoid it",
+  "maintenance": "How to clean and look after it",
+  "how_to_choose": "What to check on the listing before you buy.",
+  "alternatives": [
+    "Alternative one",
+    "Alternative two"
+  ],
+  "final_recommendation": "One honest sentence that matches the pros and cons above.",
+  "retailers": {}
+}
