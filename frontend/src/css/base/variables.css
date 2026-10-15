@@ -2,6 +2,7 @@
 :root {
   color-scheme: light;
   --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-display: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, "Times New Roman", serif;
 
   --step--1: 0.875rem;
   --step-0: 1rem;
@@ -16,21 +17,21 @@
   --space-4: 16px;
   --space-5: 24px;
   --space-6: 32px;
-  --space-7: 48px;
-  --space-8: 72px;
+  --space-7: 56px;
+  --space-8: 88px;
 
   --radius-sm: 8px;
-  --radius: 12px;
-  --radius-lg: 18px;
-  --shadow: 0 1px 2px rgba(16, 33, 63, 0.06), 0 4px 14px rgba(16, 33, 63, 0.06);
-  --shadow-lift: 0 2px 4px rgba(16, 33, 63, 0.08), 0 12px 28px rgba(16, 33, 63, 0.14);
+  --radius: 14px;
+  --radius-lg: 22px;
+  --shadow: 0 1px 2px rgba(40, 28, 10, 0.06), 0 6px 18px rgba(40, 28, 10, 0.07);
+  --shadow-lift: 0 2px 4px rgba(40, 28, 10, 0.08), 0 16px 34px rgba(40, 28, 10, 0.16);
 
-  --color-bg: #ffffff;
+  --color-bg: #fbf9f6;
   --color-surface: #ffffff;
-  --color-bg-alt: #f6f7f9;
-  --color-text: #1a1d23;
-  --color-text-muted: #5b6270;
-  --color-border: #e4e7ec;
+  --color-bg-alt: #f2ede5;
+  --color-text: #1c1f27;
+  --color-text-muted: #5a6070;
+  --color-border: #e7e1d7;
   --color-link: #b03a0c;
   --color-primary: #c2410c;      /* sporty orange */
   --color-primary-dark: #9a3412;

@@ -1,5 +1,5 @@
 /* Page sections */
-.section { padding: clamp(36px, 6vw, 56px) 0; }
+.section { padding: clamp(40px, 7vw, 72px) 0; }
 .section-alt { background: var(--color-bg-alt); }
 
 .section h2 { font-size: var(--step-3); margin: 0 0 6px; }

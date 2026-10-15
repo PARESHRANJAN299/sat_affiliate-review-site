@@ -74,13 +74,33 @@ def slugify(text):
     return re.sub(r"[^a-z0-9]+", "_", text.lower()).strip("_")
 
 
+TAG_HUE = {"Badminton": 215, "Yoga": 160, "Home gym": 22, "Fitness": 340, "Running": 195, "Cricket": 135, "Recovery": 280}
+TAG_ART = {
+    "Badminton": '<ellipse cx="38" cy="24" rx="13" ry="18" transform="rotate(35 38 24)"/><path d="M29 38 L11 56M33 18 L45 30M28 26 L40 36"/>',
+    "Yoga": '<circle cx="20" cy="40" r="12"/><circle cx="20" cy="40" r="5"/><path d="M20 28 H54 V52 H20"/>',
+    "Home gym": '<rect x="5" y="24" width="8" height="16" rx="2"/><rect x="13" y="19" width="7" height="26" rx="2"/><path d="M20 32 H44"/><rect x="44" y="19" width="7" height="26" rx="2"/><rect x="51" y="24" width="8" height="16" rx="2"/>',
+    "Fitness": '<rect x="7" y="42" width="7" height="16" rx="3"/><rect x="50" y="42" width="7" height="16" rx="3"/><path d="M10 42 C10 6 54 6 54 42"/>',
+    "Running": '<path d="M6 42 V30 Q20 30 27 21 L35 27 Q46 29 58 38 V47 H6 Z"/><path d="M6 47 H58M30 33 L36 38M36 30 L42 35"/>',
+    "Cricket": '<rect x="24" y="6" width="15" height="34" rx="3" transform="rotate(28 31 23)"/><path d="M37 42 L52 58"/><circle cx="14" cy="50" r="5"/>',
+    "Recovery": '<ellipse cx="13" cy="32" rx="6" ry="13"/><path d="M13 19 H51 M13 45 H51"/><ellipse cx="51" cy="32" rx="6" ry="13"/>',
+}
+DEFAULT_ART = '<circle cx="32" cy="32" r="18"/><path d="M32 18 V46 M18 32 H46"/>'
+
+
+def tag_art(tag):
+    hue = TAG_HUE.get(tag, 215)
+    shape = TAG_ART.get(tag, DEFAULT_ART)
+    return (f'<div class="article-art" style="--hue:{hue}" aria-hidden="true">'
+            f'<svg viewBox="0 0 64 64" focusable="false">{shape}</svg></div>')
+
+
 def article_cards(articles):
     featured = len(articles) == 1
     cards = []
     for a in articles:
         info = a["article"]
         search = esc(f'{a["title"]} {info["tag"]} {info["category"]} {info["summary"]}'.lower())
-        art = '        <div class="article-art" aria-hidden="true"></div>\n' if featured else ""
+        art = "        " + tag_art(info["tag"]) + "\n"
         cards.append(
             f'      <div class="article-card" data-search="{search}">\n' + art +
             '        <div class="article-body">\n'
@@ -107,7 +127,7 @@ def category_sections(articles):
             '<section class="section">\n  <div class="container">\n'
             f'    <div class="section-head"><h2>{esc(cat["label"])}</h2>'
             f'<a class="see-all" href="{cat["url"]}">See all {esc(cat["label"])} guides \u2192</a></div>\n'
-            + article_cards(items[:3]) + '\n  </div>\n</section>')
+            + article_cards(items[:6]) + '\n  </div>\n</section>')
     return "\n\n".join(out)
 
 
@@ -217,7 +237,7 @@ def bundle(kind, names, key):
             continue
         parts.append(read(path))
     joined = "\n".join(parts)
-    if kind == "css" and re.search(r"(?<![\w-])content\s*:(?!\s*([\"']{2}\s*[;}]|attr\())|url\(", joined):
+    if kind == "css" and re.search(r"(?<![\w-])content\s*:(?!\s*([\"']{2}\s*[;}]|attr\(|counter\())|url\(", joined):
         errors.append(f"{key}: the CSS minifier is not string-aware; avoid content: and url( or upgrade it")
     return write_asset(kind, key, minify_css(joined) if kind == "css" else minify_js(joined))
 
@@ -306,6 +326,133 @@ def structured_data(meta, canonical, title):
 
 # ---------- build ----------
 
+STORES = {
+    "Amazon": "https://www.amazon.in/s?k=",
+    "Flipkart": "https://www.flipkart.com/search?q=",
+    "Decathlon": "https://www.decathlon.in/search?Ntt=",
+}
+
+
+def render_guide(g):
+    """Body HTML for a guide in src/guides/<slug>/guide.json (same layout as the hand-written article)."""
+    picks = g["picks"]
+    ids = [slugify_heading(p["name"], set()) for p in picks]
+    cols = g["columns"]
+
+    quick = "\n".join(
+        f'      <li><a href="#{ids[i]}"><span class="qp-rank">{esc(p["label"])}</span>'
+        f'<strong>{esc(p["name"])}</strong><span class="qp-for">{esc(p["cells"][0])}</span></a></li>'
+        for i, p in enumerate(picks))
+
+    head = "".join(f'<th scope="col" role="columnheader">{esc(c)}</th>' for c in ["Pick"] + cols + ["Price level"])
+    rows = []
+    for p in picks:
+        cells = "".join(f'<td role="cell" data-label="{esc(c)}">{esc(v)}</td>' for c, v in zip(cols, p["cells"]))
+        rows.append(f'          <tr role="row"><th scope="row" role="rowheader">{esc(p["name"])}</th>{cells}'
+                    f'<td role="cell" data-label="Price level">{esc(p["tier"])}</td></tr>')
+    table = ('    <div class="compare-table-wrap">\n      <table class="compare-table" role="table">\n'
+             '        <caption class="visually-hidden">Comparison of three picks</caption>\n'
+             f'        <thead><tr role="row">{head}</tr></thead>\n        <tbody>\n' + "\n".join(rows) +
+             '\n        </tbody>\n      </table>\n    </div>')
+
+    blocks = []
+    for p in picks:
+        buttons = []
+        for k, store in enumerate(p["stores"]):
+            q = urllib.parse.quote_plus(p["search_query"])
+            cls = "btn-primary" if k == 0 else "btn-outline"
+            buttons.append(
+                f'<a href="{STORES[store]}{q}" class="btn {cls} btn-small" target="_blank" rel="nofollow noopener" '
+                f'aria-label="Search on {store} for {esc(p["name"])} (opens in a new tab)">Search on {store} '
+                '<svg class="ic" aria-hidden="true"><use href="#i-external"/></svg></a>')
+        paras = "\n".join(f"      <p>{esc(x)}</p>" for x in p["paragraphs"])
+        good = "".join(f"<li>{esc(x)}</li>" for x in p["good"])
+        bad = "".join(f"<li>{esc(x)}</li>" for x in p["not_good"])
+        blocks.append(
+            '    <div class="product-block">\n'
+            f'      <span class="rank">{esc(p["label"])}</span>\n'
+            f'      <h3>{esc(p["name"])}</h3>\n'
+            f'      <p class="verdict">Verdict: {esc(p["verdict"])}</p>\n'
+            f'{paras}\n'
+            '      <div class="pros-cons">\n'
+            f'        <div class="pros"><h4>Good</h4><ul>{good}</ul></div>\n'
+            f'        <div class="cons"><h4>Not so good</h4><ul>{bad}</ul></div>\n'
+            '      </div>\n'
+            '      <div class="cta-row">\n'
+            f'        <span class="price-tag">{esc(p["tier"])} <span class="approx">(check the price at the shop)</span></span>\n'
+            f'        {" ".join(buttons)}\n'
+            '      </div>\n'
+            '      <p class="cta-note">Opens a search on the shop. We do not sell products or take payments.</p>\n'
+            '    </div>')
+
+    choose = "\n".join(f'    <p><strong>{esc(c["heading"])}.</strong> {esc(c["text"])}</p>' for c in g["choose"])
+    faq = "\n".join(
+        f'      <details class="faq-item"><summary><h3>{esc(f["q"])}</h3><span class="faq-chev" aria-hidden="true"></span></summary>'
+        f'<p>{esc(f["a"])}</p></details>' for f in g["faq"])
+    sources = "\n".join(
+        f'      <li><a href="{esc(s["url"])}" target="_blank" rel="nofollow noopener">{esc(s["label"])}</a></li>'
+        for s in g.get("sources", []))
+    bar = "\n".join(f'  <a href="#{ids[i]}">{esc(" ".join(p["name"].split()[:2]))}</a>' for i, p in enumerate(picks))
+
+    top = (
+        '<div class="read-progress" aria-hidden="true"></div>\n'
+        '<section class="section">\n'
+        '  <div class="container content-page content-article">\n'
+        '    {{breadcrumb}}\n'
+        f'    <h1>{esc(g["title"])}</h1>\n'
+        '    <p class="updated">Last updated: {{updated_human}} · {{read_time}}</p>\n'
+        '    {{share}}\n\n'
+        f'    <p class="lead">{esc(g["lead"])}</p>\n\n'
+        '    <aside class="method-note">\n'
+        '      <svg class="ic" aria-hidden="true"><use href="#i-info"/></svg>\n'
+        "      <p><strong>How we picked these:</strong> we read the maker and shop details and what buyers say online. We have not tested these products ourselves yet. Details can change from seller to seller, so check the listing before you pay. The buttons below open each shop's own search page. These three are a short list for different needs, not a ranking of every product, and price levels are only a rough guide. Read <a href=\"/how-we-pick/\">how we pick</a>.</p>\n"
+        '    </aside>\n\n'
+        f'    <ol class="quick-picks">\n{quick}\n    </ol>\n\n'
+        '    <div class="article-layout">\n      {{toc}}\n      <div class="article-main">\n'
+        f'{table}\n\n'
+        '    <section class="compare-tool" aria-labelledby="compare-title" hidden>\n'
+        '      <h2 id="compare-title" data-toc="skip">Compare two picks</h2>\n'
+        '      <p>Pick any two. The details come from the table above.</p>\n'
+        '      <div class="pickers">\n'
+        '        <div><label for="compare-a">First pick</label><select id="compare-a" name="compare-a"></select></div>\n'
+        '        <div><label for="compare-b">Second pick</label><select id="compare-b" name="compare-b"></select></div>\n'
+        '      </div>\n'
+        '      <div class="compare-out" aria-live="polite"></div>\n'
+        '    </section>\n\n'
+        '    <h2>Our three picks</h2>\n    <span id="picks-start"></span>\n\n')
+    bottom = (
+        f'\n\n    <h2>How to choose</h2>\n{choose}\n\n'
+        f'    <h2>Common questions</h2>\n{faq}\n\n'
+        '    <h2>Sources we used</h2>\n'
+        '    <p>Pages we read, checked on {{updated_human}}. Shops change listings often, so details may differ when you look.</p>\n'
+        f'    <ul class="source-list">\n{sources}\n    </ul>\n'
+        '      </div>\n    </div>\n  </div>\n</section>\n\n'
+        f'<nav class="pick-bar" aria-label="Jump to a pick" hidden>\n{bar}\n  <a href="#main">Top</a>\n</nav>\n')
+    return top + "\n\n".join(blocks) + bottom
+
+
+def load_guides():
+    guides = []
+    gdir = SRC / "guides"
+    for gp in (sorted(gdir.glob("*/guide.json")) if gdir.exists() else []):
+        g = json.loads(read(gp))
+        folder = slugify(g["tag"]).replace("_", "-")
+        url = f"/{folder}/{g['slug']}/"
+        short = re.sub(r"\s*\(\d{4}\)\s*$", "", g["title"])
+        guides.append({
+            "url": url, "title": g["title"], "description": g["description"],
+            "css": ["buttons", "breadcrumb", "content-page", "compare-table", "product-block", "faq", "toc",
+                    "quick-picks", "method-note", "share", "pick-bar", "tools", "guide-extras"],
+            "js": ["outbound-links", "toc", "share", "pick-bar", "table-scroll", "compare"],
+            "page_css": "article", "og_type": "article", "schema": "article", "toc": True, "share": True,
+            "breadcrumbs": [["Shop by Category", "/products/"], ["Sports & Fitness", "/sports-fitness/"], [short, url]],
+            "published": g.get("published", "2026-10-15"), "updated": g.get("updated", "2026-10-15"),
+            "article": {"category": "Sports & Fitness", "tag": g["tag"], "summary": g["summary"]},
+            "_slug": f"guides/{g['slug']}", "_body": render_guide(g),
+        })
+    return guides
+
+
 def load_pages():
     pages = []
     for meta_path in sorted((SRC / "pages").rglob("page.json")):
@@ -317,6 +464,7 @@ def load_pages():
         meta["_slug"] = meta_path.parent.relative_to(SRC / "pages").as_posix()
         meta["_body"] = read(body_path)
         pages.append(meta)
+    pages.extend(load_guides())
     return pages
 
 

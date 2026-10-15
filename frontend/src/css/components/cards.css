@@ -1,7 +1,7 @@
 /* Article cards */
 .article-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: var(--space-5);
 }
 
@@ -45,13 +45,18 @@
 .read-link-muted { color: var(--color-text-muted); font-weight: 700; }
 
 .article-art {
+  --hue: 215;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   aspect-ratio: 16 / 7;
   border-radius: var(--radius);
   margin: 0 0 var(--space-4);
   background:
-    radial-gradient(240px 120px at 85% 10%, rgba(255, 138, 76, 0.45), transparent 70%),
-    linear-gradient(135deg, var(--color-navy), var(--color-navy-light));
+    radial-gradient(220px 110px at 88% 8%, hsl(calc(var(--hue) + 40) 90% 70% / 0.55), transparent 70%),
+    linear-gradient(135deg, hsl(var(--hue) 55% 26%), hsl(calc(var(--hue) + 25) 58% 40%));
 }
+.article-art svg { height: 62%; width: auto; fill: none; stroke: #fff; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; opacity: 0.95; }
 
 @media (hover: hover) {
   .article-card:has(.read-link):hover { transform: translateY(-3px); box-shadow: var(--shadow-lift); border-color: var(--color-primary); }
@@ -62,6 +67,6 @@
 .article-grid.is-featured { grid-template-columns: 1fr; }
 @media (min-width: 720px) {
   .article-grid.is-featured .article-card { flex-direction: row; gap: var(--space-5); align-items: stretch; }
-  .article-grid.is-featured .article-art { flex: 0 0 38%; aspect-ratio: auto; margin: 0; }
+  .article-grid.is-featured .article-art { flex: 0 0 38%; aspect-ratio: auto; margin: 0; min-height: 200px; }
   .article-grid.is-featured .article-body { display: flex; flex-direction: column; flex: 1; justify-content: center; }
 }
