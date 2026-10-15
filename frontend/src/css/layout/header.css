@@ -66,16 +66,33 @@ nav.main-nav a[aria-current="page"] { color: #fff; border-radius: 0; box-shadow:
   nav.main-nav > ul > li > a[aria-current="page"] { background: linear-gradient(135deg, var(--color-primary-light), var(--color-primary)); box-shadow: none; border-radius: 999px; color: #fff; }
   nav.main-nav .menu-toggle { gap: 5px; padding-right: 7px; }
   nav.main-nav a.menu-toggle .caret { display: inline-flex; align-items: center; justify-content: center; width: 18px; height: 18px; margin: 0; border-radius: 50%; background: rgba(255,255,255,0.2); font-size: 0.7rem; line-height: 1; }
-  .logo-mark { font-size: 1.35rem; letter-spacing: 0.12em; }
-  .logo { padding-bottom: 4px; }
-  .logo::after { height: 2px; }
+  .site-header .logo-mark { font-size: 1.6rem; letter-spacing: 0.13em; }
+  .site-header .logo { padding-bottom: 4px; }
+  .site-header .logo::after { height: 2px; }
   .mobile-site-menu > summary { gap: 5px; min-height: 40px; }
   .logo-caret { display: inline-flex; align-items: center; justify-content: center; width: 18px; height: 18px; border-radius: 50%; background: rgba(255,255,255,0.18); color: #fff; font-size: 0.7rem; line-height: 1; }
 }
-@media (max-width: 359px) {
+@media (max-width: 419px) {
   .nav-row { gap: 6px; }
-  nav.main-nav a { padding: 0 7px; font-size: 0.76rem; }
-  .logo-mark { font-size: 1.15rem; }
+  nav.main-nav > ul { gap: 4px; }
+  nav.main-nav a { padding: 0 9px; font-size: 0.78rem; }
+  nav.main-nav a.menu-toggle { gap: 4px; padding-right: 5px; }
+  nav.main-nav a.menu-toggle .caret, .logo-caret { width: 16px; height: 16px; font-size: 0.62rem; }
+  .site-header .logo-mark { font-size: 1.45rem; letter-spacing: 0.11em; }
+  .mobile-site-menu > summary { gap: 4px; }
+}
+@media (max-width: 374px) {
+  .nav-row { gap: 4px; }
+  nav.main-nav > ul { gap: 3px; }
+  nav.main-nav a { padding: 0 7px; font-size: 0.74rem; }
+  nav.main-nav a.menu-toggle { gap: 3px; padding-right: 4px; }
+  nav.main-nav a.menu-toggle .caret, .logo-caret { width: 14px; height: 14px; font-size: 0.56rem; }
+  .site-header .logo-mark { font-size: 1.28rem; letter-spacing: 0.09em; }
+  .mobile-site-menu > summary { gap: 3px; }
+}
+@media (max-width: 339px) {
+  nav.main-nav a { padding: 0 6px; font-size: 0.7rem; }
+  .site-header .logo-mark { font-size: 1.08rem; }
 }
 
 /* ---------- Animated wordmark ---------- */

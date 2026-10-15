@@ -1,0 +1,22 @@
+{
+  "url": "/search/",
+  "title": "Search",
+  "description": "Search SAT guides, categories and product lists.",
+  "css": [
+    "search-panel",
+    "breadcrumb",
+    "content-page",
+    "category-directory"
+  ],
+  "breadcrumbs": [
+    [
+      "Search",
+      "/search/"
+    ]
+  ],
+  "updated": "2026-10-16",
+  "noindex": true,
+  "js": [
+    "search"
+  ]
+}

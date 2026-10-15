@@ -34,11 +34,11 @@ CONFIG["categories"] = [{"label": c["name"], "url": c["url"], "slug": c["slug"]}
 # Included in every page's CSS/JS bundle, in this order.
 ALWAYS_CSS = [
     "base/variables", "base/reset",
-    "base/icons", "layout/container", "layout/section", "layout/header", "layout/footer",
+    "base/icons", "layout/container", "layout/section", "layout/header", "layout/footer", "layout/search",
 ]
 # Loaded after component/page CSS so they win the cascade.
 LAST_CSS = ["base/accessibility", "base/print"]
-ALWAYS_JS = ["core/main", "core/menu"]
+ALWAYS_JS = ["core/main", "core/menu", "core/search-lite"]
 
 TITLE_MAX = 60
 DESCRIPTION_MAX = 160
@@ -666,14 +666,13 @@ def family_pages():
 
 
 def about_cover_cards():
-    """Category cards with icons for the About page (generated from categories.json)."""
     items = []
     for c in CATEGORIES:
         items.append(
             f'<li><a class="cover-card" href="{esc(c["url"])}" style="--hue:{c["hue"]}">'
-            f'<span class="cover-ic" aria-hidden="true">{category_icon(c, "cover-svg")}</span>'
-            f'<span class="cover-name">{esc(c["name"])}</span>'
-            '<svg class="ic cover-go" aria-hidden="true"><use href="#i-arrow"/></svg></a></li>')
+            f'<span class="cover-art" aria-hidden="true">{category_art(c)}</span>'
+            f'<span class="cover-body"><span class="cover-name">{esc(c["name"])}</span>'
+            '<svg class="ic cover-go" aria-hidden="true"><use href="#i-arrow"/></svg></span></a></li>')
     return '<ul class="cover-grid">' + "".join(items) + '</ul>'
 
 
@@ -782,6 +781,9 @@ def bundle(kind, names, key):
 
 
 _MENU_ARTICLES = []
+SHOP = [None]
+SEARCH_URL = [""]
+SEARCH_ASSETS = {"js": "", "css": ""}
 
 
 def short_title(title):
@@ -1075,6 +1077,7 @@ def load_pages():
     pages.extend(category_placeholder_pages())
     pages.extend(family_pages())
     shop = watches.Watches(SRC, CONFIG)
+    SHOP[0] = shop
     errors.extend(shop.errors)
     warnings.extend(shop.warnings)
     pages.extend(shop.pages())
@@ -1116,6 +1119,8 @@ def build_page(meta, base, header_t, footer_t, year, articles):
                            if CONFIG.get("affiliate_active") else
                            "SAT does not currently use affiliate links or earn commissions from product recommendations. This may change in the future and will be clearly disclosed."),
         "year": year, "updated_human": human_date(meta["updated"]),
+        "search_index_url": SEARCH_URL[0],
+        "search_js_url": SEARCH_ASSETS["js"], "search_css_url": SEARCH_ASSETS["css"],
     }
     article_ctx = {
         "articles_all": article_cards(articles),
@@ -1192,6 +1197,101 @@ def write_sitemap(pages):
     (DIST / "sitemap.xml").write_text(xml, encoding="utf-8")
 
 
+# ---------- site search: a static index the browser searches by itself ----------
+
+SEARCH_SKIP = {"/", "/contact/", "/privacy-policy/", "/terms/", "/copyright/", "/affiliate-disclosure/",
+               "/search/", "/watches/preview/", "/404/"}
+SEARCH_PAGES = {"/about/", "/how-we-pick/", "/products/"}
+SEARCH_EXAMPLES = ["watch under 2000", "women watch under 3000", "dumbbells", "running shoes"]
+
+
+def price_band_max(label):
+    """Upper limit in rupees of a product price band, or None for open-ended bands."""
+    label = label or ""
+    nums = [int(n.replace(",", "")) for n in re.findall(r"\d[\d,]*", label)]
+    if not nums or "premium" in label.lower():
+        return None
+    return max(nums)
+
+
+def search_entries(pages):
+    cat_by_url = {c["url"]: c for c in CATEGORIES}
+    fam_by_url = {}
+    for c in CATEGORIES:
+        for f in c.get("families", []):
+            fam_by_url[family_url(c, f)] = (c, f)
+    out = []
+
+    def add(**e):
+        if not e.get("m"):
+            under = re.search(r"Under \u20b9([\d,]+)", e.get("t", ""))
+            if under:
+                e["m"] = int(under.group(1).replace(",", ""))
+        out.append({k: v for k, v in e.items() if v not in (None, "", False)})
+
+    for meta in pages:
+        url = meta["url"]
+        if url in SEARCH_SKIP:
+            continue
+        title = html.unescape(meta["title"])
+        desc = html.unescape(meta["description"])
+        soon = bool(meta.get("noindex"))
+        if meta.get("article"):
+            add(t=title, u=url, k="Guide", c=meta["article"]["category"], d=desc, x=meta["article"].get("tag", ""))
+        elif url in cat_by_url:
+            c = cat_by_url[url]
+            add(t=c["name"], u=url, k="Category", c=c["name"], d=c["description"], h=c["hue"], s=soon)
+        elif url in fam_by_url:
+            c, f = fam_by_url[url]
+            add(t=title, u=url, k="Product type", c=c["name"], d=f["description"], x=f["name"], s=soon)
+        elif url.startswith("/watches/"):
+            m = re.fullmatch(r"/watches/(men|women)/(?:under-(\d+)/)?", url)
+            if m:
+                g = m.group(1)
+                add(t=title, u=url, k="Watch list", c="Watches", d=desc, g=g, m=int(m.group(2)) if m.group(2) else None,
+                    x=f"watch watches wristwatch {g}", s=soon)
+            elif url.startswith("/watches/brands/"):
+                add(t=title, u=url, k="Brand", c="Watches", d=desc, x="watch watches wristwatch brand", s=soon)
+            elif url.startswith("/watches/style/"):
+                add(t=title, u=url, k="Style", c="Watches", d=desc, x="watch watches wristwatch style", s=soon)
+            elif url == "/watches/guide/":
+                add(t=title, u=url, k="Guide", c="Watches", d=desc, x="watch watches wristwatch buying guide")
+        elif url in SEARCH_PAGES:
+            add(t=title, u=url, k="Page", d=desc)
+
+    shop = SHOP[0]
+    if shop is not None:
+        for p in shop.products:
+            if p.get("sample"):
+                continue
+            brand = shop.brands[p["brand"]]["name"]
+            styles = " ".join(shop.styles[st]["label"] for st in p["styles"])
+            add(t=f'{brand} {p["model"]}', u=shop.review_url(p), k="Product", c="Watches", d=p["verdict"],
+                g=shop.primary_gender(p), m=shop.budgets[p["budget"]].get("max"),
+                x=f'watch watches wristwatch {" ".join(p["gender"])} {styles} {p.get("strap", "")} {p.get("best_for", "")}')
+    for cat in CATEGORIES:
+        for p in load_products(cat["slug"]):
+            if p.get("sample") or not p.get("name"):
+                continue
+            fam = next((f for f in cat.get("families", []) if f["slug"] == p.get("family")), None)
+            if not fam:
+                continue
+            add(t=p["name"], u=f'{family_url(cat, fam)}#r-{p["id"]}', k="Product", c=cat["name"],
+                d=p.get("best_for", ""), m=price_band_max(p.get("price_band")),
+                x=" ".join([p.get("brand", ""), p.get("product_type", ""), fam["name"], p.get("suits", "")]))
+    return out
+
+
+def write_search_index(pages):
+    payload = {"v": 1, "ex": SEARCH_EXAMPLES, "e": search_entries(pages)}
+    text = json.dumps(payload, ensure_ascii=False, separators=(",", ":"))
+    digest = hashlib.sha1(text.encode("utf-8")).hexdigest()[:8]
+    name = f"search-index.{digest}.json"
+    (DIST / name).write_text(text, encoding="utf-8")
+    SEARCH_URL[0] = "/" + name
+    return len(payload["e"])
+
+
 def write_robots():
     site_url = CONFIG["site_url"].rstrip("/")
     (DIST / "robots.txt").write_text(f"User-agent: *\nAllow: /\n\nSitemap: {site_url}/sitemap.xml\n", encoding="utf-8")
@@ -1200,6 +1300,7 @@ def write_robots():
 def write_headers():
     (DIST / "_headers").write_text(
         "/assets/*\n  Cache-Control: public, max-age=31536000, immutable\n\n"
+        "/search-index.*\n  Cache-Control: public, max-age=31536000, immutable\n\n"
         "/videos/*\n  Cache-Control: public, max-age=86400\n\n"
         "/*\n  X-Content-Type-Options: nosniff\n  Referrer-Policy: strict-origin-when-cross-origin\n",
         encoding="utf-8")
@@ -1257,6 +1358,9 @@ def build():
     articles = sorted((p for p in pages if p.get("article")),
                       key=lambda p: p.get("published", p["updated"]), reverse=True)
     _MENU_ARTICLES[:] = articles
+    write_search_index(pages)
+    SEARCH_ASSETS["js"] = bundle("js", ["components/search"], "search")
+    SEARCH_ASSETS["css"] = bundle("css", ["components/search-panel"], "search")
     for meta in pages:
         build_page(meta, base, header_t, footer_t, year, articles)
     static = SRC / "static"

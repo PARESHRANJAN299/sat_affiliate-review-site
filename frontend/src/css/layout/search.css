@@ -1,0 +1,48 @@
+/* Site search header button (the overlay and results styles load on first use: components/search-panel.css) */
+
+/* ---------- header button ---------- */
+.search-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 0 12px;
+  color: #eef1f8;
+  font-size: 0.9rem;
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.09);
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.14);
+  transition: background .15s ease, box-shadow .15s ease, transform .15s ease;
+}
+.search-btn .ic { width: 18px; height: 18px; }
+.search-btn:hover { color: #fff; text-decoration: none; background: rgba(255, 255, 255, 0.16); }
+.search-btn:active { transform: scale(.96); }
+.search-btn[aria-expanded="true"] { background: linear-gradient(135deg, var(--color-primary-light), var(--color-primary)); box-shadow: none; color: #fff; }
+.search-kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 5px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #c9d0e2;
+  border-radius: 5px;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.22);
+}
+@media (min-width: 720px) {
+  nav.main-nav { margin-left: auto; }
+  .search-btn { margin-left: 6px; }
+}
+@media (max-width: 719px) {
+  .search-btn { flex: none; width: 40px; padding: 0; justify-content: center; margin-left: auto; }
+  .search-btn .ic { width: 20px; height: 20px; }
+  .search-btn-label, .search-kbd { display: none; }
+}
+@media (max-width: 379px) {
+  .search-btn { width: 36px; min-height: 36px; }
+}
+
+html.sx-lock { overflow: hidden; }
