@@ -15,7 +15,7 @@ The check takes about a second. It lists every product file with a plain message
 * It is found by site search (name, brand, audience, filter words).
 * The details window shows the full review text; without JavaScript the same review is on the page.
 * A product-type page opens to Google when it has 3 products. Before that it stays hidden (`noindex`).
-* `/…/listing-preview/` pages show the list with 18 made-up sample products. They are never indexed and never contain real products.
+* The sample preview pages (`/…/listing-preview/`, `/…/review-template/`, `/watches/preview/`) are **not part of the live site**. To look at them while working, run `python3 build.py --previews --serve`.
 
 ## Fields
 

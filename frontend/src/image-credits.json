@@ -1,0 +1,229 @@
+{
+  "_note": "One record for every picture in src/static/images. Fill in where each picture came from (your own photo, a stock site, a licence you bought), the licence terms, and where the proof is kept (an invoice, a licence page URL, an email). Set status to \"confirmed\" only when you are sure the picture may be used commercially on this site. Amazon's Operating Agreement requires respecting third-party rights, so keep this list true. The build and `python3 build.py --check` list every picture that is not confirmed yet.",
+  "images": [
+    {
+      "file": "/images/about/paresh-ranjan-rout.jpg",
+      "use": "About page photo of the founder",
+      "source": "",
+      "licence": "",
+      "proof": "",
+      "status": "needs-confirmation"
+    },
+    {
+      "file": "/images/categories/beauty-personal-care-thumb.jpg",
+      "use": "Category picture",
+      "source": "",
+      "licence": "",
+      "proof": "",
+      "status": "needs-confirmation"
+    },
+    {
+      "file": "/images/categories/beauty-personal-care.jpg",
+      "use": "Category picture",
+      "source": "",
+      "licence": "",
+      "proof": "",
+      "status": "needs-confirmation"
+    },
+    {
+      "file": "/images/categories/clothing-accessories-thumb.jpg",
+      "use": "Category picture",
+      "source": "",
+      "licence": "",
+      "proof": "",
+      "status": "needs-confirmation"
+    },
+    {
+      "file": "/images/categories/clothing-accessories.jpg",
+      "use": "Category picture",
+      "source": "",
+      "licence": "",
+      "proof": "",
+      "status": "needs-confirmation"
+    },
+    {
+      "file": "/images/categories/home-kitchen-thumb.jpg",
+      "use": "Category picture",
+      "source": "",
+      "licence": "",
+      "proof": "",
+      "status": "needs-confirmation"
+    },
+    {
+      "file": "/images/categories/home-kitchen.jpg",
+      "use": "Category picture",
+      "source": "",
+      "licence": "",
+      "proof": "",
+      "status": "needs-confirmation"
+    },
+    {
+      "file": "/images/categories/sports-fitness-thumb.jpg",
+      "use": "Category picture",
+      "source": "",
+      "licence": "",
+      "proof": "",
+      "status": "needs-confirmation"
+    },
+    {
+      "file": "/images/categories/sports-fitness.jpg",
+      "use": "Category picture",
+      "source": "",
+      "licence": "",
+      "proof": "",
+      "status": "needs-confirmation"
+    },
+    {
+      "file": "/images/categories/watches-thumb.jpg",
+      "use": "Category picture",
+      "source": "",
+      "licence": "",
+      "proof": "",
+      "status": "needs-confirmation"
+    },
+    {
+      "file": "/images/categories/watches.jpg",
+      "use": "Category picture",
+      "source": "",
+      "licence": "",
+      "proof": "",
+      "status": "needs-confirmation"
+    },
+    {
+      "file": "/images/home/cookware-gold.jpg",
+      "use": "Home page picture wall",
+      "source": "",
+      "licence": "",
+      "proof": "",
+      "status": "needs-confirmation"
+    },
+    {
+      "file": "/images/home/cookware-nonstick.jpg",
+      "use": "Home page picture wall",
+      "source": "",
+      "licence": "",
+      "proof": "",
+      "status": "needs-confirmation"
+    },
+    {
+      "file": "/images/home/cookware-steel.jpg",
+      "use": "Home page picture wall",
+      "source": "",
+      "licence": "",
+      "proof": "",
+      "status": "needs-confirmation"
+    },
+    {
+      "file": "/images/home/jackets-rack.jpg",
+      "use": "Home page picture wall",
+      "source": "",
+      "licence": "",
+      "proof": "",
+      "status": "needs-confirmation"
+    },
+    {
+      "file": "/images/home/kitchen-morning.jpg",
+      "use": "Home page picture wall",
+      "source": "",
+      "licence": "",
+      "proof": "",
+      "status": "needs-confirmation"
+    },
+    {
+      "file": "/images/home/red-coat-watch.jpg",
+      "use": "Home page picture wall",
+      "source": "",
+      "licence": "",
+      "proof": "",
+      "status": "needs-confirmation"
+    },
+    {
+      "file": "/images/home/shirt-on-rack.jpg",
+      "use": "Home page picture wall",
+      "source": "",
+      "licence": "",
+      "proof": "",
+      "status": "needs-confirmation"
+    },
+    {
+      "file": "/images/home/shirts-shelf.jpg",
+      "use": "Home page picture wall",
+      "source": "",
+      "licence": "",
+      "proof": "",
+      "status": "needs-confirmation"
+    },
+    {
+      "file": "/images/home/skincare-creams.jpg",
+      "use": "Home page picture wall",
+      "source": "",
+      "licence": "",
+      "proof": "",
+      "status": "needs-confirmation"
+    },
+    {
+      "file": "/images/home/skincare-marble.jpg",
+      "use": "Home page picture wall",
+      "source": "",
+      "licence": "",
+      "proof": "",
+      "status": "needs-confirmation"
+    },
+    {
+      "file": "/images/home/skincare-shelves.jpg",
+      "use": "Home page picture wall",
+      "source": "",
+      "licence": "",
+      "proof": "",
+      "status": "needs-confirmation"
+    },
+    {
+      "file": "/images/home/skipping-rope.jpg",
+      "use": "Home page picture wall",
+      "source": "",
+      "licence": "",
+      "proof": "",
+      "status": "needs-confirmation"
+    },
+    {
+      "file": "/images/home/sports-stack.jpg",
+      "use": "Home page picture wall",
+      "source": "",
+      "licence": "",
+      "proof": "",
+      "status": "needs-confirmation"
+    },
+    {
+      "file": "/images/home/tan-jacket-set.jpg",
+      "use": "Home page picture wall",
+      "source": "",
+      "licence": "",
+      "proof": "",
+      "status": "needs-confirmation"
+    },
+    {
+      "file": "/images/home/watch-raised-hands.jpg",
+      "use": "Home page picture wall",
+      "source": "",
+      "licence": "",
+      "proof": "",
+      "status": "needs-confirmation"
+    },
+    {
+      "file": "/images/home/watch-tennis.jpg",
+      "use": "Home page picture wall",
+      "source": "",
+      "licence": "",
+      "proof": "",
+      "status": "needs-confirmation"
+    },
+    {
+      "file": "/images/home/yoga-mat-set.jpg",
+      "use": "Home page picture wall",
+      "source": "",
+      "licence": "",
+      "proof": "",
+      "status": "needs-confirmation"
+    }
+  ]
+}
