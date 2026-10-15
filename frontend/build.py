@@ -514,6 +514,7 @@ def load_pages():
     pages.extend(load_guides())
     shop = watches.Watches(SRC, CONFIG)
     errors.extend(shop.errors)
+    warnings.extend(shop.warnings)
     pages.extend(shop.pages())
     return pages
 
@@ -634,7 +635,7 @@ def check_affiliate_rel():
         return
     for page in DIST.rglob("*.html"):
         for m in re.finditer(r'<a [^>]*target="_blank"[^>]*>', page.read_text(encoding="utf-8")):
-            if "sponsored" not in m.group(0) and "wa.me" not in m.group(0):
+            if "sponsored" not in m.group(0) and "wa.me" not in m.group(0) and 'data-source="1"' not in m.group(0):
                 errors.append(f"{page.relative_to(DIST).as_posix()}: affiliate_active is true but a shop link lacks rel=sponsored")
 
 

@@ -1,31 +1,144 @@
 {
   "genders": [
-    {"slug": "men", "label": "Men's", "adjective": "men"},
-    {"slug": "women", "label": "Women's", "adjective": "women"}
+    {
+      "slug": "men",
+      "label": "Men's",
+      "adjective": "men"
+    },
+    {
+      "slug": "women",
+      "label": "Women's",
+      "adjective": "women"
+    }
   ],
   "budgets": [
-    {"slug": "under-2000", "label": "Under ₹2,000", "max": 2000, "expect": "At this level, expect simple quartz (battery) watches. Look at build, strap and case size first, and keep your expectations realistic."},
-    {"slug": "under-3000", "label": "Under ₹3,000", "max": 3000, "expect": "There is usually more choice in dial finishes and straps. Quartz watches are the norm, so judge the strap and the details."},
-    {"slug": "under-6000", "label": "Under ₹6,000", "max": 6000, "expect": "Look for better finishing, a more solid strap or bracelet and a clearer dial. Some watches at this level add scratch-resistant glass, so check the listing."},
-    {"slug": "under-10000", "label": "Under ₹10,000", "max": 10000, "expect": "You may see more refined finishing and metal bracelets. Compare the glass, the case material and the warranty on each listing."}
+    {
+      "slug": "under-2000",
+      "label": "Under ₹2,000",
+      "max": 2000,
+      "expect": "At this level, expect simple quartz (battery) watches. Look at build, strap and case size first, and keep your expectations realistic."
+    },
+    {
+      "slug": "under-3000",
+      "label": "Under ₹3,000",
+      "max": 3000,
+      "expect": "There is usually more choice in dial finishes and straps. Quartz watches are the norm, so judge the strap and the details."
+    },
+    {
+      "slug": "under-6000",
+      "label": "Under ₹6,000",
+      "max": 6000,
+      "expect": "Look for better finishing, a more solid strap or bracelet and a clearer dial. Some watches at this level add scratch-resistant glass, so check the listing."
+    },
+    {
+      "slug": "under-10000",
+      "label": "Under ₹10,000",
+      "max": 10000,
+      "expect": "You may see more refined finishing and metal bracelets. Compare the glass, the case material and the warranty on each listing."
+    }
   ],
   "brands": [
-    {"slug": "titan", "name": "Titan", "tier": "featured", "genders": ["men", "women"], "line": "Classic", "blurb": "A well-known Indian watch brand from the Tata group, with a wide range of classic analog watches."},
-    {"slug": "timex", "name": "Timex", "tier": "featured", "genders": ["men", "women"], "line": "Classic", "blurb": "An American watch brand known for simple, easy-to-read classic watches."},
-    {"slug": "casio", "name": "Casio", "tier": "featured", "genders": ["men", "women"], "line": "Analog", "blurb": "A Japanese brand. We cover only its analog watches here, not digital or smart ones."},
-    {"slug": "fossil", "name": "Fossil", "tier": "featured", "genders": ["men", "women"], "line": "Classic", "blurb": "An American brand known for fashion-led classic watches."},
-    {"slug": "fastrack", "name": "Fastrack", "tier": "value", "genders": ["men"], "line": "Analog", "blurb": "A youth-focused brand from Titan Company, with value-oriented analog watches."},
-    {"slug": "sonata", "name": "Sonata", "tier": "value", "genders": ["women"], "line": "Classic", "blurb": "A value brand from Titan Company, with simple classic watches."}
+    {
+      "slug": "titan",
+      "name": "Titan",
+      "tier": "featured",
+      "genders": [
+        "men",
+        "women"
+      ],
+      "line": "Classic",
+      "blurb": "A well-known Indian watch brand from the Tata group, with a wide range of classic analog watches."
+    },
+    {
+      "slug": "timex",
+      "name": "Timex",
+      "tier": "featured",
+      "genders": [
+        "men",
+        "women"
+      ],
+      "line": "Classic",
+      "blurb": "An American watch brand known for simple, easy-to-read classic watches."
+    },
+    {
+      "slug": "casio",
+      "name": "Casio",
+      "tier": "featured",
+      "genders": [
+        "men",
+        "women"
+      ],
+      "line": "Analog",
+      "blurb": "A Japanese brand. We cover only its analog watches here, not digital or smart ones."
+    },
+    {
+      "slug": "fossil",
+      "name": "Fossil",
+      "tier": "featured",
+      "genders": [
+        "men",
+        "women"
+      ],
+      "line": "Classic",
+      "blurb": "An American brand known for fashion-led classic watches."
+    },
+    {
+      "slug": "fastrack",
+      "name": "Fastrack",
+      "tier": "value",
+      "genders": [
+        "men"
+      ],
+      "line": "Analog",
+      "blurb": "A youth-focused brand from Titan Company, with value-oriented analog watches."
+    },
+    {
+      "slug": "sonata",
+      "name": "Sonata",
+      "tier": "value",
+      "genders": [
+        "women"
+      ],
+      "line": "Classic",
+      "blurb": "A value brand from Titan Company, with simple classic watches."
+    }
   ],
   "styles": [
-    {"slug": "classic", "label": "Classic"},
-    {"slug": "analog", "label": "Analog"},
-    {"slug": "formal", "label": "Formal"},
-    {"slug": "office", "label": "Office"},
-    {"slug": "minimal", "label": "Minimal"},
-    {"slug": "elegant", "label": "Elegant"},
-    {"slug": "leather-strap", "label": "Leather Strap", "group": "strap"},
-    {"slug": "metal-strap", "label": "Metal Strap", "group": "strap"}
+    {
+      "slug": "classic",
+      "label": "Classic"
+    },
+    {
+      "slug": "analog",
+      "label": "Analog"
+    },
+    {
+      "slug": "formal",
+      "label": "Formal"
+    },
+    {
+      "slug": "office",
+      "label": "Office"
+    },
+    {
+      "slug": "minimal",
+      "label": "Minimal"
+    },
+    {
+      "slug": "elegant",
+      "label": "Elegant"
+    },
+    {
+      "slug": "leather-strap",
+      "label": "Leather Strap",
+      "group": "strap"
+    },
+    {
+      "slug": "metal-strap",
+      "label": "Metal Strap",
+      "group": "strap"
+    }
   ],
-  "min_products_to_index": 3
+  "min_products_to_index": 3,
+  "updated": "2026-10-15"
 }
