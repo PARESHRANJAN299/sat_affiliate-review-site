@@ -8,10 +8,10 @@
     <h2>Send a message</h2>
     <p>Fill in the form and your email app will open with the message ready to send. Nothing is sent until you press send in your email app.</p>
     <form class="contact-form" id="contact-form" hidden>
-      <div class="field"><label for="cf-name">Name</label><input id="cf-name" name="name" type="text" autocomplete="name" required></div>
-      <div class="field"><label for="cf-email">Email</label><input id="cf-email" name="email" type="email" autocomplete="email" required></div>
-      <div class="field"><label for="cf-subject">Subject</label><input id="cf-subject" name="subject" type="text" required></div>
-      <div class="field"><label for="cf-message">Message</label><textarea id="cf-message" name="message" rows="6" required></textarea></div>
+      <div class="field"><label for="cf-name">Name</label><input id="cf-name" name="name" type="text" autocomplete="name" placeholder="Type your name" required></div>
+      <div class="field"><label for="cf-email">Email</label><input id="cf-email" name="email" type="email" autocomplete="email" placeholder="Your email ID, so we can reply" required></div>
+      <div class="field"><label for="cf-subject">Subject</label><input id="cf-subject" name="subject" type="text" placeholder="Type the subject" required></div>
+      <div class="field"><label for="cf-message">Message</label><textarea id="cf-message" name="message" rows="6" placeholder="Type your query here" required></textarea></div>
       <button type="submit" class="btn btn-primary">Open email to send</button>
       <p class="form-status" role="status" aria-live="polite"></p>
     </form>
