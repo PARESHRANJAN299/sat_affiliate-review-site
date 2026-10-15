@@ -1,16 +1,16 @@
 {
   "url": "/about/",
   "title": "About Us",
-  "description": "Who we are and how we research and recommend sports and fitness gear for Indian buyers.",
+  "description": "About SAT, an independent product-discovery and buying-guide website for shoppers in India.",
   "css": [
     "breadcrumb",
     "content-page"
   ],
   "breadcrumbs": [
     [
-      "About",
+      "About Us",
       "/about/"
     ]
   ],
-  "updated": "2026-10-15"
+  "updated": "2026-10-16"
 }

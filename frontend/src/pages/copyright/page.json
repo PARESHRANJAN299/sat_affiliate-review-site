@@ -1,0 +1,16 @@
+{
+  "url": "/copyright/",
+  "title": "Copyright Notice",
+  "description": "Copyright and trademark notice for SAT and its original content.",
+  "css": [
+    "breadcrumb",
+    "content-page"
+  ],
+  "breadcrumbs": [
+    [
+      "Copyright Notice",
+      "/copyright/"
+    ]
+  ],
+  "updated": "2026-10-16"
+}

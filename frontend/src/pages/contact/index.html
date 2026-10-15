@@ -1,16 +1,24 @@
 <section class="section">
-  <div class="container content-page">
+  <div class="container content-page narrow">
     {{breadcrumb}}
-    <h1>Contact Us</h1>
-    <p>Found a mistake, want us to cover a product, or have a question? Write to us.</p>
+    <h1>Contact {{site_name}}</h1>
+    <p class="lead">For questions, feedback, corrections, partnership enquiries or product-related concerns, contact:</p>
+    <p class="contact-email"><a href="mailto:{{contact_email}}">{{contact_email}}</a></p>
 
-    <h2>Email</h2>
-    <p><a href="mailto:{{contact_email}}">{{contact_email}}</a></p>
+    <h2>Send a message</h2>
+    <p>Fill in the form and your email app will open with the message ready to send. Nothing is sent until you press send in your email app.</p>
+    <form class="contact-form" id="contact-form" hidden>
+      <div class="field"><label for="cf-name">Name</label><input id="cf-name" name="name" type="text" autocomplete="name" required></div>
+      <div class="field"><label for="cf-email">Email</label><input id="cf-email" name="email" type="email" autocomplete="email" required></div>
+      <div class="field"><label for="cf-subject">Subject</label><input id="cf-subject" name="subject" type="text" required></div>
+      <div class="field"><label for="cf-message">Message</label><textarea id="cf-message" name="message" rows="6" required></textarea></div>
+      <button type="submit" class="btn btn-primary">Open email to send</button>
+      <p class="form-status" role="status" aria-live="polite"></p>
+    </form>
+    <noscript><p>JavaScript is off, so the form is unavailable. Please email us directly at <a href="mailto:{{contact_email}}">{{contact_email}}</a>.</p></noscript>
 
-    <h2>Reporting a mistake</h2>
-    <p>Tell us the guide and the product, and what looks wrong. We check it and fix it. When we fix something, we update the date on the guide.</p>
-
-    <h2>Brands and partnerships</h2>
-    <p>If you represent a brand, write to the same address with the subject "Partnership Inquiry".</p>
+    <h2>What to include</h2>
+    <p>If you are reporting a mistake, tell us the page and what looks wrong, so we can check it quickly.</p>
+    <p>We do not publish a postal address or phone number.</p>
   </div>
 </section>

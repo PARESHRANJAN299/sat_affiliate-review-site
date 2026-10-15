@@ -1,0 +1,16 @@
+{
+  "url": "/terms/",
+  "title": "Terms of Use",
+  "description": "The terms for using SAT, including informational content, third-party links, prices and liability.",
+  "css": [
+    "breadcrumb",
+    "content-page"
+  ],
+  "breadcrumbs": [
+    [
+      "Terms of Use",
+      "/terms/"
+    ]
+  ],
+  "updated": "2026-10-16"
+}

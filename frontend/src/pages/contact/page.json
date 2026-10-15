@@ -1,16 +1,20 @@
 {
   "url": "/contact/",
-  "title": "Contact Us",
-  "description": "Get in touch for review suggestions, corrections, or partnership queries.",
+  "title": "Contact SAT",
+  "description": "Contact SAT with questions, feedback, corrections or partnership enquiries.",
   "css": [
+    "buttons",
     "breadcrumb",
     "content-page"
   ],
   "breadcrumbs": [
     [
-      "Contact",
+      "Contact SAT",
       "/contact/"
     ]
   ],
-  "updated": "2026-10-15"
+  "updated": "2026-10-16",
+  "js": [
+    "contact-form"
+  ]
 }

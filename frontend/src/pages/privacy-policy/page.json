@@ -1,7 +1,7 @@
 {
   "url": "/privacy-policy/",
   "title": "Privacy Policy",
-  "description": "How we collect, use, and protect information from visitors to this site.",
+  "description": "How SAT handles information, cookies and third-party links, in simple language.",
   "css": [
     "breadcrumb",
     "content-page"
@@ -12,5 +12,5 @@
       "/privacy-policy/"
     ]
   ],
-  "updated": "2026-10-15"
+  "updated": "2026-10-16"
 }

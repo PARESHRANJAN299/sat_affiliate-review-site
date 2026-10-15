@@ -696,6 +696,32 @@ def category_chips(current_url):
     return '<nav class="chips" aria-label="Product categories">' + "".join(links) + "</nav>"
 
 
+def affiliate_disclosure_body():
+    """Disclosure text follows the real status (affiliate_active, amazon_associate_approved in site.config.json)."""
+    if not CONFIG.get("affiliate_active"):
+        return (
+            '    <p class="lead">SAT is currently not earning commissions from the product links displayed on this website.</p>\n'
+            '    <p>Some links may direct users to third-party retailers, brand websites or shopping platforms. SAT does not currently receive compensation when users visit or purchase through these links.</p>\n'
+            '    <h2>What may change</h2>\n'
+            '    <p>In the future, SAT may participate in affiliate programs, including Amazon Associates and other retailer or brand affiliate programs.</p>\n'
+            '    <p>If affiliate links are introduced:</p>\n'
+            '    <ul>\n'
+            '      <li>they will be clearly disclosed</li>\n'
+            '      <li>SAT may earn a commission from qualifying purchases</li>\n'
+            '      <li>this will not increase the price paid by the customer</li>\n'
+            '      <li>editorial recommendations should remain independent</li>\n'
+            '    </ul>\n'
+            '    <h2>Questions</h2>\n'
+            '    <p>Write to <a href="mailto:' + esc(CONFIG["contact_email"]) + '">' + esc(CONFIG["contact_email"]) + '</a>.</p>')
+    amazon = ('    <p>As an Amazon Associate I earn from qualifying purchases.</p>\n'
+              if CONFIG.get("amazon_associate_approved") else "")
+    return (
+        '    <p class="lead">Some links on this website are affiliate links.</p>\n'
+        '    <p>If you buy through an affiliate link, SAT may earn a commission from qualifying purchases. This does not increase the price you pay, and editorial recommendations remain independent.</p>\n'
+        + amazon +
+        '    <p>Affiliate links are marked near the links. Questions: <a href="mailto:' + esc(CONFIG["contact_email"]) + '">' + esc(CONFIG["contact_email"]) + '</a>.</p>')
+
+
 def human_date(iso):
     d = datetime.date.fromisoformat(iso)
     return f"{d.day} {d.strftime('%B %Y')}"
@@ -1072,9 +1098,10 @@ def build_page(meta, base, header_t, footer_t, year, articles):
         "site_name": esc(CONFIG["site_name"]), "contact_email": esc(CONFIG["contact_email"]),
         "logo_primary": esc(CONFIG["logo_primary"]),
         "logo_html": logo_html(CONFIG["logo_primary"]),
-        "affiliate_note": ("Some links on this site are affiliate links. We may earn a commission if you buy, at no extra cost to you."
+        "affiliate_disclosure_body": affiliate_disclosure_body(),
+        "affiliate_note": ("Some links on this site are affiliate links. We may earn a commission from qualifying purchases, at no extra cost to you. See our Affiliate Disclosure."
                            if CONFIG.get("affiliate_active") else
-                           "No ads. Our links go to shop search pages and earn us nothing yet. See the Affiliate Disclosure."),
+                           "SAT does not currently use affiliate links or earn commissions from product recommendations. This may change in the future and will be clearly disclosed."),
         "year": year, "updated_human": human_date(meta["updated"]),
     }
     article_ctx = {
@@ -1109,6 +1136,7 @@ def build_page(meta, base, header_t, footer_t, year, articles):
     header = render(header_t, {**base_ctx, "nav_items": link_list(CONFIG["nav"], meta["url"])})
     footer = render(footer_t, {**base_ctx,
                                "footer_site_items": link_list(CONFIG["footer_site"], meta["url"]),
+                               "footer_category_items": link_list([{"label": c["name"], "url": c["url"]} for c in CATEGORIES], meta["url"]),
                                "footer_legal_items": link_list(CONFIG["footer_legal"], meta["url"])})
     page = render(base, {
         **base_ctx,

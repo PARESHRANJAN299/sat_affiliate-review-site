@@ -2,7 +2,7 @@
   "site_name": "SAT",
   "logo_primary": "SAT",
   "site_url": "https://sat.net.in",
-  "contact_email": "hello@sat.net.in",
+  "contact_email": "pareshranjan7327@gmail.com",
   "language": "en",
   "locale": "en_IN",
   "nav": [
@@ -46,6 +46,14 @@
     {
       "label": "Affiliate Disclosure",
       "url": "/affiliate-disclosure/"
+    },
+    {
+      "label": "Terms of Use",
+      "url": "/terms/"
+    },
+    {
+      "label": "Copyright Notice",
+      "url": "/copyright/"
     }
   ],
   "affiliate_active": false,

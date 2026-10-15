@@ -1,7 +1,7 @@
 {
   "url": "/affiliate-disclosure/",
   "title": "Affiliate Disclosure",
-  "description": "We have no approved affiliate accounts yet. Here is how that works, what changes when we join, and what it means for you.",
+  "description": "Whether SAT earns commissions from product links, and how any future affiliate links will be disclosed.",
   "css": [
     "breadcrumb",
     "content-page"
@@ -12,5 +12,5 @@
       "/affiliate-disclosure/"
     ]
   ],
-  "updated": "2026-10-15"
+  "updated": "2026-10-16"
 }

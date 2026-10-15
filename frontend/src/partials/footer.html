@@ -1,26 +1,36 @@
 <footer class="site-footer">
   <div class="container">
     <div class="footer-grid">
-      <div>
+      <div class="footer-brand-col">
         <p class="footer-brand">{{site_name}}</p>
-        <p class="footer-about">Independent buying guides for sports and fitness gear sold in India. We do not sell products or take payments.</p>
+        <p class="footer-about">Independent buying guides and product recommendations for shoppers in India. We research products to help users compare options and make better buying decisions. We do not sell products or take payments.</p>
       </div>
-      <div>
+      <nav aria-label="Categories">
+        <p class="footer-title">Categories</p>
+        <ul>
+{{footer_category_items}}
+        </ul>
+      </nav>
+      <nav aria-label="Site">
         <p class="footer-title">Site</p>
         <ul>
 {{footer_site_items}}
         </ul>
-      </div>
-      <div>
+      </nav>
+      <nav aria-label="Legal">
         <p class="footer-title">Legal</p>
-        <ul>
+        <ul class="footer-legal">
 {{footer_legal_items}}
         </ul>
-        <p class="footer-note">{{affiliate_note}}</p>
+      </nav>
+      <div>
+        <p class="footer-title">Contact</p>
+        <p class="footer-contact"><a href="mailto:{{contact_email}}">{{contact_email}}</a></p>
       </div>
     </div>
     <div class="footer-bottom">
-      &copy; {{year}} {{site_name}}.
+      <p>&copy; {{year}} {{site_name}}. All rights reserved.</p>
+      <p class="footer-status">{{affiliate_note}}</p>
     </div>
   </div>
 </footer>

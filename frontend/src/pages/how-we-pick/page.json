@@ -1,7 +1,7 @@
 {
   "url": "/how-we-pick/",
-  "title": "How We Pick Products",
-  "description": "How we research and compare products, what we check, and what we do not do yet.",
+  "title": "How We Pick",
+  "description": "How SAT researches products and decides what to recommend, and what we do not claim.",
   "css": [
     "breadcrumb",
     "content-page"
@@ -12,5 +12,5 @@
       "/how-we-pick/"
     ]
   ],
-  "updated": "2026-10-15"
+  "updated": "2026-10-16"
 }
