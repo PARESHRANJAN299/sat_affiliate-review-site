@@ -665,6 +665,18 @@ def family_pages():
     return pages
 
 
+def about_cover_cards():
+    """Category cards with icons for the About page (generated from categories.json)."""
+    items = []
+    for c in CATEGORIES:
+        items.append(
+            f'<li><a class="cover-card" href="{esc(c["url"])}" style="--hue:{c["hue"]}">'
+            f'<span class="cover-ic" aria-hidden="true">{category_icon(c, "cover-svg")}</span>'
+            f'<span class="cover-name">{esc(c["name"])}</span>'
+            '<svg class="ic cover-go" aria-hidden="true"><use href="#i-arrow"/></svg></a></li>')
+    return '<ul class="cover-grid">' + "".join(items) + '</ul>'
+
+
 def category_placeholder_pages():
     pages = []
     for c in CATEGORIES:
@@ -1110,6 +1122,7 @@ def build_page(meta, base, header_t, footer_t, year, articles):
         "articles_latest": article_cards(articles[:3]),
         "category_chips": category_chips(meta["url"]),
         "category_cards": category_cards(meta["url"]),
+        "about_cover_cards": about_cover_cards(),
         "home_collage": home_collage(),
         "home_video": home_video(),
         "category_directory": category_directory(),

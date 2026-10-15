@@ -33,16 +33,39 @@
   .about-kicker { font-size: .78rem; }
   .about-role { font-size: 1rem; }
 }
-.about-body { max-width: 760px; padding-top: var(--space-6); }
-.about-body h2 { margin: var(--space-6) 0 var(--space-2); font-size: var(--step-3); }
-.about-body p { font-size: var(--step-1); line-height: 1.7; }
+.about-body { max-width: 980px; padding-top: var(--space-6); }
+.about-block { margin: 0 0 var(--space-7); }
+.about-block > h2, .about-contact h2 { margin: 0 0 var(--space-3); font-size: var(--step-3); }
+.about-body .about-statement { margin: 0 0 var(--space-5); font-family: var(--font-display); font-size: clamp(1.3rem, 1rem + 1.7vw, 1.9rem); line-height: 1.3; font-weight: 700; max-width: 34ch; color: var(--color-text); }
+.about-body p { font-size: 1rem; line-height: 1.65; margin: 0; }
 .about-body p a { text-decoration: underline; text-underline-offset: 2px; }
-.about-chips { list-style: none; display: flex; flex-wrap: wrap; gap: 10px; margin: var(--space-3) 0 0; padding: 0; }
-.about-chips a { display: inline-flex; align-items: center; min-height: 44px; padding: 0 18px; border: 1.5px solid var(--color-border); border-radius: 999px; background: var(--color-surface); color: var(--color-text); font-weight: 600; text-decoration: none; transition: border-color .15s, transform .15s; }
-.about-chips a:hover { border-color: var(--color-primary); transform: translateY(-2px); text-decoration: none; }
-.about-contact { margin-top: var(--space-6); padding: var(--space-5); background: var(--color-bg-alt); border-radius: var(--radius-lg); }
-.about-contact h2 { margin-top: 0; }
-@media (prefers-reduced-motion: reduce) { .about-chips a { transition: none; } }
+.about-points { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-4); grid-template-columns: 1fr; }
+@media (min-width: 720px) { .about-points { grid-template-columns: repeat(3, 1fr); } .about-points-not { grid-template-columns: repeat(2, 1fr); } }
+.about-points li { display: flex; flex-direction: column; gap: var(--space-3); padding: var(--space-5); background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-lg); box-shadow: var(--shadow); transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease; }
+@media (hover: hover) { .about-points li:hover { transform: translateY(-3px); box-shadow: var(--shadow-lift); border-color: var(--color-primary-light); } }
+.point-ic { display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 14px; background: var(--color-accent-soft); color: var(--color-primary-dark); flex: none; }
+.point-ic svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.point-ic-not { background: #fdecec; color: #a32323; }
+.cover-grid { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-3); grid-template-columns: repeat(2, 1fr); }
+@media (min-width: 560px) { .cover-grid { grid-template-columns: repeat(3, 1fr); } }
+@media (min-width: 900px) { .cover-grid { grid-template-columns: repeat(5, 1fr); } }
+.cover-card { --hue: 215; display: flex; flex-direction: column; align-items: flex-start; gap: 12px; height: 100%; padding: var(--space-4); background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-lg); box-shadow: var(--shadow); color: var(--color-text); position: relative; transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease; }
+.about-body .cover-card, .about-body .cover-card:hover { text-decoration: none; }
+.cover-ic { display: flex; align-items: center; justify-content: center; width: 48px; height: 48px; border-radius: 14px; background: linear-gradient(135deg, hsl(var(--hue) 50% 24%), hsl(calc(var(--hue) + 20) 55% 38%)); }
+.cover-svg { width: 26px; height: 26px; fill: none; stroke: #fff; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.cover-name { font-family: var(--font-display); font-weight: 700; font-size: 1.02rem; line-height: 1.25; }
+.cover-go { position: absolute; right: 12px; bottom: 12px; color: var(--color-text-muted); transition: transform .2s ease, color .2s ease; }
+@media (hover: hover) { .cover-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lift); border-color: var(--color-primary); } .cover-card:hover .cover-go { transform: translateX(3px); color: var(--color-primary); } }
+.about-contact { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-4); padding: var(--space-5); background: linear-gradient(135deg, #12213f, #0b1428); color: #fff; border-radius: var(--radius-lg); }
+.about-contact h2 { margin: 0 0 6px; color: #fff; }
+.about-contact p { color: #d7ddea; }
+.about-contact p a { color: #fff; }
+.about-contact-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.about-contact .btn-outline { border-color: rgba(255, 255, 255, .55); color: #fff; }
+.about-contact .btn-outline:hover { background: rgba(255, 255, 255, .14); }
+.reveal-up { opacity: 0; transform: translateY(20px); transition: opacity .55s ease, transform .55s ease; }
+.reveal-up.is-in { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) { .reveal-up { opacity: 1; transform: none; transition: none; } .about-points li, .cover-card, .cover-go { transition: none; } }
 
 /* gentle entrance and a slowly drifting glow (off for reduced motion) */
 @media (prefers-reduced-motion: no-preference) {
@@ -61,4 +84,13 @@
   .about-chips { flex-wrap: nowrap; overflow-x: auto; margin-left: calc(-1 * clamp(16px, 4vw, 24px)); margin-right: calc(-1 * clamp(16px, 4vw, 24px)); padding: 2px clamp(16px, 4vw, 24px) 8px; scroll-snap-type: x proximity; scroll-padding-inline: clamp(16px, 4vw, 24px); scrollbar-width: none; }
   .about-chips::-webkit-scrollbar { display: none; }
   .about-chips li { flex: none; scroll-snap-align: start; }
+}
+
+@media (max-width: 719px) {
+  .about-points { gap: var(--space-3); }
+  .about-points li { flex-direction: row; align-items: center; gap: var(--space-3); padding: var(--space-3) var(--space-4); }
+  .point-ic { width: 40px; height: 40px; border-radius: 12px; }
+  .about-block { margin-bottom: var(--space-6); }
+  .about-contact { padding: var(--space-4); }
+  .about-contact-actions .btn { flex: 1 1 140px; }
 }

@@ -27,35 +27,55 @@
   </section>
 
   <div class="container about-body">
-    <section aria-labelledby="about-what">
+    <section class="about-block" aria-labelledby="about-what">
       <h2 id="about-what">What {{site_name}} is</h2>
-      <p>{{site_name}} is a simple buying-guide website for shoppers in India.</p>
-      <p>I research products and explain the important things clearly &mdash; what they are good for, their pros and cons, and the usual price range.</p>
-      <p>I do not say I have tested a product unless I actually have.</p>
-      <p>You can read more on the <a href="/how-we-pick/">How We Pick</a> page.</p>
-    </section>
-
-    <section aria-labelledby="about-cover">
-      <h2 id="about-cover">What I cover</h2>
-      <ul class="about-chips">
-        <li><a href="/watches/">Watches</a></li>
-        <li><a href="/sports-fitness/">Sports &amp; Fitness</a></li>
-        <li><a href="/beauty-personal-care/">Beauty &amp; Personal Care</a></li>
-        <li><a href="/home-kitchen/">Home &amp; Kitchen</a></li>
-        <li><a href="/clothing-accessories/">Clothing &amp; Accessories</a></li>
+      <p class="about-statement">{{site_name}} is a simple buying-guide website for shoppers in India.</p>
+      <ul class="about-points">
+        <li>
+          <span class="point-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/></svg></span>
+          <p>I research products and explain the important things clearly &mdash; what they are good for, their pros and cons, and the usual price range.</p>
+        </li>
+        <li>
+          <span class="point-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6z"/><path d="M9 12l2 2 4-4"/></svg></span>
+          <p>I do not say I have tested a product unless I actually have.</p>
+        </li>
+        <li>
+          <span class="point-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 4h11l3 3v13H5z"/><path d="M8 11h8M8 15h8"/></svg></span>
+          <p>You can read more on the <a href="/how-we-pick/">How We Pick</a> page.</p>
+        </li>
       </ul>
     </section>
 
-    <section aria-labelledby="about-not">
+    <section class="about-block" aria-labelledby="about-cover">
+      <h2 id="about-cover">What I cover</h2>
+      {{about_cover_cards}}
+    </section>
+
+    <section class="about-block" aria-labelledby="about-not">
       <h2 id="about-not">What {{site_name}} does not do</h2>
-      <p>{{site_name}} does not sell products or take payments.</p>
-      <p>If you choose to buy something, you buy it directly from the retailer or brand website.</p>
+      <ul class="about-points about-points-not">
+        <li>
+          <span class="point-ic point-ic-not" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></span>
+          <p>{{site_name}} does not sell products or take payments.</p>
+        </li>
+        <li>
+          <span class="point-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M14 4h6v6M20 4L10 14M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg></span>
+          <p>If you choose to buy something, you buy it directly from the retailer or brand website.</p>
+        </li>
+      </ul>
     </section>
 
     <section class="about-contact" aria-labelledby="about-hello">
-      <h2 id="about-hello">Questions?</h2>
-      <p>Found a mistake or want me to cover a product?</p>
-      <p>Email me at <a href="mailto:{{contact_email}}">{{contact_email}}</a> or use the <a href="/contact/">Contact page</a>.</p>
+      <div>
+        <h2 id="about-hello">Questions?</h2>
+        <p>Found a mistake or want me to cover a product?</p>
+        <p>Email me at <a href="mailto:{{contact_email}}" class="about-email">{{contact_email}}</a> or use the <a href="/contact/">Contact page</a>.</p>
+      </div>
+      <div class="about-contact-actions">
+        <a class="btn btn-primary" href="mailto:{{contact_email}}">Send an email</a>
+        <button type="button" class="btn btn-outline" data-copy-email hidden>Copy email</button>
+        <span class="visually-hidden" role="status" aria-live="polite" data-copy-status></span>
+      </div>
     </section>
   </div>
 </div>
