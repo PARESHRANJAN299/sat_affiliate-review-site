@@ -239,6 +239,18 @@ def category_directory():
 
 
 
+def home_collage():
+    """The category pictures as tiles for the home hero (replace the wrapper with a video later)."""
+    tiles = []
+    for c in CATEGORIES:
+        if c.get("image"):
+            inner = f'<img src="{esc(c["image"])}" alt="" width="608" height="456">'
+        else:
+            inner = f'<span class="category-art" style="--hue:{c["hue"]}">{category_art(c)}</span>'
+        tiles.append(f'<span class="tile tile-{esc(c["slug"])}">{inner}</span>')
+    return '<div class="home-collage">\n      ' + "\n      ".join(tiles) + "\n    </div>"
+
+
 def category_placeholder_pages():
     pages = []
     for c in CATEGORIES:
@@ -651,6 +663,7 @@ def build_page(meta, base, header_t, footer_t, year, articles):
         "articles_latest": article_cards(articles[:3]),
         "category_chips": category_chips(meta["url"]),
         "category_cards": category_cards(meta["url"]),
+        "home_collage": home_collage(),
         "category_directory": category_directory(),
         "category_sections": category_sections(articles),
         "toc": "@@TOC@@" if meta.get("toc") else "",

@@ -1,39 +1,73 @@
-/* Classic home page: compact introduction, shared category cards and live guide content. */
+/* Home page: a hero with a collage of the category pictures (swap .home-hero-media for a video later), then the shared category cards. */
 .home-page { padding: 0 0 48px; }
 .home-page > .container { max-width: 1440px; }
-.home-intro { padding: clamp(28px, 3vw, 36px) 0 24px; border-bottom: 1px solid var(--color-border); }
-.home-eyebrow { margin: 0 0 10px; color: var(--color-primary-dark); font-size: .7rem; letter-spacing: .1em; font-weight: 700; text-transform: uppercase; }
-.home-intro h1 { margin: 0 0 12px; font-size: clamp(1.9rem, 3vw, 2.8rem); line-height: 1.15; letter-spacing: -.025em; }
-.home-description { max-width: 85ch; margin: 0; font-size: 1rem; line-height: 1.7; color: var(--color-text-muted); }
-.home-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 12px 24px; margin-top: 18px; }
-.home-actions .btn { font-size: .85rem; padding: 10px 16px; }
-.home-text-link { display: inline-flex; align-items: center; gap: 7px; min-height: 44px; font-size: .85rem; font-weight: 700; }
+
+.home-hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  min-height: clamp(380px, 38vw, 500px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(160deg, #0a1020, #12213f 60%, #0b1428);
+  color: #fff;
+}
+.home-hero-media { position: absolute; inset: 0; z-index: -1; }
+.home-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: linear-gradient(180deg, rgba(8, 13, 26, 0.7), rgba(8, 13, 26, 0.82));
+  pointer-events: none;
+}
+.home-hero-content { position: relative; z-index: 1; width: 100%; max-width: 640px; padding: clamp(48px, 7vw, 80px) 20px; text-align: center; }
+.home-hero h1 { margin: 0 0 14px; font-size: clamp(2rem, 3.6vw, 3.1rem); line-height: 1.12; letter-spacing: -.025em; color: #fff; text-shadow: 0 2px 18px rgba(0, 0, 0, .35); }
+.home-description { max-width: 52ch; margin: 0 auto; font-size: 1.02rem; line-height: 1.65; color: #d7ddea; }
+.home-actions { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 8px 22px; margin-top: 22px; }
+.home-actions .btn { font-size: .9rem; padding: 11px 20px; }
+.home-hero .home-text-link { color: #fff; }
+
+/* collage: five category pictures, tilted tiles on the left and right of the text (strips on small screens) */
+.home-collage { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(5, 1fr); }
+.home-collage .tile { position: relative; display: block; overflow: hidden; background: #1a2a4a; }
+.home-collage .tile img, .home-collage .tile .category-art { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.home-collage .tile .category-art { aspect-ratio: auto; }
+
+@media (min-width: 1000px) {
+  .home-hero::before { background: radial-gradient(ellipse 36% 70% at 50% 50%, rgba(8, 13, 26, 0.92), rgba(8, 13, 26, 0.35) 70%, rgba(8, 13, 26, 0.1)); }
+  .home-collage { display: block; }
+  .home-collage .tile {
+    position: absolute;
+    border-radius: 18px;
+    box-shadow: 0 18px 40px rgba(0, 0, 0, .45);
+    border: 2px solid rgba(255, 255, 255, .14);
+  }
+  .home-collage .tile img { position: absolute; }
+  .home-collage .tile-watches { left: 3%; top: 9%; width: 15%; aspect-ratio: 4 / 5; transform: rotate(-4deg); }
+  .home-collage .tile-beauty-personal-care { left: 13%; top: 52%; width: 14%; aspect-ratio: 1; transform: rotate(3deg); }
+  .home-collage .tile-sports-fitness { right: 4%; top: 7%; width: 14%; aspect-ratio: 4 / 5; transform: rotate(3deg); }
+  .home-collage .tile-home-kitchen { right: 15%; top: 44%; width: 12%; aspect-ratio: 1; transform: rotate(-3deg); }
+  .home-collage .tile-clothing-accessories { right: 3%; top: 60%; width: 14%; aspect-ratio: 4 / 3; transform: rotate(2deg); }
+}
+
 .home-section-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 16px; }
 .home-section-head h2 { margin: 0; font-size: clamp(1.35rem, 2vw, 1.65rem); }
 .home-section-head p { margin: 6px 0 0; color: var(--color-text-muted); font-size: .85rem; }
-.home-categories { padding-top: 24px; scroll-margin-top: 20px; }
+.home-text-link { display: inline-flex; align-items: center; gap: 7px; min-height: 44px; font-size: .85rem; font-weight: 700; }
+.home-categories { padding-top: 32px; scroll-margin-top: 20px; }
 .home-categories .directory-art { max-height: 180px; }
-.home-guides { padding-top: 36px; }
-.home-guides .article-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
-.home-guides .article-card { padding: 18px; border-radius: 12px; box-shadow: 0 3px 12px rgb(35 27 19 / .04); }
-.home-guides .article-art { height: 96px; border-radius: 8px; }
-.home-guides .article-card h3 { font-family: var(--font-display); font-size: 1.2rem; }
-.home-guides .article-card p { font-size: .85rem; }
-.home-guides .read-link { font-size: .82rem; min-height: 44px; }
 .home-approach { display: flex; align-items: center; justify-content: space-between; gap: 24px; margin-top: 36px; border-top: 1px solid var(--color-border); padding: 26px 0 0; }
 .home-approach h2 { margin: 0 0 8px; font-size: 1.35rem; }
 .home-approach p { max-width: 75ch; margin: 0; color: var(--color-text-muted); font-size: .85rem; }
 .home-approach > a { flex-shrink: 0; }
 @media (max-width: 620px) {
-  .home-intro { padding: 26px 0 24px; }
-  .home-description { font-size: .9rem; }
-  .home-actions { margin-top: 18px; gap: 10px 18px; }
+  .home-description { font-size: .92rem; }
   .home-section-head { gap: 12px; }
   .home-section-head > a { flex-shrink: 0; }
-  .home-guides .article-grid { grid-template-columns: 1fr; }
-  .home-guides .article-card { display: flex; flex-direction: row; gap: 14px; padding: 14px; }
-  .home-guides .article-art { flex: 0 0 72px; width: 72px; height: 84px; margin: 0; }
-  .home-guides .article-card h3 { font-size: 1.05rem; }
-  .home-guides .article-card p { font-size: .8rem; }
   .home-approach { flex-direction: column; align-items: start; gap: 8px; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .home-collage .tile { transition: transform .4s ease; }
 }

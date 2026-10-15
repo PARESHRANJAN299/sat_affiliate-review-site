@@ -4,7 +4,6 @@
   "description": "Research-based buying guides for Indian shoppers. Explore watches, fitness, beauty, home and fashion to find what fits your lifestyle and budget.",
   "css": [
     "buttons",
-    "cards",
     "category-directory"
   ],
   "page_css": "home",
