@@ -45,8 +45,9 @@
       "art": "home",
       "hue": 165,
       "status": "placeholder",
-      "image": null,
-      "families": []
+      "image": "/images/categories/home-kitchen.jpg",
+      "families": [],
+      "thumb": "/images/categories/home-kitchen-thumb.jpg"
     },
     {
       "slug": "clothing-accessories",
