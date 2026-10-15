@@ -1,0 +1,52 @@
+/* Phones: compact tops, smaller type and tighter spacing on every content page, so the first screen shows content, not just a big heading.
+   Loaded after the component styles so these rules win. Home, About and Contact have their own phone layouts and are not touched here. */
+@media (max-width: 719px) {
+  .section { padding: 18px 0 34px; }
+  .breadcrumb { margin-bottom: 10px; font-size: 0.8rem; line-height: 1.4; }
+
+  .content-page h1 { font-size: 1.6rem; line-height: 1.15; margin-bottom: 6px; }
+  .content-page .lead, .content-article .lead { font-size: 1rem; line-height: 1.55; margin-bottom: 14px; }
+  .content-page > p, .content-page > :where(ul, ol) > li, .article-main > p, .faq-item p { font-size: 1rem; line-height: 1.6; }
+  .content-page h2 { font-size: 1.3rem; margin: 1.5em 0 0.4em; }
+  .content-page h3 { font-size: 1.1rem; }
+  .content-page .updated { margin-bottom: var(--space-4); font-size: 0.82rem; }
+
+  .family-kicker { margin-bottom: 4px; font-size: 0.72rem; }
+  .family-status, .method-note, .affiliate-box { padding: 10px 14px; font-size: 0.92rem; }
+  .family-section { margin: 22px 0 6px; padding: 10px 0 4px; }
+  .family-section + .family-section { padding-top: 20px; margin-top: 20px; }
+  .family-section-head h2 { font-size: 1.25rem; }
+  .pick-slots { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  .pick-slot { padding: 12px; }
+  .beauty-review { margin: 16px 0; padding: 16px; }
+  .beauty-review h3 { font-size: 1.2rem; }
+
+  /* watch pages: budget and brand tiles sit two to a row */
+  .tile-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-bottom: var(--space-4); }
+  .tile { padding: 14px; gap: 4px; border-radius: 14px; }
+  .tile strong { font-size: 1.05rem; }
+  .tile-blurb { font-size: 0.82rem; }
+  .tile-links { margin-top: 6px; }
+  .tile-links .chip { min-height: 38px; padding: 0 14px; }
+  .empty-state { margin: var(--space-4) 0; padding: 16px; }
+  .empty-state h2 { font-size: 1.1rem; }
+  .empty-state p { font-size: 0.92rem; }
+  .affiliate-box { margin: var(--space-5) 0 var(--space-3); }
+
+  /* guides */
+  .content-article h2 { padding-top: var(--space-2); }
+
+  /* category cards on Shop by Category and the category pages */
+  .directory-grid { gap: 10px; }
+  .directory-body { padding: 12px; }
+  .directory-body h3 { min-height: 0; font-size: 1.02rem; margin-bottom: 4px; }
+
+  /* footer: two columns instead of one long list */
+  footer.site-footer { padding: 28px 0 20px; margin-top: 32px; }
+  .footer-grid, .footer-grid:is(*) { grid-template-columns: 1fr 1fr; gap: 18px 16px; margin-bottom: 16px; }
+  .footer-brand-col { grid-column: 1 / -1; }
+  .footer-contact a { overflow-wrap: anywhere; }
+  .footer-brand { font-size: 1.2rem; margin-bottom: 8px; }
+  .footer-title { margin-bottom: 4px; }
+  .footer-grid a { padding: 5px 0; }
+}
