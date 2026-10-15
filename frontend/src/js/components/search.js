@@ -19,7 +19,7 @@
     ladies: 'women', lady: 'women', female: 'women', females: 'women', womens: 'women', woman: 'women', girls: 'women', girl: 'women',
     sunblock: 'sunscreen', spf: 'sunscreen',
     trainers: 'shoe', sneakers: 'shoe', sneaker: 'shoe', footwear: 'shoe',
-    tshirt: 'shirt', tshirts: 'shirt', tee: 'shirt', tees: 'shirt'
+    tshirt: 'tshirt', tshirts: 'tshirt', tee: 'tshirt', tees: 'tshirt'
   };
   var UNITS = '(?:ml|g|gm|gms|kg|kgs|w|watt|watts|l|ltr|litre|litres|cm|mm|inch|inches|mah|gb|pcs|pack|piece|pieces)';
   var KIND_WEIGHT = { 'Product': 5, 'Watch list': 4.5, 'Product type': 3.2, 'Guide': 3, 'Brand': 2.4, 'Style': 2, 'Category': 2.2, 'FAQ': 1.6, 'Page': 1 };
@@ -58,7 +58,7 @@
   }
   function words(text) {
     var clean = String(text).toLowerCase().replace(/(\d),(?=\d)/g, '$1')
-      .replace(/['’]s\b/g, '').replace(/[^a-z0-9]+/g, ' ').trim();
+      .replace(/['’]s\b/g, '').replace(/\bt[\s-]+shirts?\b/g, 'tshirt').replace(/[^a-z0-9]+/g, ' ').trim();
     if (!clean) return [];
     return clean.split(' ').map(stem);
   }

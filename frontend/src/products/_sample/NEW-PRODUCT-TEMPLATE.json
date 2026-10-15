@@ -1,0 +1,32 @@
+{
+  "id": "brand-short-model-name",
+  "family": "t-shirts",
+  "name": "Product name as the brand writes it",
+  "brand": "Brand",
+  "audience": ["men"],
+  "price_band": "₹500–₹1,000",
+  "best_for": "One plain line about who it suits",
+  "pros": ["A real strength", "Another real strength"],
+  "cons": ["A real limit"],
+  "facets": {
+    "material": ["cotton"],
+    "fit": ["regular"],
+    "size": ["m", "l", "xl"]
+  },
+  "features": ["Main feature one", "Main feature two"],
+  "value_for_money": "Short, honest comment on value",
+  "who_should_buy": "Who it suits",
+  "avoid": "Who should avoid it",
+  "how_to_choose": "What to check in the size chart and fabric details.",
+  "final_recommendation": "One honest sentence that matches the pros and cons above.",
+  "editor_pick": false,
+  "rank": null,
+  "checked": "2026-10-16",
+  "image": "/images/products/brand-short-model-name.jpg",
+  "retailers": {
+    "amazon": { "url": "https://www.amazon.in/dp/..." },
+    "flipkart": { "url": "" },
+    "brand_store": { "url": "" }
+  },
+  "sources": [{ "label": "Maker page", "url": "https://example.com/" }]
+}

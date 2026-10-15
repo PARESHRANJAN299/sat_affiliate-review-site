@@ -1,0 +1,38 @@
+{
+  "_note": "Filter lists for product listings. A product's `facets` block may only use the codes below; the build stops with a fix hint if it does not. Add a new value here first (one line), then use it in product files. Price band and brand need no entry: price comes from the product's price_band, brand from its brand field, product type from its family.",
+  "categories": {
+    "clothing-accessories": {
+      "segment": {
+        "key": "audience",
+        "label": "For",
+        "values": [["women", "Women"], ["girls", "Girls"], ["men", "Men"]]
+      },
+      "facets": [
+        {"key": "material", "label": "Material", "values": [["cotton", "Cotton"], ["cotton-blend", "Cotton blend"], ["polyester", "Polyester"], ["denim", "Denim"], ["linen", "Linen"], ["fleece", "Fleece"], ["rayon", "Rayon / viscose"], ["other", "Other"]]},
+        {"key": "fit", "label": "Fit", "values": [["slim", "Slim"], ["regular", "Regular"], ["relaxed", "Relaxed"], ["oversized", "Oversized"]]},
+        {"key": "size", "label": "Sizes", "values": [["xs", "XS"], ["s", "S"], ["m", "M"], ["l", "L"], ["xl", "XL"], ["xxl", "XXL"], ["3xl-plus", "3XL and above"]]}
+      ]
+    },
+    "home-kitchen": {
+      "facets": [
+        {"key": "material", "label": "Material", "values": [["stainless-steel", "Stainless steel"], ["aluminium", "Aluminium"], ["non-stick", "Non-stick"], ["glass", "Glass"], ["plastic", "Plastic"], ["ceramic", "Ceramic"], ["cotton", "Cotton"], ["other", "Other"]]},
+        {"key": "size", "label": "Size", "values": [["compact", "Compact"], ["medium", "Medium"], ["large", "Large"], ["family", "Family size"]]},
+        {"key": "power", "label": "Power", "values": [["electric", "Electric"], ["gas", "Gas"], ["induction", "Induction"], ["manual", "Manual"]]}
+      ]
+    },
+    "beauty-personal-care": {
+      "facets": [
+        {"key": "skin_hair", "label": "Skin or hair type", "values": [["oily", "Oily"], ["dry", "Dry"], ["combination", "Combination"], ["sensitive", "Sensitive"], ["normal", "Normal"], ["all", "All types"]]},
+        {"key": "concern", "label": "Concern", "values": [["acne", "Acne"], ["dryness", "Dryness"], ["sun-protection", "Sun protection"], ["dandruff", "Dandruff"], ["hair-fall", "Hair fall"], ["tan-dullness", "Tan and dullness"], ["daily-care", "Daily care"]]},
+        {"key": "form", "label": "Form", "values": [["cream", "Cream"], ["gel", "Gel"], ["lotion", "Lotion"], ["serum", "Serum"], ["shampoo", "Shampoo"], ["oil", "Oil"], ["other", "Other"]]}
+      ]
+    },
+    "sports-fitness": {
+      "facets": [
+        {"key": "level", "label": "Skill level", "values": [["beginner", "Beginner"], ["intermediate", "Intermediate"], ["advanced", "Advanced"]]},
+        {"key": "material", "label": "Material", "values": [["rubber", "Rubber"], ["steel", "Steel"], ["neoprene", "Neoprene"], ["foam", "Foam"], ["pvc", "PVC"], ["leather", "Leather"], ["synthetic", "Synthetic"], ["other", "Other"]]},
+        {"key": "size", "label": "Size or weight", "values": [["light", "Light"], ["medium", "Medium"], ["heavy", "Heavy"], ["adjustable", "Adjustable"]]}
+      ]
+    }
+  }
+}
