@@ -20,7 +20,7 @@
       "description": "Fitness, workout and active-lifestyle essentials.",
       "art": "sports",
       "hue": 215,
-      "status": "live",
+      "status": "placeholder",
       "image": "/images/categories/sports-fitness.jpg",
       "families": [],
       "thumb": "/images/categories/sports-fitness-thumb.jpg"

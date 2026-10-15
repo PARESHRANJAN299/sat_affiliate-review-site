@@ -339,6 +339,8 @@ def category_menu(item, current_url=None):
     rows = []
     for c in CATEGORIES:
         n = sum(1 for a in _MENU_ARTICLES if a["article"]["category"] == c["name"])
+        if c["status"] == "placeholder":
+            n = 0
         meta = f"{n} guides" if n > 1 else ("1 guide" if n == 1 else "Coming soon")
         soon = "" if n else " is-soon"
         rows.append(
