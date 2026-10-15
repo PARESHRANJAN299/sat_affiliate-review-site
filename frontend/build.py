@@ -199,6 +199,25 @@ CATEGORY_ICON = {
 }
 
 
+CATEGORY_ICON.update({
+    "badminton-rackets": '<ellipse cx="14.5" cy="9.5" rx="5" ry="6.5" transform="rotate(-35 14.5 9.5)"/><path d="M10.6 13.4 4 20M12 6.5l5 5M9.8 9.2l5 5"/>',
+    "cricket-bats": '<rect x="11" y="2.5" width="5" height="12.5" rx="1.5" transform="rotate(35 13.5 8.7)"/><path d="M10.5 14.5 5 20"/><circle cx="18.5" cy="18.5" r="2"/>',
+    "footballs": '<circle cx="12" cy="12" r="9"/><path d="M12 8.2l3.4 2.4-1.3 4H9.9l-1.3-4z"/><path d="M12 8.2V3M15.4 10.6l4.8-1.6M14.1 14.6l3 4M9.9 14.6l-3 4M8.6 10.6 3.8 9"/>',
+    "sports-shoes": '<path d="M3 17v-4.5c2.8 0 4.8-1.8 6-4l3 1.8c2.2 1.3 5 2.4 9 4.2V17a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M3 17.5h18M12 10l1.6 2.2"/>',
+    "sports-bags": '<rect x="3" y="8" width="18" height="11" rx="3"/><path d="M8 8V6a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 13h18M12 12v2"/>',
+    "dumbbells": '<path d="M6.5 6.5v11M17.5 6.5v11M3.5 9v6M20.5 9v6M6.5 12h11"/>',
+    "resistance-bands": '<ellipse cx="9" cy="12" rx="6" ry="3.5" transform="rotate(-20 9 12)"/><ellipse cx="15" cy="12" rx="6" ry="3.5" transform="rotate(20 15 12)"/>',
+    "yoga-mats": '<circle cx="7.5" cy="14" r="3.5"/><circle cx="7.5" cy="14" r="1"/><path d="M7.5 10.5H20v7H7.5"/>',
+    "skipping-ropes": '<rect x="3" y="3" width="3.5" height="7" rx="1.7"/><rect x="17.5" y="14" width="3.5" height="7" rx="1.7"/><path d="M4.7 10C4.7 20 12 22 12 12S19.3 4 19.3 14"/>',
+    "gym-gloves": '<path d="M7 11V6a1.5 1.5 0 0 1 3 0v4M10 10V4.5a1.5 1.5 0 0 1 3 0V10M13 10V5.5a1.5 1.5 0 0 1 3 0V12"/><path d="M7 11c-1.6-1-3.2.6-2.1 2.2L8 18c1.4 2.4 3.4 3 6 3 3 0 5-2 5-5v-3.5a1.5 1.5 0 0 0-3 0"/>',
+    "hand-grippers": '<path d="M7 20c-3-3-3.5-9 1-13l3 2.2M17 20c3-3 3.5-9-1-13l-3 2.2"/><path d="M9.5 5.5h5M8 20h2M14 20h2"/>',
+    "foam-rollers": '<rect x="3" y="8" width="18" height="8" rx="4"/><path d="M8 8v8M12 8v8M16 8v8"/>',
+    "shaker-bottles": '<path d="M8 3h8v3H8zM9 6l-1 14a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1L15 6"/><path d="M9 11h6"/>',
+    "weighing-scales": '<rect x="3" y="3" width="18" height="18" rx="4"/><path d="M8 9.5a4 4 0 0 1 8 0z"/><path d="M12 9.5l1.6-2.2"/>',
+    "kettlebells": '<circle cx="12" cy="15" r="6"/><path d="M8.2 10.4C7 4 17 4 15.8 10.4"/>',
+})
+
+
 def category_icon(c, css_class):
     return (f'<svg class="{css_class}" viewBox="0 0 24 24" focusable="false" aria-hidden="true">'
             f'{CATEGORY_ICON[c["art"]]}</svg>')
@@ -223,10 +242,10 @@ def category_cards(current_url=None):
     return '<ul class="category-grid">\n' + "\n".join(items) + "\n    </ul>"
 
 
-def category_directory():
-    """Accessible category directory, generated from the shared category catalogue."""
+def category_directory(entries=None, grid_id="category-results"):
+    """Accessible category directory, generated from the shared category catalogue (or any list of cards)."""
     items = []
-    for c in CATEGORIES:
+    for c in (CATEGORIES if entries is None else entries):
         items.append(
             '<li class="directory-item">'
             f'<a class="directory-card directory-{esc(c["slug"])}" href="{esc(c["url"])}">'
@@ -235,7 +254,7 @@ def category_directory():
             f'<p>{esc(c["description"])}</p>'
             '<span class="directory-cta">Explore'
             '<svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></span></div></a></li>')
-    return '<ul class="directory-grid" id="category-results">' + "\n".join(items) + '</ul>'
+    return f'<ul class="directory-grid" id="{grid_id}">' + "\n".join(items) + '</ul>'
 
 
 
@@ -274,6 +293,91 @@ def home_collage():
         out.append(f'<div class="home-row home-row-{n + 1}"><div class="home-track">{tiles(False)}'
                    f'<span class="home-dup" aria-hidden="true">{tiles(True)}</span></div></div>')
     return '<div class="home-collage">\n      ' + "\n      ".join(out) + "\n    </div>"
+
+
+def family_url(cat, fam):
+    return f'{cat["url"]}{fam["section"]}/{fam["slug"]}/'
+
+
+def family_entries(cat):
+    """Family cards in the shape category_directory() expects."""
+    sections = {s["slug"]: s for s in cat.get("sections", [])}
+    out = []
+    for f in cat["families"]:
+        out.append({"slug": f["slug"], "name": f["name"], "description": f["description"], "art": f["slug"],
+                    "hue": sections.get(f["section"], {}).get("hue", cat["hue"]), "image": f.get("image"),
+                    "url": family_url(cat, f)})
+    return out
+
+
+PICK_SLOTS = ["Editor's picks", "Best overall", "Best value", "Best for beginners", "Best under budget"]
+
+
+def family_pages():
+    """Landing page for each category that has product families, plus one page per family."""
+    pages = []
+    note_slots = "".join(
+        f'<li class="pick-slot"><span class="pick-slot-label">{esc(s)}</span><span class="pick-slot-state">Being researched</span></li>'
+        for s in PICK_SLOTS)
+    for cat in CATEGORIES:
+        if not cat.get("families"):
+            continue
+        sections = cat.get("sections", [])
+        entries = family_entries(cat)
+        by_section = {s["slug"]: [e for e, f in zip(entries, cat["families"]) if f["section"] == s["slug"]] for s in sections}
+        blocks = []
+        for s in sections:
+            cards = category_directory(by_section[s["slug"]], grid_id=f'{s["slug"]}-results')
+            blocks.append(
+                f'<section class="family-section family-section-{esc(s["slug"])}" id="{esc(s["slug"])}" aria-labelledby="{esc(s["slug"])}-title" style="--hue:{s["hue"]}">\n'
+                f'  <div class="family-section-head"><h2 id="{esc(s["slug"])}-title">{esc(s["name"])}</h2>'
+                f'<span class="family-count">{len(by_section[s["slug"]])} product types</span></div>\n'
+                f'  <p class="family-section-blurb">{esc(s["blurb"])}</p>\n  {cards}\n</section>')
+        body = (
+            '<section class="section">\n  <div class="container content-page family-page">\n'
+            '    {{breadcrumb}}\n'
+            f'    <h1>{esc(cat["name"])}</h1>\n'
+            f'    <p class="lead">{esc(cat["description"])} Choose a product type to see how we are researching it.</p>\n'
+            + "\n".join(blocks) +
+            '\n  </div>\n</section>')
+        pages.append({
+            "url": cat["url"], "title": f'{cat["name"]} Buying Guides for India',
+            "description": f'Browse sports and fitness product types, from {cat["families"][0]["name"].lower()} to {cat["families"][-1]["name"].lower()}. Buying guides for Indian shoppers.',
+            "css": ["buttons", "breadcrumb", "content-page", "category-directory", "families"], "js": [],
+            "breadcrumbs": [["Shop by Category", "/products/"], [cat["name"], cat["url"]]],
+            "updated": "2026-10-16", "_slug": cat["slug"], "_body": body})
+        sec_names = {s["slug"]: s["name"] for s in sections}
+        for f in cat["families"]:
+            url = family_url(cat, f)
+            tips = "".join(f'<li><strong>{esc(h)}.</strong> {esc(x)}</li>' for h, x in f["tips"])
+            faqs = "".join(
+                f'<details class="faq-item"><summary><h3>{esc(q["q"])}</h3><span class="faq-chev" aria-hidden="true"></span></summary><p>{esc(q["a"])}</p></details>'
+                for q in f["faqs"])
+            others = [e for e, g in zip(entries, cat["families"]) if g["section"] == f["section"] and g["slug"] != f["slug"]][:4]
+            related = "".join(f'<li><a href="{esc(e["url"])}">{esc(e["name"])}</a></li>' for e in others)
+            body = (
+                '<section class="section">\n  <div class="container content-page family-page">\n'
+                '    {{breadcrumb}}\n'
+                f'    <p class="family-kicker">{esc(sec_names.get(f["section"], ""))}</p>\n'
+                f'    <h1>{esc(f["h1"])}</h1>\n    <p class="lead">{esc(f["intro"])}</p>\n'
+                '    <p class="family-status"><strong>Picks coming soon.</strong> We add a product only after we have read the maker\'s page and the shop listings. '
+                'Read <a href="/how-we-pick/">how we pick</a>.</p>\n'
+                f'    <h2>Our picks</h2>\n    <ul class="pick-slots">{note_slots}</ul>\n'
+                '    <h2>Comparison</h2>\n    <div class="empty-state"><p>A comparison table appears here once the first picks are added.</p></div>\n'
+                f'    <h2>Buying guide</h2>\n    <ul class="family-tips">{tips}</ul>\n'
+                f'    <h2>Common questions</h2>\n{faqs}\n'
+                f'    <h2>More {esc(sec_names.get(f["section"], "").lower())} guides</h2>\n    <ul class="related-links">{related}'
+                f'<li><a href="{esc(cat["url"])}">All {esc(cat["name"])}</a></li></ul>\n'
+                '    <aside class="affiliate-box" id="affiliate-note"><svg class="ic" aria-hidden="true"><use href="#i-info"/></svg>'
+                '<p><strong>Affiliate disclosure.</strong> We have no approved affiliate accounts yet, and this page earns us nothing today. '
+                'If that changes, we will say so here first. <a href="/affiliate-disclosure/">Read the full disclosure</a>.</p></aside>\n'
+                '  </div>\n</section>')
+            pages.append({
+                "url": url, "title": f["h1"], "description": f["meta"],
+                "css": ["buttons", "breadcrumb", "content-page", "faq", "watches", "families"], "js": [], "noindex": True,
+                "breadcrumbs": [["Shop by Category", "/products/"], [cat["name"], cat["url"]], [f["name"], url]],
+                "updated": "2026-10-16", "_slug": f'{cat["slug"]}-{f["section"]}-{f["slug"]}', "_body": body})
+    return pages
 
 
 def category_placeholder_pages():
@@ -378,7 +482,11 @@ def category_menu(item, current_url=None):
         n = sum(1 for a in _MENU_ARTICLES if a["article"]["category"] == c["name"])
         if c["status"] == "placeholder":
             n = 0
-        meta = f"{n} guides" if n > 1 else ("1 guide" if n == 1 else "Coming soon")
+        families = c.get("families") or []
+        meta = (f"{len(families)} product types" if families else
+                (f"{n} guides" if n > 1 else ("1 guide" if n == 1 else "Coming soon")))
+        if families:
+            n = len(families)
         soon = "" if n else " is-soon"
         rows.append(
             f'            <li><a class="menu-row" href="{c["url"]}" style="--hue:{c["hue"]}"{cur(c["url"])}>'
@@ -641,6 +749,7 @@ def load_pages():
         pages.append(meta)
     pages.extend(load_guides())
     pages.extend(category_placeholder_pages())
+    pages.extend(family_pages())
     shop = watches.Watches(SRC, CONFIG)
     errors.extend(shop.errors)
     warnings.extend(shop.warnings)
@@ -823,6 +932,9 @@ def build():
     folders = sorted({"/" + p["url"].strip("/").split("/")[0] + "/" for p in pages if p.get("article")})
     existing = {p["url"] for p in pages}
     extra = [f + " /sports-fitness/ 301" for f in folders if f not in existing]
+    section_redirects = [f'{c["url"]}{s["slug"]}/ {c["url"]}#{s["slug"]} 301'
+                         for c in CATEGORIES if c.get("families") for s in c.get("sections", [])]
+    extra = extra + section_redirects
     redirects = DIST / "_redirects"
     base_redirects = redirects.read_text(encoding="utf-8").rstrip("\n").splitlines() if redirects.exists() else []
     known = {line.split()[0] for line in base_redirects if line.strip()}

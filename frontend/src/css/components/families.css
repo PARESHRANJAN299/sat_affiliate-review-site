@@ -1,0 +1,21 @@
+/* Product-family landing and pages */
+.family-page { max-width: 1440px; }
+.family-section { margin: 34px 0 10px; padding: 18px 0 8px; }
+.family-section + .family-section { border-top: 1px solid var(--color-border); padding-top: 30px; margin-top: 30px; }
+.family-section-head { display: flex; align-items: center; gap: 12px; margin-bottom: 6px; }
+.family-section-head::before { content: ""; width: 6px; height: 30px; border-radius: 3px; background: hsl(var(--hue) 62% 42%); }
+.family-section-head h2 { margin: 0; font-size: clamp(1.4rem, 2.2vw, 1.8rem); }
+.family-count { padding: 3px 10px; border-radius: 999px; background: hsl(var(--hue) 70% 94%); color: hsl(var(--hue) 55% 28%); font-size: .75rem; font-weight: 700; }
+.family-section-blurb { margin: 0 0 16px; color: var(--color-text-muted); }
+.family-section .directory-art { background: linear-gradient(140deg, hsl(var(--hue) 50% 22%), hsl(calc(var(--hue) + 18) 52% 36%)); }
+.family-kicker { margin: 0 0 6px; font-size: .78rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--color-primary-dark); }
+.family-status { margin: 0 0 8px; padding: 12px 16px; background: var(--color-bg-alt); border-left: 4px solid var(--color-navy-light); border-radius: 10px; font-size: .95rem; }
+.pick-slots { list-style: none; margin: 14px 0 0; padding: 0; display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); }
+.pick-slot { display: flex; flex-direction: column; gap: 4px; padding: 16px; border: 1.5px dashed var(--color-border); border-radius: 14px; background: var(--color-bg-alt); }
+.pick-slot-label { font-weight: 700; }
+.pick-slot-state { font-size: .85rem; color: var(--color-text-muted); font-style: italic; }
+.family-tips { padding-left: 1.2em; }
+.family-tips li { margin: 10px 0; }
+.family-page .related-links { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.family-page .related-links a { display: inline-flex; align-items: center; min-height: 44px; padding: 0 16px; border: 1.5px solid var(--color-border); border-radius: 999px; background: var(--color-surface); color: var(--color-text); font-size: .9rem; font-weight: 600; text-decoration: none; }
+.family-page .related-links a:hover { border-color: var(--color-primary); }

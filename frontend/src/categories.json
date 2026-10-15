@@ -20,10 +20,603 @@
       "description": "Fitness, workout and active-lifestyle essentials.",
       "art": "sports",
       "hue": 215,
-      "status": "placeholder",
+      "status": "families",
       "image": "/images/categories/sports-fitness.jpg",
-      "families": [],
-      "thumb": "/images/categories/sports-fitness-thumb.jpg"
+      "families": [
+        {
+          "section": "sports",
+          "slug": "badminton-rackets",
+          "name": "Badminton Rackets",
+          "description": "Light, balanced rackets for beginners and regular players.",
+          "h1": "Best Badminton Racket Under ₹2,000 in India",
+          "keyword": "best badminton racket under 2000 in India",
+          "meta": "How to choose a badminton racket under ₹2,000 in India: weight, balance and strings explained, with our researched picks coming soon.",
+          "intro": "Choosing a badminton racket under ₹2,000 comes down to weight, balance and how often you play. This page will list our researched picks for beginners and regular players, with a comparison table and a short buying guide.",
+          "supporting": [
+            "badminton racket for beginners",
+            "best Yonex racket under 2000"
+          ],
+          "tips": [
+            [
+              "Weight",
+              "Rackets are marked 3U, 4U and so on. A lighter 4U racket is quicker to swing and easier on the wrist, so many players start there."
+            ],
+            [
+              "Balance",
+              "A head-heavy racket adds power to clears and smashes. A head-light racket is quicker in defence. A balanced racket suits most beginners."
+            ],
+            [
+              "Strings",
+              "Check the maximum string tension printed on the frame and never go above it. Beginners are usually better off with a racket that already has strings fitted."
+            ]
+          ],
+          "faqs": [
+            {
+              "q": "Which badminton racket is best for a beginner?",
+              "a": "A light, balanced racket with strings already fitted is a safe start. Avoid very stiff, head-heavy rackets until your technique is steady."
+            },
+            {
+              "q": "Should I buy a racket set or a single racket?",
+              "a": "A set suits first-time casual play. If you plan to play regularly, a single better racket is usually the better value."
+            }
+          ]
+        },
+        {
+          "section": "sports",
+          "slug": "cricket-bats",
+          "name": "Cricket Bats",
+          "description": "Bats for tennis-ball and leather-ball cricket, for beginners and club players.",
+          "h1": "Best Cricket Bat Under ₹3,000 in India",
+          "keyword": "best cricket bat under 3000 in India",
+          "meta": "How to choose a cricket bat under ₹3,000 in India: willow type, size and ball type explained, with our researched picks coming soon.",
+          "intro": "A good cricket bat under ₹3,000 starts with the right ball type, size and wood. This page will list our researched picks for beginners, with a comparison and a short buying guide.",
+          "supporting": [
+            "Kashmir willow bat under 3000",
+            "cricket bat for beginners"
+          ],
+          "tips": [
+            [
+              "Ball type",
+              "Tennis-ball and leather-ball bats are built differently. Check that the bat is made for the ball you will use."
+            ],
+            [
+              "Wood",
+              "Kashmir willow is a common choice for beginners. English willow is usually lighter and gives a bigger sweet spot, but it needs more care."
+            ],
+            [
+              "Size",
+              "Use the maker's size chart for your height. A bat that is too heavy or too long makes timing harder."
+            ]
+          ],
+          "faqs": [
+            {
+              "q": "Kashmir willow or English willow for a beginner?",
+              "a": "Kashmir willow is a common choice for beginners and casual leather-ball play. English willow is usually lighter, but needs more care."
+            },
+            {
+              "q": "Do I need to knock in a new bat?",
+              "a": "Many leather-ball bats need knocking-in before use, so follow the maker's instructions. Tennis-ball bats usually do not."
+            }
+          ]
+        },
+        {
+          "section": "sports",
+          "slug": "footballs",
+          "name": "Footballs",
+          "description": "Footballs by size, surface and level of play.",
+          "h1": "Best Football in India",
+          "keyword": "best football in India",
+          "meta": "How to choose a football in India: size, surface and build explained, with our researched picks coming soon.",
+          "intro": "The best football for you depends on your age, where you play and how often. This page will list our researched picks with a comparison and a short buying guide.",
+          "supporting": [
+            "football under 1000",
+            "football for beginners"
+          ],
+          "tips": [
+            [
+              "Size",
+              "Size 5 is the standard adult size. Younger players use smaller sizes, so check the maker's age guide."
+            ],
+            [
+              "Surface",
+              "Grass, artificial turf and hard ground all wear a ball differently. Look for a ball made for the ground you play on."
+            ],
+            [
+              "Build",
+              "Check the cover material and whether the ball is stitched or bonded on the listing."
+            ]
+          ],
+          "faqs": [
+            {
+              "q": "Which size is the standard football?",
+              "a": "Size 5 is the standard adult size."
+            },
+            {
+              "q": "Can I use a football on concrete?",
+              "a": "It will wear faster. Look for a ball described as made for hard ground or street play."
+            }
+          ]
+        },
+        {
+          "section": "sports",
+          "slug": "sports-shoes",
+          "name": "Sports Shoes",
+          "description": "Running, training and court shoes for men and women.",
+          "h1": "Best Sports Shoes in India",
+          "keyword": "best sports shoes in India",
+          "meta": "How to choose sports shoes in India: fit, cushioning and the right shoe for your sport explained, with our researched picks coming soon.",
+          "intro": "The best sports shoes depend on the sport, your foot and how often you play. This page will list our researched picks for men and women, with a comparison and a short buying guide.",
+          "supporting": [
+            "sports shoes for men",
+            "sports shoes for women",
+            "running shoes under 2000"
+          ],
+          "tips": [
+            [
+              "Match the sport",
+              "Running shoes are built for forward movement. Court sports need shoes made for side steps and quick stops."
+            ],
+            [
+              "Fit",
+              "Sizes differ between brands. Read the size chart and the return terms, or try the shoe in a store."
+            ],
+            [
+              "Cushioning and grip",
+              "More cushioning suits longer sessions. Check the sole pattern for the surface you use."
+            ]
+          ],
+          "faqs": [
+            {
+              "q": "Can I play badminton in running shoes?",
+              "a": "It is better not to. Badminton shoes are made for side steps and quick stops."
+            },
+            {
+              "q": "Can one pair do running and gym?",
+              "a": "For light gym use a running shoe is fine. For heavy lifting or court sports, a flatter, more stable shoe is better."
+            }
+          ]
+        },
+        {
+          "section": "sports",
+          "slug": "sports-bags",
+          "name": "Sports Bags",
+          "description": "Gym, duffle and kit bags for everyday training.",
+          "h1": "Best Sports Bag in India",
+          "keyword": "best sports bag in India",
+          "meta": "How to choose a sports bag in India: size, compartments and materials explained, with our researched picks coming soon.",
+          "intro": "A good sports bag fits your kit, keeps shoes apart and lasts through daily use. This page will list our researched picks with a comparison and a short buying guide.",
+          "supporting": [
+            "gym and sports bag",
+            "sports duffle bag",
+            "sports bag for men"
+          ],
+          "tips": [
+            [
+              "Size",
+              "Think about what you carry: shoes, a change of clothes, a racket or a bottle. Check the capacity on the listing."
+            ],
+            [
+              "Compartments",
+              "A separate shoe compartment and a wet-clothes pocket keep the rest of the bag clean."
+            ],
+            [
+              "Build",
+              "Look at the zips, the straps and the base material. These wear out first."
+            ]
+          ],
+          "faqs": [
+            {
+              "q": "Duffle bag or backpack?",
+              "a": "A duffle suits more kit and gym use. A backpack is easier to carry for short distances."
+            },
+            {
+              "q": "How big should a sports bag be?",
+              "a": "Big enough for your shoes and clothes, but not so big that it is hard to carry when half empty."
+            }
+          ]
+        },
+        {
+          "section": "fitness",
+          "slug": "dumbbells",
+          "name": "Dumbbells",
+          "description": "Fixed and adjustable dumbbells for home workouts.",
+          "h1": "Best Dumbbells for Home Workout in India",
+          "keyword": "best dumbbells for home workout in India",
+          "meta": "How to choose dumbbells for a home workout in India: fixed or adjustable, weight and grip explained, with our researched picks coming soon.",
+          "intro": "The right dumbbells for a home workout depend on your space, your starting strength and how you plan to progress. This page will list our researched picks with a comparison and a short buying guide.",
+          "supporting": [
+            "best dumbbells under 2000",
+            "adjustable dumbbells India",
+            "dumbbells for beginners"
+          ],
+          "tips": [
+            [
+              "Fixed or adjustable",
+              "Fixed dumbbells are simple and sturdy. Adjustable sets save space and let you change the weight."
+            ],
+            [
+              "Weight",
+              "Start with a weight you can lift with good form, and add more as you get stronger."
+            ],
+            [
+              "Grip and coating",
+              "A rubber or neoprene coating protects the floor and is easier on the hands."
+            ]
+          ],
+          "faqs": [
+            {
+              "q": "How heavy should beginners start?",
+              "a": "Start with a weight you can lift with good form for about 10 to 12 repetitions, then add weight over time."
+            },
+            {
+              "q": "Fixed or adjustable dumbbells?",
+              "a": "Fixed dumbbells are simpler. Adjustable ones suit small homes and people who expect to progress."
+            }
+          ]
+        },
+        {
+          "section": "fitness",
+          "slug": "resistance-bands",
+          "name": "Resistance Bands",
+          "description": "Loop, tube and pull-up bands for home training.",
+          "h1": "Best Resistance Bands for Home Workout in India",
+          "keyword": "best resistance bands for home workout in India",
+          "meta": "How to choose resistance bands for a home workout in India: loop, tube and pull-up bands explained, with our researched picks coming soon.",
+          "intro": "Resistance bands are light, cheap to store and easy to start with. This page will list our researched picks by type, with a comparison and a short buying guide.",
+          "supporting": [
+            "resistance bands for beginners",
+            "best resistance bands set",
+            "resistance bands under 1000"
+          ],
+          "tips": [
+            [
+              "Types",
+              "Loop bands suit leg and glute work. Tube bands with handles feel closer to cable exercises. Pull-up bands help with assisted pull-ups."
+            ],
+            [
+              "Resistance levels",
+              "Brands label levels differently, so read the listed resistance rather than the colour."
+            ],
+            [
+              "Material",
+              "Many bands are made of latex. If you are sensitive to latex, look for a latex-free statement on the listing."
+            ]
+          ],
+          "faqs": [
+            {
+              "q": "Loop or tube bands?",
+              "a": "Loop bands suit leg and glute work. Tube bands with handles suit upper-body exercises."
+            },
+            {
+              "q": "Are resistance bands good for beginners?",
+              "a": "Yes. They are light and easy to store. Start with lighter resistance and focus on form."
+            }
+          ]
+        },
+        {
+          "section": "fitness",
+          "slug": "yoga-mats",
+          "name": "Yoga Mats",
+          "description": "Non-slip yoga and exercise mats by thickness and material.",
+          "h1": "Best Yoga Mat in India",
+          "keyword": "best yoga mat in India",
+          "meta": "How to choose a yoga mat in India: thickness, grip and material explained, with our researched picks coming soon.",
+          "intro": "A good yoga mat gives you grip, comfort and enough space. This page will list our researched picks with a comparison and a short buying guide.",
+          "supporting": [
+            "yoga mat for beginners",
+            "best yoga mat under 1000",
+            "non slip yoga mat"
+          ],
+          "tips": [
+            [
+              "Thickness",
+              "About 4 to 6 mm is common for yoga. Thicker mats cushion knees but can feel less stable."
+            ],
+            [
+              "Grip and material",
+              "Grip varies by brand and material. Check the surface texture and the material on the listing."
+            ],
+            [
+              "Size",
+              "A standard mat is about 180 cm long. Taller people may want a longer one."
+            ]
+          ],
+          "faqs": [
+            {
+              "q": "How thick should a yoga mat be?",
+              "a": "About 4 to 6 mm is common. Choose thicker for comfort and thinner for balance."
+            },
+            {
+              "q": "How do I choose a non-slip yoga mat?",
+              "a": "Check the surface texture and material on the listing, and read what buyers say about grip."
+            }
+          ]
+        },
+        {
+          "section": "fitness",
+          "slug": "skipping-ropes",
+          "name": "Skipping Ropes",
+          "description": "Basic, speed and weighted ropes for cardio and fitness.",
+          "h1": "Best Skipping Rope in India",
+          "keyword": "best skipping rope in India",
+          "meta": "How to choose a skipping rope in India: basic, speed and weighted ropes explained, with our researched picks coming soon.",
+          "intro": "A skipping rope is one of the simplest ways to train at home. This page will list our researched picks by type, with a comparison and a short buying guide.",
+          "supporting": [
+            "skipping rope for beginners",
+            "speed skipping rope",
+            "skipping rope under 500"
+          ],
+          "tips": [
+            [
+              "Types",
+              "A basic rope is easy to control. A speed rope spins faster. A weighted rope adds effort."
+            ],
+            [
+              "Length",
+              "Stand on the middle of the rope: the handles should reach about your armpits. Many ropes can be shortened."
+            ],
+            [
+              "Handles",
+              "Comfortable, non-slip handles matter when you skip for several minutes."
+            ]
+          ],
+          "faqs": [
+            {
+              "q": "Which skipping rope is best for beginners?",
+              "a": "A basic rope is easier to control at first. Move to a speed rope once your rhythm is steady."
+            },
+            {
+              "q": "How do I choose the right length?",
+              "a": "Stand on the middle of the rope. The handles should reach about your armpits."
+            }
+          ]
+        },
+        {
+          "section": "fitness",
+          "slug": "gym-gloves",
+          "name": "Gym Gloves",
+          "description": "Workout gloves with palm padding and wrist support.",
+          "h1": "Best Gym Gloves in India",
+          "keyword": "best gym gloves in India",
+          "meta": "How to choose gym gloves in India: padding, fit and wrist support explained, with our researched picks coming soon.",
+          "intro": "Gym gloves are about comfort and grip. This page will list our researched picks for men and women, with a comparison and a short buying guide.",
+          "supporting": [
+            "gym gloves for men",
+            "gym gloves for women",
+            "workout gloves"
+          ],
+          "tips": [
+            [
+              "Padding",
+              "Palm padding reduces friction on bars and handles. Too much padding can make the grip feel less direct."
+            ],
+            [
+              "Fit",
+              "Use the maker's size chart. Gloves that are too loose slip, and tight ones restrict movement."
+            ],
+            [
+              "Wrist support",
+              "Some gloves have a wrist strap for extra support. Check what the listing says."
+            ]
+          ],
+          "faqs": [
+            {
+              "q": "Do I need gym gloves?",
+              "a": "They are not required. Many people use them for comfort and to reduce friction."
+            },
+            {
+              "q": "Are gym gloves different for men and women?",
+              "a": "Many brands offer different sizes. Check the size chart rather than the label."
+            }
+          ]
+        },
+        {
+          "section": "fitness",
+          "slug": "hand-grippers",
+          "name": "Hand Grippers",
+          "description": "Fixed and adjustable grippers for grip training.",
+          "h1": "Best Hand Gripper in India",
+          "keyword": "best hand gripper in India",
+          "meta": "How to choose a hand gripper in India: adjustable or fixed, resistance and handle comfort explained, with our researched picks coming soon.",
+          "intro": "A hand gripper is a small, simple tool for grip training. This page will list our researched picks with a comparison and a short buying guide.",
+          "supporting": [
+            "adjustable hand gripper",
+            "hand gripper for beginners"
+          ],
+          "tips": [
+            [
+              "Adjustable or fixed",
+              "Adjustable grippers let you change the resistance. Fixed ones are simpler and often sturdier."
+            ],
+            [
+              "Resistance range",
+              "Check the listed resistance range, and start with a lower setting."
+            ],
+            [
+              "Handles",
+              "Comfortable handles with some grip texture make longer sessions easier."
+            ]
+          ],
+          "faqs": [
+            {
+              "q": "Adjustable or fixed hand gripper?",
+              "a": "Adjustable grippers suit people who want to progress. Fixed grippers are simpler."
+            },
+            {
+              "q": "Which hand gripper is best for beginners?",
+              "a": "Look for an adjustable gripper with a low starting resistance and comfortable handles."
+            }
+          ]
+        },
+        {
+          "section": "fitness",
+          "slug": "foam-rollers",
+          "name": "Foam Rollers",
+          "description": "Smooth and textured rollers for warm-ups and cool-downs.",
+          "h1": "Best Foam Roller in India",
+          "keyword": "best foam roller in India",
+          "meta": "How to choose a foam roller in India: density, texture and size explained, with our researched picks coming soon.",
+          "intro": "A foam roller is a simple tool for warm-ups and cool-downs. This page will list our researched picks with a comparison and a short buying guide. It is general fitness information, not medical advice.",
+          "supporting": [
+            "foam roller for muscle recovery"
+          ],
+          "tips": [
+            [
+              "Density",
+              "Softer rollers feel gentler. Firmer rollers feel more intense, so begin with a softer one."
+            ],
+            [
+              "Texture",
+              "Smooth rollers are the easiest to start with. Textured rollers feel more intense."
+            ],
+            [
+              "Size",
+              "A longer roller is steadier for back exercises. A short one is easier to travel with."
+            ]
+          ],
+          "faqs": [
+            {
+              "q": "Soft or hard foam roller?",
+              "a": "Start with a softer or medium roller and move to a firmer one if you want more intensity."
+            },
+            {
+              "q": "Is a textured foam roller better?",
+              "a": "Not always. Textured rollers feel more intense, so smooth ones suit most beginners."
+            }
+          ]
+        },
+        {
+          "section": "fitness",
+          "slug": "shaker-bottles",
+          "name": "Shaker Bottles",
+          "description": "Leak-proof protein shaker bottles for the gym and home.",
+          "h1": "Best Shaker Bottle in India",
+          "keyword": "best shaker bottle in India",
+          "meta": "How to choose a protein shaker bottle in India: leak-proof lids, mixing and size explained, with our researched picks coming soon.",
+          "intro": "A good shaker bottle mixes well and does not leak in your bag. This page will list our researched picks with a comparison and a short buying guide.",
+          "supporting": [
+            "protein shaker bottle",
+            "gym shaker bottle",
+            "leak proof shaker"
+          ],
+          "tips": [
+            [
+              "Lid and seal",
+              "A tight lid with a rubber seal is what stops leaks. Read what buyers say about leaking."
+            ],
+            [
+              "Mixing",
+              "A mixing ball or whisk helps break up lumps. Check that it is easy to remove and clean."
+            ],
+            [
+              "Size and material",
+              "Pick a size you will actually fill. Check the material and any food-safe statement on the listing."
+            ]
+          ],
+          "faqs": [
+            {
+              "q": "How do I stop a shaker bottle from leaking?",
+              "a": "Make sure the seal is seated, the lid is fully closed, and do not overfill it."
+            },
+            {
+              "q": "How should I clean a shaker bottle?",
+              "a": "Rinse it right after use and wash the lid seals separately. Check the maker's advice on dishwashers."
+            }
+          ]
+        },
+        {
+          "section": "fitness",
+          "slug": "weighing-scales",
+          "name": "Weighing Scales",
+          "description": "Digital body-weight scales for home use.",
+          "h1": "Best Weighing Scale in India",
+          "keyword": "best weighing scale in India",
+          "meta": "How to choose a weighing scale in India: digital accuracy, capacity and body-composition features explained, with our researched picks coming soon.",
+          "intro": "A weighing scale is most useful when it is consistent. This page will list our researched picks with a comparison and a short buying guide.",
+          "supporting": [
+            "digital weighing machine",
+            "body weight scale",
+            "smart weighing scale"
+          ],
+          "tips": [
+            [
+              "Capacity and steps",
+              "Check the maximum weight and how finely the scale reads, for example in 100 g steps."
+            ],
+            [
+              "Body-composition features",
+              "Body-fat and similar readings are estimates. Use them to watch trends, not exact numbers."
+            ],
+            [
+              "Build",
+              "A flat, hard surface and fresh batteries give steadier readings."
+            ]
+          ],
+          "faqs": [
+            {
+              "q": "Are body-fat readings on a scale accurate?",
+              "a": "They are estimates. Use them to watch changes over time rather than as exact numbers."
+            },
+            {
+              "q": "Where should I place a weighing scale?",
+              "a": "On a flat, hard floor. Soft surfaces such as carpet can change the reading."
+            }
+          ]
+        },
+        {
+          "section": "fitness",
+          "slug": "kettlebells",
+          "name": "Kettlebells",
+          "description": "Cast-iron and coated kettlebells for home strength training.",
+          "h1": "Best Kettlebell in India",
+          "keyword": "best kettlebell in India",
+          "meta": "How to choose a kettlebell in India: material, handle and weight explained, with our researched picks coming soon.",
+          "intro": "A kettlebell is a compact way to train strength and cardio at home. This page will list our researched picks with a comparison and a short buying guide.",
+          "supporting": [
+            "kettlebell for beginners",
+            "kettlebell for home workout"
+          ],
+          "tips": [
+            [
+              "Material",
+              "Cast iron is common and durable. Vinyl or rubber coating protects floors but can wear."
+            ],
+            [
+              "Handle",
+              "A smooth, wide handle is easier to hold. Rough casting seams can irritate the hands."
+            ],
+            [
+              "Weight",
+              "Start with a weight you can control and focus on technique before going heavier."
+            ]
+          ],
+          "faqs": [
+            {
+              "q": "What weight kettlebell should a beginner start with?",
+              "a": "Choose a weight you can control with good form. Many beginners start light and move up as technique improves."
+            },
+            {
+              "q": "Cast iron or coated kettlebell?",
+              "a": "Cast iron is durable. Coated ones are gentler on floors, but check how the coating holds up."
+            }
+          ]
+        }
+      ],
+      "thumb": "/images/categories/sports-fitness-thumb.jpg",
+      "sections": [
+        {
+          "slug": "sports",
+          "name": "Sports",
+          "blurb": "Gear for the game: rackets, bats, balls, shoes and bags.",
+          "hue": 215
+        },
+        {
+          "slug": "fitness",
+          "name": "Fitness",
+          "blurb": "Equipment for home and gym workouts.",
+          "hue": 165
+        }
+      ]
     },
     {
       "slug": "beauty-personal-care",
