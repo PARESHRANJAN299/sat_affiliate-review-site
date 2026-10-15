@@ -1942,10 +1942,1251 @@
       "description": "Clothing, everyday wear and style accessories for men and women.",
       "art": "clothing",
       "hue": 268,
-      "status": "placeholder",
+      "status": "families",
       "image": "/images/categories/clothing-accessories.jpg",
-      "families": [],
-      "thumb": "/images/categories/clothing-accessories-thumb.jpg"
+      "families": [
+        {
+          "section": "women",
+          "slug": "gen-z-tops",
+          "name": "Gen Z Tops & T-Shirts",
+          "description": "Crop tops, baby tees and trendy tops for everyday wear.",
+          "h1": "Best Gen Z Tops for Women",
+          "meta": "How to choose trendy tops and T-shirts for women in India: fabric, fit, length and care explained. Recommendations coming after product research.",
+          "intro": "The right top looks good and feels comfortable all day. This page will list our researched picks for women and girls, with pros, cons and a short buying guide.",
+          "needs": [
+            {
+              "name": "College",
+              "text": "Soft cotton or cotton-blend tops that wash well suit daily wear."
+            },
+            {
+              "name": "Going out",
+              "text": "Check the fit, length and fabric stretch so the top stays comfortable."
+            },
+            {
+              "name": "Hot weather",
+              "text": "Breathable fabrics such as cotton are a common choice."
+            },
+            {
+              "name": "Fit",
+              "text": "Fitted, relaxed and oversized cuts feel very different. Check the listed fit."
+            }
+          ],
+          "tips": [
+            [
+              "Fabric",
+              "Check the fabric on the listing and what buyers say about softness and shrinking."
+            ],
+            [
+              "Fit and length",
+              "Compare the listed length and chest size with a top you already own."
+            ],
+            [
+              "Care",
+              "Follow the wash label to keep colours and shape."
+            ]
+          ],
+          "faqs": [
+            {
+              "q": "How do I pick the right size for a crop top?",
+              "a": "Compare the bust and length measurements on the size chart with your own, and read reviews about whether it runs small or large."
+            },
+            {
+              "q": "Will cotton tops shrink?",
+              "a": "Some do. Check whether the listing says pre-shrunk and follow the wash label."
+            }
+          ],
+          "caution": "This page is general information. Sizes and fabrics differ between brands, so read the size chart, the fabric details and the return terms on the listing before you buy.",
+          "product_types": [],
+          "planned_guides": [
+            {
+              "title": "Best Gen Z Tops for Women"
+            },
+            {
+              "title": "Best Gen Z T-Shirts for Women"
+            }
+          ],
+          "slots": [
+            "Best overall",
+            "Best budget pick",
+            "Best value",
+            "Best for daily wear",
+            "Best for college"
+          ]
+        },
+        {
+          "section": "women",
+          "slug": "kurtas-kurti-sets",
+          "name": "Kurtas & Kurti Sets",
+          "description": "Daily and festive kurtas and kurti sets for women.",
+          "h1": "Best Kurtas and Kurti Sets for Women in India",
+          "meta": "How to choose kurtas and kurti sets for women in India: fabric, fit, set contents and care explained. Recommendations coming after product research.",
+          "intro": "A good kurta or kurti set balances comfort, fabric and occasion. This page will list our researched picks, with pros, cons and a short buying guide.",
+          "needs": [
+            {
+              "name": "Daily wear",
+              "text": "Cotton and cotton blends are breathable and easy to wash."
+            },
+            {
+              "name": "Office",
+              "text": "Straight cuts in solid or subtle prints are a common choice."
+            },
+            {
+              "name": "Festive",
+              "text": "Check the fabric, work and lining. Heavy embroidery can feel warm."
+            },
+            {
+              "name": "Sets",
+              "text": "Check what is in the set: kurta, bottom and dupatta. Not all sets include all three."
+            }
+          ],
+          "tips": [
+            [
+              "What is in the set",
+              "Read the listing for the number of pieces and the fabric of each."
+            ],
+            [
+              "Size chart",
+              "Check the brand's size chart and measure yourself. Sizes differ between brands."
+            ],
+            [
+              "Care",
+              "Check whether the kurta needs dry cleaning or can be machine washed."
+            ]
+          ],
+          "faqs": [
+            {
+              "q": "Cotton or rayon kurti?",
+              "a": "Cotton is breathable and sturdy. Rayon feels soft and drapes well, but may need gentler washing."
+            },
+            {
+              "q": "Do kurti sets include a dupatta?",
+              "a": "Some do and some do not. Check the listing for what is in the set."
+            }
+          ],
+          "caution": "This page is general information. Sizes and fabrics differ between brands, so read the size chart, the fabric details and the return terms on the listing before you buy.",
+          "product_types": [],
+          "planned_guides": [
+            {
+              "title": "Best Kurtas Under ₹1,000"
+            },
+            {
+              "title": "Best Kurti Sets Under ₹1,500"
+            }
+          ],
+          "slots": [
+            "Best overall",
+            "Best budget pick",
+            "Best value",
+            "Best for daily wear",
+            "Best for office",
+            "Best for college"
+          ]
+        },
+        {
+          "section": "women",
+          "slug": "home-wear",
+          "name": "Home Wear",
+          "description": "Soft, comfortable clothes for at home.",
+          "h1": "Best Home Wear for Women in India",
+          "meta": "How to choose home wear for women in India: fabric, fit and care explained. Recommendations coming after product research.",
+          "intro": "Good home wear is soft, easy to move in and easy to wash. This page will list our researched picks, with pros, cons and a short buying guide.",
+          "needs": [
+            {
+              "name": "Comfort",
+              "text": "Soft cotton or jersey fabrics are a common choice."
+            },
+            {
+              "name": "Summer",
+              "text": "Light, breathable fabrics keep you cooler."
+            },
+            {
+              "name": "Winter",
+              "text": "Fleece or thicker cotton helps in cold weather."
+            },
+            {
+              "name": "Easy care",
+              "text": "Check that the fabric survives frequent washing."
+            }
+          ],
+          "tips": [
+            [
+              "Fabric",
+              "Check the fabric and what buyers say about softness and pilling."
+            ],
+            [
+              "Size chart",
+              "Check the brand's size chart and measure yourself. Sizes differ between brands."
+            ],
+            [
+              "Fit",
+              "Relaxed fits are comfortable, but check the listed length."
+            ]
+          ],
+          "faqs": [
+            {
+              "q": "What fabric is best for home wear?",
+              "a": "Soft cotton and cotton blends are common. Check how they feel after washing in reviews."
+            },
+            {
+              "q": "Can I wear home wear outside?",
+              "a": "Many people do for quick errands. Check the cut and fabric if you want to."
+            }
+          ],
+          "caution": "This page is general information. Sizes and fabrics differ between brands, so read the size chart, the fabric details and the return terms on the listing before you buy.",
+          "product_types": [],
+          "planned_guides": [
+            {
+              "title": "Best Home Wear for Women"
+            }
+          ],
+          "slots": [
+            "Best overall",
+            "Best budget pick",
+            "Best value",
+            "Best for home",
+            "Best for daily wear"
+          ]
+        },
+        {
+          "section": "women",
+          "slug": "night-dresses",
+          "name": "Night Dresses / Night Suits",
+          "description": "Night dresses, night suits and sleepwear for women.",
+          "h1": "Best Night Suits for Women in India",
+          "meta": "How to choose night dresses and night suits for women in India: fabric, fit and comfort explained. Recommendations coming after product research.",
+          "intro": "Good nightwear helps you sleep comfortably. This page will list our researched picks, with pros, cons and a short buying guide.",
+          "needs": [
+            {
+              "name": "Hot nights",
+              "text": "Light cotton and breathable fabrics are a common choice."
+            },
+            {
+              "name": "Cool nights",
+              "text": "A full-sleeve night suit in a thicker cotton keeps you warm."
+            },
+            {
+              "name": "Comfort",
+              "text": "Soft seams and loose fits are easier to sleep in."
+            },
+            {
+              "name": "Easy care",
+              "text": "Check how the fabric holds up after repeated washing."
+            }
+          ],
+          "tips": [
+            [
+              "Fabric",
+              "Check the fabric and the reviews about softness."
+            ],
+            [
+              "Size chart",
+              "Check the brand's size chart and measure yourself. Sizes differ between brands."
+            ],
+            [
+              "Set contents",
+              "Check whether the listing is a dress or a set of top and bottom."
+            ]
+          ],
+          "faqs": [
+            {
+              "q": "Night dress or night suit?",
+              "a": "A night dress is a single piece. A night suit is a top and bottom, which many people prefer for cooler nights."
+            },
+            {
+              "q": "Is satin comfortable for sleeping?",
+              "a": "Some people like its feel. In hot weather cotton is usually more breathable."
+            }
+          ],
+          "caution": "This page is general information. Sizes and fabrics differ between brands, so read the size chart, the fabric details and the return terms on the listing before you buy.",
+          "product_types": [],
+          "planned_guides": [
+            {
+              "title": "Best Night Suits for Women"
+            }
+          ],
+          "slots": [
+            "Best overall",
+            "Best budget pick",
+            "Best value",
+            "Best for night wear"
+          ]
+        },
+        {
+          "section": "women",
+          "slug": "casual-dresses",
+          "name": "Casual Dresses",
+          "description": "Everyday dresses for college, outings and weekends.",
+          "h1": "Best Casual Dresses for Women in India",
+          "meta": "How to choose casual dresses for women in India: fabric, fit, length and occasion explained. Recommendations coming after product research.",
+          "intro": "A good casual dress is easy to wear and easy to style. This page will list our researched picks, with pros, cons and a short buying guide.",
+          "needs": [
+            {
+              "name": "College",
+              "text": "Easy-to-wash fabrics and comfortable lengths suit daily wear."
+            },
+            {
+              "name": "Outings",
+              "text": "Check the fit and fabric so you stay comfortable for hours."
+            },
+            {
+              "name": "Summer",
+              "text": "Breathable cotton and linen blends are a common choice."
+            },
+            {
+              "name": "Fit",
+              "text": "Check waist, bust and length on the size chart."
+            }
+          ],
+          "tips": [
+            [
+              "Fabric and lining",
+              "Check whether the dress is lined and what it feels like in reviews."
+            ],
+            [
+              "Size chart",
+              "Check the brand's size chart and measure yourself. Sizes differ between brands."
+            ],
+            [
+              "Length",
+              "Compare the listed length with a dress you already own."
+            ]
+          ],
+          "faqs": [
+            {
+              "q": "What length is best for a casual dress?",
+              "a": "It depends on your height and comfort. Compare the listed length with a dress you like."
+            },
+            {
+              "q": "How do I know if a dress is see-through?",
+              "a": "Check the lining details and read reviews, especially for light colours."
+            }
+          ],
+          "caution": "This page is general information. Sizes and fabrics differ between brands, so read the size chart, the fabric details and the return terms on the listing before you buy.",
+          "product_types": [],
+          "planned_guides": [
+            {
+              "title": "Best Casual Dresses for College"
+            }
+          ],
+          "slots": [
+            "Best overall",
+            "Best budget pick",
+            "Best value",
+            "Best for daily wear",
+            "Best for college"
+          ]
+        },
+        {
+          "section": "women",
+          "slug": "jeans-trousers",
+          "name": "Jeans & Trousers",
+          "description": "Jeans, trousers and pants for women and girls.",
+          "h1": "Best Jeans and Trousers for Women in India",
+          "meta": "How to choose jeans and trousers for women in India: fit, rise, fabric stretch and size explained. Recommendations coming after product research.",
+          "intro": "The right jeans or trousers fit your body and feel comfortable all day. This page will list our researched picks, with pros, cons and a short buying guide.",
+          "needs": [
+            {
+              "name": "Fit",
+              "text": "Straight, wide-leg, skinny and relaxed cuts look and feel very different."
+            },
+            {
+              "name": "Rise",
+              "text": "High-rise sits at the waist. Low and mid-rise sit lower. Check the listed rise."
+            },
+            {
+              "name": "Stretch",
+              "text": "A little stretch makes daily wear easier."
+            },
+            {
+              "name": "Office",
+              "text": "Check whether trousers are made for formal or casual use."
+            }
+          ],
+          "tips": [
+            [
+              "Size chart",
+              "Check the brand's size chart and measure yourself. Sizes differ between brands."
+            ],
+            [
+              "Length",
+              "Check the inseam or length against your height."
+            ],
+            [
+              "Care",
+              "Dark denim may fade. Follow the wash label."
+            ]
+          ],
+          "faqs": [
+            {
+              "q": "What is the difference between jeans and trousers?",
+              "a": "Jeans are made of denim. Trousers use other fabrics and are often dressier."
+            },
+            {
+              "q": "How do I choose the right rise?",
+              "a": "Try on a pair you like, and compare its rise with the listing."
+            }
+          ],
+          "caution": "This page is general information. Sizes and fabrics differ between brands, so read the size chart, the fabric details and the return terms on the listing before you buy.",
+          "product_types": [],
+          "slots": [
+            "Best overall",
+            "Best budget pick",
+            "Best value",
+            "Best for daily wear",
+            "Best for college",
+            "Best for office"
+          ]
+        },
+        {
+          "section": "women",
+          "slug": "coord-sets",
+          "name": "Co-ord Sets",
+          "description": "Matching tops and bottoms in one set.",
+          "h1": "Best Co-ord Sets for Women in India",
+          "meta": "How to choose co-ord sets for women in India: fabric, fit and styling explained. Recommendations coming after product research.",
+          "intro": "A co-ord set is an easy way to look put together. This page will list our researched picks, with pros, cons and a short buying guide.",
+          "needs": [
+            {
+              "name": "Daily wear",
+              "text": "Soft cotton or blend sets are easy to wash and wear."
+            },
+            {
+              "name": "Outings",
+              "text": "Check the fabric drape and whether the set is lined."
+            },
+            {
+              "name": "Summer",
+              "text": "Breathable fabrics keep you cooler."
+            },
+            {
+              "name": "Fit",
+              "text": "Check each piece's size, because top and bottom may fit differently."
+            }
+          ],
+          "tips": [
+            [
+              "What is in the set",
+              "Check how many pieces and which ones are sold together."
+            ],
+            [
+              "Size chart",
+              "Check the brand's size chart and measure yourself. Sizes differ between brands."
+            ],
+            [
+              "Care",
+              "Check the wash label for both pieces."
+            ]
+          ],
+          "faqs": [
+            {
+              "q": "Can I wear co-ord pieces separately?",
+              "a": "Often yes, if the pieces match other clothes you own."
+            },
+            {
+              "q": "Are co-ord sets comfortable for daily wear?",
+              "a": "They can be, if the fabric is soft and breathable. Check reviews for fabric feel."
+            }
+          ],
+          "caution": "This page is general information. Sizes and fabrics differ between brands, so read the size chart, the fabric details and the return terms on the listing before you buy.",
+          "product_types": [],
+          "planned_guides": [
+            {
+              "title": "Best Co-ord Sets for Women"
+            }
+          ],
+          "slots": [
+            "Best overall",
+            "Best budget pick",
+            "Best value",
+            "Best for daily wear",
+            "Best for college"
+          ]
+        },
+        {
+          "section": "women",
+          "slug": "leggings",
+          "name": "Leggings",
+          "description": "Everyday leggings and tights by fabric and fit.",
+          "h1": "Best Leggings for Women in India",
+          "meta": "How to choose leggings for women in India: fabric, stretch, opacity and size explained. Recommendations coming after product research.",
+          "intro": "Good leggings stay in place, stay opaque and last. This page will list our researched picks, with pros, cons and a short buying guide.",
+          "needs": [
+            {
+              "name": "Daily wear",
+              "text": "Soft cotton-blend leggings with some stretch are a common choice."
+            },
+            {
+              "name": "Workouts",
+              "text": "Look for stretch, a secure waistband and breathable fabric."
+            },
+            {
+              "name": "With kurtis",
+              "text": "Check the length and colour range."
+            },
+            {
+              "name": "Opacity",
+              "text": "Read reviews for whether leggings turn see-through when stretched."
+            }
+          ],
+          "tips": [
+            [
+              "Fabric and stretch",
+              "Check the fabric blend and how much stretch it has."
+            ],
+            [
+              "Size chart",
+              "Check the brand's size chart and measure yourself. Sizes differ between brands."
+            ],
+            [
+              "Waistband",
+              "A wide, soft waistband is usually more comfortable."
+            ]
+          ],
+          "faqs": [
+            {
+              "q": "How do I stop leggings from going see-through?",
+              "a": "Check the fabric thickness and what reviews say about opacity, and choose the right size."
+            },
+            {
+              "q": "Cotton or polyester leggings?",
+              "a": "Cotton blends are breathable. Polyester blends can be smoother and quicker to dry."
+            }
+          ],
+          "caution": "This page is general information. Sizes and fabrics differ between brands, so read the size chart, the fabric details and the return terms on the listing before you buy.",
+          "product_types": [],
+          "slots": [
+            "Best overall",
+            "Best budget pick",
+            "Best value",
+            "Best for daily wear"
+          ]
+        },
+        {
+          "section": "men",
+          "slug": "t-shirts",
+          "name": "T-Shirts",
+          "description": "Everyday T-shirts for men.",
+          "h1": "Best T-Shirts for Men in India",
+          "meta": "How to choose T-shirts for men in India: fabric, fit, GSM and care explained. Recommendations coming after product research.",
+          "intro": "A good T-shirt is soft, holds its shape and fits well. This page will list our researched picks, with pros, cons and a short buying guide.",
+          "needs": [
+            {
+              "name": "Daily wear",
+              "text": "Cotton and cotton blends are comfortable and easy to wash."
+            },
+            {
+              "name": "Hot weather",
+              "text": "Look for lighter, breathable fabrics."
+            },
+            {
+              "name": "Fit",
+              "text": "Regular, slim and oversized fits look different. Check the listed fit."
+            },
+            {
+              "name": "Gym",
+              "text": "Quick-drying polyester blends handle sweat better."
+            }
+          ],
+          "tips": [
+            [
+              "Fabric and weight",
+              "Fabric weight is sometimes listed as GSM. Higher GSM is usually thicker."
+            ],
+            [
+              "Size chart",
+              "Check the brand's size chart and measure yourself. Sizes differ between brands."
+            ],
+            [
+              "Shrinkage",
+              "Check whether the shirt is pre-shrunk and follow the wash label."
+            ]
+          ],
+          "faqs": [
+            {
+              "q": "What does GSM mean in a T-shirt?",
+              "a": "GSM is grams per square metre. A higher number usually means a thicker, heavier fabric."
+            },
+            {
+              "q": "How do I stop a T-shirt from shrinking?",
+              "a": "Follow the wash label, wash in cool water and avoid high heat when drying."
+            }
+          ],
+          "caution": "This page is general information. Sizes and fabrics differ between brands, so read the size chart, the fabric details and the return terms on the listing before you buy.",
+          "product_types": [],
+          "planned_guides": [
+            {
+              "title": "Best T-Shirts for Men"
+            }
+          ],
+          "slots": [
+            "Best overall",
+            "Best budget pick",
+            "Best value",
+            "Best for daily wear",
+            "Best for college"
+          ]
+        },
+        {
+          "section": "men",
+          "slug": "shirts",
+          "name": "Shirts",
+          "description": "Casual and formal shirts for men.",
+          "h1": "Best Shirts for Men in India",
+          "meta": "How to choose shirts for men in India: fabric, fit, collar and care explained. Recommendations coming after product research.",
+          "intro": "The right shirt depends on where you wear it and how it fits. This page will list our researched picks, with pros, cons and a short buying guide.",
+          "needs": [
+            {
+              "name": "Office",
+              "text": "Solid or subtle patterns in cotton or cotton blends are a common choice."
+            },
+            {
+              "name": "Casual",
+              "text": "Relaxed fits and softer fabrics feel easier."
+            },
+            {
+              "name": "Fit",
+              "text": "Slim, regular and relaxed fits sit differently on the shoulders and chest."
+            },
+            {
+              "name": "Care",
+              "text": "Check how easily the fabric wrinkles and whether it needs ironing."
+            }
+          ],
+          "tips": [
+            [
+              "Size chart",
+              "Check the brand's size chart and measure yourself. Sizes differ between brands."
+            ],
+            [
+              "Collar and sleeve",
+              "Check the collar size and sleeve length as well as the chest size."
+            ],
+            [
+              "Fabric",
+              "Cotton breathes well. Blends may crease less."
+            ]
+          ],
+          "faqs": [
+            {
+              "q": "How should a shirt fit?",
+              "a": "The shoulder seam should sit at your shoulder, and you should be able to move your arms comfortably."
+            },
+            {
+              "q": "Cotton or blend shirts?",
+              "a": "Cotton is breathable. Blends often crease less, but may feel warmer."
+            }
+          ],
+          "caution": "This page is general information. Sizes and fabrics differ between brands, so read the size chart, the fabric details and the return terms on the listing before you buy.",
+          "product_types": [],
+          "planned_guides": [
+            {
+              "title": "Best Shirts for Men"
+            },
+            {
+              "title": "Best Casual Wear for Men"
+            }
+          ],
+          "slots": [
+            "Best overall",
+            "Best budget pick",
+            "Best value",
+            "Best for daily wear",
+            "Best for office"
+          ]
+        },
+        {
+          "section": "men",
+          "slug": "jeans",
+          "name": "Jeans",
+          "description": "Men's jeans by fit, wash and stretch.",
+          "h1": "Best Jeans for Men in India",
+          "meta": "How to choose jeans for men in India: fit, rise, stretch and wash explained. Recommendations coming after product research.",
+          "intro": "The right jeans fit well, feel comfortable and last. This page will list our researched picks, with pros, cons and a short buying guide.",
+          "needs": [
+            {
+              "name": "Fit",
+              "text": "Skinny, slim, regular and relaxed cuts feel very different."
+            },
+            {
+              "name": "Stretch",
+              "text": "A little stretch makes daily wear easier."
+            },
+            {
+              "name": "Wash",
+              "text": "Dark washes look dressier. Light washes look casual."
+            },
+            {
+              "name": "Length",
+              "text": "Check the inseam against your height."
+            }
+          ],
+          "tips": [
+            [
+              "Size chart",
+              "Check the brand's size chart and measure yourself. Sizes differ between brands."
+            ],
+            [
+              "Rise",
+              "Check the listed rise to see where the jeans sit at the waist."
+            ],
+            [
+              "Care",
+              "Turn jeans inside out and wash them less often to keep colour."
+            ]
+          ],
+          "faqs": [
+            {
+              "q": "How do I find my jeans size online?",
+              "a": "Measure a pair that fits you well and compare it with the brand's size chart."
+            },
+            {
+              "q": "Do jeans shrink?",
+              "a": "Some do, especially with hot washes. Check the care label."
+            }
+          ],
+          "caution": "This page is general information. Sizes and fabrics differ between brands, so read the size chart, the fabric details and the return terms on the listing before you buy.",
+          "product_types": [],
+          "planned_guides": [
+            {
+              "title": "Best Jeans for Men"
+            }
+          ],
+          "slots": [
+            "Best overall",
+            "Best budget pick",
+            "Best value",
+            "Best for daily wear"
+          ]
+        },
+        {
+          "section": "men",
+          "slug": "trousers",
+          "name": "Trousers",
+          "description": "Formal and casual trousers for men.",
+          "h1": "Best Trousers for Men in India",
+          "meta": "How to choose trousers for men in India: fabric, fit, waist and occasion explained. Recommendations coming after product research.",
+          "intro": "Good trousers fit at the waist and hang well. This page will list our researched picks, with pros, cons and a short buying guide.",
+          "needs": [
+            {
+              "name": "Office",
+              "text": "Formal trousers in solid colours are a common choice."
+            },
+            {
+              "name": "Casual",
+              "text": "Chinos and relaxed fits are comfortable for daily wear."
+            },
+            {
+              "name": "Fit",
+              "text": "Check waist, rise and leg shape."
+            },
+            {
+              "name": "Fabric",
+              "text": "Cotton blends and polyester blends feel and crease differently."
+            }
+          ],
+          "tips": [
+            [
+              "Size chart",
+              "Check the brand's size chart and measure yourself. Sizes differ between brands."
+            ],
+            [
+              "Waist and length",
+              "Check the waist size and the length separately."
+            ],
+            [
+              "Care",
+              "Check whether the trousers can be machine washed."
+            ]
+          ],
+          "faqs": [
+            {
+              "q": "Formal or chino trousers?",
+              "a": "Formal trousers are dressier. Chinos work for both casual and smart-casual looks."
+            },
+            {
+              "q": "How do I pick the right waist size?",
+              "a": "Measure your waist and compare it with the size chart."
+            }
+          ],
+          "caution": "This page is general information. Sizes and fabrics differ between brands, so read the size chart, the fabric details and the return terms on the listing before you buy.",
+          "product_types": [],
+          "slots": [
+            "Best overall",
+            "Best budget pick",
+            "Best value",
+            "Best for daily wear",
+            "Best for office"
+          ]
+        },
+        {
+          "section": "men",
+          "slug": "shorts",
+          "name": "Shorts",
+          "description": "Casual, sports and home shorts for men.",
+          "h1": "Best Shorts for Men in India",
+          "meta": "How to choose shorts for men in India: fabric, length and use explained. Recommendations coming after product research.",
+          "intro": "The right shorts depend on whether you wear them out, to the gym or at home. This page will list our researched picks, with pros, cons and a short buying guide.",
+          "needs": [
+            {
+              "name": "Casual",
+              "text": "Cotton shorts are breathable and comfortable."
+            },
+            {
+              "name": "Gym and sports",
+              "text": "Quick-drying fabric and a secure waistband help."
+            },
+            {
+              "name": "At home",
+              "text": "Soft, loose shorts are easy to relax in."
+            },
+            {
+              "name": "Length",
+              "text": "Check the listed length against your height."
+            }
+          ],
+          "tips": [
+            [
+              "Size chart",
+              "Check the brand's size chart and measure yourself. Sizes differ between brands."
+            ],
+            [
+              "Waistband",
+              "A drawstring or elastic waistband adjusts better."
+            ],
+            [
+              "Pockets",
+              "Check the pocket depth if you carry a phone."
+            ]
+          ],
+          "faqs": [
+            {
+              "q": "What length of shorts is best?",
+              "a": "It depends on your height and comfort. Compare the listed length with a pair you like."
+            },
+            {
+              "q": "Can I use the same shorts for gym and casual wear?",
+              "a": "Often yes, if the fabric is breathable and stretchy."
+            }
+          ],
+          "caution": "This page is general information. Sizes and fabrics differ between brands, so read the size chart, the fabric details and the return terms on the listing before you buy.",
+          "product_types": [],
+          "slots": [
+            "Best overall",
+            "Best budget pick",
+            "Best value",
+            "Best for daily wear",
+            "Best for home"
+          ]
+        },
+        {
+          "section": "men",
+          "slug": "joggers",
+          "name": "Track Pants / Joggers",
+          "description": "Track pants and joggers for daily wear and workouts.",
+          "h1": "Best Joggers for Men in India",
+          "meta": "How to choose joggers and track pants for men in India: fabric, fit, pockets and waistband explained. Recommendations coming after product research.",
+          "intro": "Good joggers are comfortable and hold their shape. This page will list our researched picks, with pros, cons and a short buying guide.",
+          "needs": [
+            {
+              "name": "Daily wear",
+              "text": "Cotton-blend joggers are soft and breathable."
+            },
+            {
+              "name": "Gym",
+              "text": "Quick-drying polyester blends handle sweat better."
+            },
+            {
+              "name": "Winter",
+              "text": "Thicker fleece joggers add warmth."
+            },
+            {
+              "name": "Fit",
+              "text": "Tapered, straight and relaxed fits look different. Check the listing."
+            }
+          ],
+          "tips": [
+            [
+              "Size chart",
+              "Check the brand's size chart and measure yourself. Sizes differ between brands."
+            ],
+            [
+              "Waistband and cuffs",
+              "Elastic or drawstring waistbands and cuffs affect fit and comfort."
+            ],
+            [
+              "Pockets",
+              "Zip pockets keep phones secure."
+            ]
+          ],
+          "faqs": [
+            {
+              "q": "Joggers or track pants?",
+              "a": "The names overlap. Joggers usually taper at the ankle, while track pants are often straight."
+            },
+            {
+              "q": "Can I wear joggers outside?",
+              "a": "Yes, if the style and fabric suit the place."
+            }
+          ],
+          "caution": "This page is general information. Sizes and fabrics differ between brands, so read the size chart, the fabric details and the return terms on the listing before you buy.",
+          "product_types": [],
+          "planned_guides": [
+            {
+              "title": "Best Joggers for Men"
+            }
+          ],
+          "slots": [
+            "Best overall",
+            "Best budget pick",
+            "Best value",
+            "Best for daily wear",
+            "Best for home"
+          ]
+        },
+        {
+          "section": "men",
+          "slug": "hoodies-sweatshirts",
+          "name": "Hoodies & Sweatshirts",
+          "description": "Hoodies and sweatshirts for cooler weather.",
+          "h1": "Best Hoodies and Sweatshirts for Men in India",
+          "meta": "How to choose hoodies and sweatshirts for men in India: fabric weight, fit and care explained. Recommendations coming after product research.",
+          "intro": "A good hoodie is warm without being heavy. This page will list our researched picks, with pros, cons and a short buying guide.",
+          "needs": [
+            {
+              "name": "Mild winters",
+              "text": "A lighter cotton sweatshirt is usually enough."
+            },
+            {
+              "name": "Cold weather",
+              "text": "Fleece-lined hoodies add warmth."
+            },
+            {
+              "name": "Fit",
+              "text": "Regular and oversized fits look different. Check the listed fit."
+            },
+            {
+              "name": "Care",
+              "text": "Check whether the fabric pills or shrinks after washing."
+            }
+          ],
+          "tips": [
+            [
+              "Size chart",
+              "Check the brand's size chart and measure yourself. Sizes differ between brands."
+            ],
+            [
+              "Fabric weight",
+              "Thicker fabric is warmer but heavier."
+            ],
+            [
+              "Details",
+              "Check the hood, the pocket and the cuffs on the listing."
+            ]
+          ],
+          "faqs": [
+            {
+              "q": "Hoodie or sweatshirt?",
+              "a": "A hoodie has a hood. A sweatshirt does not, and is often easier to layer."
+            },
+            {
+              "q": "How do I keep a hoodie from pilling?",
+              "a": "Wash it inside out in cool water and avoid rough drying."
+            }
+          ],
+          "caution": "This page is general information. Sizes and fabrics differ between brands, so read the size chart, the fabric details and the return terms on the listing before you buy.",
+          "product_types": [],
+          "slots": [
+            "Best overall",
+            "Best budget pick",
+            "Best value",
+            "Best for daily wear",
+            "Best for college"
+          ]
+        },
+        {
+          "section": "men",
+          "slug": "kurtas",
+          "name": "Kurtas",
+          "description": "Men's kurtas for daily, office and festive wear.",
+          "h1": "Best Men's Kurtas in India",
+          "meta": "How to choose men's kurtas in India: fabric, fit, length and occasion explained. Recommendations coming after product research.",
+          "intro": "The right kurta is comfortable, well cut and right for the occasion. This page will list our researched picks, with pros, cons and a short buying guide.",
+          "needs": [
+            {
+              "name": "Daily wear",
+              "text": "Cotton kurtas are breathable and easy to wash."
+            },
+            {
+              "name": "Festive",
+              "text": "Check the fabric, work and lining. Heavier fabrics feel warmer."
+            },
+            {
+              "name": "Fit",
+              "text": "Straight and relaxed cuts differ. Check chest and length."
+            },
+            {
+              "name": "Sets",
+              "text": "Check whether the listing includes a pyjama or churidar."
+            }
+          ],
+          "tips": [
+            [
+              "Size chart",
+              "Check the brand's size chart and measure yourself. Sizes differ between brands."
+            ],
+            [
+              "Fabric",
+              "Cotton is breathable. Blends may crease less."
+            ],
+            [
+              "Care",
+              "Check whether the kurta can be machine washed."
+            ]
+          ],
+          "faqs": [
+            {
+              "q": "How long should a kurta be?",
+              "a": "Many men prefer one that falls somewhere between the hip and the knee. Compare with one you like."
+            },
+            {
+              "q": "Do kurtas come with pyjamas?",
+              "a": "Some sets do. Check the listing."
+            }
+          ],
+          "caution": "This page is general information. Sizes and fabrics differ between brands, so read the size chart, the fabric details and the return terms on the listing before you buy.",
+          "product_types": [],
+          "planned_guides": [
+            {
+              "title": "Best Men's Kurtas"
+            }
+          ],
+          "slots": [
+            "Best overall",
+            "Best budget pick",
+            "Best value",
+            "Best for daily wear",
+            "Best for office"
+          ]
+        },
+        {
+          "section": "men",
+          "slug": "innerwear",
+          "name": "Innerwear",
+          "description": "Vests, briefs and boxers for men.",
+          "h1": "Best Innerwear for Men in India",
+          "meta": "How to choose innerwear for men in India: fabric, fit and size explained. Recommendations coming after product research.",
+          "intro": "Good innerwear is soft, fits well and lasts through many washes. This page will list our researched picks, with pros, cons and a short buying guide.",
+          "needs": [
+            {
+              "name": "Daily wear",
+              "text": "Soft cotton is breathable and common."
+            },
+            {
+              "name": "Hot weather",
+              "text": "Light, breathable fabrics keep you cooler."
+            },
+            {
+              "name": "Fit",
+              "text": "Check the waistband and leg opening on the listing."
+            },
+            {
+              "name": "Returns",
+              "text": "Innerwear is often not returnable. Read the return terms before you order."
+            }
+          ],
+          "tips": [
+            [
+              "Size chart",
+              "Check the brand's size chart and measure yourself. Sizes differ between brands."
+            ],
+            [
+              "Fabric",
+              "Cotton blends with some stretch are common."
+            ],
+            [
+              "Waistband",
+              "A soft, non-rolling waistband is more comfortable."
+            ]
+          ],
+          "faqs": [
+            {
+              "q": "Can I return innerwear?",
+              "a": "Many sellers do not accept returns for hygiene reasons. Check the listing before you buy."
+            },
+            {
+              "q": "Cotton or modal innerwear?",
+              "a": "Cotton is breathable and common. Modal feels softer and smoother."
+            }
+          ],
+          "caution": "This page is general information. Sizes and fabrics differ between brands, so read the size chart, the fabric details and the return terms on the listing before you buy.",
+          "product_types": [],
+          "slots": [
+            "Best overall",
+            "Best budget pick",
+            "Best value",
+            "Best for daily wear"
+          ]
+        },
+        {
+          "section": "men",
+          "slug": "nightwear",
+          "name": "Nightwear",
+          "description": "Night suits, pyjamas and sleepwear for men.",
+          "h1": "Best Nightwear for Men in India",
+          "meta": "How to choose nightwear for men in India: fabric, fit and comfort explained. Recommendations coming after product research.",
+          "intro": "Good nightwear is soft and easy to sleep in. This page will list our researched picks, with pros, cons and a short buying guide.",
+          "needs": [
+            {
+              "name": "Hot nights",
+              "text": "Light cotton and breathable fabrics are a common choice."
+            },
+            {
+              "name": "Cool nights",
+              "text": "Full-sleeve sets in thicker cotton keep you warm."
+            },
+            {
+              "name": "Comfort",
+              "text": "Soft seams and loose fits are easier to sleep in."
+            },
+            {
+              "name": "Easy care",
+              "text": "Check how the fabric holds up after washing."
+            }
+          ],
+          "tips": [
+            [
+              "Size chart",
+              "Check the brand's size chart and measure yourself. Sizes differ between brands."
+            ],
+            [
+              "Set contents",
+              "Check whether the listing is a set or a single piece."
+            ],
+            [
+              "Fabric",
+              "Check what buyers say about softness and shrinking."
+            ]
+          ],
+          "faqs": [
+            {
+              "q": "Pyjama or shorts for sleeping?",
+              "a": "It depends on the weather and your preference. Cotton pyjamas suit cooler nights and shorts suit hot ones."
+            },
+            {
+              "q": "What fabric is best for sleepwear?",
+              "a": "Soft cotton is a common choice. Check how it feels after washing."
+            }
+          ],
+          "caution": "This page is general information. Sizes and fabrics differ between brands, so read the size chart, the fabric details and the return terms on the listing before you buy.",
+          "product_types": [],
+          "planned_guides": [
+            {
+              "title": "Best Men's Nightwear"
+            }
+          ],
+          "slots": [
+            "Best overall",
+            "Best budget pick",
+            "Best value",
+            "Best for night wear",
+            "Best for home"
+          ]
+        },
+        {
+          "section": "men",
+          "slug": "jackets",
+          "name": "Jackets",
+          "description": "Casual and light jackets for men.",
+          "h1": "Best Jackets for Men in India",
+          "meta": "How to choose jackets for men in India: fabric, warmth, fit and use explained. Recommendations coming after product research.",
+          "intro": "The right jacket matches your weather and your style. This page will list our researched picks, with pros, cons and a short buying guide.",
+          "needs": [
+            {
+              "name": "Light weather",
+              "text": "Denim, bomber and light cotton jackets suit mild cool weather."
+            },
+            {
+              "name": "Cold weather",
+              "text": "Padded or fleece jackets add warmth."
+            },
+            {
+              "name": "Rain",
+              "text": "Check whether a jacket is water-resistant, and what that claim means on the maker's page."
+            },
+            {
+              "name": "Fit",
+              "text": "Check shoulders and sleeve length so you can layer underneath."
+            }
+          ],
+          "tips": [
+            [
+              "Size chart",
+              "Check the brand's size chart and measure yourself. Sizes differ between brands."
+            ],
+            [
+              "Lining and zips",
+              "Check the lining and the quality of zips and buttons."
+            ],
+            [
+              "Care",
+              "Check the wash label. Some jackets need dry cleaning."
+            ]
+          ],
+          "faqs": [
+            {
+              "q": "How do I pick a jacket size?",
+              "a": "Compare your chest and shoulder measurements with the size chart, and leave room for layers."
+            },
+            {
+              "q": "Are water-resistant jackets waterproof?",
+              "a": "Not always. Water-resistant usually handles light rain. Check the maker's wording."
+            }
+          ],
+          "caution": "This page is general information. Sizes and fabrics differ between brands, so read the size chart, the fabric details and the return terms on the listing before you buy.",
+          "product_types": [],
+          "planned_guides": [
+            {
+              "title": "Best Jackets for Men"
+            }
+          ],
+          "slots": [
+            "Best overall",
+            "Best budget pick",
+            "Best value",
+            "Best for daily wear"
+          ]
+        }
+      ],
+      "thumb": "/images/categories/clothing-accessories-thumb.jpg",
+      "template": "reviews",
+      "tagline": "Best picks for everyday style and comfort.",
+      "sections": [
+        {
+          "slug": "women",
+          "name": "Women / Girls",
+          "blurb": "Gen Z styles, kurtas, home wear and everyday comfort.",
+          "hue": 330
+        },
+        {
+          "slug": "men",
+          "name": "Men",
+          "blurb": "Clean, everyday and versatile clothing.",
+          "hue": 215
+        }
+      ],
+      "pick_slots": [
+        "Best overall",
+        "Best budget pick",
+        "Best value",
+        "Best for daily wear",
+        "Best for college",
+        "Best for office",
+        "Best for home",
+        "Best for night wear"
+      ],
+      "pending_note": "Recommendations coming after product research.",
+      "more_label": "More clothing guides",
+      "landing_meta": "Clothing buying guides for women, girls and men in India: Gen Z tops, kurtas, home wear, nightwear, jeans, shirts, joggers and more."
     }
   ]
 }

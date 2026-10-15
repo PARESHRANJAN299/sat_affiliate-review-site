@@ -1,0 +1,39 @@
+{
+  "id": "sample",
+  "sample": true,
+  "family": "t-shirts",
+  "name": "Sample product name",
+  "brand": "Sample brand",
+  "product_type": "T-shirt (sample)",
+  "category": "Men / T-Shirts",
+  "best_for": "Who it suits, in plain words",
+  "material": "Fabric and blend, as listed",
+  "fit": "Regular, slim or oversized",
+  "size_range": "Sizes listed, for example S to XXL",
+  "style": "Plain, graphic, polo and so on",
+  "occasion": "Daily wear, college, office",
+  "features": [
+    "Main feature one",
+    "Main feature two"
+  ],
+  "pros": [
+    "A real strength",
+    "Another real strength"
+  ],
+  "cons": [
+    "A real limit",
+    "Another real limit"
+  ],
+  "price_band": "₹500–₹1,000",
+  "value_for_money": "Short, honest comment on value",
+  "who_should_buy": "Who it suits",
+  "avoid": "Who should avoid it",
+  "care": "Wash and care instructions from the label",
+  "how_to_choose": "What to check in the size chart and fabric details.",
+  "alternatives": [
+    "Alternative one",
+    "Alternative two"
+  ],
+  "final_recommendation": "One honest sentence that matches the pros and cons above.",
+  "retailers": {}
+}

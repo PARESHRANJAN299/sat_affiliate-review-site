@@ -220,6 +220,25 @@ CATEGORY_ICON.update({
     "foam-rollers": '<rect x="3" y="8" width="18" height="8" rx="4"/><path d="M8 8v8M12 8v8M16 8v8"/>',
     "shaker-bottles": '<path d="M8 3h8v3H8zM9 6l-1 14a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1L15 6"/><path d="M9 11h6"/>',
     "weighing-scales": '<rect x="3" y="3" width="18" height="18" rx="4"/><path d="M8 9.5a4 4 0 0 1 8 0z"/><path d="M12 9.5l1.6-2.2"/>',
+    "gen-z-tops": '<path d="M8 4 3 7l1.5 4H8v4h8v-4h3.5L21 7l-5-3a4 4 0 0 1-8 0z"/>',
+    "kurtas-kurti-sets": '<path d="M8 3h6l2 3 2 2-1.5 2.5-1.5-.7V15H7v-4.2l-1.5.7L4 8l2-2z"/><path d="M8 15l-1 6M14 15l1 6"/>',
+    "home-wear": '<path d="M6 4h12l1 5H5z"/><path d="M5 9l1 11h4l2-7 2 7h4l1-11"/>',
+    "night-dresses": '<path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5z"/>',
+    "casual-dresses": '<path d="M9 3h6l-1 6 4 12H6l4-12z"/><path d="M9.5 9h5"/>',
+    "jeans-trousers": '<path d="M7 3h10l1 18h-5l-1-9-1 9H6z"/><path d="M7 7h10"/>',
+    "coord-sets": '<path d="M8 3h8l1.5 6h-11z"/><path d="M6.5 12h11l2 9h-15z"/>',
+    "leggings": '<path d="M8 3h8l1 8-2 10h-3l-1-8-1 8H7L5 11z"/>',
+    "t-shirts": '<path d="M8.5 3 3 5.5 4.6 10H7.5v10.5h9V10h2.9L21 5.5 15.5 3a3.6 3.6 0 0 1-7 0z"/>',
+    "shirts": '<path d="M9 3 3 6l1.5 4H7v10.5h10V10h2.5L21 6l-6-3-3 3z"/><path d="M12 6v14"/>',
+    "jeans": '<path d="M7 3h10l1 18h-5l-1-9-1 9H6z"/><path d="M7 7h10M9 9.5c1 1 2 1 3 0"/>',
+    "trousers": '<path d="M7 3h10l1 18h-4.5L12 10l-1.5 11H6z"/>',
+    "shorts": '<path d="M6 5h12l1.5 12h-5.5l-2-6-2 6H4.5z"/>',
+    "joggers": '<path d="M7 3h10l1 4 1 10-3 4h-2l-1-9-1 9H9l-3-4 1-10z"/><path d="M7 7h10"/>',
+    "hoodies-sweatshirts": '<path d="M9 4c0 3 6 3 6 0l4 3 2 7-3 1-1-3v9H7v-9l-1 3-3-1 2-7z"/><path d="M12 8v4"/>',
+    "kurtas": '<path d="M9 3h6l2 3 3 3-2 3-2-1v10H8V11l-2 1-2-3 3-3z"/><path d="M12 3v7"/>',
+    "innerwear": '<path d="M5 5h14v5c0 3-3 5-7 9-4-4-7-6-7-9z"/>',
+    "nightwear": '<path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5z"/><path d="M17 3v3M15.5 4.5h3"/>',
+    "jackets": '<path d="M9 3 4 6l-1 14h5V9M15 3l5 3 1 14h-5V9"/><path d="M9 3l3 3 3-3M12 6v14"/>',
     "pressure-cookers": '<path d="M5 10h14v9a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2z"/><path d="M4 10h16M9 10V7h6v3M12 7V4M3 14h2M19 14h2"/>',
     "mixer-grinders": '<path d="M8 3h8l-1 10H9z"/><rect x="6" y="13" width="12" height="8" rx="2"/><path d="M12 16.5v1"/>',
     "cookware-sets": '<rect x="3" y="11" width="12" height="9" rx="2"/><path d="M15 14h4a2 2 0 0 1 0 4h-4M5 8h8M7 8V6h4v2"/>',
@@ -344,7 +363,9 @@ PRICE_NOTE = "Prices may change. Check the retailer for the latest price."
 RETAILER_ORDER = ["amazon", "flipkart", "brand_store", "other"]
 RETAILER_LABEL = {"amazon": "Amazon", "flipkart": "Flipkart", "brand_store": "Brand website", "other": "Other retailer"}
 SLOT_KEYS = {"Best overall": "best_overall", "Best budget pick": "best_budget", "Best value": "best_value",
-             "Best for daily use": "best_daily", "Best premium pick": "best_premium", "Best for beginners": "best_beginner", "Best for small homes": "best_small_home"}
+             "Best for daily use": "best_daily", "Best premium pick": "best_premium", "Best for beginners": "best_beginner", "Best for small homes": "best_small_home",
+             "Best for daily wear": "best_daily_wear", "Best for college": "best_college", "Best for office": "best_office",
+             "Best for home": "best_home", "Best for night wear": "best_night"}
 
 
 def load_products(cat_slug):
@@ -397,7 +418,12 @@ def product_review_html(p):
         return f'<div><dt>{esc(label)}</dt><dd>{value}</dd></div>' if value else ""
     facts = "".join([
         row("Product type", esc(p.get("product_type", ""))),
+        row("Category", esc(p.get("category", ""))),
         row("Material and build", esc(p.get("material", ""))),
+        row("Fit", esc(p.get("fit", ""))),
+        row("Size range", esc(p.get("size_range", ""))),
+        row("Style", esc(p.get("style", ""))),
+        row("Occasion", esc(p.get("occasion", ""))),
         row("Size or capacity", esc(p.get("size", ""))),
         row("Best for", esc(p.get("best_for", ""))),
         row("Skin, hair or use case", esc(p.get("suits", ""))),
@@ -406,7 +432,8 @@ def product_review_html(p):
         row("Best use case", esc(p.get("best_use_case", ""))),
         row("Who should buy it", esc(p.get("who_should_buy", ""))),
         row("Who should avoid it", esc(p.get("avoid", ""))),
-        row("Maintenance and cleaning", esc(p.get("maintenance", "")))])
+        row("Maintenance and cleaning", esc(p.get("maintenance", ""))),
+        row("Care instructions", esc(p.get("care", "")))])
     buttons, note = product_buttons(p)
     sample = '<span class="sample-flag">Sample</span> ' if p.get("sample") else ""
     parts = [f'<article class="beauty-review" id="r-{esc(p["id"])}">',
@@ -453,7 +480,7 @@ def product_table_html(products, caption):
 
 
 def beauty_family_body(cat, f, products, sibling_cards):
-    slots = cat.get("pick_slots", [])
+    slots = f.get("slots") or cat.get("pick_slots", [])
     by_slot = {p.get("slot"): p for p in products if p.get("slot")}
     slot_html = []
     for label in slots:
