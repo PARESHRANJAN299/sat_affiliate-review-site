@@ -9,3 +9,4 @@
 .related-list span { font-size: 0.9rem; color: var(--color-text-muted); }
 .tag-group { margin: 0 0 var(--space-6); }
 .tag-group h2 { margin: var(--space-6) 0 var(--space-3); }
+.content-page .related-list a, .content-page .related-list a:hover { text-decoration: none; }

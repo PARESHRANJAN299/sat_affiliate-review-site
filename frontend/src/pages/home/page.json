@@ -5,8 +5,9 @@
   "css": [
     "buttons",
     "cards",
-    "trust-strip",
-    "steps"
+    "category-cards",
+    "steps",
+    "trust-strip"
   ],
   "page_css": "home",
   "js": [],

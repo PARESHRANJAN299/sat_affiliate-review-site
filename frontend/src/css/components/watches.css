@@ -133,3 +133,4 @@ dialog.sheet::backdrop { background: rgba(20, 22, 26, 0.5); }
 .more-link { margin: var(--space-5) 0 0; font-weight: 700; }
 .content-page.narrow { max-width: var(--measure); }
 .watch-page .filters-inline.no-dialog { display: flex; }
+.content-page .related-links a, .content-page .related-links a:hover, .content-page a.tile, .content-page a.tile:hover { text-decoration: none; }

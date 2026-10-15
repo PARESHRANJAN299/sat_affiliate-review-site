@@ -1,0 +1,60 @@
+{
+  "_note": "Top level of Category > Product Family > Budget/Brand/Style > Product. Add a 'families' list per category later; the top-level cards and menu need no redesign.",
+  "categories": [
+    {
+      "slug": "watches",
+      "name": "Watches",
+      "url": "/watches/",
+      "description": "Classic, analog and stylish watches for men and women.",
+      "art": "watches",
+      "hue": 38,
+      "status": "live",
+      "image": null,
+      "families": []
+    },
+    {
+      "slug": "sports-fitness",
+      "name": "Sports & Fitness",
+      "url": "/sports-fitness/",
+      "description": "Fitness, workout and active-lifestyle essentials.",
+      "art": "sports",
+      "hue": 215,
+      "status": "live",
+      "image": null,
+      "families": []
+    },
+    {
+      "slug": "beauty-personal-care",
+      "name": "Beauty & Personal Care",
+      "url": "/beauty-personal-care/",
+      "description": "Everyday beauty, grooming and personal-care products.",
+      "art": "beauty",
+      "hue": 335,
+      "status": "placeholder",
+      "image": null,
+      "families": []
+    },
+    {
+      "slug": "home-kitchen",
+      "name": "Home & Kitchen",
+      "url": "/home-kitchen/",
+      "description": "Useful products for a smarter and better home.",
+      "art": "home",
+      "hue": 165,
+      "status": "placeholder",
+      "image": null,
+      "families": []
+    },
+    {
+      "slug": "clothing-accessories",
+      "name": "Clothing & Accessories",
+      "url": "/clothing-accessories/",
+      "description": "Clothing, everyday wear and style accessories for men and women.",
+      "art": "clothing",
+      "hue": 268,
+      "status": "placeholder",
+      "image": null,
+      "families": []
+    }
+  ]
+}

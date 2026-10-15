@@ -42,21 +42,19 @@ The build bundles and minifies the split CSS/JS into one file per page (fast pag
 2. Use `{{breadcrumb}}`, `{{site_name}}` and `{{contact_email}}` placeholders in the body.
 3. Run the build. The page gets its canonical URL, Open Graph tags, structured data and sitemap entry automatically.
 
-## Products and categories
+## Categories
 
-The header has one category, **Products** (`/products/`). It lists every article automatically, with filter chips for each category. Categories are defined in `frontend/src/site.config.json` under `categories`. One with `"enabled": false` (Beauty & Personal Care, Baby Care) stays hidden until it is ready.
+The top level is exactly five categories, defined once in `frontend/src/categories.json`: Watches, Sports & Fitness, Beauty & Personal Care, Home & Kitchen, Clothing & Accessories. That file drives the "Shop by Category" cards (home page and `/products/`), the header menu and the routes. A category with `"status": "placeholder"` gets a "Category content coming soon." page; `"live"` categories have their own pages (Watches, Sports & Fitness).
 
-**Add an article:** create `src/pages/<topic>/<article>/index.html` and `page.json`, and give `page.json` an `"article"` block:
+To add the next levels later (Category > Product Family > Budget/Brand/Style > Product), fill the category's `families` list and add pages under its URL. The top-level cards and menu need no change. Give a category a real picture with `"image": "/images/..."`; until then it shows a drawn illustration.
+
+**Add an article:** create `src/pages/<topic>/<article>/` with `index.html` and `page.json` (or a data-driven guide in `src/guides/<slug>/guide.json`). Give `page.json` an `"article"` block:
 
 ```json
 "article": {"category": "Sports & Fitness", "tag": "Badminton", "summary": "One or two plain sentences."}
 ```
 
-It then appears on `/products/`, on its category page, and on the home page (latest three) with no other edits. A new category also needs a hub page (copy `src/pages/sports-fitness/`, and use `{{articles_<category_slug>}}`).
-
-## When affiliate approval comes
-
-Set `"affiliate_active": true` in `frontend/src/site.config.json` (switches the footer note), then update the Affiliate Disclosure and Privacy pages with the real programs and tracking, add the programme's required statement (for Amazon, only after approval, using the exact wording in Associates Central), add `sponsored` to the retailer links' `rel`, and replace search links with approved affiliate links.
+It then appears on `/products/`, in its category and on the home page without other edits.
 
 ## URLs
 

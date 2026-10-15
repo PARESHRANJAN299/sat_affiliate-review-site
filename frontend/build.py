@@ -28,6 +28,8 @@ SRC = ROOT / "src"
 DIST = ROOT / "dist"
 
 CONFIG = json.loads((SRC / "site.config.json").read_text(encoding="utf-8"))
+CATEGORIES = json.loads((SRC / "categories.json").read_text(encoding="utf-8"))["categories"]
+CONFIG["categories"] = [{"label": c["name"], "url": c["url"], "slug": c["slug"]} for c in CATEGORIES]
 
 # Included in every page's CSS/JS bundle, in this order.
 ALWAYS_CSS = [
@@ -188,9 +190,59 @@ def share_html(canonical, title):
             '<span class="visually-hidden" role="status" aria-live="polite" data-share-status></span></div>')
 
 
+CATEGORY_ART = {
+    "sports": '<rect x="5" y="24" width="8" height="16" rx="2"/><rect x="13" y="19" width="7" height="26" rx="2"/><path d="M20 32 H44"/><rect x="44" y="19" width="7" height="26" rx="2"/><rect x="51" y="24" width="8" height="16" rx="2"/>',
+    "beauty": '<rect x="23" y="36" width="18" height="20" rx="3"/><path d="M26 36 V24 Q32 14 38 24 V36"/><path d="M23 44 H41M47 14 L50 8M52 20 L58 18M14 18 L10 12"/>',
+    "home": '<path d="M10 30 H54 V46 Q54 54 46 54 H18 Q10 54 10 46 Z"/><path d="M5 30 H10 M54 30 H59"/><path d="M14 30 Q32 10 50 30"/><circle cx="32" cy="14" r="2.5"/>',
+    "clothing": '<path d="M20 12 L8 20 L14 32 L20 28 V54 H44 V28 L50 32 L56 20 L44 12 Q32 22 20 12 Z"/>',
+}
+
+
+def category_art(c):
+    if c.get("image"):
+        return f'<img src="{esc(c["image"])}" alt="" loading="lazy" width="480" height="360">'
+    if c["art"] == "watches":
+        return watches.watch_art("cat-svg")
+    return f'<svg class="cat-svg" viewBox="0 0 64 64" focusable="false" aria-hidden="true">{CATEGORY_ART[c["art"]]}</svg>'
+
+
+def category_cards(current_url=None):
+    """Large visual cards for the top-level categories (Shop by Category)."""
+    items = []
+    for c in CATEGORIES:
+        items.append(
+            f'      <li><a class="category-card" href="{c["url"]}" style="--hue:{c["hue"]}">'
+            f'<span class="category-art" aria-hidden="true">{category_art(c)}</span>'
+            f'<span class="category-body"><span class="category-name">{esc(c["name"])}</span>'
+            f'<span class="category-desc">{esc(c["description"])}</span>'
+            '<span class="category-cta">Explore <svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></span></span></a></li>')
+    return '<ul class="category-grid">\n' + "\n".join(items) + "\n    </ul>"
+
+
+def category_placeholder_pages():
+    pages = []
+    for c in CATEGORIES:
+        if c["status"] != "placeholder":
+            continue
+        body = (
+            '<section class="section">\n  <div class="container content-page">\n'
+            '    {{breadcrumb}}\n'
+            f'    <h1>{esc(c["name"])}</h1>\n    <p class="lead">{esc(c["description"])}</p>\n'
+            '    <div class="empty-state"><p><strong>Category content coming soon.</strong></p>'
+            '<p><a href="/products/">Back to Shop by Category</a></p></div>\n'
+            '  </div>\n</section>')
+        pages.append({
+            "url": c["url"], "title": c["name"], "description": c["description"],
+            "css": ["buttons", "breadcrumb", "content-page", "watches"], "js": [], "noindex": True,
+            "breadcrumbs": [["Shop by Category", "/products/"], [c["name"], c["url"]]],
+            "updated": "2026-10-16", "_slug": c["slug"], "_body": body,
+        })
+    return pages
+
+
 def category_chips(current_url):
     items = [{"label": "All products", "url": "/products/"}] + [
-        c for c in CONFIG.get("categories", []) if c.get("enabled") is not False]
+        c for c in CONFIG.get("categories", [])]
     links = []
     for item in items:
         cur = ' aria-current="page"' if item["url"] == current_url else ""
@@ -247,8 +299,7 @@ def bundle(kind, names, key):
 
 def category_menu(item, current_url=None):
     """Amazon-style 'Shop by Category' dropdown; the toggle still links to /products/ without JavaScript."""
-    cats = [{"label": "All products", "url": "/products/"}] + [
-        c for c in CONFIG.get("categories", []) if c.get("enabled") is not False or c.get("soon")]
+    cats = [{"label": "All categories", "url": "/products/"}] + CONFIG.get("categories", [])
     def cur(url):
         return ' aria-current="page"' if url == current_url else ""
     def row(c):
@@ -265,7 +316,7 @@ def category_menu(item, current_url=None):
         '          <div class="category-menu" id="category-menu">\n'
         f'            <p class="category-menu-title">{esc(item["label"])}</p>\n'
         '            <ul>\n' + rows + '\n            </ul>\n'
-        '            <p class="category-menu-note">Categories are added as their guides are ready.</p>\n'
+        '            <p class="category-menu-note">Pick a category to see what is ready.</p>\n'
         '          </div>\n'
         '        </li>')
 
@@ -512,6 +563,7 @@ def load_pages():
         meta["_body"] = read(body_path)
         pages.append(meta)
     pages.extend(load_guides())
+    pages.extend(category_placeholder_pages())
     shop = watches.Watches(SRC, CONFIG)
     errors.extend(shop.errors)
     warnings.extend(shop.warnings)
@@ -558,6 +610,7 @@ def build_page(meta, base, header_t, footer_t, year, articles):
         "articles_all": article_cards(articles),
         "articles_latest": article_cards(articles[:3]),
         "category_chips": category_chips(meta["url"]),
+        "category_cards": category_cards(meta["url"]),
         "category_sections": category_sections(articles),
         "toc": "@@TOC@@" if meta.get("toc") else "",
         "share": share_html(canonical, meta["title"]) if meta.get("share") else "",

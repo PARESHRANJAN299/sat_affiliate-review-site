@@ -2,8 +2,10 @@
   <div class="container content-page">
     {{breadcrumb}}
     <h1>Shop by Category</h1>
-    <p class="hub-intro">Every buying guide on the site, in one place. Pick a category, or search.</p>
-    {{category_chips}}
+    <p class="hub-intro">Pick a category to start.</p>
+    {{category_cards}}
+
+    <h2 class="all-guides-title">All buying guides</h2>
 
     <div class="product-search" hidden>
       <label for="product-search">Search guides</label>
@@ -15,7 +17,6 @@
     <p class="no-results" id="no-results" role="status" hidden>No guides match your search.</p>
     <p class="visually-hidden" id="search-count" role="status" aria-live="polite"></p>
 
-    <h2 class="visually-hidden">Buying guides</h2>
 {{articles_all}}
   </div>
 </section>

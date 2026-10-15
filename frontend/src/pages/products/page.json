@@ -1,14 +1,14 @@
 {
   "url": "/products/",
-  "title": "All Buying Guides",
-  "description": "Every buying guide in one place. Pick a category or search.",
+  "title": "Shop by Category",
+  "description": "Shop by category: watches, sports and fitness, beauty and personal care, home and kitchen, clothing and accessories.",
   "css": [
     "buttons",
     "cards",
     "breadcrumb",
     "content-page",
-    "category-chips",
-    "search"
+    "search",
+    "category-cards"
   ],
   "page_css": "hub",
   "breadcrumbs": [
