@@ -1,39 +1,49 @@
-<section class="section">
-  <div class="container content-page narrow">
-    {{breadcrumb}}
-    <h1>About {{site_name}}</h1>
-    <p class="updated">Last updated: {{updated_human}}</p>
-    <p class="lead">{{site_name}} is an independent product-discovery and buying-guide website focused on products available to consumers in India.</p>
+<div class="about-page">
+  <section class="about-hero" aria-labelledby="about-title">
+    <div class="container about-hero-inner">
+      <figure class="about-photo">
+        <img src="/images/about/paresh-ranjan-rout.jpg" alt="Paresh Ranjan Rout, Data Engineer and founder of {{site_name}}" width="520" height="520">
+      </figure>
+      <div class="about-intro">
+        <p class="about-kicker">About {{site_name}}</p>
+        <h1 id="about-title">Hi, I'm Paresh Ranjan Rout.</h1>
+        <p class="about-role">Data Engineer &middot; Founder of {{site_name}}</p>
+        <p>I work with data for a living: collecting it, cleaning it and turning it into something people can trust. I started {{site_name}} to bring the same care to buying decisions. Product pages are full of claims, and it is hard to compare options quickly.</p>
+        <ul class="about-links" aria-label="Find me online">
+          <li><a class="btn btn-outline btn-small" href="https://www.linkedin.com/in/paresh-ranjan-rout-7a2788227/" target="_blank" rel="noopener me">LinkedIn</a></li>
+          <li><a class="btn btn-outline btn-small" href="https://github.com/PARESHRANJAN299" target="_blank" rel="noopener me">GitHub</a></li>
+          <li><a class="btn btn-primary btn-small" href="/contact/">Contact me</a></li>
+        </ul>
+      </div>
+    </div>
+  </section>
 
-    <h2>What we cover</h2>
-    <p>{{site_name}} currently covers five areas:</p>
-    <ul>
-      <li><a href="/watches/">Watches</a></li>
-      <li><a href="/sports-fitness/">Sports &amp; Fitness</a></li>
-      <li><a href="/beauty-personal-care/">Beauty &amp; Personal Care</a></li>
-      <li><a href="/home-kitchen/">Home &amp; Kitchen</a></li>
-      <li><a href="/clothing-accessories/">Clothing &amp; Accessories</a></li>
-    </ul>
+  <div class="container about-body">
+    <section aria-labelledby="about-what">
+      <h2 id="about-what">What {{site_name}} is</h2>
+      <p>{{site_name}} is an independent product-discovery and buying-guide website for shoppers in India. I research products, organise what I find, and explain who each one suits, with its pros, cons and typical price range.</p>
+      <p>I do not claim to have tested a product unless a page says so. You can read how I decide on <a href="/how-we-pick/">How We Pick</a>.</p>
+    </section>
 
-    <h2>What we do</h2>
-    <p>We research products and organise what we find, so you can compare options more easily. For each product or product type, we aim to explain:</p>
-    <ul>
-      <li>what it is useful for</li>
-      <li>its pros and cons</li>
-      <li>typical price ranges in India</li>
-      <li>its main features</li>
-      <li>who it suits, and who it does not</li>
-      <li>alternatives worth considering</li>
-      <li>whether it gives good value for money</li>
-    </ul>
+    <section aria-labelledby="about-cover">
+      <h2 id="about-cover">What I cover</h2>
+      <ul class="about-chips">
+        <li><a href="/watches/">Watches</a></li>
+        <li><a href="/sports-fitness/">Sports &amp; Fitness</a></li>
+        <li><a href="/beauty-personal-care/">Beauty &amp; Personal Care</a></li>
+        <li><a href="/home-kitchen/">Home &amp; Kitchen</a></li>
+        <li><a href="/clothing-accessories/">Clothing &amp; Accessories</a></li>
+      </ul>
+    </section>
 
-    <h2>What we do not do</h2>
-    <p>{{site_name}} does not manufacture or directly sell products, and it does not take orders or payments. If you decide to buy, you buy from a retailer or a brand's own website.</p>
+    <section aria-labelledby="about-not">
+      <h2 id="about-not">What {{site_name}} does not do</h2>
+      <p>{{site_name}} does not make or sell products, and it does not take orders or payments. If you decide to buy, you buy from a retailer or a brand's own website.</p>
+    </section>
 
-    <h2>How we work</h2>
-    <p>Our recommendations come from research, not from personal testing unless a page clearly says otherwise. Read <a href="/how-we-pick/">How We Pick</a> to see what we look at.</p>
-
-    <h2>Questions or corrections</h2>
-    <p>Found a mistake, or want us to cover something? <a href="/contact/">Contact us</a> or write to <a href="mailto:{{contact_email}}">{{contact_email}}</a>.</p>
+    <section class="about-contact" aria-labelledby="about-hello">
+      <h2 id="about-hello">Questions or corrections?</h2>
+      <p>Found a mistake, or want me to cover something? Write to <a href="mailto:{{contact_email}}">{{contact_email}}</a> or use the <a href="/contact/">contact page</a>.</p>
+    </section>
   </div>
-</section>
+</div>
