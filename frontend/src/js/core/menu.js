@@ -1,5 +1,39 @@
 (function () {
   'use strict';
+  // Native disclosure keeps the mobile logo menu usable without JavaScript.
+  var menu = document.querySelector('.mobile-site-menu');
+  if (!menu) return;
+  var trigger = menu.querySelector('summary');
+  function close(restoreFocus) {
+    if (!menu.open) return;
+    menu.open = false;
+    if (restoreFocus) trigger.focus();
+  }
+  document.addEventListener('click', function (event) {
+    if (!menu.contains(event.target)) close(false);
+  });
+  document.addEventListener('keydown', function (event) {
+    if (event.key === 'Escape' && menu.open) close(menu.contains(document.activeElement));
+  });
+  menu.addEventListener('focusout', function (event) {
+    if (event.relatedTarget && !menu.contains(event.relatedTarget)) close(false);
+  });
+  menu.addEventListener('click', function (event) {
+    if (event.target.closest('a')) close(false);
+  });
+  menu.addEventListener('toggle', function () {
+    if (!menu.open) return;
+    var categories = document.getElementById('category-menu');
+    var categoryToggle = document.querySelector('.menu-toggle');
+    if (categories) categories.classList.remove('is-open');
+    if (categoryToggle) categoryToggle.setAttribute('aria-expanded', 'false');
+  });
+  window.matchMedia('(max-width: 719px)').addEventListener('change', function () { close(false); });
+  window.addEventListener('pageshow', function (event) { if (event.persisted) close(false); });
+})();
+
+(function () {
+  'use strict';
   // "Shop by Category" dropdown. Without JavaScript the toggle is a normal link to /products/.
   var toggle = document.querySelector('.menu-toggle');
   var menu = document.getElementById('category-menu');

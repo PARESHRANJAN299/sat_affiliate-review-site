@@ -1,6 +1,14 @@
 <header class="site-header">
   <div class="container nav-row">
-    <a class="logo" href="/" aria-label="{{logo_primary}} home">{{logo_html}}</a>
+    <a class="logo desktop-logo" href="/" aria-label="{{logo_primary}} home">{{logo_html}}</a>
+    <details class="mobile-site-menu">
+      <summary class="logo" aria-label="{{logo_primary}} menu: About and Contact" aria-controls="mobile-site-links">{{logo_html}}<span class="logo-caret" aria-hidden="true">▾</span></summary>
+      <nav class="mobile-site-links" id="mobile-site-links" aria-label="More pages">
+        <ul>
+{{mobile_nav_items}}
+        </ul>
+      </nav>
+    </details>
     <nav class="main-nav" aria-label="Primary">
       <ul>
 {{nav_items}}

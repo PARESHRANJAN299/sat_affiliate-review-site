@@ -817,7 +817,7 @@ def category_menu(item, current_url=None):
         '        </li>')
 
 
-def link_list(items, current_url=None):
+def link_list(items, current_url=None, mobile_split=False):
     lines = []
     for item in items:
         if item.get("enabled") is False:
@@ -826,7 +826,8 @@ def link_list(items, current_url=None):
             lines.append(category_menu(item, current_url))
             continue
         cur = ' aria-current="page"' if item["url"] == current_url else ""
-        lines.append(f'        <li><a href="{item["url"]}"{cur}>{esc(item["label"])}</a></li>')
+        mobile_class = ' class="mobile-secondary"' if mobile_split and item["url"] != "/" else ""
+        lines.append(f'        <li{mobile_class}><a href="{item["url"]}"{cur}>{esc(item["label"])}</a></li>')
     return "\n".join(lines)
 
 
@@ -1133,7 +1134,13 @@ def build_page(meta, base, header_t, footer_t, year, articles):
     content = content.replace("@@TOC@@", toc_html)
     words = len(re.sub(r"<[^>]+>", " ", content).split())
     content = content.replace("@@READ@@", f"{max(1, round(words / 200))} min read")
-    header = render(header_t, {**base_ctx, "nav_items": link_list(CONFIG["nav"], meta["url"])})
+    header = render(header_t, {
+        **base_ctx,
+        "nav_items": link_list(CONFIG["nav"], meta["url"], mobile_split=True),
+        "mobile_nav_items": link_list(
+            [item for item in CONFIG["nav"] if item["url"] != "/" and item.get("menu") != "categories"],
+            meta["url"]),
+    })
     footer = render(footer_t, {**base_ctx,
                                "footer_site_items": link_list(CONFIG["footer_site"], meta["url"]),
                                "footer_category_items": link_list([{"label": c["name"], "url": c["url"]} for c in CATEGORIES], meta["url"]),
