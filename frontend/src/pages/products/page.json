@@ -1,13 +1,14 @@
 {
   "url": "/products/",
   "title": "Shop by Category | Research That Helps You Choose",
-  "description": "Discover everyday favourites in watches, fitness, beauty, home and fashion—find what fits your lifestyle and budget.",
+  "description": "Discover everyday favourites in watches, fitness, beauty, home and fashion\u2014find what fits your lifestyle and budget.",
   "css": [
     "buttons",
     "cards",
     "breadcrumb",
     "content-page",
-    "category-cards"
+    "category-cards",
+    "category-directory"
   ],
   "page_css": "hub",
   "breadcrumbs": [

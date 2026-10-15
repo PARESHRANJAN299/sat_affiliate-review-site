@@ -1,9 +1,11 @@
 {
   "url": "/",
-  "title": "Sports Gear Buying Guides for India",
-  "description": "Plain-language buying guides for sports and fitness gear in India: badminton, running, yoga, cricket and home workouts. Research-based, no ads.",
+  "title": "Everyday Buying Guides for India",
+  "description": "Research-based buying guides for Indian shoppers. Explore watches, fitness, beauty, home and fashion to find what fits your lifestyle and budget.",
   "css": [
-    "buttons"
+    "buttons",
+    "cards",
+    "category-directory"
   ],
   "page_css": "home",
   "js": [],
