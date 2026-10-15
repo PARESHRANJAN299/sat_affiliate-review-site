@@ -11,7 +11,8 @@
       "status": "live",
       "image": "/images/categories/watches.jpg",
       "families": [],
-      "thumb": "/images/categories/watches-thumb.jpg"
+      "thumb": "/images/categories/watches-thumb.jpg",
+      "menu_hint": "Men’s and women’s, by budget"
     },
     {
       "slug": "sports-fitness",
@@ -617,7 +618,8 @@
           "hue": 165
         }
       ],
-      "tagline": "Best picks for sports and fitness."
+      "tagline": "Best picks for sports and fitness.",
+      "menu_hint": "Rackets, shoes, dumbbells, yoga mats"
     },
     {
       "slug": "beauty-personal-care",
@@ -1008,7 +1010,8 @@
       ],
       "pending_note": "Recommendations coming after product research.",
       "more_label": "More beauty guides",
-      "landing_meta": "Buying guides for skin care, hair care, makeup, men's grooming, bath and body, and sun care, chosen by skin and hair type."
+      "landing_meta": "Buying guides for skin care, hair care, makeup, men's grooming, bath and body, and sun care, chosen by skin and hair type.",
+      "menu_hint": "Skin, hair, makeup, sun care"
     },
     {
       "slug": "home-kitchen",
@@ -1933,7 +1936,8 @@
         "Premium"
       ],
       "more_label": "More home and kitchen guides",
-      "landing_meta": "Buying guides for pressure cookers, mixer grinders, cookware, air fryers, kettles, storage, cleaning tools, bedding and more, for Indian homes."
+      "landing_meta": "Buying guides for pressure cookers, mixer grinders, cookware, air fryers, kettles, storage, cleaning tools, bedding and more, for Indian homes.",
+      "menu_hint": "Cookers, air fryers, bedding, storage"
     },
     {
       "slug": "clothing-accessories",
@@ -3186,7 +3190,8 @@
       ],
       "pending_note": "Recommendations coming after product research.",
       "more_label": "More clothing guides",
-      "landing_meta": "Clothing buying guides for women, girls and men in India: Gen Z tops, kurtas, home wear, nightwear, jeans, shirts, joggers and more."
+      "landing_meta": "Clothing buying guides for women, girls and men in India: Gen Z tops, kurtas, home wear, nightwear, jeans, shirts, joggers and more.",
+      "menu_hint": "T-shirts, kurtas, jeans, jackets"
     }
   ]
 }

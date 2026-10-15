@@ -229,7 +229,7 @@ nav.main-nav .category-menu a.menu-row[aria-current="page"] { background: var(--
 .menu-ic { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
 .menu-text { display: flex; flex-direction: column; flex: 1; min-width: 0; line-height: 1.25; }
 .menu-name { font-weight: 600; }
-.menu-meta { font-size: 0.82rem; color: var(--color-text-muted); }
+.menu-meta { font-size: 0.82rem; color: var(--color-text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .menu-meta.is-soon { font-style: italic; }
 nav.main-nav .category-menu .chev { font-size: 1.4rem; line-height: 1; color: var(--color-text-muted); }
 nav.main-nav .category-menu a.menu-all {

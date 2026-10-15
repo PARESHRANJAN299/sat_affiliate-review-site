@@ -847,6 +847,8 @@ def category_menu(item, current_url=None):
         if families:
             n = len(families)
         soon = "" if n else " is-soon"
+        if c.get("menu_hint"):
+            meta, soon = esc(c["menu_hint"]), ""
         rows.append(
             f'            <li><a class="menu-row" href="{c["url"]}" style="--hue:{c["hue"]}"{cur(c["url"])}>'
             f'<span class="menu-tile" aria-hidden="true">{menu_icon(c)}</span>'
