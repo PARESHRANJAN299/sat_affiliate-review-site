@@ -119,12 +119,13 @@ nav.main-nav a[aria-current="page"] { color: #fff; border-radius: 0; box-shadow:
   to   { transform: scaleX(1); }
 }
 
-/* ---------- "Shop by Category" menu: a panel of category cards ---------- */
+/* ---------- "Shop by Category" dropdown: compact list with small colour icons ---------- */
 
 header.site-header { position: sticky; }
 @media (max-width: 719px) { header.site-header { position: relative; } }
 .nav-row { position: static; }
 nav.main-nav li.has-menu { position: static; }
+@media (min-width: 720px) { nav.main-nav li.has-menu { position: relative; } }
 
 nav.main-nav .menu-toggle .caret { display: inline-block; font-size: 0.75em; margin-left: 2px; transition: transform .15s ease; }
 nav.main-nav .menu-toggle[aria-expanded="true"] .caret { transform: rotate(180deg); }
@@ -133,68 +134,69 @@ nav.main-nav .menu-toggle[aria-expanded="true"] { color: #fff; background: rgba(
 .category-menu {
   display: none;
   position: absolute;
-  top: 100%;
+  top: calc(100% + 6px);
   left: 0;
   right: 0;
   z-index: 60;
-  max-height: calc(100vh - 84px);
-  overflow-y: auto;
+  padding: 8px;
   background: var(--color-surface);
   color: var(--color-text);
-  border-top: 1px solid var(--color-border);
-  box-shadow: 0 18px 36px rgba(7, 11, 20, 0.28);
-}
-.category-menu.is-open { display: block; }
-.menu-inner { max-width: var(--max-width); margin: 0 auto; padding: 20px clamp(16px, 4vw, 24px) 24px; }
-.menu-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
-.category-menu-title { margin: 0; font-family: var(--font-display); font-size: 1.25rem; font-weight: 700; }
-nav.main-nav .category-menu a.menu-all { display: inline-flex; min-height: 0; padding: 4px 0; gap: 6px; font-size: 0.92rem; font-weight: 700; color: var(--color-link); background: none; border-radius: 0; box-shadow: none; }
-nav.main-nav .category-menu a.menu-all:hover { background: none; text-decoration: underline; color: var(--color-link); }
-
-nav.main-nav .category-menu ul.menu-grid { display: grid; gap: 12px; grid-template-columns: repeat(5, 1fr); margin: 0; padding: 0; }
-@media (max-width: 899px) { nav.main-nav .category-menu ul.menu-grid { grid-template-columns: repeat(3, 1fr); } }
-@media (max-width: 599px) { nav.main-nav .category-menu ul.menu-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; } }
-nav.main-nav .category-menu .menu-grid li { border: 0; display: flex; }
-nav.main-nav .category-menu .menu-grid li > a { flex: 1; }
-
-nav.main-nav .category-menu a.menu-card {
-  --hue: 215;
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  justify-content: flex-start;
-  gap: 0;
-  text-align: left;
-  height: 100%;
-  min-height: 0;
-  padding: 0;
   border: 1px solid var(--color-border);
   border-radius: 16px;
-  overflow: hidden;
-  background: var(--color-surface);
+  box-shadow: 0 16px 40px rgba(7, 11, 20, 0.28);
+}
+.category-menu.is-open { display: block; }
+@media (max-width: 719px) { .category-menu { left: 12px; right: 12px; top: 100%; } }
+@media (min-width: 720px) { .category-menu { left: 50%; right: auto; width: 360px; transform: translateX(-62%); } }
+
+nav.main-nav .category-menu ul.menu-list { display: block; margin: 0; padding: 0; gap: 0; }
+nav.main-nav .category-menu .menu-list li { border: 0; }
+nav.main-nav .category-menu a.menu-row {
+  --hue: 215;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 14px;
+  min-height: 60px;
+  padding: 8px 10px;
+  border-radius: 12px;
   color: var(--color-text);
-  box-shadow: var(--shadow);
-  transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+  font-weight: 500;
+  font-size: 1rem;
 }
-nav.main-nav .category-menu a.menu-card:hover { background: var(--color-surface); color: var(--color-text); text-decoration: none; }
-.menu-art {
-  position: relative;
-  display: block;
-  aspect-ratio: 5 / 3;
-  background:
-    radial-gradient(160px 100px at 85% 5%, hsl(calc(var(--hue) + 30) 85% 72% / 0.5), transparent 70%),
-    linear-gradient(140deg, hsl(var(--hue) 50% 24%), hsl(calc(var(--hue) + 20) 55% 38%));
+nav.main-nav .category-menu a.menu-row:hover { background: var(--color-bg-alt); color: var(--color-text); text-decoration: none; }
+nav.main-nav .category-menu a.menu-row[aria-current="page"] { background: var(--color-accent-soft); }
+.menu-tile {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 11px;
+  background: hsl(var(--hue) 70% 94%);
+  color: hsl(var(--hue) 55% 30%);
 }
-.menu-ic { position: absolute; inset: 0; margin: auto; height: 54%; width: auto; max-width: 70%; fill: none; stroke: #fff; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
-svg.menu-ic[viewBox="0 0 200 240"] { stroke-width: 6; }
-.menu-name { display: block; padding: 10px 12px 0; font-family: var(--font-display); font-size: 1rem; font-weight: 700; line-height: 1.2; }
-.menu-meta { display: block; padding: 2px 12px 12px; font-size: 0.8rem; color: var(--color-text-muted); }
+.menu-ic { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.menu-text { display: flex; flex-direction: column; flex: 1; min-width: 0; line-height: 1.25; }
+.menu-name { font-weight: 600; }
+.menu-meta { font-size: 0.82rem; color: var(--color-text-muted); }
 .menu-meta.is-soon { font-style: italic; }
-@media (hover: hover) {
-  nav.main-nav .category-menu a.menu-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lift); border-color: var(--color-primary); }
+nav.main-nav .category-menu .chev { font-size: 1.4rem; line-height: 1; color: var(--color-text-muted); }
+nav.main-nav .category-menu a.menu-all {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  min-height: 48px;
+  margin-top: 4px;
+  border-top: 1px solid var(--color-border);
+  border-radius: 0 0 10px 10px;
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--color-link);
 }
-nav.main-nav .category-menu a.menu-card[aria-current="page"] { border-color: var(--color-primary); box-shadow: 0 0 0 2px var(--color-primary); }
-@media (prefers-reduced-motion: reduce) { nav.main-nav .menu-toggle .caret, nav.main-nav .category-menu a.menu-card { transition: none; } }
+nav.main-nav .category-menu a.menu-all:hover { background: var(--color-bg-alt); color: var(--color-link); text-decoration: none; }
+@media (prefers-reduced-motion: reduce) { nav.main-nav .menu-toggle .caret { transition: none; } }
 
 @media (forced-colors: active) {
   .logo-mark span { background: none; color: CanvasText; -webkit-text-fill-color: CanvasText; }

@@ -190,20 +190,24 @@ def share_html(canonical, title):
             '<span class="visually-hidden" role="status" aria-live="polite" data-share-status></span></div>')
 
 
-CATEGORY_ART = {
-    "sports": '<rect x="5" y="24" width="8" height="16" rx="2"/><rect x="13" y="19" width="7" height="26" rx="2"/><path d="M20 32 H44"/><rect x="44" y="19" width="7" height="26" rx="2"/><rect x="51" y="24" width="8" height="16" rx="2"/>',
-    "beauty": '<rect x="23" y="36" width="18" height="20" rx="3"/><path d="M26 36 V24 Q32 14 38 24 V36"/><path d="M23 44 H41M47 14 L50 8M52 20 L58 18M14 18 L10 12"/>',
-    "home": '<path d="M10 30 H54 V46 Q54 54 46 54 H18 Q10 54 10 46 Z"/><path d="M5 30 H10 M54 30 H59"/><path d="M14 30 Q32 10 50 30"/><circle cx="32" cy="14" r="2.5"/>',
-    "clothing": '<path d="M20 12 L8 20 L14 32 L20 28 V54 H44 V28 L50 32 L56 20 L44 12 Q32 22 20 12 Z"/>',
+CATEGORY_ICON = {
+    "watches": '<circle cx="12" cy="12" r="5.5"/><path d="M12 9.5V12l1.6 1.4"/><path d="M9 6.6 9.6 2.8h4.8L15 6.6M9 17.4l.6 3.8h4.8l.6-3.8"/>',
+    "sports": '<path d="M6.5 6.5v11M17.5 6.5v11M3.5 9v6M20.5 9v6M6.5 12h11"/>',
+    "beauty": '<rect x="7" y="13" width="10" height="8" rx="1.5"/><path d="M9 13V8.5L14.5 4v9"/><path d="M18 5.5l1.6-1.6M19.5 9H22"/>',
+    "home": '<path d="M4 11h16v6a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3z"/><path d="M2 11h2M20 11h2"/><path d="M7.5 11a4.5 4.5 0 0 1 9 0"/><path d="M12 4.5v2"/>',
+    "clothing": '<path d="M8.5 3 3 5.5 4.6 10H7.5v10.5h9V10h2.9L21 5.5 15.5 3a3.6 3.6 0 0 1-7 0z"/>',
 }
+
+
+def category_icon(c, css_class):
+    return (f'<svg class="{css_class}" viewBox="0 0 24 24" focusable="false" aria-hidden="true">'
+            f'{CATEGORY_ICON[c["art"]]}</svg>')
 
 
 def category_art(c):
     if c.get("image"):
         return f'<img src="{esc(c["image"])}" alt="" loading="lazy" width="480" height="360">'
-    if c["art"] == "watches":
-        return watches.watch_art("cat-svg")
-    return f'<svg class="cat-svg" viewBox="0 0 64 64" focusable="false" aria-hidden="true">{CATEGORY_ART[c["art"]]}</svg>'
+    return category_icon(c, "cat-svg")
 
 
 def category_cards(current_url=None):
@@ -305,38 +309,34 @@ def short_title(title):
 
 
 def menu_icon(c):
-    if c["art"] == "watches":
-        return watches.watch_art("menu-ic")
-    return f'<svg class="menu-ic" viewBox="0 0 64 64" focusable="false" aria-hidden="true">{CATEGORY_ART[c["art"]]}</svg>'
+    return category_icon(c, "menu-ic")
 
 
 def category_menu(item, current_url=None):
-    """'Shop by Category' menu: a panel of large category cards, generated from categories.json and the articles.
-    The toggle still links to /products/ without JavaScript."""
+    """'Shop by Category' dropdown: a compact list with small colour icons, built from categories.json
+    and the articles. The toggle still links to /products/ without JavaScript."""
     def cur(url):
         return ' aria-current="page"' if url == current_url else ""
 
-    cards = []
+    rows = []
     for c in CATEGORIES:
         n = sum(1 for a in _MENU_ARTICLES if a["article"]["category"] == c["name"])
-        meta = f'{n} guides' if n > 1 else ("1 guide" if n == 1 else "Coming soon")
-        cards.append(
-            f'          <li><a class="menu-card" href="{c["url"]}" style="--hue:{c["hue"]}"{cur(c["url"])}>'
-            f'<span class="menu-art" aria-hidden="true">{menu_icon(c)}</span>'
-            f'<span class="menu-name">{esc(c["name"])}</span>'
-            f'<span class="menu-meta{" is-soon" if not n else ""}">{meta}</span></a></li>')
+        meta = f"{n} guides" if n > 1 else ("1 guide" if n == 1 else "Coming soon")
+        soon = "" if n else " is-soon"
+        rows.append(
+            f'            <li><a class="menu-row" href="{c["url"]}" style="--hue:{c["hue"]}"{cur(c["url"])}>'
+            f'<span class="menu-tile" aria-hidden="true">{menu_icon(c)}</span>'
+            f'<span class="menu-text"><span class="menu-name">{esc(c["name"])}</span>'
+            f'<span class="menu-meta{soon}">{meta}</span></span>'
+            '<span class="chev" aria-hidden="true">\u203a</span></a></li>')
     return (
         '        <li class="has-menu">\n'
         f'          <a href="{item["url"]}" class="menu-toggle"{cur(item["url"])}>'
         f'{esc(item["label"])} <span class="caret" aria-hidden="true">\u25be</span></a>\n'
         '          <div class="category-menu" id="category-menu">\n'
-        '            <div class="menu-inner">\n'
-        '              <div class="menu-head">'
-        f'<p class="category-menu-title">{esc(item["label"])}</p>'
-        f'<a class="menu-all" href="/products/"{cur("/products/")}>View all categories '
-        '<svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></a></div>\n'
-        '              <ul class="menu-grid">\n' + "\n".join(cards) + '\n              </ul>\n'
-        '            </div>\n'
+        '            <ul class="menu-list">\n' + "\n".join(rows) + '\n            </ul>\n'
+        f'            <a class="menu-all" href="/products/"{cur("/products/")}>View all categories '
+        '<svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></a>\n'
         '          </div>\n'
         '        </li>')
 
