@@ -33,8 +33,9 @@
       "art": "beauty",
       "hue": 335,
       "status": "placeholder",
-      "image": null,
-      "families": []
+      "image": "/images/categories/beauty-personal-care.jpg",
+      "families": [],
+      "thumb": "/images/categories/beauty-personal-care-thumb.jpg"
     },
     {
       "slug": "home-kitchen",
