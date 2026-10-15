@@ -7,7 +7,6 @@
     "cards",
     "breadcrumb",
     "content-page",
-    "search",
     "category-cards"
   ],
   "page_css": "hub",
@@ -18,6 +17,5 @@
     ]
   ],
   "updated": "2026-10-15",
-  "page_js": "hub",
   "hub_min_articles": 3
 }
