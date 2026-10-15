@@ -239,6 +239,21 @@ def category_directory():
 
 
 
+def home_video():
+    """Optional hero video: used only when src/static/videos/home-hero.mp4 exists (and home-hero.webm / home-hero.jpg if present)."""
+    videos = SRC / "static" / "videos"
+    mp4 = videos / "home-hero.mp4"
+    if not mp4.exists():
+        return ""
+    sources = []
+    if (videos / "home-hero.webm").exists():
+        sources.append('<source src="/videos/home-hero.webm" type="video/webm">')
+    sources.append('<source src="/videos/home-hero.mp4" type="video/mp4">')
+    poster = ' poster="/videos/home-hero.jpg"' if (videos / "home-hero.jpg").exists() else ""
+    return ('<video class="home-hero-video" autoplay muted loop playsinline preload="metadata"'
+            f'{poster} aria-hidden="true" tabindex="-1">' + "".join(sources) + '</video>')
+
+
 def home_collage():
     """The category pictures as tiles for the home hero (replace the wrapper with a video later)."""
     tiles = []
@@ -664,6 +679,7 @@ def build_page(meta, base, header_t, footer_t, year, articles):
         "category_chips": category_chips(meta["url"]),
         "category_cards": category_cards(meta["url"]),
         "home_collage": home_collage(),
+        "home_video": home_video(),
         "category_directory": category_directory(),
         "category_sections": category_sections(articles),
         "toc": "@@TOC@@" if meta.get("toc") else "",
@@ -732,6 +748,7 @@ def write_robots():
 def write_headers():
     (DIST / "_headers").write_text(
         "/assets/*\n  Cache-Control: public, max-age=31536000, immutable\n\n"
+        "/videos/*\n  Cache-Control: public, max-age=86400\n\n"
         "/*\n  X-Content-Type-Options: nosniff\n  Referrer-Policy: strict-origin-when-cross-origin\n",
         encoding="utf-8")
 

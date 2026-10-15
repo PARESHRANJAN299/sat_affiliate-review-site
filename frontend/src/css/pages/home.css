@@ -71,3 +71,7 @@
 @media (prefers-reduced-motion: no-preference) {
   .home-collage .tile { transition: transform .4s ease; }
 }
+
+/* optional hero video: sits under the picture tiles and the dark overlay */
+.home-hero-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: -1; }
+.home-hero-media:has(.home-hero-video) .home-collage { opacity: .96; }

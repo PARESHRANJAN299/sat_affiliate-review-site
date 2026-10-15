@@ -7,7 +7,9 @@
     "category-directory"
   ],
   "page_css": "home",
-  "js": [],
+  "js": [
+    "home-video"
+  ],
   "og_type": "website",
   "schema": "home",
   "updated": "2026-10-15"
