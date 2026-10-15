@@ -1,7 +1,7 @@
 {
   "url": "/about/",
   "title": "About Us",
-  "description": "About SAT and its founder, Paresh Ranjan Rout, a Data Engineer building independent buying guides for shoppers in India.",
+  "description": "About SAT and its founder, Paresh Ranjan Rout, a Data Architect. SAT is a simple buying-guide website for shoppers in India.",
   "css": [
     "buttons",
     "about"
