@@ -2,9 +2,9 @@
   "slug": "best-yoga-mats",
   "title": "Best Yoga Mats in India (2026)",
   "tag": "Yoga",
-  "summary": "A short list of 3 yoga mats sold in India, from budget to premium, based on shop and maker pages. Not hand-tested.",
-  "description": "Yoga mat buying guide for India, 2026: three picks from budget to premium and what to check before you buy. Based on research, not hand-tested.",
-  "lead": "Which yoga mat should you buy in India? Here are three picks: a thick, light mat for gentle floor work, a grippy mid-thickness mat for everyday practice, and a dense premium mat for regular practice. We have not hand-tested any of them. This guide uses shop pages, maker sites and general buying advice.",
+  "summary": "Three Decathlon India yoga mats: light 5 mm, soft 8 mm and grippy 4 mm. Based on shop pages and maker text. Not hand-tested.",
+  "description": "Helps anyone in India choosing a yoga mat. Three Decathlon picks, plus plain tips on thickness, material, grip and size.",
+  "lead": "Which yoga mat should you buy in India? Here are three picks. One is a light 5 mm mat that is easy to carry. One is a soft 8 mm mat for gentle floor work. One is a grippy 4 mm mat for flowing styles. All three are from Decathlon India, because its pages state the thickness, size and stock clearly. We have not hand-tested any of them. This guide uses the shop pages, the maker's own words and general buying advice.",
   "columns": [
     "Material",
     "Thickness",
@@ -12,180 +12,176 @@
   ],
   "picks": [
     {
-      "name": "Amazon Brand - Symactive 10mm Extra Thick NBR Yoga Mat with Carrying Strap",
-      "label": "Suits gentle floor work",
+      "name": "Domyos Yoga Mat 5mm Thick, EVA, 180 x 58 cm, Ultra Lightweight with Carry Strap",
+      "label": "Suits light carrying",
       "tier": "Budget",
       "cells": [
-        "NBR foam (per listing copy)",
-        "10 mm",
-        "Gentle stretching and floor work"
+        "EVA and polyethylene foam (per the page)",
+        "5 mm",
+        "Starting out and carrying to class"
       ],
-      "verdict": "A thick, light, soft mat for gentle floor work. Check the live listing carefully before you buy.",
+      "verdict": "A plain, light 5 mm mat with a built-in strap. The maker calls the grip light, so it may suit gentle practice more than sweaty sessions.",
       "paragraphs": [
-        "This is Amazon's own-brand mat. It is made from NBR, a soft and light foam. It is 10 mm thick. The surface is textured to resist slipping, and a carrying strap comes in the pack. The listing copy says it is free from PVC, silicone and latex. That is a maker claim. The size is about 183 x 61 cm.",
-        "Here is what to know. We could not open the Amazon.in page. We used a third-party site that copies the listing, so we cannot confirm the mat is on sale today. There may be more than one Symactive 10 mm listing, so check that the product details say NBR. The weight is unclear: one copy says 750 g and another says 850 g. We could not confirm buyer ratings, warranty or the return window."
+        "The Decathlon India page lists this mat as 5 mm thick and 180 x 58 cm. The page gives the material as 53% ethylene vinyl acetate (EVA), 27% thermoplastic polyethylene and 20% polyethylene. The maker says it weighs 600 g and has a built-in strap. It also says the light grip suits all styles of yoga and the surface is good for starting out.",
+        "The page shows the mat as in stock. It shows a 2-year warranty. The return text says 14 days for online orders and 30 days for store purchases. The page shows a rating of 4.6 from 670 reviews. We did not read the review text, so we cannot say what buyers praise or complain about."
       ],
       "good": [
-        "Thick cushioning for kneeling and gentle stretching on hard floors, according to the listing",
-        "Light for its thickness: both listed weights are under 1 kg",
-        "Carrying strap included",
-        "Sold under Amazon's own brand, so returns may follow the usual Amazon route (we did not read this listing's terms)"
+        "The maker says it is ultra light at 600 g and has a built-in strap",
+        "The maker says the 5 mm thickness keeps you stable and comfortable",
+        "Material and size are clearly stated on the page",
+        "The page shows a 2-year warranty"
       ],
       "not_good": [
-        "At 10 mm it is soft, so balance and standing poses can feel less steady",
-        "Buying guides say NBR suits fast, standing-heavy or hot yoga less well, and you may want a towel if your hands get sweaty",
-        "Buyer ratings could not be confirmed"
+        "The maker calls the grip light, so it may feel slippery if your hands get sweaty",
+        "At 58 cm wide it is narrower than the other two picks",
+        "Less padding for knees than the 8 mm mat"
       ],
-      "search_query": "Amazon Brand Symactive 10mm NBR yoga mat",
-      "stores": [
-        "Amazon"
-      ]
-    },
-    {
-      "name": "Kimjaly 4 mm Ultra Grippy Dynamic Yoga Mat",
-      "label": "Suits everyday practice",
-      "tier": "Mid-range",
-      "cells": [
-        "PU top, rubber foam core (overseas listing)",
-        "4 mm",
-        "Flowing styles and everyday practice"
-      ],
-      "verdict": "A mid-thickness mat with a grippy top and clear warranty and return terms on the Decathlon India page.",
-      "paragraphs": [
-        "This is a 4 mm mat sold and shipped by Decathlon India. The product page shows the brand as Kimjaly. The yoga mat category page labels the same mat Domyos. Decathlon says 4 mm is a balance between stability and comfort. It describes the polyurethane (PU) top as very grippy. An overseas Decathlon listing suggests it for active styles such as Vinyasa and Ashtanga.",
-        "Here is what to know. The India page does not state the material, size or weight. The details we mention (PU and polyester top, rubber foam core, 185 x 65 cm, about 2.5 kg) come from Decathlon's Kuwait listing, so the India version may differ. Decathlon also warns that dust, creams and sweat can wear down the PU top over time. We could not see what buyers write in their reviews."
-      ],
-      "good": [
-        "4 mm is a middle thickness, so it is less soft for standing poses than a very thick mat",
-        "Decathlon describes the PU top as very grippy",
-        "The India page shows a 2-year warranty and 30-day returns",
-        "About 4.7 out of 5 from several hundred buyers on the decathlon.in page"
-      ],
-      "not_good": [
-        "About 2.5 kg on the overseas listing, so it may be heavier than a thin foam mat",
-        "The grip layer needs regular cleaning, as Decathlon itself warns",
-        "Less padding for knees on hard floors than 8 to 10 mm mats"
-      ],
-      "search_query": "Kimjaly 4mm ultra grippy dynamic yoga mat Decathlon",
+      "search_query": "Domyos yoga mat 5mm EVA 180 x 58 cm ultra lightweight",
       "stores": [
         "Decathlon"
       ]
     },
     {
-      "name": "Manduka PRO Yoga Mat 6mm",
-      "label": "Suits regular practice",
-      "tier": "Premium",
+      "name": "Kimjaly Yoga Mat 8mm Thick, Anti-Slip Foam, 173 x 61 cm with Carry Strap",
+      "label": "Suits gentle floor work",
+      "tier": "Mid-range",
       "cells": [
-        "Likely PVC (maker page does not say)",
-        "6 mm",
-        "Regular, long-term practice"
+        "PVC foam (per the page)",
+        "8 mm",
+        "Gentle yoga and floor work"
       ],
-      "verdict": "A dense mat for regular practice. It is heavy, and the India warranty position is unclear.",
+      "verdict": "A thick, soft mat for gentle yoga and kneeling on hard floors. It is shorter than the other two, and the page does not state its weight.",
       "paragraphs": [
-        "The Manduka PRO is a 6 mm mat. The maker describes it as high-density, with floor-like stability and an easy-to-clean surface. Manduka says the surface is closed-cell, which resists moisture, and that the mat has a lifetime guarantee. The standard length is 71 inches (180 cm). There is also a shorter 68 inch and a longer 85 inch version. Manduka's own page shows thousands of reviews.",
-        "Here is what to know. Manduka's page does not name the material. The PVC detail comes from retailer descriptions, so check it on the listing. The mat seems to reach India through third-party sellers on Amazon.in and through Ubuy India, not an official Manduka India store. We could not open the Amazon.in page, so stock is unconfirmed. We could not confirm that the lifetime guarantee covers an import sold in India. India return terms are also unconfirmed."
+        "The Decathlon India page lists this mat as 8 mm thick and 173 x 61 cm. The page gives the material as 100% polyvinyl chloride (PVC) foam. The maker calls it a thick, cushy mat for gentle yoga and says it is easy to clean. The title mentions a carry strap, and the page says it comes in plain and print options.",
+        "The page shows the mat as in stock. It shows a 2-year warranty. The return text says 14 days for online orders and 30 days for store purchases. The page shows a rating of 4.7 from about 2,900 reviews. We did not read the review text. The page does not state the weight."
       ],
       "good": [
-        "Dense 6 mm build that the maker presents as stable",
-        "Closed-cell surface that the maker says resists moisture and is easy to clean",
-        "The maker advertises a lifetime guarantee",
-        "Thousands of reviews on Manduka's own page"
+        "The maker says it is made for gentle yoga and is easy to clean",
+        "8 mm gives more padding than the other two picks",
+        "Material, thickness and size are clearly stated on the page",
+        "The page shows a 4.7 rating from about 2,900 reviews"
       ],
       "not_good": [
-        "Reported to weigh about 3.4 kg in the standard size (from search summaries, not confirmed), so it is likely heavy to carry",
-        "Some reviewers say it can feel slippery at first, especially for hot yoga (not confirmed on the shop pages)",
-        "Sold through third-party channels in India, so warranty and returns may not work as the maker describes"
+        "Decathlon's own advice says a very thick mat can weaken your feel of the floor, so standing poses may feel less steady",
+        "At 173 cm long it may be short for tall people",
+        "The page does not state the weight, so we cannot say how heavy it is to carry"
       ],
-      "search_query": "Manduka PRO yoga mat 6mm",
+      "search_query": "Kimjaly yoga mat 8mm anti-slip foam 173 x 61 cm",
       "stores": [
-        "Amazon"
+        "Decathlon"
+      ]
+    },
+    {
+      "name": "Kimjaly Yoga Mat 4mm Thick, Rubber Foam, 185 x 65 cm with Carry Straps",
+      "label": "Suits flowing styles",
+      "tier": "Premium",
+      "cells": [
+        "Rubber foam with a polyurethane (PU) top layer (per the page)",
+        "4 mm",
+        "Flowing styles and balance poses"
+      ],
+      "verdict": "A thinner, longer and wider mat with a PU top layer that the maker says gives maximum grip. It has less padding, and the page does not state the weight.",
+      "paragraphs": [
+        "The Decathlon India page lists this mat as rubber foam, 4 mm thick and 185 x 65 cm, with carry straps. The maker says the polyurethane (PU) top layer gives maximum grip. It also says the mat suits dynamic yoga and balancing poses, and has marking lines to help with alignment.",
+        "The page shows the mat as in stock. It shows a 2-year warranty. The return text says 14 days for online orders and 30 days for store purchases. The page shows a rating of 4.7 from 714 reviews. We did not read the review text. The page does not state the weight."
+      ],
+      "good": [
+        "The maker says the PU top layer gives maximum grip",
+        "4 mm is within the 3 to 5 mm range that Decathlon's own guide suggests for dynamic yoga",
+        "185 x 65 cm is longer and wider than the other two picks",
+        "The maker says the marking lines help with alignment"
+      ],
+      "not_good": [
+        "Less padding for knees on hard floors than the 8 mm mat",
+        "The page does not state the weight",
+        "Care steps for the PU top are not on the page we opened, so check the product label"
+      ],
+      "search_query": "Kimjaly yoga mat 4mm rubber foam 185 x 65 cm carry straps",
+      "stores": [
+        "Decathlon"
       ]
     }
   ],
   "choose": [
     {
-      "heading": "Pick the thickness for your floor and poses",
-      "text": "Thick mats of 8 to 10 mm give more padding for knees on hard floors. They feel soft and less steady in standing and balance poses. About 4 to 6 mm is the usual middle ground."
+      "heading": "Pick the thickness for your floor and style",
+      "text": "Decathlon's own guide says thickness decides comfort. If a mat is too thin, your joints may feel the floor. If it is too thick, you may not feel a firm link with the floor. It suggests 3 to 5 mm for dynamic yoga and 5 to 8 mm for gentle yoga. Wikipedia says mats with more padding suit slower styles such as yin yoga. These are general views, not test results."
     },
     {
       "heading": "Know your material",
-      "text": "NBR is a soft, light, thick foam sold for cushioning. Buying guides say it suits fast, standing-heavy or hot yoga less well. TPE is often described as light and soft. Natural rubber is often described as denser, with a tackier grip. These are general descriptions, not test results."
+      "text": "Wikipedia says PVC mats are the spongiest, rubber mats are firm, heavy and durable, and TPE mats are firm and very light. The three picks here use EVA foam, PVC foam and rubber foam with a PU top. Read the material line on the product page, because the name alone may not tell you."
     },
     {
-      "heading": "Read the material on the exact listing",
-      "text": "Some Indian listings contradict themselves. A mat may be named one material while the details say another. Read the full product details before you buy."
-    },
-    {
-      "heading": "Look at the grip layer",
-      "text": "Grip depends on the top layer as well as the base. A PU top can be grippy, but Decathlon warns that dust, creams and sweat wear it down. Wipe it regularly. On NBR or closed-cell mats, a towel can help if your hands get sweaty."
+      "heading": "Look at the grip",
+      "text": "Decathlon's guide says a sticky mat keeps you from sliding between poses. The maker calls the 4 mm Kimjaly very grippy and the 5 mm Domyos light grip. If you sweat a lot, grip may matter more to you than thickness."
     },
     {
       "heading": "Check the size if you are tall",
-      "text": "Manduka's PRO comes in 68, 71 and 85 inch lengths. Decathlon India's yoga mat category lists some longer mats too. We could not confirm a longer version of the Kimjaly 4 mm."
+      "text": "The three picks are 173 to 185 cm long. Decathlon India also lists a 5 mm mat of 200 x 75 cm that it says is made for taller people. We did not review it in detail."
     },
     {
-      "heading": "Check who sells it and the return terms",
-      "text": "Mats sold by the maker or a large shop often have clearer warranty and return terms, like the 2-year warranty and 30-day returns on decathlon.in. Third-party or cross-border sellers can differ. Confirm the terms before you rely on a brand guarantee."
+      "heading": "Think about weight if you carry it",
+      "text": "Decathlon's guide says weight matters if you carry your mat often. Of our picks, only the 5 mm Domyos has a weight on its page (600 g, from the maker). Decathlon India also lists a 1.3 mm foldable travel mat that the maker says weighs 950 g."
+    },
+    {
+      "heading": "Check the seller and return terms",
+      "text": "On the Decathlon India pages we read, the return text says 14 days for online orders and 30 days for store purchases. The pages also show a 2-year warranty. Terms can change, so read them on the page before you pay."
     }
   ],
   "faq": [
     {
       "q": "What thickness of yoga mat should I choose?",
-      "a": "It depends on your floor and your poses. Thick mats of 8 to 10 mm are comfier for knees but less steady for standing poses. About 4 to 6 mm is a common middle choice."
+      "a": "It depends on your floor and style. Decathlon's guide suggests 3 to 5 mm for dynamic yoga and 5 to 8 mm for gentle yoga. Thicker mats give more padding. But Decathlon says a mat that is too thick can weaken your feel of the floor."
     },
     {
-      "q": "Is an NBR mat good for hot yoga?",
-      "a": "Buying guides say NBR is not the best fit for fast, standing-heavy or hot yoga. If your hands get sweaty, you may want a towel. NBR suits gentle stretching and floor work better."
+      "q": "Which of these three is the lightest?",
+      "a": "The 5 mm Domyos is the only one with a stated weight, 600 g according to the maker. The other two pages do not state a weight, so we cannot compare them."
     },
     {
-      "q": "How do I keep a PU-top mat grippy?",
-      "a": "Wipe it regularly. Decathlon warns that dust, creams and sweat can wear down the PU grip layer over time. For the Kimjaly, an overseas Decathlon listing suggests warm soapy water and a microfibre cloth, then air drying away from the sun."
+      "q": "Is a PU top layer more grippy?",
+      "a": "The maker says the PU top layer on the 4 mm Kimjaly gives maximum grip. That is the maker's claim. We have not tested it, so check buyer reviews on the page."
     },
     {
-      "q": "Will a brand's guarantee work if I buy from a third-party seller?",
-      "a": "Not always. Manduka advertises a lifetime guarantee, but we could not confirm that it covers mats sold into India through third-party or cross-border sellers. Check the terms on the exact listing before you buy."
+      "q": "What are the return terms on Decathlon India?",
+      "a": "On the pages we read, the return text says 14 days for online orders and 30 days for store purchases. The pages also show a 2-year warranty. Terms can change, so read them on the page before you buy."
+    },
+    {
+      "q": "I am tall. Is there a longer mat?",
+      "a": "Our three picks are 173 to 185 cm long. Decathlon India also lists a 5 mm foam mat of 200 x 75 cm that the maker says is made for taller people."
     }
   ],
   "sources": [
     {
-      "label": "Decathlon India: Kimjaly 4 mm yoga mat",
-      "url": "https://www.decathlon.in/p/8916635/4-mm-thick-ultra-grippy-dynamic-yoga-mat-green"
+      "label": "Decathlon India: Domyos 5 mm EVA yoga mat, 180 x 58 cm",
+      "url": "https://www.decathlon.in/p/8928286/yoga-mat-5mm-thick-eva-180-x-58-cm-ultra-lightweight-with-carry-strap-brown"
+    },
+    {
+      "label": "Decathlon India: Kimjaly 8 mm anti-slip foam yoga mat, 173 x 61 cm",
+      "url": "https://www.decathlon.in/p/8380428/yoga-mat-8mm-thick-anti-slip-foam-173-x-61-cm-with-carry-strap-jungle-blue"
+    },
+    {
+      "label": "Decathlon India: Kimjaly 4 mm rubber foam yoga mat, 185 x 65 cm",
+      "url": "https://www.decathlon.in/p/8936896/yoga-mat-4mm-thick-rubber-foam-185-x-65-cm-with-carry-straps-blue"
     },
     {
       "label": "Decathlon India: yoga mats category",
       "url": "https://www.decathlon.in/c/yoga-mats-727236"
     },
     {
-      "label": "Decathlon Kuwait: Kimjaly 4 mm listing (specs and care)",
-      "url": "https://decathlon.com.kw/products/4-mm-thick-ultra-grippy-dynamic-yoga-mat"
+      "label": "Decathlon India: 5 mm yoga mat for tall people, 200 x 75 cm",
+      "url": "https://www.decathlon.in/p/8843405/yoga-mat-5mm-thick-foam-200-x-75-cm-with-carry-strap-for-tall-people-grey"
     },
     {
-      "label": "Amazon.in: Symactive 10 mm yoga mat",
-      "url": "https://www.amazon.in/Amazon-Brand-Symactive-Anti-Skid-Lightweight/dp/B0BYS9J8V2"
+      "label": "Decathlon India: 1.3 mm foldable travel yoga mat",
+      "url": "https://www.decathlon.in/p/8600698/yoga-mat-1-3mm-thick-foldable-anti-slip-rubber-180-x-62-cm-grey"
     },
     {
-      "label": "Third-party copy of the Symactive listing",
-      "url": "https://www.dealsmagnet.com/deal/amazon-brand-symactive-10mm-extra-thick-yoga-mat-19JYr3Or"
+      "label": "Decathlon: How to choose the perfect yoga mat (maker advice)",
+      "url": "https://www.decathlon.com/blogs/sports-advice/how-to-choose-the-perfect-yoga-mat"
     },
     {
-      "label": "Lazada guide: what is an NBR yoga mat",
-      "url": "https://sports.lazada.sg/what-is-an-nbr-yoga-mat-and-is-it-right-for-your-practice-sg/"
-    },
-    {
-      "label": "Manduka: PRO Yoga Mat",
-      "url": "https://manduka.com/collections/revive-tee/products/manduka-pro-yoga-mat"
-    },
-    {
-      "label": "Amazon.in: Manduka PRO listing",
-      "url": "https://www.amazon.in/Manduka-PRO-Yoga-Pilates-Mat/dp/B01L5LW5QY"
-    },
-    {
-      "label": "Ubuy India: Manduka PRO",
-      "url": "https://www.ubuy.co.in/product/JI3W27HQG-manduka-pro-yoga-mat"
-    },
-    {
-      "label": "Garage Gym Reviews: Manduka PRO 6 mm",
-      "url": "https://www.garagegymreviews.com/equipment/manduka-pro-yoga-mat-6-mm"
+      "label": "Wikipedia: Yoga mat",
+      "url": "https://en.wikipedia.org/wiki/Yoga_mat"
     }
   ],
   "published": "2026-10-15",

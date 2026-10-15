@@ -331,6 +331,7 @@ STORES = {
     "Amazon": "https://www.amazon.in/s?k=",
     "Flipkart": "https://www.flipkart.com/search?q=",
     "Decathlon": "https://www.decathlon.in/search?Ntt=",
+    "Puma": "https://in.puma.com/in/en/search?q=",
 }
 
 
