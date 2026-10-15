@@ -72,10 +72,34 @@
     if (event.relatedTarget && !item.contains(event.relatedTarget)) setOpen(false);
   });
 
-  var links = menu.querySelectorAll('a');
+  // category panels: hover or focus on desktop, the small arrow on phones
+  var wide = window.matchMedia('(min-width: 720px)');
+  var megaItems = Array.prototype.slice.call(menu.querySelectorAll('.mega-item'));
+  function activate(target) {
+    megaItems.forEach(function (it) {
+      var on = it === target;
+      it.classList.toggle('is-active', on);
+      var b = it.querySelector('.mega-more');
+      if (b) b.setAttribute('aria-expanded', on ? 'true' : 'false');
+    });
+  }
+  megaItems.forEach(function (it) {
+    it.addEventListener('mouseenter', function () { if (wide.matches) activate(it); });
+    it.addEventListener('focusin', function () { if (wide.matches) activate(it); });
+    var b = it.querySelector('.mega-more');
+    if (b) b.addEventListener('click', function () { activate(it.classList.contains('is-active') ? null : it); });
+  });
+  var firstOpen = function () { if (wide.matches && megaItems.length && !menu.querySelector('.mega-item.is-active')) activate(megaItems[0]); };
+  toggle.addEventListener('click', function () { setTimeout(firstOpen, 0); });
+  wide.addEventListener('change', function () { activate(wide.matches ? megaItems[0] : null); });
+
+  function visibleLinks() {
+    return Array.prototype.filter.call(menu.querySelectorAll('a, .mega-more'), function (el) { return el.offsetParent !== null; });
+  }
   item.addEventListener('keydown', function (event) {
     var keys = ['ArrowDown', 'ArrowUp', 'Home', 'End'];
     if (keys.indexOf(event.key) === -1) return;
+    var links = visibleLinks();
     var i = Array.prototype.indexOf.call(links, document.activeElement);
     if (event.key === 'ArrowDown') {
       if (!isOpen()) setOpen(true);

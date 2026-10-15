@@ -60,6 +60,10 @@
               "q": "Should I buy a racket set or a single racket?",
               "a": "A set suits first-time casual play. If you plan to play regularly, a single better racket is usually the better value."
             }
+          ],
+          "guides": [
+            "best-badminton-rackets",
+            "best-badminton-shuttlecocks"
           ]
         },
         {
@@ -98,6 +102,9 @@
               "q": "Do I need to knock in a new bat?",
               "a": "Many leather-ball bats need knocking-in before use, so follow the maker's instructions. Tennis-ball bats usually do not."
             }
+          ],
+          "guides": [
+            "best-cricket-bats-for-beginners"
           ]
         },
         {
@@ -175,6 +182,10 @@
               "q": "Can one pair do running and gym?",
               "a": "For light gym use a running shoe is fine. For heavy lifting or court sports, a flatter, more stable shoe is better."
             }
+          ],
+          "guides": [
+            "best-badminton-shoes",
+            "best-running-shoes-for-beginners"
           ]
         },
         {
@@ -253,6 +264,9 @@
               "q": "Fixed or adjustable dumbbells?",
               "a": "Fixed dumbbells are simpler. Adjustable ones suit small homes and people who expect to progress."
             }
+          ],
+          "guides": [
+            "best-dumbbells-for-home"
           ]
         },
         {
@@ -292,6 +306,9 @@
               "q": "Are resistance bands good for beginners?",
               "a": "Yes. They are light and easy to store. Start with lighter resistance and focus on form."
             }
+          ],
+          "guides": [
+            "best-resistance-bands"
           ]
         },
         {
@@ -331,6 +348,9 @@
               "q": "How do I choose a non-slip yoga mat?",
               "a": "Check the surface texture and material on the listing, and read what buyers say about grip."
             }
+          ],
+          "guides": [
+            "best-yoga-mats"
           ]
         },
         {
@@ -370,6 +390,9 @@
               "q": "How do I choose the right length?",
               "a": "Stand on the middle of the rope. The handles should reach about your armpits."
             }
+          ],
+          "guides": [
+            "best-skipping-ropes"
           ]
         },
         {
@@ -484,6 +507,9 @@
               "q": "Is a textured foam roller better?",
               "a": "Not always. Textured rollers feel more intense, so smooth ones suit most beginners."
             }
+          ],
+          "guides": [
+            "best-foam-rollers"
           ]
         },
         {
@@ -1932,7 +1958,8 @@
       "price_bands": [
         "Under ₹1,000",
         "₹1,000–₹3,000",
-        "₹3,000–₹6,000",
+        "₹3,000–₹5,000",
+        "₹5,000–₹10,000",
         "Premium"
       ],
       "more_label": "More home and kitchen guides",

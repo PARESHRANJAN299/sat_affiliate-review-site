@@ -372,6 +372,9 @@ SLOT_KEYS = {"Best overall": "best_overall", "Best budget pick": "best_budget", 
 
 _KIT = [None]
 _PRODUCTS = {}
+PREVIEWS = "--previews" in sys.argv   # sample/preview pages are for development only; the live build leaves them out
+_GUIDES = []
+MEGA = {}
 
 
 def kit():
@@ -730,6 +733,38 @@ def beauty_pages(cat):
     return pages
 
 
+def guide_info(page):
+    url = page["url"]
+    return {"slug": url.rstrip("/").split("/")[-1], "url": url, "title": short_title(page["title"]), "full": page["title"],
+            "summary": page["article"].get("summary", ""), "tag": page["article"].get("tag", ""),
+            "category": page["article"].get("category", "")}
+
+
+def guides_for(family):
+    wanted = family.get("guides") or []
+    return [g for g in _GUIDES if g["slug"] in wanted]
+
+
+def guide_cards_html(guides, heading="Our buying guide"):
+    if not guides:
+        return ""
+    items = "".join(
+        f'<li><a class="guide-card" href="{esc(g["url"])}"><span class="guide-card-tag">{esc(g["tag"])}</span>'
+        f'<strong>{esc(g["title"])}</strong><span class="guide-card-sum">{esc(g["summary"])}</span>'
+        '<span class="read-link">Read the guide <svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></span></a></li>'
+        for g in guides)
+    plural = "s" if len(guides) > 1 else ""
+    return f'<div class="family-guides"><h2>{esc(heading)}{plural}</h2><ul class="guide-cards">{items}</ul></div>\n'
+
+
+def home_guides_strip():
+    """Small row of links to every finished buying guide, so none of them is hard to find."""
+    if not _GUIDES:
+        return ""
+    items = "".join(f'<li><a class="home-guide" href="{esc(g["url"])}">{esc(g["title"])}</a></li>' for g in _GUIDES)
+    return f'<ul class="home-guide-strip">{items}</ul>'
+
+
 def family_pages():
     """Landing page for each category that has product families, plus one page per family."""
     pages = []
@@ -758,12 +793,13 @@ def family_pages():
             '    {{breadcrumb}}\n'
             f'    <h1>{esc(cat["name"])}</h1>\n'
             f'    <p class="lead">{esc(cat.get("tagline") or cat["description"])}</p>\n'
+            + ('    <section class="family-guides" id="guides"><h2>Buying guides</h2>\n    {{articles_sports_fitness}}\n    </section>\n' if cat["slug"] == "sports-fitness" else "")
             + "\n".join(blocks) +
             '\n  </div>\n</section>')
         pages.append({
             "url": cat["url"], "title": f'{cat["name"]} Buying Guides for India',
             "description": f'Browse sports and fitness product types, from {cat["families"][0]["name"].lower()} to {cat["families"][-1]["name"].lower()}. Buying guides for Indian shoppers.',
-            "css": ["buttons", "breadcrumb", "content-page", "category-directory", "families"], "js": [],
+            "css": ["buttons", "breadcrumb", "content-page", "category-directory", "families"] + (["cards"] if cat["slug"] == "sports-fitness" else []), "js": [],
             "breadcrumbs": [["Shop by Category", "/products/"], [cat["name"], cat["url"]]],
             "updated": "2026-10-16", "_slug": cat["slug"], "_body": body})
         sec_names = {s["slug"]: s["name"] for s in sections}
@@ -774,6 +810,7 @@ def family_pages():
         for f in cat["families"]:
             url = family_url(cat, f)
             products = [p for p in all_products if p.get("family") == f["slug"]]
+            guides = guides_for(f)
             tips = "".join(f'<li><strong>{esc(h)}.</strong> {esc(x)}</li>' for h, x in f["tips"])
             faqs = "".join(
                 f'<details class="faq-item"><summary><h3>{esc(q["q"])}</h3><span class="faq-chev" aria-hidden="true"></span></summary><p>{esc(q["a"])}</p></details>'
@@ -784,13 +821,15 @@ def family_pages():
                 '<section class="section">\n  <div class="container content-page family-page">\n'
                 '    {{breadcrumb}}\n'
                 f'    <p class="family-kicker">{esc(sec_names.get(f["section"], ""))}</p>\n'
-                f'    <h1>{esc(f["h1"])}</h1>\n    <p class="lead">{esc(live_intro(f["intro"], bool(products)))}</p>\n'
+                f'    <h1>{esc(f["h1"])}</h1>\n    <p class="lead">{esc(live_intro(f["intro"], bool(products) or bool(guides)))}</p>\n'
+                + guide_cards_html(guides)
                 + (('    <p class="family-status"><strong>How we picked these:</strong> we read the maker\'s and the shops\' pages. We have not tested these products ourselves. Read <a href="/how-we-pick/">how we pick</a>.</p>\n'
                     + family_products_html(cat, f, products) + '\n') if products else (
+                ('    <p class="family-status"><strong>Our guide is ready.</strong> More picks will be added here after we read each maker\'s page and the shop listings. Read <a href="/how-we-pick/">how we pick</a>.</p>\n') if guides else (
                 '    <p class="family-status"><strong>Picks coming soon.</strong> We add a product only after we have read the maker\'s page and the shop listings. '
                 'Read <a href="/how-we-pick/">how we pick</a>.</p>\n'
                 f'    <h2>Our picks</h2>\n    <ul class="pick-slots">{note_slots}</ul>\n'
-                '    <h2>Comparison</h2>\n    <div class="empty-state"><p>A comparison table appears here once the first picks are added.</p></div>\n')) +
+                '    <h2>Comparison</h2>\n    <div class="empty-state"><p>A comparison table appears here once the first picks are added.</p></div>\n'))) +
                 f'    <h2>Buying guide</h2>\n    <ul class="family-tips">{tips}</ul>\n'
                 f'    <h2>Common questions</h2>\n{faqs}\n'
                 f'    <h2>More {esc(sec_names.get(f["section"], "").lower())} guides</h2>\n    <ul class="related-links">{related}'
@@ -973,11 +1012,49 @@ def menu_icon(c):
     return category_icon(c, "menu-ic")
 
 
+def mega_data(pages):
+    """What each category panel of the Shop by Category menu shows. A price, brand or feature link appears only when its
+    page exists and is open to Google (3 or more products); product types without a guide or products are listed as
+    plain text under 'Researching now', so the menu never sends people to an empty page."""
+    MEGA.clear()
+    live = {p["url"]: p for p in pages if not p.get("noindex")}
+    for c in CATEGORIES:
+        entry = {"types": [], "soon": [], "guides": [], "price": [], "brand": [], "feature": []}
+        entries = {e["slug"]: e for e in (family_entries(c) if c.get("families") else [])}
+        for f in c.get("families", []):
+            url = family_url(c, f)
+            has_guide = bool(guides_for(f))
+            if has_guide or url in live:
+                entry["types"].append((f["name"], url))
+            else:
+                entry["soon"].append(f["name"])
+        entry["guides"] = [(g["title"], g["url"]) for g in _GUIDES if g["category"] == c["name"]]
+        if c["slug"] == "watches" and SHOP[0] is not None:
+            entry["soon"] = [b["label"] for b in SHOP[0].budgets.values()] + [b["name"] for b in SHOP[0].config["brands"]]
+        if c["slug"] == "watches":
+            for url, p in sorted(live.items()):
+                m = re.fullmatch(r"/watches/(men|women)/under-(\d+)/", url)
+                if m:
+                    entry["price"].append((f'{m.group(1).title()}\u2019s watches under \u20b9{int(m.group(2)):,}', url))
+                elif url.startswith("/watches/brands/"):
+                    entry["brand"].append((p["title"].replace("Best ", "").replace(" in India", ""), url))
+                elif url.startswith("/watches/style/"):
+                    entry["feature"].append((p["title"].replace(" in India", ""), url))
+        MEGA[c["slug"]] = entry
+
+
 def category_menu(item, current_url=None):
-    """'Shop by Category' dropdown: a compact list with small colour icons, built from categories.json
-    and the articles. The toggle still links to /products/ without JavaScript."""
+    """'Shop by Category' menu. Desktop: category list on the left, a panel of product types, guides and (when they exist)
+    price, brand and feature pages on the right. Phones: each category opens its panel below it.
+    The toggle still links to /products/ without JavaScript."""
     def cur(url):
         return ' aria-current="page"' if url == current_url else ""
+
+    def col(title, links, limit=8):
+        if not links:
+            return ""
+        lis = "".join(f'<li><a href="{esc(u)}">{esc(n)}</a></li>' for n, u in links[:limit])
+        return f'<div class="mega-col"><p class="mega-title">{esc(title)}</p><ul>{lis}</ul></div>'
 
     rows = []
     for c in CATEGORIES:
@@ -992,12 +1069,26 @@ def category_menu(item, current_url=None):
         soon = "" if n else " is-soon"
         if c.get("menu_hint"):
             meta, soon = esc(c["menu_hint"]), ""
+        m = MEGA.get(c["slug"], {})
+        cols = (col("Product types", m.get("types", [])) + col("Buying guides", m.get("guides", []), 10)
+                + col("By price", m.get("price", [])) + col("By brand", m.get("brand", [])) + col("By style", m.get("feature", [])))
+        if m.get("soon"):
+            names = "".join(f"<li>{esc(x)}</li>" for x in m["soon"][:8])
+            cols += f'<div class="mega-col mega-soon"><p class="mega-title">Researching now</p><ul>{names}</ul></div>'
+        if not cols:
+            cols = '<div class="mega-col"><p class="mega-title">Coming soon</p><ul><li><a href="/how-we-pick/">How we pick</a></li></ul></div>'
+        panel = (f'<div class="mega-panel" id="mega-{esc(c["slug"])}"><div class="mega-cols">{cols}</div>'
+                 f'<a class="mega-all" href="{c["url"]}">View all {esc(c["name"])} <svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></a></div>')
         rows.append(
-            f'            <li><a class="menu-row" href="{c["url"]}" style="--hue:{c["hue"]}"{cur(c["url"])}>'
+            f'            <li class="mega-item" data-cat="{esc(c["slug"])}" style="--hue:{c["hue"]}">'
+            f'<a class="menu-row" href="{c["url"]}"{cur(c["url"])}>'
             f'<span class="menu-tile" aria-hidden="true">{menu_icon(c)}</span>'
             f'<span class="menu-text"><span class="menu-name">{esc(c["name"])}</span>'
             f'<span class="menu-meta{soon}">{meta}</span></span>'
-            '<span class="chev" aria-hidden="true">\u203a</span></a></li>')
+            '<span class="chev" aria-hidden="true">\u203a</span></a>'
+            f'<button type="button" class="mega-more" aria-expanded="false" aria-controls="mega-{esc(c["slug"])}" aria-label="Show {esc(c["name"])} links">'
+            '<svg class="ic" aria-hidden="true" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>'
+            f'{panel}</li>')
     return (
         '        <li class="has-menu">\n'
         f'          <a href="{item["url"]}" class="menu-toggle"{cur(item["url"])}>'
@@ -1253,6 +1344,7 @@ def load_pages():
         meta["_body"] = read(body_path)
         pages.append(meta)
     pages.extend(load_guides())
+    _GUIDES[:] = [guide_info(p) for p in pages if p.get("article")]
     pages.extend(category_placeholder_pages())
     pages.extend(family_pages())
     shop = watches.Watches(SRC, CONFIG)
@@ -1260,6 +1352,8 @@ def load_pages():
     errors.extend(shop.errors)
     warnings.extend(shop.warnings)
     pages.extend(shop.pages())
+    if not PREVIEWS:
+        pages = [p for p in pages if not re.search(r"/(preview|review-template|listing-preview)/$", p["url"])]
     return pages
 
 
@@ -1309,6 +1403,7 @@ def build_page(meta, base, header_t, footer_t, year, articles):
         "about_cover_cards": about_cover_cards(),
         "about_faq": about_faq(),
         "home_category_strip": home_category_strip(),
+        "home_guides_strip": home_guides_strip(),
         "home_collage": home_collage(),
         "home_video": home_video(),
         "category_directory": category_directory(),
@@ -1384,9 +1479,9 @@ SEARCH_SKIP = {"/", "/contact/", "/privacy-policy/", "/terms/", "/copyright/", "
                "/search/", "/watches/preview/", "/404/"}
 SEARCH_PAGES = {"/about/", "/how-we-pick/", "/products/"}
 SEARCH_KEYWORDS = {
-    "popular": ["watch under 2000", "women watch under 3000", "men watch under 6000", "badminton racket", "yoga mat",
+    "popular": ["watch under 2000", "women watch under 3000", "men watch under 5000", "badminton racket", "yoga mat",
                 "dumbbells", "running shoes", "sunscreen", "air fryer", "pressure cooker", "men t-shirts", "kurti sets"],
-    "watches": ["watch under 2000", "women watch under 3000", "men watch under 6000", "men watch under 10000",
+    "watches": ["watch under 2000", "women watch under 3000", "men watch under 5000", "men watch under 10000",
                 "analog watch", "titan watch", "casio watch", "fastrack watch", "leather strap watch",
                 "metal strap watch", "formal watch", "minimal watch"],
     "sports-fitness": ["badminton racket", "cricket bat", "football", "sports shoes", "sports bag", "dumbbells",
@@ -1559,6 +1654,7 @@ def build():
     year = datetime.date.today().year
 
     scan_product_tree()
+    check_images()
     pages = load_pages()
     for meta in pages:
         minimum = meta.get("hub_min_articles")
@@ -1570,6 +1666,7 @@ def build():
     articles = sorted((p for p in pages if p.get("article")),
                       key=lambda p: p.get("published", p["updated"]), reverse=True)
     _MENU_ARTICLES[:] = articles
+    mega_data(pages)
     write_search_index(pages)
     SEARCH_ASSETS["js"] = bundle("js", ["components/search"], "search")
     SEARCH_ASSETS["css"] = bundle("css", ["components/search-panel"], "search")
@@ -1611,6 +1708,33 @@ def serve():
     http.server.ThreadingHTTPServer(("", 8000), handler).serve_forever()
 
 
+def check_images():
+    """Every picture should have a licence record in src/image-credits.json (see the note inside that file)."""
+    path = SRC / "image-credits.json"
+    records = {}
+    if path.exists():
+        for r in json.loads(read(path)).get("images", []):
+            records[r.get("file")] = r
+    missing, unconfirmed = [], []
+    root = SRC / "static" / "images"
+    for f in sorted(root.rglob("*")) if root.exists() else []:
+        if f.suffix.lower() in (".jpg", ".jpeg", ".png", ".webp", ".svg"):
+            web = "/" + f.relative_to(SRC / "static").as_posix()
+            r = records.get(web)
+            if r is None:
+                missing.append(web)
+            elif r.get("status") != "confirmed":
+                unconfirmed.append(web)
+    gone = [k for k in records if not (SRC / "static" / k.lstrip("/")).is_file()]
+    for w in missing:
+        warnings.append(f"image {w} has no record in src/image-credits.json")
+    for g in gone:
+        warnings.append(f"src/image-credits.json lists {g}, which does not exist")
+    if unconfirmed:
+        warnings.append(f"{len(unconfirmed)} pictures still need their licence confirmed in src/image-credits.json (run python3 build.py --check for the list)")
+    return unconfirmed
+
+
 def check_products():
     """`python3 build.py --check`: validate every product file in about a second and say what to fix."""
     total = 0
@@ -1627,8 +1751,13 @@ def check_products():
             if n:
                 bar = "ok" if n >= listing.TARGET_PER_TYPE else f"{listing.TARGET_PER_TYPE - n} more to reach {listing.TARGET_PER_TYPE}"
                 print(f'  {f["name"]}: {n}  ({bar})')
+    unconfirmed = check_images()
     for w in warnings:
         print("warning:", w)
+    if unconfirmed:
+        print("\nPictures without a confirmed licence:")
+        for u in unconfirmed:
+            print("  ", u)
     for e in errors:
         print("ERROR:", e)
     print(f"\n{total} products, {len(warnings)} warnings, {len(errors)} errors")
