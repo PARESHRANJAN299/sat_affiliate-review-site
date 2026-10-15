@@ -152,7 +152,7 @@ def decorate(content):
             level, attrs, inner, prefix = 1, m.group(1), m.group(2), ""
         else:
             level, attrs, inner, prefix = 2, "", m.group(4), m.group(3)
-        text = re.sub(r"<[^>]+>", "", inner).strip()
+        text = html.unescape(re.sub(r"<[^>]+>", "", inner)).strip()
         slug = slugify_heading(text, seen)
         entries.append((level, text, slug))
         tag = "h2" if level == 1 else "h3"
@@ -365,6 +365,12 @@ def render_guide(g):
                 f'<a href="{STORES[store]}{q}" class="btn {cls} btn-small" target="_blank" rel="nofollow noopener" '
                 f'aria-label="Search on {store} for {esc(p["name"])} (opens in a new tab)">Search on {store} '
                 '<svg class="ic" aria-hidden="true"><use href="#i-external"/></svg></a>')
+        if buttons:
+            cta_html = " ".join(buttons)
+            cta_note = '      <p class="cta-note">Opens a search on the shop. We do not sell products or take payments.</p>\n'
+        else:
+            cta_html = '<span class="no-store">No shop link: we could not confirm it is on sale in India right now.</span>'
+            cta_note = ""
         paras = "\n".join(f"      <p>{esc(x)}</p>" for x in p["paragraphs"])
         good = "".join(f"<li>{esc(x)}</li>" for x in p["good"])
         bad = "".join(f"<li>{esc(x)}</li>" for x in p["not_good"])
@@ -380,9 +386,9 @@ def render_guide(g):
             '      </div>\n'
             '      <div class="cta-row">\n'
             f'        <span class="price-tag">{esc(p["tier"])} <span class="approx">(check the price at the shop)</span></span>\n'
-            f'        {" ".join(buttons)}\n'
+            f'        {cta_html}\n'
             '      </div>\n'
-            '      <p class="cta-note">Opens a search on the shop. We do not sell products or take payments.</p>\n'
+            + cta_note +
             '    </div>')
 
     choose = "\n".join(f'    <p><strong>{esc(c["heading"])}.</strong> {esc(c["text"])}</p>' for c in g["choose"])
