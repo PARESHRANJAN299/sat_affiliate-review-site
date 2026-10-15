@@ -1,4 +1,6 @@
 /* Home page */
+.home-intro { padding: clamp(32px, 5vw, 56px) 0; }
+.home-intro h1 { margin: 0; font-size: clamp(1.85rem, 3vw, 2.6rem); line-height: 1.2; letter-spacing: -.025em; }
 .hero {
   position: relative;
   isolation: isolate;
