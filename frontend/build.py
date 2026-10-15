@@ -1224,7 +1224,31 @@ def write_sitemap(pages):
 SEARCH_SKIP = {"/", "/contact/", "/privacy-policy/", "/terms/", "/copyright/", "/affiliate-disclosure/",
                "/search/", "/watches/preview/", "/404/"}
 SEARCH_PAGES = {"/about/", "/how-we-pick/", "/products/"}
-SEARCH_EXAMPLES = ["watch under 2000", "women watch under 3000", "dumbbells", "running shoes"]
+SEARCH_KEYWORDS = {
+    "popular": ["watch under 2000", "women watch under 3000", "men watch under 6000", "badminton racket", "yoga mat",
+                "dumbbells", "running shoes", "sunscreen", "air fryer", "pressure cooker", "men t-shirts", "kurti sets"],
+    "watches": ["watch under 2000", "women watch under 3000", "men watch under 6000", "men watch under 10000",
+                "analog watch", "titan watch", "casio watch", "fastrack watch", "leather strap watch",
+                "metal strap watch", "formal watch", "minimal watch"],
+    "sports-fitness": ["badminton racket", "cricket bat", "football", "sports shoes", "sports bag", "dumbbells",
+                       "resistance bands", "yoga mat", "skipping rope", "gym gloves", "foam roller", "shaker bottle"],
+    "beauty-personal-care": ["skin care", "hair care", "makeup", "men grooming", "bath body", "sunscreen"],
+    "home-kitchen": ["pressure cooker", "mixer grinder", "cookware set", "air fryer", "electric kettle", "storage containers",
+                     "lunch box", "kitchen organizer", "frying pan", "bedsheets", "pillows", "floor mats"],
+    "clothing-accessories": ["men t-shirts", "shirts", "jeans", "kurti sets", "joggers", "hoodies", "jackets",
+                             "leggings", "co-ord sets", "night dress", "casual dresses", "shorts"],
+}
+SEARCH_SHORT = {"watches": "Watches", "sports-fitness": "Sports", "beauty-personal-care": "Beauty",
+                "home-kitchen": "Home", "clothing-accessories": "Clothing"}
+
+
+def search_keyword_groups():
+    groups = [{"id": "popular", "label": "Popular", "hue": 22, "q": SEARCH_KEYWORDS["popular"]}]
+    for c in CATEGORIES:
+        if SEARCH_KEYWORDS.get(c["slug"]):
+            groups.append({"id": c["slug"], "label": SEARCH_SHORT.get(c["slug"], c["name"]), "name": c["name"],
+                           "hue": c["hue"], "url": c["url"], "q": SEARCH_KEYWORDS[c["slug"]]})
+    return groups
 
 
 def price_band_max(label):
@@ -1307,7 +1331,7 @@ def search_entries(pages):
 
 
 def write_search_index(pages):
-    payload = {"v": 1, "ex": SEARCH_EXAMPLES, "e": search_entries(pages)}
+    payload = {"v": 1, "ex": SEARCH_KEYWORDS["popular"][:4], "kw": search_keyword_groups(), "e": search_entries(pages)}
     text = json.dumps(payload, ensure_ascii=False, separators=(",", ":"))
     digest = hashlib.sha1(text.encode("utf-8")).hexdigest()[:8]
     name = f"search-index.{digest}.json"
