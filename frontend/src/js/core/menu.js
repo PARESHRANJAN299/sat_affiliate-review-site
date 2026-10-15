@@ -38,7 +38,22 @@
     if (event.relatedTarget && !item.contains(event.relatedTarget)) setOpen(false);
   });
 
-  var links = menu.querySelectorAll('a');
+  // live preview panel: follows hover and keyboard focus on the category rows
+  var rows = menu.querySelectorAll('[data-panel]');
+  var panels = menu.querySelectorAll('.menu-panel');
+  function showPanel(id) {
+    Array.prototype.forEach.call(panels, function (p) { p.hidden = p.id !== 'panel-' + id; });
+    Array.prototype.forEach.call(rows, function (r) {
+      r.parentNode.classList.toggle('is-active', r.getAttribute('data-panel') === id);
+    });
+  }
+  Array.prototype.forEach.call(rows, function (r) {
+    var id = r.getAttribute('data-panel');
+    r.addEventListener('mouseenter', function () { showPanel(id); });
+    r.addEventListener('focus', function () { showPanel(id); });
+  });
+
+  var links = menu.querySelectorAll('.menu-list a');
   item.addEventListener('keydown', function (event) {
     var keys = ['ArrowDown', 'ArrowUp', 'Home', 'End'];
     if (keys.indexOf(event.key) === -1) return;

@@ -297,26 +297,58 @@ def bundle(kind, names, key):
     return write_asset(kind, key, minify_css(joined) if kind == "css" else minify_js(joined))
 
 
+_MENU_ARTICLES = []
+
+
+def short_title(title):
+    return re.sub(r"\s*\(\d{4}\)\s*$", "", title)
+
+
+def menu_icon(c):
+    if c["art"] == "watches":
+        return watches.watch_art("menu-ic")
+    return f'<svg class="menu-ic" viewBox="0 0 64 64" focusable="false" aria-hidden="true">{CATEGORY_ART[c["art"]]}</svg>'
+
+
 def category_menu(item, current_url=None):
-    """Amazon-style 'Shop by Category' dropdown; the toggle still links to /products/ without JavaScript."""
-    cats = [{"label": "All categories", "url": "/products/"}] + CONFIG.get("categories", [])
+    """'Shop by Category' mega menu: a category list on the left and a live preview on the right.
+    Everything is generated from categories.json and the articles, so it updates itself.
+    The toggle still links to /products/ without JavaScript."""
     def cur(url):
         return ' aria-current="page"' if url == current_url else ""
-    def row(c):
-        if c.get("enabled") is False and c.get("soon"):
-            return (f'              <li class="category-soon"><span>{esc(c["label"])}</span>'
-                    '<span class="soon-pill">Coming soon</span></li>')
-        return (f'              <li><a href="{c["url"]}"{cur(c["url"])}>{esc(c["label"])} '
-                '<span class="chev" aria-hidden="true">\u203a</span></a></li>')
-    rows = "\n".join(row(c) for c in cats)
+
+    rows = [f'              <li class="menu-all"><a href="/products/"{cur("/products/")}>All categories '
+            '<span class="chev" aria-hidden="true">\u203a</span></a></li>']
+    panels = []
+    for n, c in enumerate(CATEGORIES):
+        guides = [a for a in _MENU_ARTICLES if a["article"]["category"] == c["name"]]
+        count = f'<span class="menu-count">{len(guides)}</span>' if guides else ""
+        active = " is-active" if n == 0 else ""
+        rows.append(
+            f'              <li class="menu-row{active}"><a href="{c["url"]}" data-panel="{c["slug"]}" style="--hue:{c["hue"]}"{cur(c["url"])}>'
+            f'{menu_icon(c)}<span class="menu-name">{esc(c["name"])}</span>{count}'
+            '<span class="chev" aria-hidden="true">\u203a</span></a></li>')
+        if guides:
+            shown = "".join(f'<li><a href="{a["url"]}">{esc(short_title(a["title"]))}</a></li>' for a in guides[:4])
+            extra = f'<p class="menu-label">Guides ({len(guides)})</p><ul class="menu-guides">{shown}</ul>'
+        else:
+            extra = '<p class="menu-soon">Category content coming soon.</p>'
+        hidden = "" if n == 0 else " hidden"
+        panels.append(
+            f'            <div class="menu-panel" id="panel-{c["slug"]}"{hidden}>'
+            f'<p class="menu-panel-title">{esc(c["name"])}</p><p class="menu-panel-desc">{esc(c["description"])}</p>'
+            f'{extra}<a class="menu-explore" href="{c["url"]}">Explore {esc(c["name"])} '
+            '<svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></a></div>')
     return (
         '        <li class="has-menu">\n'
         f'          <a href="{item["url"]}" class="menu-toggle"{cur(item["url"])}>'
         f'{esc(item["label"])} <span class="caret" aria-hidden="true">\u25be</span></a>\n'
         '          <div class="category-menu" id="category-menu">\n'
+        '            <div class="menu-list">\n'
         f'            <p class="category-menu-title">{esc(item["label"])}</p>\n'
-        '            <ul>\n' + rows + '\n            </ul>\n'
-        '            <p class="category-menu-note">Pick a category to see what is ready.</p>\n'
+        '            <ul>\n' + "\n".join(rows) + '\n            </ul>\n'
+        '            </div>\n'
+        '            <div class="menu-panels">\n' + "\n".join(panels) + '\n            </div>\n'
         '          </div>\n'
         '        </li>')
 
@@ -733,6 +765,7 @@ def build():
                 meta["noindex"] = True
     articles = sorted((p for p in pages if p.get("article")),
                       key=lambda p: p.get("published", p["updated"]), reverse=True)
+    _MENU_ARTICLES[:] = articles
     for meta in pages:
         build_page(meta, base, header_t, footer_t, year, articles)
     static = SRC / "static"
