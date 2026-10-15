@@ -9,8 +9,9 @@
       "art": "watches",
       "hue": 38,
       "status": "live",
-      "image": null,
-      "families": []
+      "image": "/images/categories/watches.jpg",
+      "families": [],
+      "thumb": "/images/categories/watches-thumb.jpg"
     },
     {
       "slug": "sports-fitness",
