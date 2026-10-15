@@ -9,8 +9,9 @@
       "art": "watches",
       "hue": 38,
       "status": "live",
-      "image": null,
-      "families": []
+      "image": "/images/categories/watches.jpg",
+      "families": [],
+      "thumb": "/images/categories/watches-thumb.jpg"
     },
     {
       "slug": "sports-fitness",
@@ -20,8 +21,9 @@
       "art": "sports",
       "hue": 215,
       "status": "placeholder",
-      "image": null,
-      "families": []
+      "image": "/images/categories/sports-fitness.jpg",
+      "families": [],
+      "thumb": "/images/categories/sports-fitness-thumb.jpg"
     },
     {
       "slug": "beauty-personal-care",
@@ -31,8 +33,9 @@
       "art": "beauty",
       "hue": 335,
       "status": "placeholder",
-      "image": null,
-      "families": []
+      "image": "/images/categories/beauty-personal-care.jpg",
+      "families": [],
+      "thumb": "/images/categories/beauty-personal-care-thumb.jpg"
     },
     {
       "slug": "home-kitchen",
@@ -42,8 +45,9 @@
       "art": "home",
       "hue": 165,
       "status": "placeholder",
-      "image": null,
-      "families": []
+      "image": "/images/categories/home-kitchen.jpg",
+      "families": [],
+      "thumb": "/images/categories/home-kitchen-thumb.jpg"
     },
     {
       "slug": "clothing-accessories",
@@ -53,8 +57,9 @@
       "art": "clothing",
       "hue": 268,
       "status": "placeholder",
-      "image": null,
-      "families": []
+      "image": "/images/categories/clothing-accessories.jpg",
+      "families": [],
+      "thumb": "/images/categories/clothing-accessories-thumb.jpg"
     }
   ]
 }
