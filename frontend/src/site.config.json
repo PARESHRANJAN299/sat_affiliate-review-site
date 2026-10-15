@@ -54,22 +54,22 @@
       "url": "/sports-fitness/"
     },
     {
+      "label": "Watches",
+      "url": "/watches/"
+    },
+    {
       "label": "Beauty & Personal Care",
       "url": "/beauty-personal-care/",
       "enabled": false,
-      "note": "enable once it has at least 3 articles"
+      "note": "enable once it has at least 3 articles",
+      "soon": true
     },
     {
       "label": "Baby Care",
       "url": "/baby-care/",
       "enabled": false,
-      "note": "enable when its first guides are ready"
-    },
-    {
-      "label": "Watches",
-      "url": "/watches/",
-      "enabled": false,
-      "note": "enable once the first watch lists are researched"
+      "note": "enable when its first guides are ready",
+      "soon": true
     }
   ],
   "affiliate_active": false

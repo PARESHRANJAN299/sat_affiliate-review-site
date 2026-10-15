@@ -172,3 +172,6 @@ nav.main-nav .category-menu .chev { font-size: 1.4rem; line-height: 1; color: va
 @media (forced-colors: active) {
   .logo-mark span { background: none; color: CanvasText; -webkit-text-fill-color: CanvasText; }
 }
+
+nav.main-nav .category-menu .category-soon { display: flex; align-items: center; justify-content: space-between; padding: 14px 0; color: var(--color-text-muted); font-size: 1rem; }
+.soon-pill { padding: 2px 10px; border-radius: 999px; background: var(--color-bg-alt); font-size: 0.72rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--color-text-muted); }

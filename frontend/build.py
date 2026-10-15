@@ -248,12 +248,16 @@ def bundle(kind, names, key):
 def category_menu(item, current_url=None):
     """Amazon-style 'Shop by Category' dropdown; the toggle still links to /products/ without JavaScript."""
     cats = [{"label": "All products", "url": "/products/"}] + [
-        c for c in CONFIG.get("categories", []) if c.get("enabled") is not False]
+        c for c in CONFIG.get("categories", []) if c.get("enabled") is not False or c.get("soon")]
     def cur(url):
         return ' aria-current="page"' if url == current_url else ""
-    rows = "\n".join(
-        f'              <li><a href="{c["url"]}"{cur(c["url"])}>{esc(c["label"])} <span class="chev" aria-hidden="true">\u203a</span></a></li>'
-        for c in cats)
+    def row(c):
+        if c.get("enabled") is False and c.get("soon"):
+            return (f'              <li class="category-soon"><span>{esc(c["label"])}</span>'
+                    '<span class="soon-pill">Coming soon</span></li>')
+        return (f'              <li><a href="{c["url"]}"{cur(c["url"])}>{esc(c["label"])} '
+                '<span class="chev" aria-hidden="true">\u203a</span></a></li>')
+    rows = "\n".join(row(c) for c in cats)
     return (
         '        <li class="has-menu">\n'
         f'          <a href="{item["url"]}" class="menu-toggle"{cur(item["url"])}>'
@@ -261,7 +265,7 @@ def category_menu(item, current_url=None):
         '          <div class="category-menu" id="category-menu">\n'
         f'            <p class="category-menu-title">{esc(item["label"])}</p>\n'
         '            <ul>\n' + rows + '\n            </ul>\n'
-        '            <p class="category-menu-note">More categories are planned.</p>\n'
+        '            <p class="category-menu-note">Categories are added as their guides are ready.</p>\n'
         '          </div>\n'
         '        </li>')
 
