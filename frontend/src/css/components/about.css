@@ -1,23 +1,33 @@
 /* About page: simple founder introduction */
 .about-page { padding-bottom: var(--space-7); }
-.about-hero { position: relative; overflow: hidden; background: linear-gradient(160deg, #0a1020, #12213f 60%, #0b1428); color: #fff; padding: clamp(36px, 6vw, 72px) 0; }
+.about-hero { position: relative; overflow: hidden; background: linear-gradient(160deg, #0a1020, #12213f 60%, #0b1428); color: #fff; padding: 22px 0 24px; }
 .about-hero::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(520px 320px at 8% 110%, rgba(194, 65, 12, .38), transparent 70%), radial-gradient(520px 320px at 95% -10%, rgba(255, 138, 76, .2), transparent 70%); }
-.about-hero-inner { position: relative; z-index: 1; display: grid; column-gap: 16px; row-gap: 18px; align-items: center; grid-template-columns: clamp(112px, 34vw, 150px) 1fr; grid-template-areas: "photo head" "text text"; text-align: left; }
-.about-photo { grid-area: photo; margin: 0; width: 100%; aspect-ratio: 5 / 7; border-radius: 16px; padding: 4px; background: linear-gradient(135deg, var(--color-primary-light), var(--color-primary)); box-shadow: 0 14px 30px rgba(0, 0, 0, .4); }
-.about-photo img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%; border-radius: 12px; border: 2px solid #0b1428; display: block; }
+.about-hero-inner { position: relative; z-index: 1; display: grid; column-gap: 16px; row-gap: 18px; align-items: center; grid-template-columns: 88px 1fr; grid-template-areas: "photo head" "text text"; text-align: left; }
+.about-photo { grid-area: photo; margin: 0; width: 100%; aspect-ratio: 1; border-radius: 20px; padding: 3px; background: linear-gradient(135deg, var(--color-primary-light), var(--color-primary)); box-shadow: 0 14px 30px rgba(0, 0, 0, .4); }
+.about-photo img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 24%; border-radius: 17px; border: 2px solid #0b1428; display: block; }
 .about-head { grid-area: head; }
 .about-text { grid-area: text; }
 .about-kicker { margin: 0 0 6px; font-size: .72rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--color-primary-light); }
-.about-head h1 { margin: 0 0 6px; font-size: clamp(1.5rem, 1rem + 2.4vw, 2.9rem); line-height: 1.12; color: #fff; }
-.about-role { margin: 0; color: #c9d1e3; font-weight: 600; font-size: .95rem; }
-.about-text p { max-width: 60ch; color: #d7ddea; line-height: 1.65; margin: 0 0 10px; }
-.about-links { list-style: none; display: flex; flex-wrap: wrap; gap: 10px; margin: 16px 0 0; padding: 0; }
+.about-head h1 { margin: 0 0 4px; font-size: clamp(1.3rem, 1rem + 1.6vw, 2.9rem); line-height: 1.12; color: #fff; }
+.about-role { margin: 0; color: #c9d1e3; font-weight: 600; font-size: .85rem; }
+.about-text p { max-width: 60ch; color: #d7ddea; line-height: 1.6; margin: 0 0 10px; font-size: .95rem; }
+.about-lead { font-size: 1.02rem !important; color: #fff !important; }
+.about-more summary { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; margin: -4px 0 4px; color: var(--color-primary-light); font-weight: 700; font-size: .9rem; cursor: pointer; list-style: none; }
+.about-more summary::-webkit-details-marker { display: none; }
+.about-more summary::after { content: ""; width: 7px; height: 7px; border: solid currentColor; border-width: 0 2px 2px 0; transform: rotate(45deg); transition: transform .15s; }
+.about-more[open] summary::after { transform: rotate(-135deg); }
+.about-more[open] summary { display: none; }
+.about-links { list-style: none; display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 0; padding: 0; }
 .about-links .btn-outline { border-color: rgba(255, 255, 255, .55); color: #fff; }
 .about-links .btn-outline:hover { background: rgba(255, 255, 255, .14); color: #fff; }
 @media (min-width: 820px) {
+  .about-hero { padding: clamp(36px, 6vw, 72px) 0; }
+  .about-text p { font-size: 1rem; }
+  .about-lead { font-size: 1rem !important; color: #d7ddea !important; }
+  .about-more summary { display: none; }
   .about-hero-inner { grid-template-columns: 260px 1fr; grid-template-areas: "photo head" "photo text"; column-gap: var(--space-7); row-gap: 0; align-items: start; }
-  .about-photo { align-self: center; grid-row: 1 / span 2; border-radius: 22px; padding: 5px; }
-  .about-photo img { border-radius: 18px; border-width: 3px; }
+  .about-photo { align-self: center; grid-row: 1 / span 2; aspect-ratio: 5 / 7; border-radius: 22px; padding: 5px; }
+  .about-photo img { border-radius: 18px; border-width: 3px; object-position: 50% 30%; }
   .about-head { align-self: end; padding-bottom: 12px; }
   .about-text { align-self: start; }
   .about-kicker { font-size: .78rem; }
@@ -33,3 +43,22 @@
 .about-contact { margin-top: var(--space-6); padding: var(--space-5); background: var(--color-bg-alt); border-radius: var(--radius-lg); }
 .about-contact h2 { margin-top: 0; }
 @media (prefers-reduced-motion: reduce) { .about-chips a { transition: none; } }
+
+/* gentle entrance and a slowly drifting glow (off for reduced motion) */
+@media (prefers-reduced-motion: no-preference) {
+  .about-photo, .about-head, .about-text { animation: about-in .7s cubic-bezier(.2, .8, .2, 1) both; }
+  .about-head { animation-delay: .08s; }
+  .about-text { animation-delay: .16s; }
+  .about-hero::after { animation: about-glow 14s ease-in-out infinite alternate; }
+  @keyframes about-in { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+  @keyframes about-glow { from { transform: translate3d(0, 0, 0); } to { transform: translate3d(-3%, -4%, 0); } }
+}
+.about-body section { scroll-margin-top: 80px; }
+@media (max-width: 819px) {
+  .about-body { padding-top: var(--space-4); }
+  .about-body h2 { font-size: 1.35rem; margin-top: var(--space-5); }
+  .about-body p { font-size: 1rem; line-height: 1.65; }
+  .about-chips { flex-wrap: nowrap; overflow-x: auto; margin-left: calc(-1 * clamp(16px, 4vw, 24px)); margin-right: calc(-1 * clamp(16px, 4vw, 24px)); padding: 2px clamp(16px, 4vw, 24px) 8px; scroll-snap-type: x proximity; scroll-padding-inline: clamp(16px, 4vw, 24px); scrollbar-width: none; }
+  .about-chips::-webkit-scrollbar { display: none; }
+  .about-chips li { flex: none; scroll-snap-align: start; }
+}
