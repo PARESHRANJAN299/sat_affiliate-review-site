@@ -308,8 +308,22 @@
     });
     this.input.addEventListener('keydown', function (e) { self.keys(e); });
     this.home.addEventListener('click', function (e) {
+      var tab = e.target.closest('[data-tab]');
+      if (tab) { e.preventDefault(); self.pickTab(tab.getAttribute('data-tab'), true); return; }
       var chip = e.target.closest('[data-q]');
       if (chip) { e.preventDefault(); self.setQuery(chip.getAttribute('data-q')); self.input.focus(); }
+    });
+    this.home.addEventListener('keydown', function (e) {
+      var tab = e.target.closest && e.target.closest('[data-tab]');
+      if (!tab || (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft' && e.key !== 'Home' && e.key !== 'End')) return;
+      var all = self.home.querySelectorAll('[data-tab]');
+      var i = Array.prototype.indexOf.call(all, tab);
+      if (e.key === 'ArrowRight') i = (i + 1) % all.length;
+      else if (e.key === 'ArrowLeft') i = (i - 1 + all.length) % all.length;
+      else if (e.key === 'Home') i = 0;
+      else i = all.length - 1;
+      e.preventDefault();
+      self.pickTab(all[i].getAttribute('data-tab'), true);
     });
     this.list.addEventListener('mousemove', function (e) {
       var row = e.target.closest('a.sx-row');
@@ -371,18 +385,37 @@
     this.typing = setTimeout(tick, 600);
   };
   Panel.prototype.renderHome = function () {
-    var cats = data.e.filter(function (e) { return e.k === 'Category'; });
-    var html = '<p class="sx-label">Popular searches</p><div class="sx-examples">' +
-      data.ex.map(function (q) {
-        return '<button type="button" class="sx-example" data-q="' + esc(q) + '">' + esc(q) + '</button>';
-      }).join('') + '</div><p class="sx-label">Browse by category</p><ul class="sx-cats">' +
-      cats.map(function (c) {
-        return '<li><a class="sx-cat" href="' + esc(c.u) + '" style="--hue:' + (c.h || 215) + '"><span class="sx-cat-dot" aria-hidden="true"></span>' +
-          '<span class="sx-cat-name">' + esc(c.t) + '</span></a></li>';
-      }).join('') + '</ul>' +
+    var self = this;
+    var groups = data.kw || [];
+    if (!groups.length) { this.home.innerHTML = '<p class="sx-fine">Searches run in your browser.</p>'; return; }
+    if (!this.tab) this.tab = groups[0].id;
+    var cur = groups[0];
+    groups.forEach(function (g) { if (g.id === self.tab) cur = g; });
+    var tabs = groups.map(function (g) {
+      var on = g.id === cur.id;
+      return '<button type="button" role="tab" class="sx-tab' + (on ? ' is-on' : '') + '" data-tab="' + esc(g.id) + '" aria-selected="' + on +
+        '" tabindex="' + (on ? '0' : '-1') + '" style="--hue:' + g.hue + '"><span class="sx-tab-dot" aria-hidden="true"></span>' + esc(g.label) + '</button>';
+    }).join('');
+    var chips = cur.q.map(function (q, i) {
+      return '<button type="button" class="sx-chip" data-q="' + esc(q) + '" style="--i:' + i + '"><span class="sx-chip-dot" aria-hidden="true"></span>' + esc(q) + '</button>';
+    }).join('');
+    var more = cur.url ? '<a class="sx-more" href="' + esc(cur.url) + '">Open ' + esc(cur.name || cur.label) +
+      '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>' : '';
+    this.home.innerHTML =
+      '<p class="sx-label">Browse by category</p>' +
+      '<div class="sx-tabs" role="tablist" aria-label="Browse by category">' + tabs + '</div>' +
+      '<p class="sx-label sx-label-tight">' + (cur.id === 'popular' ? 'Popular searches' : 'Search ideas in ' + esc(cur.name || cur.label)) + '</p>' +
+      '<div class="sx-kw" style="--hue:' + cur.hue + '">' + chips + '</div>' + more +
       '<p class="sx-fine">Searches run in your browser.</p>';
-    this.home.innerHTML = html;
   };
+  Panel.prototype.pickTab = function (id, focus) {
+    this.tab = id;
+    this.renderHome();
+    var t = this.home.querySelector('.sx-tab.is-on');
+    if (t && focus) t.focus();
+    if (t && t.scrollIntoView) t.scrollIntoView({ inline: 'center', block: 'nearest' });
+  };
+
   Panel.prototype.run = function () {
     var self = this;
     var raw = this.input.value;
