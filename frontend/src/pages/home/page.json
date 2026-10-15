@@ -8,7 +8,8 @@
   ],
   "page_css": "home",
   "js": [
-    "home-video"
+    "home-video",
+    "home-scroll"
   ],
   "og_type": "website",
   "schema": "home",

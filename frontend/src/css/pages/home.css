@@ -74,3 +74,9 @@
 /* optional hero video: sits under the picture tiles and the dark overlay */
 .home-hero-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: -1; }
 .home-hero-media:has(.home-hero-video) .home-collage { opacity: .96; }
+
+/* scroll effects (added by home-scroll.js only) */
+.home-hero-media { will-change: transform; }
+.reveal { opacity: 0; transform: translateY(22px); transition: opacity .6s ease, transform .6s ease; }
+.reveal.is-in { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; transition: none; } .home-hero-media { transform: none !important; } }
