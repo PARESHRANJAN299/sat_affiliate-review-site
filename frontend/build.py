@@ -226,32 +226,17 @@ def category_cards(current_url=None):
 def category_directory():
     """Accessible category directory, generated from the shared category catalogue."""
     items = []
-    for index, c in enumerate(CATEGORIES, 1):
-        available = c["status"] == "live"
-        state = "live" if available else "upcoming"
-        label = "Available now" if available else "Coming soon"
-        search = esc(f'{c["name"]} {c["description"]}'.lower())
+    for c in CATEGORIES:
         items.append(
-            f'<li class="directory-item" data-category-state="{state}" data-category-search="{search}">'
+            '<li class="directory-item">'
             f'<a class="directory-card directory-{esc(c["slug"])}" href="{esc(c["url"])}">'
-            f'<div class="directory-art">{category_art(c)}'
-            f'<span class="directory-badge directory-badge-{state}">{label}</span>'
-            f'<span class="directory-number" aria-hidden="true">{index:02d}</span></div>'
+            f'<div class="directory-art">{category_art(c)}</div>'
             f'<div class="directory-body"><h3>{esc(c["name"])}</h3>'
             f'<p>{esc(c["description"])}</p>'
-            f'<span class="directory-cta">{"Explore category" if available else "Preview category"}'
+            '<span class="directory-cta">Explore'
             '<svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></span></div></a></li>')
     return '<ul class="directory-grid" id="category-results">' + "\n".join(items) + '</ul>'
 
-
-def category_filters():
-    counts = {"all": len(CATEGORIES), "live": sum(c["status"] == "live" for c in CATEGORIES)}
-    counts["upcoming"] = counts["all"] - counts["live"]
-    return ''.join(
-        f'<button type="button" class="directory-filter" data-category-filter="{key}" '
-        f'aria-pressed="{"true" if key == "all" else "false"}" aria-controls="category-results">'
-        f'{label} <span>{counts[key]}</span></button>'
-        for key, label in [("all", "All categories"), ("live", "Available now"), ("upcoming", "Coming soon")])
 
 
 def category_placeholder_pages():
@@ -665,8 +650,6 @@ def build_page(meta, base, header_t, footer_t, year, articles):
         "category_chips": category_chips(meta["url"]),
         "category_cards": category_cards(meta["url"]),
         "category_directory": category_directory(),
-        "category_filters": category_filters(),
-        "category_count": len(CATEGORIES),
         "category_sections": category_sections(articles),
         "toc": "@@TOC@@" if meta.get("toc") else "",
         "share": share_html(canonical, meta["title"]) if meta.get("share") else "",

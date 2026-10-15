@@ -1,44 +1,14 @@
 <section class="directory-page">
   <div class="container">
     {{breadcrumb}}
-    <div class="directory-hero">
-      <div>
-        <p class="directory-eyebrow">THE SAT EDIT</p>
-        <h1>Shop by Category<span aria-hidden="true">.</span></h1>
-        <p class="directory-intro">For your everyday. And everything beyond.</p>
-        <p class="directory-sub">Discover watches, sports gear and everyday essentials. Find your category, explore the options, and choose what suits you.</p>
-      </div>
-      <aside class="directory-note" aria-label="Our approach">
-        <svg class="ic" aria-hidden="true"><use href="#i-search"/></svg>
-        <p>A little research.<br><strong>A better choice.</strong></p>
-        <span>Clear comparisons to help you decide.</span>
-        <a href="/how-we-pick/">How we pick <svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></a>
-      </aside>
-    </div>
-
-    <section class="directory-browse" aria-labelledby="directory-title" data-category-directory>
-      <div class="directory-heading">
-        <div><p class="directory-eyebrow">FIND YOUR NEXT FAVOURITE</p><h2 id="directory-title">A world of everyday possibilities</h2></div>
-        <span class="directory-total">{{category_count}} categories to discover</span>
-      </div>
-      <div class="directory-tools" hidden>
-        <div class="directory-filters" role="group" aria-label="Filter categories by availability">{{category_filters}}</div>
-        <div class="directory-search">
-          <label for="category-search" class="visually-hidden">Search categories</label>
-          <svg class="ic" aria-hidden="true"><use href="#i-search"/></svg>
-          <input id="category-search" type="search" placeholder="Find a category…" autocomplete="off" aria-controls="category-results">
-        </div>
-      </div>
-      <p class="directory-results" id="category-count" role="status" aria-live="polite" aria-atomic="true">Showing all {{category_count}} categories</p>
+    <header class="directory-hero">
+      <h1>Shop by Category</h1>
+      <p>Explore watches, sports gear and everyday essentials. Pick a category to get started.</p>
+    </header>
+    <section aria-labelledby="directory-title">
+      <h2 id="directory-title" class="visually-hidden">Browse categories</h2>
       {{category_directory}}
-      <div class="directory-empty" hidden>
-        <h3>No categories found</h3>
-        <p>Try a different search or explore all categories.</p>
-        <button type="button" class="btn btn-primary" data-category-reset>Show all categories</button>
-      </div>
     </section>
-
-    <div class="directory-help"><div><strong>A thoughtful place to start.</strong><p>Browse the available collections, or preview what’s coming next.</p></div><a href="/contact/">Need a hand? Get in touch <svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></a></div>
 
     <h2 class="all-guides-title">All buying guides</h2>
 
