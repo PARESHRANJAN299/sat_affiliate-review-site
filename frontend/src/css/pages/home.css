@@ -1,37 +1,39 @@
-/* Home page */
-.home-intro { padding: clamp(32px, 5vw, 56px) 0; }
-.home-intro h1 { margin: 0; font-size: clamp(1.85rem, 3vw, 2.6rem); line-height: 1.2; letter-spacing: -.025em; }
-.hero {
-  position: relative;
-  isolation: isolate;
-  overflow: hidden;
-  color: #fff;
-  padding: clamp(48px, 9vw, 92px) 0 clamp(64px, 10vw, 108px);
-  background:
-    radial-gradient(800px 380px at 88% -10%, rgba(194, 65, 12, 0.38), transparent 62%),
-    radial-gradient(640px 380px at 0% 110%, rgba(28, 52, 99, 0.95), transparent 60%),
-    linear-gradient(160deg, #0d1a33, #10213f 55%, #0a1428);
+/* Classic home page: compact introduction, shared category cards and live guide content. */
+.home-page { padding: 0 0 48px; }
+.home-page > .container { max-width: 1440px; }
+.home-intro { padding: clamp(28px, 3vw, 36px) 0 24px; border-bottom: 1px solid var(--color-border); }
+.home-eyebrow { margin: 0 0 10px; color: var(--color-primary-dark); font-size: .7rem; letter-spacing: .1em; font-weight: 700; text-transform: uppercase; }
+.home-intro h1 { margin: 0 0 12px; font-size: clamp(1.9rem, 3vw, 2.8rem); line-height: 1.15; letter-spacing: -.025em; }
+.home-description { max-width: 85ch; margin: 0; font-size: 1rem; line-height: 1.7; color: var(--color-text-muted); }
+.home-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 12px 24px; margin-top: 18px; }
+.home-actions .btn { font-size: .85rem; padding: 10px 16px; }
+.home-text-link { display: inline-flex; align-items: center; gap: 7px; min-height: 44px; font-size: .85rem; font-weight: 700; }
+.home-section-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 16px; }
+.home-section-head h2 { margin: 0; font-size: clamp(1.35rem, 2vw, 1.65rem); }
+.home-section-head p { margin: 6px 0 0; color: var(--color-text-muted); font-size: .85rem; }
+.home-categories { padding-top: 24px; scroll-margin-top: 20px; }
+.home-categories .directory-art { max-height: 180px; }
+.home-guides { padding-top: 36px; }
+.home-guides .article-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+.home-guides .article-card { padding: 18px; border-radius: 12px; box-shadow: 0 3px 12px rgb(35 27 19 / .04); }
+.home-guides .article-art { height: 96px; border-radius: 8px; }
+.home-guides .article-card h3 { font-family: var(--font-display); font-size: 1.2rem; }
+.home-guides .article-card p { font-size: .85rem; }
+.home-guides .read-link { font-size: .82rem; min-height: 44px; }
+.home-approach { display: flex; align-items: center; justify-content: space-between; gap: 24px; margin-top: 36px; border-top: 1px solid var(--color-border); padding: 26px 0 0; }
+.home-approach h2 { margin: 0 0 8px; font-size: 1.35rem; }
+.home-approach p { max-width: 75ch; margin: 0; color: var(--color-text-muted); font-size: .85rem; }
+.home-approach > a { flex-shrink: 0; }
+@media (max-width: 620px) {
+  .home-intro { padding: 26px 0 24px; }
+  .home-description { font-size: .9rem; }
+  .home-actions { margin-top: 18px; gap: 10px 18px; }
+  .home-section-head { gap: 12px; }
+  .home-section-head > a { flex-shrink: 0; }
+  .home-guides .article-grid { grid-template-columns: 1fr; }
+  .home-guides .article-card { display: flex; flex-direction: row; gap: 14px; padding: 14px; }
+  .home-guides .article-art { flex: 0 0 72px; width: 72px; height: 84px; margin: 0; }
+  .home-guides .article-card h3 { font-size: 1.05rem; }
+  .home-guides .article-card p { font-size: .8rem; }
+  .home-approach { flex-direction: column; align-items: start; gap: 8px; }
 }
-.hero .eyebrow { display: inline-block; margin: 0 0 12px; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-primary-light); }
-.hero h1 { font-size: clamp(2.1rem, 1.4rem + 3.6vw, 3.6rem); line-height: 1.08; letter-spacing: -0.02em; margin: 0 0 16px; max-width: 16ch; }
-.hero p { color: #c9d1e3; max-width: 56ch; font-size: var(--step-1); margin: 0 0 var(--space-5); }
-.hero-actions { display: flex; flex-wrap: wrap; gap: var(--space-3); }
-
-.hero-art {
-  position: absolute;
-  z-index: -1;
-  right: -30px;
-  top: 50%;
-  height: 130%;
-  width: auto;
-  opacity: 0.13;
-  color: #fff;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1.5;
-  transform: translateY(-50%) rotate(-14deg);
-}
-@media (max-width: 720px) { .hero-art { opacity: 0.08; right: -90px; height: 110%; } }
-
-.how-grid { display: grid; gap: var(--space-5); grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
-@media (min-width: 720px) { .how-grid { grid-template-columns: repeat(3, 1fr); } }

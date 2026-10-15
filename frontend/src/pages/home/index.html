@@ -1,5 +1,28 @@
-<section class="home-intro">
+<div class="home-page">
   <div class="container">
-    <h1>We research what matters to you.</h1>
+    <section class="home-intro" aria-labelledby="home-title">
+      <p class="home-eyebrow">Buying guides for Indian shoppers</p>
+      <h1 id="home-title">We research what matters to you.</h1>
+      <p class="home-description">Discover everyday favourites in watches, fitness, beauty, home and fashion—find what fits your lifestyle and budget.</p>
+      <div class="home-actions">
+        <a class="btn btn-primary" href="#home-categories">Explore categories <svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+        <a class="home-text-link" href="/how-we-pick/">How we pick <svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+      </div>
+    </section>
+
+    <section class="home-categories" id="home-categories" aria-labelledby="home-categories-title">
+      <div class="home-section-head"><h2 id="home-categories-title">Shop by Category</h2><a class="home-text-link" href="/products/">View all <svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></a></div>
+      {{category_directory}}
+    </section>
+
+    <section class="home-guides" aria-labelledby="home-guides-title">
+      <div class="home-section-head"><div><h2 id="home-guides-title">Latest buying guides</h2><p>Clear comparisons. Practical advice. A little help choosing.</p></div><a class="home-text-link" href="/products/#all-guides">All guides <svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></a></div>
+      {{articles_latest}}
+    </section>
+
+    <section class="home-approach" aria-labelledby="home-approach-title">
+      <div><h2 id="home-approach-title">A little research. A better choice.</h2><p>We compare product details and buyer feedback to help you decide. You buy directly from the retailer.</p></div>
+      <a class="home-text-link" href="/how-we-pick/">Read our approach <svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+    </section>
   </div>
-</section>
+</div>
