@@ -1840,6 +1840,11 @@ def build():
         for meta in pages:
             build_page(meta, base, header_t, footer_t, year, articles, lang, known_urls)
     report_i18n()
+    if "--i18n-missing" in sys.argv:
+        for code, miss in I18N_MISSING.items():
+            print(f"\n{code}: {len(miss)} sentences not translated")
+            for key in list(miss)[:40]:
+                print("   ", key[:140])
     static = SRC / "static"
     if static.exists():
         shutil.copytree(static, DIST, dirs_exist_ok=True)
