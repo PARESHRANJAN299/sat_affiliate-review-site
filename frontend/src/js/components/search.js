@@ -22,8 +22,8 @@
     tshirt: 'shirt', tshirts: 'shirt', tee: 'shirt', tees: 'shirt'
   };
   var UNITS = '(?:ml|g|gm|gms|kg|kgs|w|watt|watts|l|ltr|litre|litres|cm|mm|inch|inches|mah|gb|pcs|pack|piece|pieces)';
-  var KIND_WEIGHT = { 'Product': 5, 'Watch list': 4.5, 'Product type': 3.2, 'Guide': 3, 'Brand': 2.4, 'Style': 2, 'Category': 2.2, 'Page': 1 };
-  var KIND_HUE = { 'Product': 22, 'Watch list': 38, 'Product type': 212, 'Guide': 160, 'Brand': 340, 'Style': 285, 'Category': 262, 'Page': 200 };
+  var KIND_WEIGHT = { 'Product': 5, 'Watch list': 4.5, 'Product type': 3.2, 'Guide': 3, 'Brand': 2.4, 'Style': 2, 'Category': 2.2, 'FAQ': 1.6, 'Page': 1 };
+  var KIND_HUE = { 'Product': 22, 'Watch list': 38, 'Product type': 212, 'Guide': 160, 'Brand': 340, 'Style': 285, 'Category': 262, 'FAQ': 190, 'Page': 200 };
   var KIND_ICON = {
     'Product': '<path d="M20.6 13.4l-7.2 7.2a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z"/><circle cx="7.5" cy="7.5" r="1.2"/>',
     'Watch list': '<circle cx="12" cy="12" r="5"/><path d="M12 9.5V12l1.8 1.2M9 3h6l-.8 4h-4.4zM9 21h6l-.8-4h-4.4z"/>',
@@ -32,6 +32,7 @@
     'Brand': '<path d="M12 3l2.7 5.6 6.1.8-4.5 4.2 1.1 6.1L12 16.8 6.6 19.7l1.1-6.1L3.2 9.4l6.1-.8z"/>',
     'Style': '<path d="M12 3a9 9 0 1 0 0 18c1.4 0 2-1 1.5-2.2-.5-1.2.2-2.3 1.5-2.3H17a4 4 0 0 0 4-4C21 6.7 17 3 12 3z"/><circle cx="7.5" cy="11" r="1"/><circle cx="10" cy="7" r="1"/><circle cx="14.5" cy="7" r="1"/>',
     'Category': '<path d="M12 3l9 5-9 5-9-5zM3 13l9 5 9-5"/>',
+    'FAQ': '<circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.4-1 .9-1 1.7M12 17h.01"/>',
     'Page': '<path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5M10 13h6M10 17h6"/>'
   };
   var uid = 0;
