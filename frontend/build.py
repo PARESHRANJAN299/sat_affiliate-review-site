@@ -309,6 +309,8 @@ def short_title(title):
 
 
 def menu_icon(c):
+    if c.get("thumb"):
+        return f'<img class="menu-img" src="{esc(c["thumb"])}" alt="" loading="lazy" width="80" height="80">'
     return category_icon(c, "menu-ic")
 
 

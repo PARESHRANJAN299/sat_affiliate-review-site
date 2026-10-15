@@ -20,8 +20,9 @@
       "art": "sports",
       "hue": 215,
       "status": "live",
-      "image": null,
-      "families": []
+      "image": "/images/categories/sports-fitness.jpg",
+      "families": [],
+      "thumb": "/images/categories/sports-fitness-thumb.jpg"
     },
     {
       "slug": "beauty-personal-care",
