@@ -120,7 +120,8 @@ def category_sections(articles):
     for cat in CONFIG.get("categories", []):
         if cat.get("enabled") is False:
             continue
-        items = [a for a in articles if a["article"]["category"] == cat["label"]]
+        items = sorted([a for a in articles if a["article"]["category"] == cat["label"]],
+                       key=lambda a: not a.get("featured"))
         if not items:
             continue
         out.append(
@@ -333,7 +334,7 @@ STORES = {
 }
 
 
-def render_guide(g):
+def render_guide(g, related=()):
     """Body HTML for a guide in src/guides/<slug>/guide.json (same layout as the hand-written article)."""
     picks = g["picks"]
     ids = [slugify_heading(p["name"], set()) for p in picks]
@@ -398,6 +399,9 @@ def render_guide(g):
     sources = "\n".join(
         f'      <li><a href="{esc(s["url"])}" target="_blank" rel="nofollow noopener">{esc(s["label"])}</a></li>'
         for s in g.get("sources", []))
+    rel_html = "\n".join(
+        f'      <li><a href="{r["url"]}"><strong>{esc(r["title"])}</strong><span>{esc(r["summary"])}</span></a></li>'
+        for r in related)
     bar = "\n".join(f'  <a href="#{ids[i]}">{esc(" ".join(p["name"].split()[:2]))}</a>' for i, p in enumerate(picks))
 
     top = (
@@ -411,7 +415,7 @@ def render_guide(g):
         f'    <p class="lead">{esc(g["lead"])}</p>\n\n'
         '    <aside class="method-note">\n'
         '      <svg class="ic" aria-hidden="true"><use href="#i-info"/></svg>\n'
-        "      <p><strong>How we picked these:</strong> we read the maker and shop details and what buyers say online. We have not tested these products ourselves yet. Details can change from seller to seller, so check the listing before you pay. The buttons below open each shop's own search page. These three are a short list for different needs, not a ranking of every product, and price levels are only a rough guide. Read <a href=\"/how-we-pick/\">how we pick</a>.</p>\n"
+        "      <p><strong>How we picked these:</strong> we read the maker and shop details and what buyers say online. We have not tested these products ourselves yet. Details can change from seller to seller, so check the listing before you pay. The buttons below open each shop's own search page. These three are a short list for different needs, not a ranking of every product. Budget, Mid-range and Premium are our own rough judgement, not based on prices. Read <a href=\"/how-we-pick/\">how we pick</a>.</p>\n"
         '    </aside>\n\n'
         f'    <ol class="quick-picks">\n{quick}\n    </ol>\n\n'
         '    <div class="article-layout">\n      {{toc}}\n      <div class="article-main">\n'
@@ -429,6 +433,8 @@ def render_guide(g):
     bottom = (
         f'\n\n    <h2>How to choose</h2>\n{choose}\n\n'
         f'    <h2>Common questions</h2>\n{faq}\n\n'
+        '    <h2>More buying guides</h2>\n'
+        f'    <ul class="related-list">\n{rel_html}\n    </ul>\n\n'
         '    <h2>Sources we used</h2>\n'
         '    <p>Pages we read, checked on {{updated_human}}. Shops change listings often, so details may differ when you look.</p>\n'
         f'    <ul class="source-list">\n{sources}\n    </ul>\n'
@@ -438,12 +444,39 @@ def render_guide(g):
 
 
 def load_guides():
-    guides = []
+    raw = []
     gdir = SRC / "guides"
     for gp in (sorted(gdir.glob("*/guide.json")) if gdir.exists() else []):
         g = json.loads(read(gp))
-        folder = slugify(g["tag"]).replace("_", "-")
-        url = f"/{folder}/{g['slug']}/"
+        name = gp.parent.name
+        for key in ("published", "slug", "title", "tag", "summary", "description", "lead", "columns", "picks"):
+            if key not in g:
+                errors.append(f"guide {name}: missing {key}")
+        if errors:
+            continue
+        if len(g["picks"]) != 3:
+            errors.append(f"guide {name}: needs exactly 3 picks")
+        names = [p["name"] for p in g["picks"]]
+        if len(set(names)) != len(names):
+            errors.append(f"guide {name}: duplicate pick names")
+        for p in g["picks"]:
+            for s in p["stores"]:
+                if s not in STORES:
+                    errors.append(f"guide {name}: unknown store {s!r}")
+            if len(p["cells"]) != len(g["columns"]):
+                errors.append(f"guide {name}: {p['name']} has wrong number of table cells")
+        raw.append(g)
+
+    def url_of(g):
+        return f"/{slugify(g['tag']).replace('_', '-')}/{g['slug']}/"
+
+    guides = []
+    for g in raw:
+        url = url_of(g)
+        siblings = [o for o in raw if o is not g and o["tag"] == g["tag"]]
+        others = [o for o in raw if o is not g and o["tag"] != g["tag"]]
+        related = [{"url": url_of(o), "title": re.sub(r"\s*\(\d{4}\)\s*$", "", o["title"]), "summary": o["summary"]}
+                   for o in (siblings + others)[:4]]
         short = re.sub(r"\s*\(\d{4}\)\s*$", "", g["title"])
         guides.append({
             "url": url, "title": g["title"], "description": g["description"],
@@ -452,9 +485,10 @@ def load_guides():
             "js": ["outbound-links", "toc", "share", "pick-bar", "table-scroll", "compare"],
             "page_css": "article", "og_type": "article", "schema": "article", "toc": True, "share": True,
             "breadcrumbs": [["Shop by Category", "/products/"], ["Sports & Fitness", "/sports-fitness/"], [short, url]],
-            "published": g.get("published", "2026-10-15"), "updated": g.get("updated", "2026-10-15"),
+            "published": g["published"], "updated": g.get("updated", g["published"]),
+            "featured": bool(g.get("featured")),
             "article": {"category": "Sports & Fitness", "tag": g["tag"], "summary": g["summary"]},
-            "_slug": f"guides/{g['slug']}", "_body": render_guide(g),
+            "_slug": f"guides/{g['slug']}", "_body": render_guide(g, related),
         })
     return guides
 
@@ -519,7 +553,13 @@ def build_page(meta, base, header_t, footer_t, year, articles):
         "read_time": "@@READ@@",
     }
     for cat in {a["article"]["category"] for a in articles}:
-        article_ctx["articles_" + slugify(cat)] = article_cards([a for a in articles if a["article"]["category"] == cat])
+        in_cat = [a for a in articles if a["article"]["category"] == cat]
+        article_ctx["articles_" + slugify(cat)] = article_cards(in_cat)
+        groups = []
+        for tag in sorted({a["article"]["tag"] for a in in_cat}):
+            groups.append('<div class="tag-group"><h2>' + esc(tag) + '</h2>\n'
+                          + article_cards([a for a in in_cat if a["article"]["tag"] == tag]) + '\n</div>')
+        article_ctx["groups_" + slugify(cat)] = "\n".join(groups)
     content = render(meta["_body"], {**base_ctx, **article_ctx, "breadcrumb": breadcrumb_html(meta.get("breadcrumbs"))})
     toc_html = ""
     if meta.get("toc"):
@@ -632,6 +672,13 @@ def build():
     static = SRC / "static"
     if static.exists():
         shutil.copytree(static, DIST, dirs_exist_ok=True)
+    folders = sorted({"/" + p["url"].strip("/").split("/")[0] + "/" for p in pages if p.get("article")})
+    existing = {p["url"] for p in pages}
+    extra = [f + " /sports-fitness/ 301" for f in folders if f not in existing]
+    redirects = DIST / "_redirects"
+    base_redirects = redirects.read_text(encoding="utf-8").rstrip("\n").splitlines() if redirects.exists() else []
+    known = {line.split()[0] for line in base_redirects if line.strip()}
+    redirects.write_text("\n".join(base_redirects + [e for e in extra if e.split()[0] not in known]) + "\n", encoding="utf-8")
     write_sitemap(pages)
     write_robots()
     write_headers()

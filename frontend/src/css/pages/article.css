@@ -31,4 +31,4 @@
 }
 @keyframes read-progress { to { transform: scaleX(1); } }
 
-@media (max-width: 899px) { .content-article { padding-bottom: 72px; } }
+@media (max-width: 899px) { .content-article { padding-bottom: 16px; } }

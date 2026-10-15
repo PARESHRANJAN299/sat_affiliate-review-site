@@ -2,7 +2,7 @@
   'use strict';
   // Folds the contents list on small screens and marks the section you are reading.
   var toc = document.querySelector('details.toc');
-  if (toc && window.matchMedia && window.matchMedia('(max-width: 1099px)').matches) toc.open = false;
+  if (toc && window.matchMedia && window.matchMedia('(max-width: 899px)').matches) toc.open = false;
   if (!('IntersectionObserver' in window)) return;
 
   var links = document.querySelectorAll('.toc a[href^="#"], .pick-bar a[href^="#"]');

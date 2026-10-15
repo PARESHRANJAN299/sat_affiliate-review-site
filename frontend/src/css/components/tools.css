@@ -7,7 +7,8 @@
   margin: var(--space-5) 0;
 }
 .finder h2, .compare-tool h2 { margin: 0 0 6px; font-size: var(--step-2); }
-.finder h2::before, .compare-tool h2::before { display: none; }
+.content-article .finder h2::before, .content-article .compare-tool h2::before { display: none; }
+.content-article .finder h2, .content-article .compare-tool h2 { padding-top: 0; }
 .finder p, .compare-tool p { margin: 0 0 var(--space-3); font-size: var(--step-0); color: var(--color-text-muted); }
 .finder fieldset { border: 0; margin: 0 0 var(--space-3); padding: 0; }
 .finder legend { font-weight: 700; margin-bottom: 6px; padding: 0; }

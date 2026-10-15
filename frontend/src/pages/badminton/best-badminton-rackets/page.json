@@ -50,5 +50,6 @@
     "summary": "Three rackets matched to skill level, with who each one suits. Based on specs and buyer ratings, not hand-tested."
   },
   "toc": true,
-  "share": true
+  "share": true,
+  "featured": true
 }

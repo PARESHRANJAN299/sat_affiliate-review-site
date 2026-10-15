@@ -1,13 +1,14 @@
 {
   "url": "/sports-fitness/",
   "title": "Sports & Fitness Gear Guides",
-  "description": "Plain-language buying guides for sports and fitness gear in India, starting with badminton rackets.",
+  "description": "Buying guides for sports and fitness gear sold in India, grouped by sport: badminton, running, cricket, yoga and home workouts.",
   "css": [
     "breadcrumb",
     "buttons",
     "cards",
     "category-chips",
-    "content-page"
+    "content-page",
+    "guide-extras"
   ],
   "page_css": "hub",
   "breadcrumbs": [

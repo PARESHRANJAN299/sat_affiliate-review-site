@@ -2,8 +2,8 @@
 .content-page h1 { font-size: var(--step-4); margin: 0 0 6px; }
 .content-page .updated { color: var(--color-text-muted); font-size: 0.88rem; margin: 0 0 var(--space-5); }
 .content-page h2 { font-size: var(--step-3); margin: 2em 0 0.4em; }
-.content-page :where(p, li) { font-size: var(--step-1); }
-.content-page :where(p, li) a { text-decoration: underline; text-underline-offset: 2px; }
+.content-page > p, .content-page > :where(ul, ol) > li, .article-main > p, .faq-item p { font-size: var(--step-1); }
+.content-page > p a, .content-page > :where(ul, ol) > li a, .article-main > p a { text-decoration: underline; text-underline-offset: 2px; }
 .content-page .lead { font-size: var(--step-2); color: var(--color-text-muted); }
 
 /* readable line length for text-only pages */
