@@ -311,44 +311,32 @@ def menu_icon(c):
 
 
 def category_menu(item, current_url=None):
-    """'Shop by Category' mega menu: a category list on the left and a live preview on the right.
-    Everything is generated from categories.json and the articles, so it updates itself.
+    """'Shop by Category' menu: a panel of large category cards, generated from categories.json and the articles.
     The toggle still links to /products/ without JavaScript."""
     def cur(url):
         return ' aria-current="page"' if url == current_url else ""
 
-    rows = [f'              <li class="menu-all"><a href="/products/"{cur("/products/")}>All categories '
-            '<span class="chev" aria-hidden="true">\u203a</span></a></li>']
-    panels = []
-    for n, c in enumerate(CATEGORIES):
-        guides = [a for a in _MENU_ARTICLES if a["article"]["category"] == c["name"]]
-        count = f'<span class="menu-count">{len(guides)}</span>' if guides else ""
-        active = " is-active" if n == 0 else ""
-        rows.append(
-            f'              <li class="menu-row{active}"><a href="{c["url"]}" data-panel="{c["slug"]}" style="--hue:{c["hue"]}"{cur(c["url"])}>'
-            f'{menu_icon(c)}<span class="menu-name">{esc(c["name"])}</span>{count}'
-            '<span class="chev" aria-hidden="true">\u203a</span></a></li>')
-        if guides:
-            shown = "".join(f'<li><a href="{a["url"]}">{esc(short_title(a["title"]))}</a></li>' for a in guides[:4])
-            extra = f'<p class="menu-label">Guides ({len(guides)})</p><ul class="menu-guides">{shown}</ul>'
-        else:
-            extra = '<p class="menu-soon">Category content coming soon.</p>'
-        hidden = "" if n == 0 else " hidden"
-        panels.append(
-            f'            <div class="menu-panel" id="panel-{c["slug"]}"{hidden}>'
-            f'<p class="menu-panel-title">{esc(c["name"])}</p><p class="menu-panel-desc">{esc(c["description"])}</p>'
-            f'{extra}<a class="menu-explore" href="{c["url"]}">Explore {esc(c["name"])} '
-            '<svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></a></div>')
+    cards = []
+    for c in CATEGORIES:
+        n = sum(1 for a in _MENU_ARTICLES if a["article"]["category"] == c["name"])
+        meta = f'{n} guides' if n > 1 else ("1 guide" if n == 1 else "Coming soon")
+        cards.append(
+            f'          <li><a class="menu-card" href="{c["url"]}" style="--hue:{c["hue"]}"{cur(c["url"])}>'
+            f'<span class="menu-art" aria-hidden="true">{menu_icon(c)}</span>'
+            f'<span class="menu-name">{esc(c["name"])}</span>'
+            f'<span class="menu-meta{" is-soon" if not n else ""}">{meta}</span></a></li>')
     return (
         '        <li class="has-menu">\n'
         f'          <a href="{item["url"]}" class="menu-toggle"{cur(item["url"])}>'
         f'{esc(item["label"])} <span class="caret" aria-hidden="true">\u25be</span></a>\n'
         '          <div class="category-menu" id="category-menu">\n'
-        '            <div class="menu-list">\n'
-        f'            <p class="category-menu-title">{esc(item["label"])}</p>\n'
-        '            <ul>\n' + "\n".join(rows) + '\n            </ul>\n'
+        '            <div class="menu-inner">\n'
+        '              <div class="menu-head">'
+        f'<p class="category-menu-title">{esc(item["label"])}</p>'
+        f'<a class="menu-all" href="/products/"{cur("/products/")}>View all categories '
+        '<svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></a></div>\n'
+        '              <ul class="menu-grid">\n' + "\n".join(cards) + '\n              </ul>\n'
         '            </div>\n'
-        '            <div class="menu-panels">\n' + "\n".join(panels) + '\n            </div>\n'
         '          </div>\n'
         '        </li>')
 
