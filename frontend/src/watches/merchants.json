@@ -1,0 +1,6 @@
+{
+  "amazon":      {"label": "Amazon",      "search": "https://www.amazon.in/s?k=",        "affiliate_param": "tag", "affiliate_value": ""},
+  "flipkart":    {"label": "Flipkart",    "search": "https://www.flipkart.com/search?q=", "affiliate_param": "affid", "affiliate_value": ""},
+  "brand_store": {"label": "Brand store", "search": ""},
+  "other":       {"label": "Other shop",  "search": ""}
+}

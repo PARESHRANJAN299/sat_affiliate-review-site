@@ -22,6 +22,8 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
+sys.path.insert(0, str(ROOT))
+import watches  # noqa: E402
 SRC = ROOT / "src"
 DIST = ROOT / "dist"
 
@@ -506,6 +508,9 @@ def load_pages():
         meta["_body"] = read(body_path)
         pages.append(meta)
     pages.extend(load_guides())
+    shop = watches.Watches(SRC, CONFIG)
+    errors.extend(shop.errors)
+    pages.extend(shop.pages())
     return pages
 
 
@@ -552,6 +557,7 @@ def build_page(meta, base, header_t, footer_t, year, articles):
         "toc": "@@TOC@@" if meta.get("toc") else "",
         "share": share_html(canonical, meta["title"]) if meta.get("share") else "",
         "read_time": "@@READ@@",
+        "body_class": ("theme-" + meta["theme"]) if meta.get("theme") else "",
     }
     for cat in {a["article"]["category"] for a in articles}:
         in_cat = [a for a in articles if a["article"]["category"] == cat]
@@ -584,6 +590,7 @@ def build_page(meta, base, header_t, footer_t, year, articles):
         "robots_tag": '<meta name="robots" content="noindex, follow">\n' if meta.get("noindex") else "",
         "og_type": meta.get("og_type", "website"),
         "css_href": css_href, "js_src": js_src,
+        "body_class": ("theme-" + meta["theme"]) if meta.get("theme") else "",
         "jsonld": json_ld(structured_data(meta, canonical, title)),
         "header": header, "content": content, "footer": footer,
     })

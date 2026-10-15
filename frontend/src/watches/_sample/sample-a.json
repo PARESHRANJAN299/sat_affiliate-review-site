@@ -1,0 +1,46 @@
+{
+  "id": "sample-a",
+  "brand": "sample",
+  "model": "Sample watch A",
+  "gender": [
+    "men"
+  ],
+  "budget": "under-3000",
+  "sample": true,
+  "styles": [
+    "classic",
+    "analog",
+    "leather-strap"
+  ],
+  "dial_style": "Sample dial",
+  "strap": "Sample strap",
+  "case_size_mm": 38,
+  "water_resistance": "Sample value",
+  "best_for": "Best Overall",
+  "verdict": "Sample one-line verdict. Real watches get a short, honest verdict here.",
+  "paragraphs": [
+    "This is sample text that shows how a review looks. It is not about a real watch."
+  ],
+  "good": [
+    "Sample good point",
+    "Another sample good point"
+  ],
+  "not_good": [
+    "Sample weak point"
+  ],
+  "query": "sample watch",
+  "merchants": {
+    "amazon": {
+      "url": ""
+    },
+    "flipkart": {
+      "url": ""
+    }
+  },
+  "sources": [
+    {
+      "label": "Sample source",
+      "url": "https://example.com/"
+    }
+  ]
+}

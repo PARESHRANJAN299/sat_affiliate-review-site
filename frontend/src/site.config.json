@@ -64,6 +64,12 @@
       "url": "/baby-care/",
       "enabled": false,
       "note": "enable when its first guides are ready"
+    },
+    {
+      "label": "Watches",
+      "url": "/watches/",
+      "enabled": false,
+      "note": "enable once the first watch lists are researched"
     }
   ],
   "affiliate_active": false
