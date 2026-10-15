@@ -38,7 +38,7 @@ ALWAYS_CSS = [
 ]
 # Loaded after component/page CSS so they win the cascade.
 LAST_CSS = ["layout/mobile-compact", "base/accessibility", "base/print"]
-ALWAYS_JS = ["core/main", "core/menu", "core/search-lite", "core/to-top"]
+ALWAYS_JS = ["core/main", "core/menu", "core/search-lite", "core/to-top", "core/footer"]
 
 TITLE_MAX = 60
 DESCRIPTION_MAX = 160
