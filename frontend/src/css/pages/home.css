@@ -23,6 +23,9 @@
   pointer-events: none;
 }
 .home-hero-content { position: relative; z-index: 1; width: 100%; max-width: 640px; padding: clamp(48px, 7vw, 80px) 20px; text-align: center; }
+/* the text box covers the middle of the picture wall: let clicks fall through to the pictures, and keep the buttons and links clickable */
+.home-hero-content { pointer-events: none; }
+.home-hero-content a, .home-hero-content button { pointer-events: auto; }
 .home-hero h1 { margin: 0 0 14px; font-size: clamp(2rem, 3.6vw, 3.1rem); line-height: 1.12; letter-spacing: -.025em; color: #fff; text-shadow: 0 2px 18px rgba(0, 0, 0, .35); }
 .home-description { max-width: 52ch; margin: 0 auto; font-size: 1.02rem; line-height: 1.65; color: #d7ddea; }
 .home-actions { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 8px 22px; margin-top: 22px; }
