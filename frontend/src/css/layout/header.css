@@ -261,15 +261,12 @@ nav.main-nav .category-menu a.menu-all:hover { background: var(--color-bg-alt); 
 
   .nav-backdrop { position: fixed; inset: 0; z-index: 40; display: block; background: rgba(4, 7, 15, 0.58); opacity: 0; visibility: hidden; transition: opacity .25s ease, visibility .25s; }
   .nav-backdrop.is-on { opacity: 1; visibility: visible; }
-  @supports (backdrop-filter: blur(4px)) or (-webkit-backdrop-filter: blur(4px)) {
-    .nav-backdrop { -webkit-backdrop-filter: blur(5px); backdrop-filter: blur(5px); }
-  }
 
   /* panels drop in from the trigger, rows follow one by one */
-  .category-menu.is-open, .mobile-site-menu[open] .mobile-site-links { animation: panel-in .28s cubic-bezier(.2, .8, .2, 1) both; transform-origin: top center; }
+  .category-menu.is-open, .mobile-site-menu[open] .mobile-site-links { animation: panel-in .2s cubic-bezier(.2, .8, .2, 1) both; transform-origin: top center; }
   .category-menu { max-height: calc(100vh - 90px); overflow-y: auto; overscroll-behavior: contain; }
-  .category-menu.is-open .menu-list > li, .mobile-site-menu[open] .mobile-site-links li { animation: row-in .38s cubic-bezier(.2, .8, .2, 1) both; animation-delay: calc(var(--i, 0) * 55ms + 70ms); }
-  .category-menu.is-open .menu-all { animation: row-in .38s cubic-bezier(.2, .8, .2, 1) .42s both; }
+  .category-menu.is-open .menu-list > li, .mobile-site-menu[open] .mobile-site-links li { animation: row-in .2s cubic-bezier(.2, .8, .2, 1) both; animation-delay: calc(var(--i, 0) * 22ms + 20ms); }
+  .category-menu.is-open .menu-all { animation: row-in .2s cubic-bezier(.2, .8, .2, 1) .2s both; }
   .category-menu::before { content: ""; display: block; width: 38px; height: 4px; margin: 2px auto 8px; border-radius: 3px; background: var(--color-border); }
 
   /* one-time pulse that says "there are options here" */

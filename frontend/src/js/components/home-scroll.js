@@ -2,6 +2,11 @@
   'use strict';
   // Scroll effects for the home page. Nothing is hidden unless this script runs, and nothing moves for visitors who ask for less motion.
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // the drifting rows stop while the hero is scrolled out of view, so they do not use the GPU for nothing
+  var heroBox = document.querySelector('.home-hero');
+  if (heroBox && 'IntersectionObserver' in window) {
+    new IntersectionObserver(function (entries) { heroBox.classList.toggle('is-offscreen', !entries[0].isIntersecting); }).observe(heroBox);
+  }
   if (reduce) return;
 
   // 1) the picture wall drifts a little slower than the page

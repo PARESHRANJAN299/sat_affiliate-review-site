@@ -1037,7 +1037,29 @@ def write_asset(kind, key, content):
     return f"/assets/{kind}/{name}"
 
 
+SPEC_EXCLUDE = "[target=_blank],[rel~=sponsored],[rel~=nofollow],[download]"
+
+
+def speculation_tag():
+    """Chrome and Edge load the next page before the click: HTML prefetch for every internal link on hover or touch ("moderate"), and a full
+    prerender for the header and footer links, so About, Contact and the categories open with no wait. Other browsers ignore this tag.
+    Turn off with speculation_rules: false (or only the prerender with speculation_prerender: false) in site.config.json."""
+    if not CONFIG.get("speculation_rules", True):
+        return ""
+    rules = {"prefetch": [{"where": {"and": [{"href_matches": "/*"}, {"not": {"href_matches": "/search/*"}},
+                                             {"not": {"selector_matches": SPEC_EXCLUDE}}]}, "eagerness": "moderate"}]}
+    if CONFIG.get("speculation_prerender", True):
+        rules["prerender"] = [{"where": {"and": [{"selector_matches": "header a, footer a"},
+                                                 {"not": {"href_matches": ["/", "/search/*"]}},
+                                                 {"not": {"selector_matches": SPEC_EXCLUDE}}]}, "eagerness": "moderate"}]
+    return '<script type="speculationrules">' + json.dumps(rules, separators=(",", ":")) + "</script>\n"
+
+
 def bundle(kind, names, key):
+    return write_asset(kind, key, bundle_text(kind, names, key))
+
+
+def bundle_text(kind, names, key):
     parts = []
     for name in names:
         path = SRC / kind / f"{name}.{kind}"
@@ -1048,7 +1070,7 @@ def bundle(kind, names, key):
     joined = "\n".join(parts)
     if kind == "css" and re.search(r"(?<![\w-])content\s*:(?!\s*([\"']{2}\s*[;}]|attr\(|counter\())|url\(", joined):
         errors.append(f"{key}: the CSS minifier is not string-aware; avoid content: and url( or upgrade it")
-    return write_asset(kind, key, minify_css(joined) if kind == "css" else minify_js(joined))
+    return minify_css(joined) if kind == "css" else minify_js(joined)
 
 
 _MENU_ARTICLES = []
@@ -1447,7 +1469,11 @@ def build_page(meta, base, header_t, footer_t, year, articles):
     js_names = ALWAYS_JS + [f"components/{n}" for n in meta.get("js", [])]
     if meta.get("page_js"):
         js_names.append(f'pages/{meta["page_js"]}')
-    css_href = bundle("css", css_names, key)
+    if CONFIG.get("inline_css", True):
+        # the page's own CSS goes inside the HTML: no second request before the first paint (prefetching the page then brings the CSS too)
+        css_tag = "<style>" + bundle_text("css", css_names, key) + "</style>\n"
+    else:
+        css_tag = f'<link rel="stylesheet" href="{bundle("css", css_names, key)}">\n'
     js_src = bundle("js", js_names, key)
 
     base_ctx = {
@@ -1519,7 +1545,7 @@ def build_page(meta, base, header_t, footer_t, year, articles):
                              if CONFIG.get("google_site_verification") else ""),
         "robots_tag": '<meta name="robots" content="noindex, follow">\n' if meta.get("noindex") else "",
         "og_type": meta.get("og_type", "website"),
-        "css_href": css_href, "js_src": js_src,
+        "css_tag": css_tag, "speculation_tag": speculation_tag(), "js_src": js_src,
         "body_class": ("theme-" + meta["theme"]) if meta.get("theme") else "",
         "jsonld": json_ld(structured_data(meta, canonical, title)),
         "header": header, "content": content, "footer": footer,
