@@ -1041,10 +1041,11 @@ def mega_data(pages):
             if has_guide or url in live:
                 entry["types"].append((f["name"], url))
             else:
-                entry["soon"].append(f["name"])
+                entry["soon"].append((f["name"], url))
         entry["guides"] = [(g["title"], g["url"]) for g in _GUIDES if g["category"] == c["name"]]
         if c["slug"] == "watches" and SHOP[0] is not None:
-            entry["soon"] = [b["label"] for b in SHOP[0].budgets.values()] + [b["name"] for b in SHOP[0].config["brands"]]
+            entry["soon"] = ([("Men\u2019s watches", "/watches/men/"), ("Women\u2019s watches", "/watches/women/")]
+                             + [(b["name"], f'/watches/brands/{b["slug"]}/') for b in SHOP[0].config["brands"]])
         if c["slug"] == "watches":
             for url, p in sorted(live.items()):
                 m = re.fullmatch(r"/watches/(men|women)/under-(\d+)/", url)
@@ -1087,7 +1088,7 @@ def category_menu(item, current_url=None):
         cols = (col("Product types", m.get("types", [])) + col("Buying guides", m.get("guides", []), 10)
                 + col("By price", m.get("price", [])) + col("By brand", m.get("brand", [])) + col("By style", m.get("feature", [])))
         if m.get("soon"):
-            names = "".join(f"<li>{esc(x)}</li>" for x in m["soon"][:8])
+            names = "".join(f'<li><a href="{esc(u)}">{esc(n)}</a></li>' for n, u in m["soon"][:20])
             cols += f'<div class="mega-col mega-soon"><p class="mega-title">Researching now</p><ul>{names}</ul></div>'
         if not cols:
             cols = '<div class="mega-col"><p class="mega-title">Coming soon</p><ul><li><a href="/how-we-pick/">How we pick</a></li></ul></div>'
