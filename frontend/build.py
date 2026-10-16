@@ -1021,14 +1021,14 @@ def affiliate_disclosure_body():
             '      <li>they will be clearly disclosed</li>\n'
             '      <li>SAT may earn a commission from qualifying purchases</li>\n'
             '      <li>this will not increase the price paid by the customer</li>\n'
-            '      <li>editorial recommendations should remain independent</li>\n'
+            '      <li>our picks will still come from our own research</li>\n'
             '    </ul>\n'
             '    <h2>Questions</h2>\n'
             '    <p>Write to <a href="mailto:' + esc(CONFIG["contact_email"]) + '">' + esc(CONFIG["contact_email"]) + '</a>.</p>')
     amazon = (f'    <p>{ASSOCIATE_SENTENCE}</p>\n' if associate_on() else "")
     return (
         '    <p class="lead">Some links on this website are affiliate links.</p>\n'
-        '    <p>If you buy through an affiliate link, SAT may earn a commission from qualifying purchases. This does not increase the price you pay, and editorial recommendations remain independent.</p>\n'
+        '    <p>If you buy through an affiliate link, SAT may earn a commission from qualifying purchases. This does not increase the price you pay. Our picks come from our own research, not from the commission.</p>\n'
         + amazon +
         '    <p>Affiliate links are marked near the links. Questions: <a href="mailto:' + esc(CONFIG["contact_email"]) + '">' + esc(CONFIG["contact_email"]) + '</a>.</p>')
 
