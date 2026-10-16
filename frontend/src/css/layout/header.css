@@ -310,7 +310,9 @@ nav.main-nav .category-menu a.menu-all:hover { background: var(--color-bg-alt); 
 nav.main-nav .category-menu .mega-col ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 1px; flex-wrap: nowrap; }
 nav.main-nav .category-menu .mega-col a { display: block; min-height: 0; padding: 6px 0; color: var(--color-text); font-size: .92rem; font-weight: 600; line-height: 1.3; background: none; }
 nav.main-nav .category-menu .mega-col a:hover { color: var(--color-primary-dark); text-decoration: underline; background: none; }
-nav.main-nav .category-menu .mega-soon li { padding: 5px 0; font-size: .88rem; color: var(--color-text-muted); }
+nav.main-nav .category-menu .mega-soon li { padding: 0; font-size: .88rem; }
+nav.main-nav .category-menu .mega-soon a { color: var(--color-text-muted); font-weight: 500; }
+nav.main-nav .category-menu .mega-soon a:hover { color: var(--color-primary-dark); }
 nav.main-nav .category-menu a.mega-all { display: inline-flex; align-items: center; gap: 6px; min-height: 0; margin-top: 10px; padding: 6px 0; font-size: .9rem; font-weight: 800; color: var(--color-link); background: none; }
 nav.main-nav .category-menu a.mega-all:hover { text-decoration: underline; background: none; }
 @media (max-width: 719.98px) {
