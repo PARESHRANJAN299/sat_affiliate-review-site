@@ -19,3 +19,9 @@ Rules
 * Lowercase names with hyphens, matching the slug or id used in the data files.
 * Keep each file under 150 KB (JPEG quality about 80). Resize before adding.
 * To use a category picture, set `"image"` (and `"thumb"` for the menu) in `src/categories.json`. Remove them to go back to the drawn icon.
+
+## Image governance
+
+The owner confirmed on 16 October 2026 that the previous Pinterest-sourced images have been replaced with images generated in ChatGPT and are no longer used on the official portal. The 49 generated image files, including thumbnails, are classified as **AI-generated illustrative imagery** in `src/image-credits.json`. Their confirmed provenance is based on that owner statement and the output-ownership provisions of the [OpenAI Terms of Use](https://openai.com/policies/terms-of-use/). This records provenance; it does not assert exclusive rights or an independent check of every depicted logo or likeness.
+
+The real founder photograph and original India flag SVG remain separate records. Run `python3 frontend/build.py --governance` from the repository root to see the current image-governance summary.
