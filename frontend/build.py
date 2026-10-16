@@ -482,6 +482,42 @@ def load_products(cat_slug):
     return items
 
 
+ASSOCIATE_SENTENCE = "As an Amazon Associate I earn from qualifying purchases."
+
+
+def associate_on():
+    """True from the day you sign up for Amazon Associates: affiliate links are switched on and the tracking ID is set.
+    Amazon wants the sentence above on the site from sign-up (the 3 sales that lead to approval come through tagged links), not only after approval."""
+    return bool(CONFIG.get("affiliate_active")) and bool((CONFIG.get("amazon_tracking_id") or "").strip())
+
+
+def tag_outbound_links(text):
+    """Hand-written pages: when affiliate links are on, tag amazon.in links with the tracking ID and make every shop link rel=sponsored,
+    exactly like the generated guides and product blocks do. (Same exemptions as check_affiliate_rel.)"""
+    if not CONFIG.get("affiliate_active"):
+        return text
+    def fix(m):
+        tag = m.group(0)
+        hm = re.search(r'\shref="([^"]*)"', tag)
+        if not hm:
+            return tag
+        href = html.unescape(hm.group(1))
+        parts = urllib.parse.urlsplit(href)
+        host = (parts.hostname or "").lower()
+        if parts.scheme not in ("http", "https"):
+            return tag
+        if host == "amazon.in" or host.endswith(".amazon.in"):
+            tag = tag.replace(hm.group(0), f' href="{esc(affiliate_url("amazon", href))}"', 1)
+        if 'target="_blank"' in tag and 'data-source="1"' not in tag and not any(h in host for h in ("wa.me", "linkedin.com", "instagram.com")):
+            rm = re.search(r'\srel="([^"]*)"', tag)
+            if rm and "sponsored" not in rm.group(1).split():
+                tag = tag.replace(rm.group(0), f' rel="sponsored {rm.group(1)}"', 1)
+            elif not rm:
+                tag = tag[:-1] + ' rel="sponsored nofollow noopener">'
+        return tag
+    return re.sub(r"<a\b[^>]*>", fix, text)
+
+
 def affiliate_url(key, url):
     """Add your Amazon tracking ID (amazon_tracking_id in site.config.json) to amazon.in links once affiliate links are switched on.
     Before that, links stay exactly as written: plain links to the product page."""
@@ -522,8 +558,8 @@ def product_buttons(p):
     note = ""
     if active:
         note = '<p class="cta-note"><strong>Affiliate links.</strong> We may earn a commission if you buy, at no extra cost to you.</p>'
-        if CONFIG.get("amazon_associate_approved") and have_amazon:
-            note += '<p class="cta-note">As an Amazon Associate I earn from qualifying purchases.</p>'
+        if associate_on() and have_amazon:
+            note += f'<p class="cta-note">{ASSOCIATE_SENTENCE}</p>'
     return " ".join(out), note
 
 
@@ -979,7 +1015,7 @@ def category_chips(current_url):
 
 
 def affiliate_disclosure_body():
-    """Disclosure text follows the real status (affiliate_active, amazon_associate_approved in site.config.json)."""
+    """Disclosure text follows the real status (affiliate_active and amazon_tracking_id in site.config.json)."""
     if not CONFIG.get("affiliate_active"):
         return (
             '    <p class="lead">SAT is currently not earning commissions from the product links displayed on this website.</p>\n'
@@ -995,8 +1031,7 @@ def affiliate_disclosure_body():
             '    </ul>\n'
             '    <h2>Questions</h2>\n'
             '    <p>Write to <a href="mailto:' + esc(CONFIG["contact_email"]) + '">' + esc(CONFIG["contact_email"]) + '</a>.</p>')
-    amazon = ('    <p>As an Amazon Associate I earn from qualifying purchases.</p>\n'
-              if CONFIG.get("amazon_associate_approved") else "")
+    amazon = (f'    <p>{ASSOCIATE_SENTENCE}</p>\n' if associate_on() else "")
     return (
         '    <p class="lead">Some links on this website are affiliate links.</p>\n'
         '    <p>If you buy through an affiliate link, SAT may earn a commission from qualifying purchases. This does not increase the price you pay, and editorial recommendations remain independent.</p>\n'
@@ -1286,6 +1321,8 @@ def render_guide(g, related=()):
         if buttons:
             cta_html = " ".join(buttons)
             cta_note = '      <p class="cta-note">Opens a search on the shop. We do not sell products or take payments.</p>\n'
+            if associate_on() and any(st.lower() == "amazon" for st in p["stores"]):
+                cta_note += f'      <p class="cta-note">{ASSOCIATE_SENTENCE}</p>\n'
         else:
             cta_html = '<span class="no-store">No shop link: we could not confirm it is on sale in India right now.</span>'
             cta_note = ""
@@ -1514,7 +1551,7 @@ def build_page(meta, base, header_t, footer_t, year, articles):
             groups.append('<div class="tag-group"><h2>' + esc(tag) + '</h2>\n'
                           + article_cards([a for a in in_cat if a["article"]["tag"] == tag]) + '\n</div>')
         article_ctx["groups_" + slugify(cat)] = "\n".join(groups)
-    content = render(meta["_body"], {**base_ctx, **article_ctx, "breadcrumb": breadcrumb_html(meta.get("breadcrumbs"))})
+    content = tag_outbound_links(render(meta["_body"], {**base_ctx, **article_ctx, "breadcrumb": breadcrumb_html(meta.get("breadcrumbs"))}))
     toc_html = ""
     if meta.get("toc"):
         content, toc_html = decorate(content)
@@ -1530,7 +1567,7 @@ def build_page(meta, base, header_t, footer_t, year, articles):
     })
     footer = render(footer_t, {**base_ctx,
                                "footer_mission_html": footer_mission_html(),
-                               "footer_affiliate_notice": ('<p class="footer-affiliate">' + esc(base_ctx["affiliate_note"]) + '</p>') if CONFIG.get("affiliate_active") else "",
+                               "footer_affiliate_notice": ('<p class="footer-affiliate">' + esc(base_ctx["affiliate_note"]) + (" " + ASSOCIATE_SENTENCE if associate_on() else "") + '</p>') if CONFIG.get("affiliate_active") else "",
                                "footer_site_items": link_list(CONFIG["footer_site"], meta["url"]),
                                "footer_category_items": link_list([{"label": c["name"], "url": c["url"]} for c in CATEGORIES], meta["url"]),
                                "footer_legal_items": link_list(CONFIG["footer_legal"], meta["url"])})
@@ -1710,8 +1747,10 @@ def write_headers():
 
 def check_amazon_tag():
     """Once Amazon affiliate links are on, the tracking ID must be set, or the links would earn nothing."""
-    if CONFIG.get("affiliate_active") and CONFIG.get("amazon_associate_approved") and not (CONFIG.get("amazon_tracking_id") or "").strip():
-        errors.append('affiliate_active and amazon_associate_approved are on, but amazon_tracking_id is empty in site.config.json (it looks like "yourname-21")')
+    if CONFIG.get("affiliate_active") and not (CONFIG.get("amazon_tracking_id") or "").strip():
+        errors.append('affiliate_active is on, but amazon_tracking_id is empty in site.config.json (it looks like "yourname-21"; Amazon gives it to you when you sign up)')
+    if CONFIG.get("amazon_associate_approved") and not CONFIG.get("affiliate_active"):
+        errors.append("amazon_associate_approved is on but affiliate_active is off: switch affiliate_active on first")
 
 
 def check_affiliate_rel():
@@ -1868,9 +1907,123 @@ def check_products():
     return not errors
 
 
+def governance_report():
+    """python3 build.py --governance [--simulate-signup]: audit the BUILT site against the Amazon Associates rules.
+    With --simulate-signup the flags are switched on in memory (tracking ID "sample-21" if none is set) to show what would fail on sign-up day.
+    FAIL = must be fixed before the site goes live in that state; WARN = judgement call; ok = checked and fine. Exit code 1 on any FAIL."""
+    rows = []
+    def add(level, msg):
+        rows.append((level, msg))
+    def text_of(path):
+        return path.read_text(encoding="utf-8")
+    pages = {p.relative_to(DIST).as_posix(): text_of(p) for p in DIST.rglob("*.html") if p.name != "404.html"}
+    live = {k: v for k, v in pages.items() if 'name="robots" content="noindex' not in v}
+    active, tag, on = bool(CONFIG.get("affiliate_active")), (CONFIG.get("amazon_tracking_id") or "").strip(), associate_on()
+    add("info", f"state: affiliate_active={active}, amazon_tracking_id={'set' if tag else 'empty'}, Associate sentence {'ON' if on else 'off'}")
+
+    # 1) pages Amazon expects every site to have
+    for url in ("privacy-policy", "terms", "affiliate-disclosure", "copyright", "how-we-pick", "about", "contact"):
+        add("ok" if f"{url}/index.html" in pages else "FAIL", f"page /{url}/ exists")
+
+    # 2) enough real content, and recent (Amazon: robust original content, at least 10 posts, recent within about 60 days)
+    sitemap = text_of(DIST / "sitemap.xml") if (DIST / "sitemap.xml").exists() else ""
+    entries = re.findall(r"<loc>https?://[^/]+(/[^<]*)</loc>\s*<lastmod>([^<]+)</lastmod>", sitemap)
+    guides = [(u, d) for u, d in entries if u.strip("/").count("/") >= 1]
+    add("ok" if len(guides) >= 10 else "WARN", f"{len(guides)} indexable guide-style pages (Amazon's rule of thumb: at least 10)")
+    today = datetime.date.today()
+    stale = [u for u, d in entries if (today - datetime.date.fromisoformat(d)).days > 60]
+    add("ok" if not stale else "WARN", "all indexable pages were updated in the last 60 days" if not stale else
+        f"{len(stale)} indexable pages not updated for over 60 days (e.g. {stale[0]}); update real content, not just dates")
+
+    # 3) links: tagged, sponsored, no shorteners, no Amazon pictures
+    bad_tag, bad_rel, short, amz_img, amazon_pages, amazon_links = [], [], [], [], [], 0
+    for url, text in pages.items():
+        has_amz = False
+        for m in re.finditer(r"<a\b[^>]*>", text):
+            tagtxt = m.group(0)
+            hm = re.search(r'\shref="([^"]*)"', tagtxt)
+            if not hm:
+                continue
+            href = html.unescape(hm.group(1))
+            host = (urllib.parse.urlsplit(href).hostname or "").lower()
+            if host in ("amzn.to", "amzn.in", "bit.ly", "tinyurl.com", "t.co", "goo.gl", "is.gd"):
+                short.append(url)
+            if host == "amazon.in" or host.endswith(".amazon.in"):
+                has_amz = True; amazon_links += 1
+                q = dict(urllib.parse.parse_qsl(urllib.parse.urlsplit(href).query))
+                if active and q.get("tag") != tag:
+                    bad_tag.append(url)
+                if active and "sponsored" not in tagtxt:
+                    bad_rel.append(url)
+        if has_amz:
+            amazon_pages.append(url)
+        if re.search(r'(?:src|href)="[^"]*(?:media-amazon|ssl-images-amazon|images-amazon|m\.media-amazon)', text):
+            amz_img.append(url)
+    add("info", f"{amazon_links} amazon.in links on {len(amazon_pages)} pages")
+    if active:
+        add("ok" if not bad_tag else "FAIL", "every amazon.in link carries the tracking ID" if not bad_tag else f"amazon.in links without tag={tag!r} on: {sorted(set(bad_tag))[:4]}")
+        add("ok" if not bad_rel else "FAIL", "every amazon.in link is rel=sponsored" if not bad_rel else f"amazon.in links without rel=sponsored on: {sorted(set(bad_rel))[:4]}")
+    else:
+        add("info", "amazon.in links are plain now; they get the tag and rel=sponsored automatically when affiliate_active is switched on")
+    add("ok" if not short else "FAIL", "no link shorteners" if not short else f"link shorteners (not credited by Amazon) on: {sorted(set(short))[:4]}")
+    add("ok" if not amz_img else "FAIL", "no Amazon pictures" if not amz_img else f"Amazon-hosted pictures on: {sorted(set(amz_img))[:4]}")
+
+    # 4) the Associate sentence: footer on every page, next to Amazon links, and on the disclosure page
+    if on:
+        no_footer = [u for u, t in pages.items() if ASSOCIATE_SENTENCE not in t]
+        add("ok" if not no_footer else "FAIL", "the Associate sentence is on every page" if not no_footer else f"sentence missing on {len(no_footer)} pages (e.g. {no_footer[0]})")
+        add("ok" if ASSOCIATE_SENTENCE in pages.get("affiliate-disclosure/index.html", "") else "FAIL", "the Associate sentence is on /affiliate-disclosure/")
+    else:
+        add("info", "the Associate sentence is not shown yet; it appears on every page the moment affiliate_active and amazon_tracking_id are set")
+    if tag and not re.fullmatch(r"[a-z0-9]+(?:[-_][a-z0-9]+)*-21", tag):
+        add("WARN", f"tracking ID {tag!r} does not end in -21 (Amazon India IDs normally look like name-21)")
+
+    # 5) privacy page must match reality once links are tagged
+    priv = pages.get("privacy-policy/index.html", "")
+    if active:
+        ok = "Amazon" in priv and "cookie" in priv.lower() and "does not set its own cookies" not in priv and "Future affiliate links" not in priv
+        add("ok" if ok else "FAIL", "privacy page describes Amazon links and cookies" if ok else "privacy page still says affiliate links are in the future / no cookies: update it before tagged links go live")
+    else:
+        add("info", "privacy page must be updated (Amazon links, cookies) on the same day the flags are switched on; --simulate-signup checks it")
+    ext = [u for u, t in pages.items() if re.search(r'<script[^>]+src="https?://', t)]
+    add("ok" if not ext else "FAIL", "no third-party scripts (the privacy page promises none)" if not ext else f"third-party scripts on: {ext[:3]}")
+
+    # 6) claims the site must not make
+    def visible(t):
+        return re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", re.sub(r"<(script|style)\b.*?</\1>", " ", t, flags=re.S)))
+    rating = [u for u, t in live.items() if re.search(r"\b(?:rating of|rated)\s+\d|\d(?:\.\d)?\s*(?:/|out of)\s*5\b|\u2605|\b\d(?:\.\d)?\s*stars?\b", visible(t))]
+    add("ok" if not rating else "WARN", "no star ratings quoted" if not rating else f"star ratings quoted on {len(rating)} pages ({rating[0]}); Amazon ratings must never be shown, others invite questions")
+    indep = [u for u, t in live.items() if re.search(r"\bindependent\b", visible(t), re.I)]
+    if active and indep:
+        add("WARN", f"the word 'independent' appears on {len(indep)} pages while affiliate links are on (e.g. {indep[0]}); the owner's decision is that SAT is an affiliate portal")
+    price = [u for u, t in live.items() if re.search(r"(?:\u20b9|Rs\.?)\s?\d[\d,]*(?!\s*(?:to|\u2013|-))", visible(t)) and u.count("/") <= 2 and u.startswith(("sports", "beauty", "home", "clothing", "badminton", "cricket", "fitness", "home-gym"))]
+    add("ok" if not price else "WARN", "no typed rupee prices on guide pages" if not price else f"rupee amounts on {len(price)} guide pages (e.g. {price[0]}); price bands only")
+
+    # 7) pictures
+    path = SRC / "image-credits.json"
+    recs = json.loads(read(path)).get("images", []) if path.exists() else []
+    unconf = [r["file"] for r in recs if r.get("status") != "confirmed"]
+    add("ok" if not unconf else "WARN", "every picture has a confirmed licence record" if not unconf else f"{len(unconf)} of {len(recs)} pictures still need their licence confirmed (save a dated copy of the generator's terms, then set status to confirmed)")
+
+    order = {"FAIL": 0, "WARN": 1, "ok": 2, "info": 3}
+    for lvl, msg in sorted(rows, key=lambda r: order[r[0]]):
+        print(f"{lvl.upper() if lvl in ('FAIL', 'WARN') else lvl:5}  {msg}")
+    fails = sum(1 for r in rows if r[0] == "FAIL")
+    print(f"\n{fails} FAIL, {sum(1 for r in rows if r[0] == 'WARN')} WARN")
+    return fails == 0
+
+
 if __name__ == "__main__":
     if "--check" in sys.argv:
         sys.exit(0 if check_products() else 1)
+    if "--governance" in sys.argv:
+        if "--simulate-signup" in sys.argv:
+            CONFIG["affiliate_active"] = True
+            CONFIG["amazon_tracking_id"] = (CONFIG.get("amazon_tracking_id") or "").strip() or "sample-21"
+            print("simulating sign-up day: affiliate_active on, tracking ID", CONFIG["amazon_tracking_id"], "(nothing is written to site.config.json)\n")
+        built = build()
+        print()
+        sys.exit(0 if (governance_report() and built) else 1)
     ok = build()
     if not ok:
         sys.exit(1)

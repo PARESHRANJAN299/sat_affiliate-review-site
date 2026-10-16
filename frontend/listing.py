@@ -357,7 +357,7 @@ class Kit:
         if self.config.get("affiliate_active"):
             text = "Affiliate links. We may earn a commission if you buy, at no extra cost to you."
             has_amazon = any(((p.get("retailers") or {}).get("amazon") or {}).get("url") for p in products)
-            if self.config.get("amazon_associate_approved") and has_amazon:
+            if (self.config.get("amazon_tracking_id") or "").strip() and has_amazon:
                 text += " As an Amazon Associate I earn from qualifying purchases."
             return text + " Prices change; check the shop for the current price."
         return self.price_note

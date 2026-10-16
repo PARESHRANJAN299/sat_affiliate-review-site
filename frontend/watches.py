@@ -83,9 +83,14 @@ class Watches:
                 self.warnings.append(f"watch {p.get('id', '?')}: not shown ({why})")
         self.products.sort(key=lambda p: (p.get("rank", 999), p["id"]))
         if self.affiliate_active:
+            amazon = self.merchants.get("amazon")
+            if amazon is not None and not amazon.get("affiliate_value"):
+                # one place for the ID: amazon_tracking_id in site.config.json
+                amazon["affiliate_value"] = (site_config.get("amazon_tracking_id") or "").strip()
             for key, info in self.merchants.items():
-                if info.get("search") and key in ("amazon", "flipkart") and not info.get("affiliate_value"):
-                    self.errors.append(f"affiliate_active is true but merchant {key!r} has no affiliate_value")
+                # Flipkart has no affiliate ID yet; its links stay plain (still rel=sponsored)
+                if info.get("search") and key == "amazon" and not info.get("affiliate_value"):
+                    self.errors.append(f"affiliate_active is true but merchant {key!r} has no affiliate_value (set amazon_tracking_id in site.config.json)")
 
     # ---------- validation ----------
 
