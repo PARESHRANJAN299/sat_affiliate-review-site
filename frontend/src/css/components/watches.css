@@ -89,6 +89,32 @@ a.tile:hover { text-decoration: none; transform: translateY(-2px); box-shadow: v
 .rating-slot { min-height: 0; }
 .watch-actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 4px; }
 .watch-actions .btn { flex: 1 1 auto; }
+.watch-card-specs { margin: 0; color: var(--color-text-muted); font-size: .88rem; line-height: 1.6; }
+.watch-card-disclosure { margin: 0; color: var(--color-text-muted); font-size: .75rem; line-height: 1.5; }
+.watch-spec-preview { padding: 20px; text-align: center; width: 100%; }
+.watch-spec-preview strong { font-family: var(--font-display); font-size: clamp(2rem, 5vw, 3.4rem); color: var(--color-text); line-height: 1.2; }
+.watch-spec-preview .watch-preview-label { text-transform: uppercase; letter-spacing: .12em; font-size: .65rem; }
+.watch-collection { scroll-margin-top: calc(var(--header-h) + 20px); margin-bottom: 36px; }
+.watch-collection-head { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px 24px; }
+.watch-collection-head h2 { margin: 4px 0 8px; }
+.watch-collection-head p { margin: 0; max-width: 62ch; }
+.watch-collection > .affiliate-box { margin: 16px 0; padding: 10px 14px; font-size: .8rem; }
+.watch-grid-featured { grid-template-columns: minmax(0, 1fr); }
+.watch-grid-featured .watch-card { display: grid; grid-template-columns: minmax(180px, .65fr) minmax(0, 1.35fr); }
+.watch-grid-featured .watch-media { aspect-ratio: auto; min-height: 250px; }
+.watch-grid-featured .watch-body { padding: 24px; gap: 12px; }
+.watch-grid-featured .watch-model { font-size: 1.7rem; }
+.watch-hero { padding: 28px 0; }
+.watch-hero h1 { font-size: clamp(1.8rem, 3vw, 2.8rem); max-width: 24ch; }
+.hero-watch { max-width: 160px; }
+.watch-hero + .section { padding-top: 24px; }
+@media (max-width: 620px) {
+  .watch-grid-featured .watch-card { grid-template-columns: minmax(0, 1fr); }
+  .watch-grid-featured .watch-media { min-height: 145px; }
+  .watch-grid-featured .watch-body { padding: 18px; }
+  .watch-grid-featured .watch-model { font-size: 1.35rem; }
+  .watch-collection-head .read-link { font-size: .85rem; }
+}
 .more-shops { width: 100%; font-size: 0.85rem; }
 .more-shops summary { cursor: pointer; color: var(--color-link); padding: 6px 0; }
 .more-shops ul { margin: 0; padding-left: 1.2em; }

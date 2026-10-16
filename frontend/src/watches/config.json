@@ -140,5 +140,11 @@
     }
   ],
   "min_products_to_index": 3,
-  "updated": "2026-10-15"
+  "updated": "2026-10-17",
+  "launch_collection": {
+    "brand": "fossil",
+    "gender": "men",
+    "title": "Fossil Men’s Watches",
+    "description": "Explore the model, compare its details and check the latest listing on Amazon."
+  }
 }
