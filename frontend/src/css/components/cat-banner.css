@@ -27,7 +27,7 @@
 /* small controls in the top-right corner of the band (the only part that takes clicks) */
 .cat-controls {
   position: absolute; top: 14px; right: 18px; z-index: 2; display: flex; align-items: center; gap: 8px;
-  padding: 3px 8px 3px 10px; border-radius: 999px; background: rgba(54, 36, 20, 0.5); backdrop-filter: blur(6px); pointer-events: auto;
+  padding: 3px 8px 3px 10px; border-radius: 999px; background: rgba(54, 36, 20, 0.72); pointer-events: auto;
 }
 .cat-dots { display: flex; align-items: center; gap: 3px; }
 .cat-dots button { position: relative; width: 24px; height: 24px; padding: 0; border: 0; background: transparent; cursor: pointer; }

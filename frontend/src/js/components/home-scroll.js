@@ -39,6 +39,8 @@
     });
   }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
   Array.prototype.forEach.call(items, function (el, i) {
+    // anything already on the first screen is shown at once; only what is below the fold fades in
+    if (el.getBoundingClientRect().top < window.innerHeight * 0.95) return;
     el.classList.add('reveal');
     el.style.transitionDelay = (el.parentNode && el.parentNode.classList.contains('home-cat-strip') ? (i % 6) * 60 : 0) + 'ms';
     io.observe(el);
