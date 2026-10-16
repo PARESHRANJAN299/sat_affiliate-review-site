@@ -26,6 +26,7 @@ ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT))
 import watches  # noqa: E402
 import listing  # noqa: E402
+import collection  # noqa: E402
 SRC = ROOT / "src"
 DIST = ROOT / "dist"
 
@@ -535,7 +536,10 @@ def affiliate_url(key, url):
     host = (parts.hostname or "").lower()
     if not tag or not (host == "amazon.in" or host.endswith(".amazon.in")):
         return url
-    query = [(k, v) for k, v in urllib.parse.parse_qsl(parts.query, keep_blank_values=True) if k != "tag"] + [("tag", tag)]
+    pairs = urllib.parse.parse_qsl(parts.query, keep_blank_values=True)
+    if any(k == "tag" and v.strip() for k, v in pairs):
+        return url  # Keep Amazon-generated affiliate links exactly as supplied.
+    query = pairs + [("tag", tag)]
     return urllib.parse.urlunsplit(parts._replace(query=urllib.parse.urlencode(query)))
 
 
@@ -713,28 +717,72 @@ def beauty_family_body(cat, f, products, sibling_cards):
         '  </div>\n</section>')
 
 
+def category_collection(cat, products=None):
+    """The same controls for published products, existing recommendations, or buying advice."""
+    products = load_products(cat["slug"]) if products is None else products
+    items = []
+    families = {f["slug"]: f for f in cat["families"]}
+    if products:
+        for p in products:
+            family = families[p["family"]]
+            filters = {"brand": p["brand"], "type": family["name"], "audience": p.get("audience", []), "budget": p.get("price_band", "")}
+            items.append({"name": p["name"], "label": p["brand"], "description": p.get("best_for") or " ".join(p.get("pros", [])[:2]),
+                          "url": family_url(cat, family) + "#r-" + p["id"], "action": "View details", "image": p.get("image"), "filters": filters, "product": p})
+        title, noun, plural = "Explore products", "product", "products"
+        specs = [("brand", "Brand"), ("type", "Product type"), ("audience", "For whom"), ("budget", "Budget guide")]
+    elif cat["slug"] == "sports-fitness":
+        for path in sorted((SRC / "guides").glob("*/guide.json")):
+            guide = json.loads(read(path))
+            if not guide.get("published"):
+                continue
+            for pick in guide["picks"]:
+                # Existing guide names identify these brands; no additional product claims are created here.
+                brand = pick.get("brand") or next((name for name in ("Decathlon", "Domyos", "Corength", "Kuikma", "Kalenji", "Puma", "Kimjaly") if pick["name"].startswith(name + " ")), "")
+                filters = {"brand": brand, "type": guide["tag"]}
+                items.append({"name": pick["name"], "label": guide["tag"], "description": pick["verdict"], "filters": filters,
+                              "url": "/" + slugify(guide["tag"]).replace("_", "-") + "/" + guide["slug"] + "/#" + slugify_heading(pick["name"], set()), "action": "Read recommendation"})
+        title, noun, plural = "Explore guide recommendations", "recommendation", "recommendations"
+        specs = [("type", "Activity"), ("brand", "Brand")]
+    else:
+        sections = {section["slug"]: section["name"] for section in cat.get("sections", [])}
+        for family in cat["families"]:
+            filters = {"type": sections.get(family.get("section"), "Everyday essentials")}
+            items.append({"name": family["name"], "label": filters["type"], "description": family["description"],
+                          "url": family_url(cat, family), "filters": filters})
+        title, noun, plural = "Explore buying advice", "guide", "guides"
+        specs = [("type", "Category")]
+    if not items:
+        return ""
+    filters = collection.groups([item["filters"] for item in items], specs)
+    cards = []
+    for item in items:
+        card = collection.card(item)
+        if item.get("product"):
+            buttons = kit()._buttons(item["product"])
+            card = card.replace('<div class="watch-actions">', '<div class="watch-actions">' + buttons)
+            if CONFIG.get("affiliate_active"):
+                card = card.replace('</article>', '<p class="collection-disclosure">Affiliate links. SAT may earn from qualifying purchases.</p></article>')
+        cards.append(card)
+    return collection.render(cards, filters, uid=cat["slug"] + "-collection", title=title, noun=noun, plural=plural)
+
+
 def audience_tabs_page(cat, entries, products):
     """One landing page with Women / Girls / Men tabs, small product-type shortcuts and the filterable product list."""
-    tabs = cat["audience_tabs"]
-    by_section = {}
-    for e, f in zip(entries, cat["families"]):
-        by_section.setdefault(f.get("section"), []).append((e["name"], e["url"]))
-    chips = {t["slug"]: [x for sec in t["sections"] for x in by_section.get(sec, [])] for t in tabs}
-    block = kit().listing(cat, products, f'pl-{cat["slug"]}', cat["families"], segment_tabs=True, type_chips=chips) if products else published_guides_help()
+    block = category_collection(cat, products)
     notes = "".join(f'<li><a href="{esc(e["url"])}"><strong>{esc(e["name"])}</strong></a> {esc(e["description"])}</li>' for e in entries)
     body = (
         f'<section class="{cat_section_class(cat)}">\n  <div class="container content-page family-page">\n'
         + cat_head(cat, '    {{breadcrumb}}\n' + f'    <h1>{esc(cat["name"])}</h1>\n    <p class="lead">{esc(cat.get("tagline") or cat["description"])}</p>\n') +
         f'    {block}\n'
         + ('    <div class="pl-reviews"><h2>Reviews</h2>\n' + "\n".join(product_review_html(p) for p in products) + '</div>\n' if products else '')
-        + f'    <h2>Product types</h2>\n    <ul class="pl-type-notes">{notes}</ul>\n'
+        + (f'    <h2>Product types</h2>\n    <ul class="pl-type-notes">{notes}</ul>\n' if products else '')
         + f'    <p class="family-note">{esc(PRICE_NOTE)}</p>\n'
         '  </div>\n</section>')
     return {
         "url": cat["url"], "title": f'{cat["name"]} Buying Guides for India',
         "description": cat.get("landing_meta") or f'{cat["name"]} buying guides for Indian shoppers.',
-        "css": ["buttons", "breadcrumb", "content-page", "families", "product-block", "product-listing", "cat-banner"],
-        "js": ["product-listing", "cat-banner"],
+        "css": ["buttons", "breadcrumb", "content-page", "families", "product-block", "product-listing", "cat-banner", "collection"],
+        "js": ["collection", "cat-banner"],
         "breadcrumbs": [["Shop by Category", "/products/"], [cat["name"], cat["url"]]],
         "updated": "2026-10-16", "_slug": cat["slug"], "_body": body}
 
@@ -773,32 +821,19 @@ def beauty_pages(cat):
     all_products = load_products(cat["slug"])
     min_index = 3
     pages = []
-    sections = cat.get("sections", [])
     if cat.get("audience_tabs"):
         pages.append(audience_tabs_page(cat, entries, all_products))
-    elif sections:
-        blocks = []
-        for s in sections:
-            sec_entries = [e for e, f in zip(entries, cat["families"]) if f.get("section") == s["slug"]]
-            blocks.append(
-                f'<section class="family-section family-section-{esc(s["slug"])}" id="{esc(s["slug"])}" aria-labelledby="{esc(s["slug"])}-title" style="--hue:{s["hue"]}">\n'
-                f'  <div class="family-section-head"><h2 id="{esc(s["slug"])}-title">{esc(s["name"])}</h2>'
-                f'<span class="family-count">{len(sec_entries)} product types</span></div>\n'
-                f'  <p class="family-section-blurb">{esc(s["blurb"])}</p>\n  {category_directory(sec_entries, grid_id=s["slug"] + "-results")}\n</section>')
-        cards_html = "\n".join(blocks)
-    else:
-        cards_html = f'<div class="family-cards family-cards-3">{category_directory(entries, grid_id="family-results")}</div>'
     if not cat.get("audience_tabs"):
         body = (
             f'<section class="{cat_section_class(cat)}">\n  <div class="container content-page family-page">\n'
             + cat_head(cat, '    {{breadcrumb}}\n' + f'    <h1>{esc(cat["name"])}</h1>\n    <p class="lead">{esc(cat.get("tagline") or cat["description"])}</p>\n') +
-            (published_guides_help() if not all_products else "") + f'    {cards_html}\n'
+            category_collection(cat, all_products) + ("<h2>Product reviews</h2>" + "".join(product_review_html(p) for p in all_products) if all_products else "") + "\n"
             f'    <p class="family-note">{esc(PRICE_NOTE)} This section is general information, not medical advice.</p>\n'
             '  </div>\n</section>')
         pages.append({
             "url": cat["url"], "title": f'{cat["name"]} Buying Guides for India',
             "description": cat.get("landing_meta") or f'{cat["name"]} buying guides for Indian shoppers.',
-            "css": ["buttons", "breadcrumb", "content-page", "category-directory", "families", "cat-banner"], "js": ["cat-banner"],
+            "css": ["buttons", "breadcrumb", "content-page", "category-directory", "families", "product-block", "cat-banner", "collection"], "js": ["cat-banner", "collection"],
             "breadcrumbs": [["Shop by Category", "/products/"], [cat["name"], cat["url"]]],
             "updated": "2026-10-16", "_slug": cat["slug"], "_body": body})
     for f in cat["families"]:
@@ -889,13 +924,14 @@ def family_pages():
             f'<section class="{cat_section_class(cat)}">\n  <div class="container content-page family-page">\n'
             + cat_head(cat, '    {{breadcrumb}}\n' + f'    <h1>{esc(cat["name"])}</h1>\n'
                       f'    <p class="lead">{esc(cat.get("tagline") or cat["description"])}</p>\n')
+            + category_collection(cat)
             + ('    <section class="family-guides" id="guides"><h2>Buying guides</h2>\n    {{articles_sports_fitness}}\n    </section>\n' if cat["slug"] == "sports-fitness" else "")
             + "\n".join(blocks) +
             '\n  </div>\n</section>')
         pages.append({
             "url": cat["url"], "title": f'{cat["name"]} Buying Guides for India',
             "description": f'Browse sports and fitness product types, from {cat["families"][0]["name"].lower()} to {cat["families"][-1]["name"].lower()}. Buying guides for Indian shoppers.',
-            "css": ["buttons", "breadcrumb", "content-page", "category-directory", "families", "cat-banner"] + (["cards"] if cat["slug"] == "sports-fitness" else []), "js": ["cat-banner"],
+            "css": ["buttons", "breadcrumb", "content-page", "category-directory", "families", "cat-banner", "collection"] + (["cards"] if cat["slug"] == "sports-fitness" else []), "js": ["cat-banner", "collection"],
             "breadcrumbs": [["Shop by Category", "/products/"], [cat["name"], cat["url"]]],
             "updated": "2026-10-16", "_slug": cat["slug"], "_body": body})
         sec_names = {s["slug"]: s["name"] for s in sections}
@@ -1764,7 +1800,7 @@ def search_entries(pages):
             brand = shop.brands[p["brand"]]["name"]
             styles = " ".join(shop.styles[st]["label"] for st in p["styles"])
             add(t=f'{brand} {p["model"]}', u=shop.review_url(p), k="Product", c="Watches", d=p["verdict"],
-                g=shop.primary_gender(p), m=shop.budgets[p["budget"]].get("max"),
+                g=shop.primary_gender(p), m=shop.budgets.get(p.get("budget"), {}).get("max"),
                 x=f'watch watches wristwatch {" ".join(p["gender"])} {styles} {p.get("strap", "")} {p.get("best_for", "")}')
     for cat in CATEGORIES:
         for p in load_products(cat["slug"]):
@@ -2052,8 +2088,13 @@ def governance_report():
         add("ok" if ok else "FAIL", "privacy page describes Amazon links and cookies" if ok else "privacy page still says affiliate links are only planned: switch affiliate_active on so its Amazon text appears")
     else:
         add("info", "privacy page must be updated (Amazon links, cookies) on the same day the flags are switched on; --simulate-signup checks it")
-    ext = [u for u, t in pages.items() if re.search(r'<script[^>]+src="https?://', t)]
-    add("ok" if not ext else "FAIL", "no third-party scripts (the privacy page promises none)" if not ext else f"third-party scripts on: {ext[:3]}")
+    allowed_scripts = {"static.cloudflareinsights.com"} if CONFIG.get("analytics_provider") == "cloudflare-web-analytics" else set()
+    ext = [u for u, t in pages.items() if any(
+        (urllib.parse.urlsplit(src).hostname or "").lower() not in allowed_scripts
+        for src in re.findall(r'<script[^>]+src="(https?://[^"]+)"', t))]
+    add("ok" if not ext else "FAIL", "no undeclared third-party scripts in built pages" if not ext else f"undeclared third-party scripts on: {ext[:3]}")
+    if allowed_scripts:
+        add("ok" if "Cloudflare Web Analytics" in priv else "FAIL", "Cloudflare Web Analytics is declared in the privacy policy")
 
     # 6) claims the site must not make
     def visible(t):

@@ -7,11 +7,12 @@ and shops can be added without touching this code:
     src/watches/merchants.json  shops (Amazon, Flipkart, brand store, other)
     src/watches/products/*.json one file per watch (see src/watches/README.md)
 
-With no products, every page shows an honest "being researched" state and is set to
-noindex. A page becomes indexable once it has at least `min_products_to_index` watches.
+With no products, collection pages link to buying advice and remain noindex.
+A collection becomes indexable once it has at least `min_products_to_index` watches.
 Standard library only (Python 3.9+).
 """
 import html
+import collection
 import json
 import math
 import urllib.parse
@@ -108,13 +109,13 @@ class Watches:
 
     def _validate(self, p):
         pid = p.get("id", "?")
-        missing = [k for k in ("id", "brand", "model", "gender", "budget", "styles", "verdict") if k not in p]
+        missing = [k for k in ("id", "brand", "model", "gender", "styles", "verdict") if k not in p]
         if missing:
             self.errors.append(f"watch {pid}: missing {', '.join(missing)}")
             return
         if p["brand"] not in self.brands:
             self.errors.append(f"watch {pid}: unknown brand {p['brand']!r}")
-        if p["budget"] not in self.budgets:
+        if p.get("budget") is not None and p["budget"] not in self.budgets:
             self.errors.append(f"watch {pid}: unknown budget {p['budget']!r}")
         for g in p["gender"]:
             if g not in self.genders:
@@ -125,6 +126,10 @@ class Watches:
         for m in p.get("merchants", {}):
             if m not in self.merchants:
                 self.errors.append(f"watch {pid}: unknown merchant {m!r}")
+            url = p["merchants"][m].get("url", "")
+            parts = urllib.parse.urlsplit(url)
+            if url and (parts.scheme != "https" or not parts.hostname or parts.username or parts.password):
+                self.errors.append(f"watch {pid}: merchant {m!r} needs an HTTPS product URL")
 
     @staticmethod
     def _ready(p):
@@ -143,15 +148,17 @@ class Watches:
         brand = self.brands[p["brand"]]["name"]
         query = urllib.parse.quote_plus(p.get("query") or f'{brand} {p["model"]} watch')
         listed = p.get("merchants") or {}
+        have_direct = any(entry.get("url") for entry in listed.values())
         for key, info in self.merchants.items():
             entry = listed.get(key) or {}
             url = entry.get("url", "")
             direct = bool(url)
-            if not url and info.get("search") and (key in listed or key in ("amazon", "flipkart")):
+            if not url and not have_direct and info.get("search") and (key in listed or key in ("amazon", "flipkart")):
                 url = info["search"] + query
             if not url:
                 continue
-            if self.affiliate_active and info.get("affiliate_value"):
+            # Preserve supplied product links exactly, including Amazon's own tracking parameters.
+            if not direct and self.affiliate_active and info.get("affiliate_value"):
                 parts = urllib.parse.urlsplit(url)
                 pairs = [(k, v) for k, v in urllib.parse.parse_qsl(parts.query, keep_blank_values=True)
                          if k != info["affiliate_param"]]
@@ -166,7 +173,7 @@ class Watches:
 
     @staticmethod
     def verb(link):
-        return "Check Price on" if link["direct"] else "Search on"
+        return "View on" if link["direct"] else "Search on"
 
     def check_price(self, p, small=True):
         links = self.merchant_links(p)
@@ -200,14 +207,14 @@ class Watches:
     # ---------- small components ----------
 
     def band_label(self, p):
-        return self.budgets[p["budget"]]["label"]
+        return self.budgets[p["budget"]]["label"] if p.get("budget") else "Check current price at the retailer"
 
     @staticmethod
     def primary_gender(p):
         return p["gender"][0]
 
     def review_url(self, p):
-        return f'/watches/{self.primary_gender(p)}/{p["budget"]}/#r-{p["id"]}'
+        return f'/watches/brands/{p["brand"]}/#r-{p["id"]}'
 
     def style_chips(self, p):
         return "".join(f'<li>{esc(self.styles[s]["label"])}</li>' for s in p["styles"])
@@ -216,19 +223,23 @@ class Watches:
         if p.get("image"):
             return (f'<img src="{esc(p["image"])}" alt="{esc(self.brands[p["brand"]]["name"])} {esc(p["model"])}" '
                     'loading="lazy" width="480" height="480">')
-        return f'<div class="watch-photo-slot">{watch_art()}<span>Photo coming</span></div>'
+        return ('<div class="watch-photo-slot watch-spec-preview"><span class="watch-preview-label">Model reference</span>'
+                f'<strong>{esc(p.get("model_code", p["model"]))}</strong>'
+                f'<span>{esc(p.get("movement", "Analog watch"))}</span>'
+                '<span>See product photos at the retailer</span></div>')
 
     def card(self, p, local=False):
         brand = self.brands[p["brand"]]["name"]
         sample = '<span class="sample-flag">Sample</span>' if p.get("sample") else ""
         href = f'#r-{p["id"]}' if local else self.review_url(p)
         return (
-            f'<article class="watch-card" data-id="{esc(p["id"])}" data-styles="{esc(" ".join(p["styles"]))}">\n'
+            f'<article class="watch-card" data-id="{esc(p["id"])}" data-brand="{esc(p["brand"])}" data-gender="{esc(" ".join(p["gender"]))}" data-style="{esc(" ".join(p["styles"]))}" data-budget="{esc(p.get("budget") or "unlisted")}" data-styles="{esc(" ".join(p["styles"]))}">\n'
             f'  <div class="watch-media">{sample}{self.media(p)}</div>\n'
             '  <div class="watch-body">\n'
             f'    <p class="watch-brand">{esc(brand)}</p>\n'
             f'    <h3 class="watch-model">{esc(p["model"])}</h3>\n'
-            f'    <p class="watch-band">Listed in: {esc(self.band_label(p))}</p>\n'
+            f'    <p class="watch-band">{esc(self.band_label(p))}</p>\n'
+            + (f'    <p class="watch-card-specs">{esc(p["card_specs"])}</p>\n' if p.get("card_specs") else "") +
             f'    <p class="watch-verdict">{esc(p["verdict"])}</p>\n'
             f'    <ul class="tag-chips">{self.style_chips(p)}</ul>\n'
             '    <div class="rating-slot" aria-hidden="true"></div>\n'
@@ -236,6 +247,7 @@ class Watches:
             f'      <a class="btn btn-outline btn-small" href="{esc(href)}" aria-label="View details for {esc(brand)} {esc(p["model"])}">View Details</a>\n'
             f'      {self.check_price(p)}\n'
             '    </div>\n'
+            + ('    <p class="watch-card-disclosure">Affiliate link. SAT may earn from qualifying purchases.</p>\n' if self.affiliate_active and not p.get("sample") else '') +
             '  </div>\n'
             '</article>')
 
@@ -333,8 +345,8 @@ class Watches:
 
     def method_note(self):
         return ('<aside class="method-note"><svg class="ic" aria-hidden="true"><use href="#i-info"/></svg>'
-                "<p><strong>How we picked these:</strong> we read the maker's and the shops' pages. We have not tested these watches ourselves. "
-                "A watch is listed under a budget as our own judgement, not as a price. Check today's price and the warranty at the shop. "
+                "<p><strong>Our research:</strong> we compare published manufacturer specifications. We have not tested these watches ourselves. "
+                "Check the exact model, current price and seller policies at the retailer. "
                 'Read <a href="/how-we-pick/">how we pick</a>.</p></aside>')
 
     def empty_state(self, what, level="h2"):
@@ -444,7 +456,7 @@ class Watches:
 
     def budget_page(self, gender, budget):
         g, b = self.genders[gender], self.budgets[budget]
-        prods = [p for p in self.products if gender in p["gender"] and p["budget"] == budget]
+        prods = [p for p in self.products if gender in p["gender"] and p.get("budget") == budget]
         url = f"/watches/{gender}/{budget}/"
         ready = len(prods) >= self.min_index
         adj = g["adjective"].capitalize()
@@ -466,18 +478,18 @@ class Watches:
             prods = [p for p in all_p if self.primary_gender(p) == gender]
             title = f'{br["name"]} {br["line"]} Watches for {self.genders[gender]["adjective"].capitalize()}'
             if prods:
-                blocks.append(f'<h2>{esc(title)}</h2>\n' + self.grid(prods[:6], local=True) + "\n" +
+                blocks.append(f'<h2 id="{esc(gender)}">{esc(title)}</h2>\n' + self.grid(prods[:6], local=True) + "\n" +
                               self.table(prods, title) + "\n" + "\n".join(self.review(p) for p in prods))
             else:
-                blocks.append(f'<h2>{esc(title)}</h2>\n' + self.empty_state(title, "h3"))
+                blocks.append(f'<h2 id="{esc(gender)}">{esc(title)}</h2>\n' + self.empty_state(title, "h3"))
         h1 = f'{br["name"]} {br["line"]} Watches'
         note = self.method_note() if all_p else ""
         filters = self.filter_ui() if all_p else ""
         body = (
             '<section class="section">\n  <div class="container content-page watch-page">\n'
             f'    {{{{breadcrumb}}}}\n    <h1>{esc(h1)}</h1>\n    <p class="lead">{esc(br["blurb"])}</p>\n'
-            f'    {note}\n    {filters}\n' + "\n".join(blocks) + "\n"
-            f'    {self.short_guide()}\n    {self.faq(products=all_p)}\n    {self.related(self._sibling_links(brand=slug))}\n    {self.affiliate_box(all_p)}\n  </div>\n</section>')
+            f'    {self.affiliate_box(all_p) if all_p else ""}\n    {note}\n    {filters}\n' + "\n".join(blocks) + "\n"
+            f'    {self.short_guide()}\n    {self.faq(products=all_p)}\n    {self.related(self._sibling_links(brand=slug))}\n    {self.affiliate_box(all_p) if not all_p else ""}\n  </div>\n</section>')
         crumbs = [["Watches", "/watches/"], [br["name"], url]]
         return self._meta(url, f'{br["name"]} {br["line"]} Watches in India', f'{br["name"]} {br["line"].lower()} watches picked for Indian buyers, with a buying guide. Research-based.', body, crumbs, all_p)
 
@@ -511,9 +523,10 @@ class Watches:
         body = (
             '<section class="section">\n  <div class="container content-page watch-page">\n'
             f'    {{{{breadcrumb}}}}\n    <h1>{esc(h1)}</h1>\n    <p class="lead">Classic and analog watches for {g["adjective"]}, picked by budget, brand and style.</p>\n'
+            f'    {self.affiliate_box(prods) if prods else ""}\n    {grid}\n'
             f'    <h2>Shop by budget</h2>\n    <div class="tile-grid">{budgets}</div>\n'
             f'    <h2>Explore by brand</h2>\n    <div class="tile-grid">{brands}</div>\n'
-            f'    {grid}\n    {self.affiliate_box(picks)}\n  </div>\n</section>')
+            f'    {self.affiliate_box(picks) if not prods else ""}\n  </div>\n</section>')
         return self._meta(url, h1, f"Classic analog watches for {g['adjective']} by budget and brand. Research-based buying guides.", body, [["Watches", "/watches/"], [h1, url]], prods)
 
     def landing(self):
@@ -531,22 +544,40 @@ class Watches:
             for b in value)
         style_chips = "".join(f'<a class="chip" href="/watches/style/{s["slug"]}/">{esc(s["label"])}</a>' for s in self.config["styles"])
         picks = [p for p in self.products if p.get("editors_pick")][:4]
-        picks_html = self.grid(picks) if picks else self.empty_state("Watch selection advice")
+        launch = self.config.get("launch_collection", {})
+        launch_products = [p for p in self.products if p["brand"] == launch.get("brand") and launch.get("gender") in p["gender"]]
+        featured = self.products
+        collection_title = launch.get("title", "Explore our watches") if launch_products else "Explore our watches"
+        filter_groups = [
+            {"key": "brand", "title": "Brand", "items": [(b, self.brands[b]["name"], sum(p["brand"] == b for p in featured)) for b in self.brands if any(p["brand"] == b for p in featured)], "checked": [launch.get("brand")] if launch_products else []},
+            {"key": "style", "title": "Style", "items": [(v, self.styles[v]["label"], sum(v in p["styles"] for p in featured)) for v in self.styles if any(v in p["styles"] for p in featured)]},
+            {"key": "budget", "title": "Budget guide", "items": [(v, b["label"], sum(p.get("budget") == v for p in featured)) for v, b in self.budgets.items() if any(p.get("budget") == v for p in featured)]},
+        ]
+        featured_html = ""
+        if featured:
+            featured_html = self.affiliate_box(featured) + collection.render(
+                [self.card(p) for p in featured], filter_groups, uid="collection", title="Explore our watches", noun="watch", plural="watches",
+                preset_gender=launch.get("gender", "") if launch_products else "", genders=[("", "All"), ("men", "Men"), ("women", "Women")])
+        first_action = (f'<a class="btn btn-primary" href="#collection">Explore {esc(collection_title)}</a>' if launch_products else
+                        '<a class="btn btn-primary" href="/watches/men/">Shop Men’s Watches</a>')
         body = (
             '<section class="watch-hero">\n  <div class="container watch-hero-inner">\n    <div class="watch-hero-copy">\n'
-            '      <p class="eyebrow">Classic &amp; analog watches</p>\n      <h1>Timeless Watches. Smart Choices.</h1>\n'
+            '      <p class="eyebrow">Classic &amp; analog watches</p>\n      <h1>Watches. Smart choices.</h1>\n'
             '      <p>Explore classic watches by budget, brand and style.</p>\n'
-            '      <div class="hero-actions"><a class="btn btn-primary" href="/watches/men/">Shop Men\'s Watches</a>'
+            f'      <div class="hero-actions">{first_action}'
             '<a class="btn btn-outline" href="/watches/women/">Shop Women\'s Watches</a></div>\n    </div>\n'
             f'    <div class="watch-hero-art">{watch_art("hero-watch")}</div>\n  </div>\n</section>\n'
             '<section class="section"><div class="container watch-page">\n'
+            f'  {featured_html}\n'
             f'  <h2>Shop by Budget</h2>\n  <div class="tile-grid">{budget_cards}</div>\n'
             f'  <h2>Explore by Brand</h2>\n  <div class="tile-grid brand-grid">{brand_cards}</div>\n'
             f'  <h2>Shop by Style</h2>\n  <div class="chips">{style_chips}</div>\n'
-            f'  {"<h2>Editor’s Picks</h2>" if picks else ""}\n  {picks_html}\n'
             '  <p class="more-link"><a href="/watches/guide/">Read our watch buying guide</a></p>\n'
-            f'  {self.affiliate_box(picks)}\n</div></section>')
-        return self._meta("/watches/", "Classic & Analog Watches in India", "Classic and analog watches picked by budget, brand and style, for men and women. Research-based buying guides.", body, [["Watches", "/watches/"]], self.products, js=False)
+            f'  {self.affiliate_box(picks) if not featured else ""}\n</div></section>')
+        meta = self._meta("/watches/", "Classic & Analog Watches in India", "Explore classic and analog watches by brand and style for men and women. Research-based buying advice.", body, [["Watches", "/watches/"]], self.products, js=False)
+        meta["css"].append("collection")
+        meta["js"].append("collection")
+        return meta
 
     def guide_page(self):
         """One canonical, genuinely useful buying guide that every watch page links to."""
