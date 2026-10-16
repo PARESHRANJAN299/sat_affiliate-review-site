@@ -172,3 +172,12 @@
 @media (max-width: 719px) { .watch-store .collection-controls { grid-template-columns: minmax(0, 1fr) auto; } }
 .watch-store .collection-filter-open, .watch-quick-row > .collection-filter-open { display: none; }
 @media (max-width: 719px) { .watch-quick-row { padding-top: 8px; } .watch-store .collection-controls { padding-top: 8px; } }
+
+/* compact filter lists (like a shop sidebar); empty options stay visible but dimmed */
+.fopt.is-empty { opacity: .45; cursor: default; }
+.watch-store .collection-filters .fopt { min-height: 34px; font-size: .88rem; }
+.watch-store .collection-filters .fgroup { margin-bottom: 12px; padding-bottom: 10px; }
+.watch-store .collection-filters .fgroup legend { font-size: .86rem; font-weight: 700; color: var(--color-text); letter-spacing: 0; text-transform: none; }
+@media (max-width: 999px) { .watch-quick-row { display: flex; } .watch-store .watch-quick-row > .collection-filter-open { display: inline-flex; width: 100%; justify-content: center; min-height: 44px; } }
+/* no search box and no sort on the Watches page */
+.watch-store .collection-sort { display: none; }

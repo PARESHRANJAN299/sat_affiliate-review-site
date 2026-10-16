@@ -20,9 +20,9 @@ def render(cards, groups, *, uid, title, noun='product', plural='products', pres
     fields = []
     for group in groups:
         boxes = ''.join(
-            f'<label class="fopt"><input type="checkbox" data-group="{esc(group["key"])}" value="{esc(value)}"'
-            f'{" checked" if value in group.get("checked", []) else ""}><span>{esc(label)}</span><small>{count}</small></label>'
-            for value, label, count in group['items'])
+            f'<label class="fopt{" is-empty" if not count else ""}"><input type="checkbox" data-group="{esc(group["key"])}" value="{esc(value)}"'
+            f'{" checked" if value in group.get("checked", []) else ""}{" disabled" if not count else ""}><span>{esc(label)}</span><small>{count}</small></label>'
+            for value, label, count in group['items'] if count or group.get('show_empty'))
         if boxes:
             fields.append(f'<fieldset class="fgroup"><legend>{esc(group["title"])}</legend>{boxes}</fieldset>')
     segments = ''
