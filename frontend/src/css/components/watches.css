@@ -69,30 +69,6 @@ a.tile:hover { text-decoration: none; transform: translateY(-2px); box-shadow: v
 .brand-value strong { font-size: 1.1rem; }
 @media (prefers-reduced-motion: reduce) { .tile { transition: none; } }
 
-/* product cards */
-.watch-grid { display: grid; gap: var(--space-5); grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); margin: var(--space-4) 0; }
-.watch-card { display: flex; flex-direction: column; background: var(--color-surface); border: 1px solid var(--color-border); box-shadow: var(--shadow); overflow: hidden; }
-.watch-card[hidden] { display: none; }
-.watch-media { position: relative; aspect-ratio: 4 / 3; background: #f6f1e7; display: flex; align-items: center; justify-content: center; }
-.watch-media img { width: 100%; height: 100%; object-fit: contain; }
-.watch-photo-slot { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; height: 100%; }
-.watch-photo-slot span { font-size: 0.78rem; color: var(--color-text-muted); }
-.watch-art { height: 58%; width: auto; fill: none; stroke: var(--gold); stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
-.sample-flag { position: absolute; top: 12px; left: 12px; z-index: 1; padding: 3px 10px; background: #1f2124; color: #fff; border-radius: 999px; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; }
-.watch-body { display: flex; flex-direction: column; gap: 8px; padding: 18px; flex: 1; }
-.watch-brand { margin: 0; font-size: 0.74rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-primary); }
-.watch-model { margin: 0; font-size: 1.15rem; font-family: var(--font-display); }
-.watch-band { margin: 0; font-size: 0.82rem; color: var(--color-text-muted); }
-.watch-verdict { margin: 0; font-size: 0.95rem; flex: 1; }
-.tag-chips { list-style: none; display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; }
-.tag-chips li { padding: 3px 10px; background: var(--color-bg-alt); border-radius: 999px; font-size: 0.75rem; color: var(--color-text-muted); }
-.rating-slot { min-height: 0; }
-.watch-actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 4px; }
-.watch-actions .btn { flex: 1 1 auto; }
-.more-shops { width: 100%; font-size: 0.85rem; }
-.more-shops summary { cursor: pointer; color: var(--color-link); padding: 6px 0; }
-.more-shops ul { margin: 0; padding-left: 1.2em; }
-
 /* full reviews */
 .watch-review { display: grid; gap: var(--space-5); padding: var(--space-5); margin: var(--space-5) 0; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 18px; box-shadow: var(--shadow); scroll-margin-top: calc(var(--header-h) + 12px); }
 @media (min-width: 760px) { .watch-review { grid-template-columns: 260px 1fr; } }

@@ -24,6 +24,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT))
+import collection  # noqa: E402
 import watches  # noqa: E402
 import listing  # noqa: E402
 SRC = ROOT / "src"
@@ -792,13 +793,18 @@ def beauty_pages(cat):
         body = (
             f'<section class="{cat_section_class(cat)}">\n  <div class="container content-page family-page">\n'
             + cat_head(cat, '    {{breadcrumb}}\n' + f'    <h1>{esc(cat["name"])}</h1>\n    <p class="lead">{esc(cat.get("tagline") or cat["description"])}</p>\n') +
-            (published_guides_help() if not all_products else "") + f'    {cards_html}\n'
+            # the product list (brand, price and product-type filters) is the main part as soon as the category has products
+            (f'    <h2 class="pl-title">All {esc(cat["name"])} products</h2>\n    '
+             + kit().listing(cat, all_products, f'pl-{cat["slug"]}', cat["families"]) + '\n    <h2>Browse by product type</h2>\n' if all_products else published_guides_help())
+            + f'    {cards_html}\n'
+            + ('    <div class="pl-reviews"><h2>Reviews</h2>\n' + "\n".join(product_review_html(p) for p in all_products) + '</div>\n' if all_products else '') +
             f'    <p class="family-note">{esc(PRICE_NOTE)} This section is general information, not medical advice.</p>\n'
             '  </div>\n</section>')
         pages.append({
             "url": cat["url"], "title": f'{cat["name"]} Buying Guides for India',
             "description": cat.get("landing_meta") or f'{cat["name"]} buying guides for Indian shoppers.',
-            "css": ["buttons", "breadcrumb", "content-page", "category-directory", "families", "cat-banner"], "js": ["cat-banner"],
+            "css": ["buttons", "breadcrumb", "content-page", "category-directory", "families", "cat-banner"] + (["product-block", "product-listing"] if all_products else []),
+            "js": ["cat-banner"] + (["product-listing"] if all_products else []),
             "breadcrumbs": [["Shop by Category", "/products/"], [cat["name"], cat["url"]]],
             "updated": "2026-10-16", "_slug": cat["slug"], "_body": body})
     for f in cat["families"]:
@@ -889,13 +895,14 @@ def family_pages():
             f'<section class="{cat_section_class(cat)}">\n  <div class="container content-page family-page">\n'
             + cat_head(cat, '    {{breadcrumb}}\n' + f'    <h1>{esc(cat["name"])}</h1>\n'
                       f'    <p class="lead">{esc(cat.get("tagline") or cat["description"])}</p>\n')
+            + (sports_collection(cat) if cat["slug"] == "sports-fitness" else "")
             + ('    <section class="family-guides" id="guides"><h2>Buying guides</h2>\n    {{articles_sports_fitness}}\n    </section>\n' if cat["slug"] == "sports-fitness" else "")
             + "\n".join(blocks) +
             '\n  </div>\n</section>')
         pages.append({
             "url": cat["url"], "title": f'{cat["name"]} Buying Guides for India',
             "description": f'Browse sports and fitness product types, from {cat["families"][0]["name"].lower()} to {cat["families"][-1]["name"].lower()}. Buying guides for Indian shoppers.',
-            "css": ["buttons", "breadcrumb", "content-page", "category-directory", "families", "cat-banner"] + (["cards"] if cat["slug"] == "sports-fitness" else []), "js": ["cat-banner"],
+            "css": ["buttons", "breadcrumb", "content-page", "category-directory", "families", "cat-banner"] + (["cards", "collection"] if cat["slug"] == "sports-fitness" else []), "js": ["cat-banner"] + (["watch-collection"] if cat["slug"] == "sports-fitness" else []),
             "breadcrumbs": [["Shop by Category", "/products/"], [cat["name"], cat["url"]]],
             "updated": "2026-10-16", "_slug": cat["slug"], "_body": body})
         sec_names = {s["slug"]: s["name"] for s in sections}
@@ -1324,6 +1331,10 @@ def structured_data(meta, canonical, title):
             items.append({"@type": "ListItem", "position": i, "name": name, "item": site + url})
         blocks.append({"@context": "https://schema.org", "@type": "BreadcrumbList",
                        "itemListElement": items})
+    if meta.get("itemlist"):
+        blocks.append({"@context": "https://schema.org", "@type": "ItemList",
+                       "itemListElement": [{"@type": "ListItem", "position": i, "name": name, "url": site + url}
+                                           for i, (name, url) in enumerate(meta["itemlist"], start=1)]})
     if meta.get("schema") == "article":
         blocks.append({
             "@context": "https://schema.org", "@type": "Article",
@@ -1460,6 +1471,91 @@ def render_guide(g, related=()):
     return top + "\n\n".join(blocks) + bottom
 
 
+_GUIDE_RAW = []
+GUIDE_BRANDS = ["Li-Ning", "Nivia", "Hundred", "Cosco", "Yonex", "SG", "SS", "Kore", "Kakss", "Boldfit", "Lifelong", "TriggerPoint",
+                "Nike", "Skechers", "USI", "Manduka", "Victor", "Carlton", "Strauss"]
+TIER_RANK = {"Budget": 1, "Mid-range": 2, "Premium": 3}
+
+
+def pick_brand(pick):
+    """Brand of a guide pick: an explicit "brand" field, else the known brand its name starts with, else its first word."""
+    if pick.get("brand"):
+        return pick["brand"]
+    name = pick["name"].lower()
+    for b in sorted(GUIDE_BRANDS, key=len, reverse=True):
+        if name.startswith(b.lower() + " "):
+            return b
+    return pick["name"].split()[0]
+
+
+def sports_collection(cat):
+    """Product-first block for Sports & Fitness: every pick of every guide as a card, filterable by product type, brand and class."""
+    items = []
+    for g, url in _GUIDE_RAW:
+        ids = []
+        seen = set()
+        for p in g["picks"]:
+            ids.append(slugify_heading(p["name"], seen))
+        for p, pid in zip(g["picks"], ids):
+            items.append({"g": g, "url": url, "p": p, "anchor": pid, "brand": pick_brand(p)})
+    if not items:
+        return ""
+    active = bool(CONFIG.get("affiliate_active"))
+    rel = "sponsored nofollow noopener" if active else "nofollow noopener"
+    def slug(v):
+        return re.sub(r"[^a-z0-9]+", "-", v.lower()).strip("-")
+    cards = []
+    for it in items:
+        g, p, href = it["g"], it["p"], f'{it["url"]}#{it["anchor"]}'
+        brand = it["brand"]
+        specs = "".join(f"<li><span>{esc(c)}</span> {esc(v)}</li>" for c, v in zip(g["columns"], p["cells"]))
+        amazon = ""
+        if "Amazon" in p["stores"]:
+            q = urllib.parse.quote_plus(p["search_query"])
+            amazon = (f'<a class="btn btn-primary btn-small" href="{esc(affiliate_url("amazon", STORES["Amazon"] + q))}" target="_blank" rel="{rel}" '
+                      f'aria-label="Find {esc(p["name"])} on Amazon (opens in a new tab)">Find on Amazon '
+                      '<svg class="ic" aria-hidden="true"><use href="#i-external"/></svg></a>')
+        note = '<p class="watch-note">Affiliate link</p>' if active and amazon else ""
+        cards.append((
+            f'<article class="watch-card" data-id="{esc(it["anchor"])}" data-brand="{esc(slug(brand))}" data-brand-name="{esc(brand)}" '
+            f'data-type="{esc(slug(g["tag"]))}" data-tier="{esc(slug(p["tier"]))}" data-max="{TIER_RANK.get(p["tier"], 2)}">\n'
+            f'  <a class="watch-media" href="{esc(href)}" tabindex="-1" aria-hidden="true"><div class="watch-photo-slot"><span class="pcard-tag">{esc(g["tag"])}</span><span>Photo coming</span></div></a>\n'
+            '  <div class="watch-body">\n'
+            f'    <p class="watch-brand">{esc(brand)}<span class="watch-band-chip">{esc(p["tier"])}</span></p>\n'
+            f'    <h3 class="watch-model"><a href="{esc(href)}">{esc(p["name"])}</a></h3>\n'
+            f'    <p class="watch-verdict">{esc(p["verdict"])}</p>\n'
+            f'    <ul class="watch-specs">{specs}</ul>\n'
+            f'    <ul class="tag-chips"><li>{esc(g["tag"])}</li><li>{esc(p["label"])}</li></ul>\n'
+            f'    <div class="watch-actions">{amazon}<a class="btn btn-outline btn-small" href="{esc(href)}" aria-label="Read the guide for {esc(p["name"])}">Read guide</a></div>\n'
+            f'    {note}\n'
+            '  </div>\n</article>', True))
+    def tally(getter):
+        order, n = [], {}
+        for it in items:
+            v = getter(it)
+            if v[0] not in n:
+                order.append(v)
+            n[v[0]] = n.get(v[0], 0) + 1
+        return [(a, b, n[a]) for a, b in order]
+    types = tally(lambda it: (slug(it["g"]["tag"]), it["g"]["tag"]))
+    brands = sorted(tally(lambda it: (slug(it["brand"]), it["brand"])), key=lambda t: t[1].lower())
+    tiers = [t for t in tally(lambda it: (slug(it["p"]["tier"]), it["p"]["tier"])) ]
+    tiers.sort(key=lambda t: TIER_RANK.get(t[1], 2))
+    groups = [{"key": "type", "title": "Sport or use", "items": types}, {"key": "brand", "title": "Brand", "items": brands},
+              {"key": "tier", "title": "Our class", "items": tiers}]
+    if active:
+        text = ("Buttons open Amazon.in. Some links are affiliate links: we may earn a commission if you buy, at no extra cost to you. "
+                "It does not change which products we pick." + (f" {ASSOCIATE_SENTENCE}" if associate_on() else ""))
+    else:
+        text = "Buttons open a search on Amazon.in. They are plain links today and earn us nothing. We do not sell products or take payments."
+    note = (f'<p class="collection-note"><svg class="ic" aria-hidden="true"><use href="#i-info"/></svg><span>{esc(text)} '
+            'The class (Budget, Mid-range, Premium) is our own grouping, not a price. <a href="/affiliate-disclosure/">Affiliate disclosure</a></span></p>')
+    return ('    <div class="watch-page sports-collection">' + collection.render(
+        cards, groups, default_title="Sports & Fitness picks from our guides", noun="pick", plural="picks", note_html=note,
+        sort_options=[("featured", "Featured"), ("budget-low", "Class: Budget to Premium"), ("budget-high", "Class: Premium to Budget"), ("name", "Name A to Z")])
+        + "</div>\n")
+
+
 def load_guides():
     raw = []
     gdir = SRC / "guides"
@@ -1486,6 +1582,8 @@ def load_guides():
 
     def url_of(g):
         return f"/{slugify(g['tag']).replace('_', '-')}/{g['slug']}/"
+
+    _GUIDE_RAW[:] = [(g, url_of(g)) for g in raw]
 
     guides = []
     for g in raw:
@@ -2063,7 +2161,7 @@ def governance_report():
     indep = [u for u, t in live.items() if re.search(r"\bindependent\b", visible(t), re.I)]
     if active and indep:
         add("WARN", f"the word 'independent' appears on {len(indep)} pages while affiliate links are on (e.g. {indep[0]}); the owner's decision is that SAT is an affiliate portal")
-    price = [u for u, t in live.items() if re.search(r"(?:\u20b9|Rs\.?)\s?\d[\d,]*(?!\s*(?:to|\u2013|-))", visible(t)) and u.count("/") <= 2 and u.startswith(("sports", "beauty", "home", "clothing", "badminton", "cricket", "fitness", "home-gym"))]
+    price = [u for u, t in live.items() if re.search(r"(?:\u20b9|Rs\.?)\s?\d[\d,]*(?!\s*(?:to|\u2013|-))", visible(re.sub(r"<header\b.*?</header>", " ", t, flags=re.S))) and u.count("/") <= 2 and u.startswith(("sports", "beauty", "home", "clothing", "badminton", "cricket", "fitness", "home-gym"))]
     add("ok" if not price else "WARN", "no typed rupee prices on guide pages" if not price else f"rupee amounts on {len(price)} guide pages (e.g. {price[0]}); price bands only")
 
     # 7) pictures

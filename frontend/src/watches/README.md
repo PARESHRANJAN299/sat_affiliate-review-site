@@ -39,3 +39,12 @@ Add a watch by creating `src/watches/products/<id>.json`. Nothing else needs edi
 * **Ratings:** leave `rating` null until real ratings exist. The card keeps space for it but shows nothing.
 * New shops go in `merchants.json`; new brands, budgets and styles go in `config.json`.
 * A page is `noindex` until it has `min_products_to_index` watches (default 3).
+
+
+## The Watches page collection
+
+`/watches/` opens with a slim banner and a **product collection**: a preset (set in `config.json` as `"featured_collection": {"brand": "fossil", "gender": "men"}`) is shown first, with a Men's/Women's switch, brand, budget and style filters (a side panel on laptops, a bottom sheet on phones) and sorting. Every watch file is in the page, so filters work on all of them; a visitor who changes a filter sees the matching watches from every brand. Change `featured_collection` to feature another brand or gender. Leave it out to show every watch.
+
+**Adding a watch is still one file** in `src/watches/products/`. It then appears in the collection and the filters (counts update by themselves), on its brand, budget and style pages, in site search and the sitemap, and on its own page `/watches/<brand>/<model>/` (the brand prefix of the id is dropped, so `fossil-grant-fs4736` becomes `/watches/fossil/grant-fs4736/`).
+
+Buttons say "View on Amazon" (a product link) or "Find on Amazon" (a search link). Put the product link in `merchants.amazon.url`; the build adds the tracking ID once `affiliate_active` is on.

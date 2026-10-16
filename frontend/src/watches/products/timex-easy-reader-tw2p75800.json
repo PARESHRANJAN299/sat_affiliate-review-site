@@ -1,0 +1,55 @@
+{
+  "id": "timex-easy-reader-tw2p75800",
+  "brand": "timex",
+  "model": "Easy Reader 38 mm TW2P75800",
+  "gender": [
+    "men"
+  ],
+  "budget": "under-10000",
+  "styles": [
+    "classic",
+    "analog",
+    "leather-strap"
+  ],
+  "dial_style": "Beige dial per Timex India (Timex.com says cream), full Arabic numerals per Timex.com",
+  "strap": "Brown leather, 20 mm wide",
+  "case_size_mm": 38,
+  "water_resistance": "30 m",
+  "best_for": "Leather-strap watch with an Indiglo light",
+  "verdict": "A leather-strap watch with full Arabic numerals and an Indiglo light (per Timex.com), in Timex's Easy Reader range.",
+  "paragraphs": [
+    "The 38 mm case is brass in a gold tone, with a beige dial (Timex India; Timex.com says cream), full Arabic numerals (Timex.com) and a brown leather strap.",
+    "Timex.com lists a quartz movement, a CR2016 battery and the Indiglo backlight, which lets you tell the time in the dark with the push of a button. Timex India lists a one-year warranty against manufacturer defects. The Timex India page does not mention the Indiglo light.",
+    "Timex lists 30 m water resistance on this model. Timex.com adds that it is suitable only for hand-washing or accidental splashes of water, not for swimming or diving."
+  ],
+  "good": [
+    "Full Arabic numerals, per Timex.com",
+    "Beige dial per Timex India (Timex.com says cream)",
+    "Indiglo light for reading the time in the dark, per Timex.com",
+    "Leather strap with a buckle, per the listings",
+    "1 year warranty against manufacturer defects, per Timex India"
+  ],
+  "not_good": [
+    "Timex.com says the 30 m rating is suitable only for hand-washing or accidental splashes of water, not for swimming or diving",
+    "Timex India says there is no warranty on leather straps",
+    "Timex India shows the model code as TW2P75800UJ, with a UJ ending"
+  ],
+  "query": "Timex Easy Reader 38mm TW2P75800 watch",
+  "merchants": {
+    "amazon": {
+      "url": ""
+    }
+  },
+  "sources": [
+    {
+      "label": "Timex India store page, TW2P75800UJ",
+      "url": "https://shop.timexindia.com/products/timex-easy-reader-round-38mm-beige-dial-analog-men-watch-tw2p75800uj"
+    },
+    {
+      "label": "Timex product page, TW2P75800",
+      "url": "https://timex.com/products/easy-reader-38mm-leather-strap-watch-tw2p75800"
+    }
+  ],
+  "editors_pick": false,
+  "rating": null
+}

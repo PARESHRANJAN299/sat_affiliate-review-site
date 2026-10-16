@@ -7,7 +7,7 @@
 .cat-head-text { min-width: 0; }
 
 .cat-showcase {
-  position: absolute; top: 0; right: 0; z-index: -1; width: min(72%, 980px); height: min(440px, 100%);
+  position: absolute; top: 0; right: 0; z-index: -1; width: min(72%, 980px); height: min(340px, 100%);
   pointer-events: none; opacity: 0.62;
   -webkit-mask-image: radial-gradient(115% 105% at 100% 22%, #000 0%, rgba(0, 0, 0, 0.85) 34%, rgba(0, 0, 0, 0.34) 64%, transparent 90%);
   mask-image: radial-gradient(115% 105% at 100% 22%, #000 0%, rgba(0, 0, 0, 0.85) 34%, rgba(0, 0, 0, 0.34) 64%, transparent 90%);

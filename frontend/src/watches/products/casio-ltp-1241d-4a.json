@@ -1,0 +1,53 @@
+{
+  "id": "casio-ltp-1241d-4a",
+  "brand": "casio",
+  "model": "LTP-1241D-4A",
+  "gender": [
+    "women"
+  ],
+  "budget": "under-3000",
+  "styles": [
+    "analog",
+    "metal-strap"
+  ],
+  "dial_style": "Pink dial, date at 3 o'clock",
+  "strap": "Stainless steel band",
+  "case_size_mm": 26,
+  "water_resistance": "50 m",
+  "best_for": "Steel watch with a pink dial, listed for formal and casual occasions",
+  "verdict": "A steel watch with a 26 mm case, a pink dial and a date window, listed with 50 m water resistance.",
+  "paragraphs": [
+    "The store listing says the LTP-1241 models feature bright pastel colors for the face and a date indicator. This version has a pink dial, a stainless steel case and band, and a 26 mm case.",
+    "The listing gives the date at 3 o'clock, a mineral glass cover and 50 m water resistance. It lists the occasion as formal and casual.",
+    "The listing gives the strap colour as silver."
+  ],
+  "good": [
+    "26 mm case, per the listing",
+    "Date display at 3 o'clock, per the listing",
+    "Stainless steel case and band, per the listing",
+    "50 m water-resistance rating, per the listing"
+  ],
+  "not_good": [
+    "In our view, a 26 mm case is small",
+    "In our view, a pink dial will not suit everyone",
+    "The listing does not give the movement or the battery"
+  ],
+  "query": "Casio LTP-1241D-4A watch",
+  "merchants": {
+    "amazon": {
+      "url": ""
+    }
+  },
+  "sources": [
+    {
+      "label": "Casio India's authorised online store listing (casiostore.bhawar.com), LTP-1241D-4A",
+      "url": "https://casiostore.bhawar.com/products/casio-ltp-1241d-4adf-womens-watch"
+    },
+    {
+      "label": "Casio support notice (support.casio.in): redirects to Casio's new authorized and exclusive online store",
+      "url": "https://support.casio.in/redirect/redirect_to_casiostorebhawar"
+    }
+  ],
+  "editors_pick": false,
+  "rating": null
+}

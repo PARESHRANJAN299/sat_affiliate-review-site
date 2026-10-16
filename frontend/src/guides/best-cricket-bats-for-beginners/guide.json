@@ -2,155 +2,177 @@
   "slug": "best-cricket-bats-for-beginners",
   "title": "Best Cricket Bats for Beginners in India (2026)",
   "tag": "Cricket",
-  "summary": "Plain guide to 3 cricket bats for beginners in India: tennis ball, Kashmir willow and English willow. Not hand-tested; based on shop pages.",
-  "description": "Helps first-time buyers in India pick a cricket bat for tennis ball or leather ball. Three picks, from poplar to English willow.",
-  "lead": "Start with the ball you use and a bat you can handle comfortably. This comparison covers an adult tennis-ball model, a beginner-labelled Kashmir-willow leather-ball bat and an intermediate-labelled English-willow option. We checked the Decathlon India specifications, including a conflicting wood description, and have not played with these bats.",
+  "summary": "Three cricket bats for beginners in India from Cosco, SG and SS: tennis ball, Kashmir willow and English willow. Based on maker pages.",
+  "description": "Helps first-time buyers in India choose a cricket bat for tennis ball or leather ball. 3 picks from Cosco, SG and SS, with plain tips on wood, size and care.",
+  "lead": "Which cricket bat should a beginner buy in India? It depends on the ball you will play with. This guide has three picks from three Indian brands. One is a Cosco bat that the maker says is suitable for a cricket tennis ball. One is an SG Kashmir willow bat that the maker lists for a leather ball. One is an SS English willow bat. We read each maker's own product page and we say what those pages do not tell you. In our view, the Budget, Mid-range and Premium tags are a rough guide to the class of bat. For general advice we use Wikipedia and CHOICE (Australia), writing about junior bats, in a guide last updated in 2018.",
   "columns": [
-    "Ball type",
+    "Ball type (per maker)",
     "Wood",
-    "Size"
+    "Weight (per maker)"
   ],
   "picks": [
     {
-      "name": "Decathlon Adult Kashmir Poplar Wood Cricket Bat T900 Power, size SH (tennis ball)",
-      "label": "For tennis-ball play; check suitability",
+      "name": "Cosco Striker Cricket Bat (Kashmir willow, for tennis ball)",
+      "label": "Tennis ball, per maker",
       "tier": "Budget",
       "cells": [
         "Tennis ball",
-        "Wood description conflicts",
-        "SH; listed length 86 cm"
+        "Kashmir willow",
+        "Around 1144 g"
       ],
-      "verdict": "A tennis-ball option to inspect in person; confirm the conflicting wood description before buying.",
+      "verdict": "A Cosco bat that the maker says is suitable for a cricket tennis ball. The maker's page gives a weight, but not the length or handle details.",
       "paragraphs": [
-        "The T900 title identifies an adult SH tennis-ball bat in Kashmir poplar. Its technical section lists 86 cm, but a separate material field says Kashmir willow. That conflict needs confirmation from the seller; we would not present the wood as independently settled.",
-        "This listing is for tennis-ball cricket, not a substitute for a leather-ball bat. The page classifies the practice level as advanced, so it is not automatically a beginner’s choice. Check actual weight and pickup in person."
+        "Cosco's own store page for the Striker says it is made with a custom selected Kashmir willow and is suitable for a cricket tennis ball. The page lists sizes 4, 5, 6 and Full. It gives a weight of around 1144 grams. It does not say which size that weight is for. The maker says the bat is hand crafted by artisanal craftsmen to ensure good balance and light weight. That is the maker's claim.",
+        "The page does not give the length or handle details. The maker names the tennis ball only, and does not list this bat for a leather ball."
       ],
       "good": [
-        "Clearly identified as a tennis-ball model.",
-        "Adult SH sizing and a length are listed."
+        "The maker says it is suitable for a cricket tennis ball.",
+        "Four sizes are listed (4, 5, 6 and Full).",
+        "The page names the wood (Kashmir willow) and gives a weight of around 1144 g."
       ],
       "not_good": [
-        "The title and material field disagree on the wood.",
-        "The listed advanced level needs considering for a first bat."
+        "The page does not say which size the weight is for, and gives no length.",
+        "The page gives no handle details.",
+        "The maker names the tennis ball only and does not list it for a leather ball."
       ],
-      "search_query": "Decathlon T900 Power Kashmir poplar tennis ball cricket bat SH",
+      "search_query": "Cosco Striker Kashmir willow cricket tennis bat",
       "stores": [
-        "Decathlon"
-      ],
-      "product_url": "https://www.decathlon.in/p/8754614/kashmir-poplar-wood-t900-power-adult-cricket-tennis-ball-bat"
+        "Amazon"
+      ]
     },
     {
-      "name": "Decathlon Flx KW190 Adult Kashmir Willow Cricket Bat, size SH",
-      "label": "Suits most beginners (first leather-ball bat)",
+      "name": "SG Scorer Classic Kashmir Willow Cricket Bat",
+      "label": "Leather ball, per maker",
       "tier": "Mid-range",
       "cells": [
         "Leather ball",
         "Kashmir willow",
-        "SH, adult"
+        "1170 to 1220 g"
       ],
-      "verdict": "A beginner-labelled adult leather-ball option with a published weight limit; check pickup before choosing.",
+      "verdict": "A Kashmir willow bat that the maker lists for a leather ball, with a full-length cover and size and weight details. SG's page gives suitability as age 15+ and height 5 ft 6 in and above.",
       "paragraphs": [
-        "Decathlon identifies the KW190 as an adult SH Kashmir-willow leather-ball bat for beginners. A benefit entry gives a weight below 1,250 g. That is a limit, not the measured weight of the individual bat you receive.",
-        "This is the clearest beginner-labelled leather-ball option in this shortlist. The listing describes it as ready to play, but ask what preparation and maintenance are required for your exact bat. Choose by pickup and fit, not the wood name alone."
+        "SG's own store page lists the Scorer Classic as Kashmir willow, hard pressed and traditionally shaped. It gives the ball type as leather. The full-size bat is 33.7 inches (85.7 cm) long and weighs 1170 to 1220 g. The page also lists smaller sizes 3, 4, 5 and 6, with lengths of 72, 74, 78 and 80 cm, and an SH size of 85 cm.",
+        "The handle is Singapore cane with a special 3-way insertion of rubber between the splits. The maker describes it as a traditional round cane handle for supreme grip and overall bat control. The toe is flat. A full-length bat cover is included. SG's page gives suitability as age 15+ and height 5 ft 6 in and above."
       ],
       "good": [
-        "Beginner level is stated in the listing.",
-        "The page gives a weight limit below 1,250 g."
+        "The maker lists it for a leather ball.",
+        "Weight, length, handle and toe type are all stated on the maker's page.",
+        "A full-length bat cover is included, says the maker.",
+        "Smaller sizes are listed with their lengths."
       ],
       "not_good": [
-        "Individual bat weight and pickup can vary.",
-        "Confirm preparation and care instructions for the supplied bat."
+        "CHOICE says Kashmir willow is harder, denser and less springy than English willow.",
+        "In our view, at 1170 to 1220 g the full size may be heavy for a smaller player. CHOICE, writing about children's bats, says balance and pick-up matter more than weight.",
+        "SG's page gives suitability as age 15+ and height 5 ft 6 in and above."
       ],
-      "search_query": "Decathlon KW190 Kashmir willow cricket bat SH",
+      "search_query": "SG Scorer Classic Kashmir willow cricket bat",
       "stores": [
-        "Decathlon"
-      ],
-      "product_url": "https://www.decathlon.in/p/8937254/kashmir-willow-cricket-bat-kw-190-adult"
+        "Amazon"
+      ]
     },
     {
-      "name": "Decathlon Flx EW550 Adult English Willow Cricket Bat G5, size SH, with cover",
-      "label": "Suits serious beginners (starter English willow)",
+      "name": "SS Master-500 English Willow Cricket Bat",
+      "label": "English willow, per maker",
       "tier": "Premium",
       "cells": [
-        "Leather ball",
-        "English willow, grade G5",
-        "SH, with cover"
+        "Not stated on the page",
+        "English willow",
+        "Not stated on the page"
       ],
-      "verdict": "An intermediate-labelled English-willow option for regular leather-ball practice.",
+      "verdict": "An English willow bat from SS Cricket, made by Sareen Sports Industries per the page, with a cover. The maker's page does not give weight or ball type.",
       "paragraphs": [
-        "Decathlon lists the EW550 as an adult SH English-willow G5 leather-ball bat with a cover. Its benefit details give 1,150 ± 50 g for SH, and its practice level is intermediate.",
-        "It is an option to compare for regular leather-ball practice rather than a default first purchase. The G5 label belongs to this maker’s range; it does not prove how it compares with another brand’s grade. Ask about preparation before using a new willow bat."
+        "SS's official store page lists the Master-500 as English willow in a naturally patterned Butterfly Grade. The maker says the willow is air-dried and has straight, evenly spaced grains. It describes a modern design with concave edges, a rounded or flat toe and a cover. The page says it is manufactured, marketed and packed by Sareen Sports Industries, with an address in Meerut, India, and gives the country of origin as India. The only size shown is SH (short handle).",
+        "The page does not say which ball the bat is for, and it gives no weight or length. It does not say what Butterfly Grade means. It also does not say if the bat is knocked in or oiled. Wikipedia says bats require knocking-in to allow the soft fibres to strike a hard new cricket ball. CHOICE says a bat labelled pre-prepared or \"ready to play\" has had its initial knocking-in done. In our view, check with the seller or maker before you use it."
       ],
       "good": [
-        "A cover and a size-specific weight range are listed.",
-        "The listing identifies the wood and practice level."
+        "It is English willow, which CHOICE calls the best type.",
+        "The maker says the willow is air-dried and has straight, evenly spaced grains.",
+        "A cover is listed with the bat.",
+        "The page names the maker (Sareen Sports Industries, Meerut) and gives the country of origin as India."
       ],
       "not_good": [
-        "Intermediate positioning may be unnecessary for a casual first purchase.",
-        "Grade alone does not establish performance or value."
+        "No weight, length or ball type is stated on the page.",
+        "The page does not explain Butterfly Grade or say if the bat is ready to play.",
+        "Only the SH (short handle) size is listed."
       ],
-      "search_query": "Decathlon EW550 English willow cricket bat G5 SH",
+      "search_query": "SS Master 500 English willow cricket bat SH",
       "stores": [
-        "Decathlon"
-      ],
-      "product_url": "https://www.decathlon.in/p/8937266/ew-550-adult"
+        "Amazon"
+      ]
     }
   ],
   "choose": [
     {
-      "heading": "Choose for the ball you use",
-      "text": "Start with tennis-ball or leather-ball use. These are different buying decisions. Check the exact model’s intended ball type before comparing wood grades."
+      "heading": "Match the bat to the ball",
+      "text": "In our view, use the ball the maker names. Cosco says the Striker suits a tennis ball. SG lists the Scorer Classic for a leather ball. The SS page does not name a ball. Wikipedia says bats require knocking-in to allow the soft fibres to strike a hard new cricket ball."
     },
     {
-      "heading": "Try the pickup",
-      "text": "Two bats with similar stated weights can feel different in the hand. Try a controlled backlift and stance in a shop. Junior players need a suitable size, rather than automatically choosing adult SH."
+      "heading": "Kashmir willow or English willow",
+      "text": "CHOICE says English willow is the best type. It says Kashmir willow is harder and denser, less springy, and harder wearing, which is why many junior bats use it. Wikipedia takes a different view. It says Kashmir willow is the same species as English willow and says no evidence has been presented that the wood or finished product has different properties. It also says much of the English willow bat market consists of bats made in India from imported English willow blanks, and that it would be virtually impossible to detect counterfeit English willow bats made from Kashmir willow. In our view, read the wood line on the maker's page."
     },
     {
-      "heading": "Read conflicting fields carefully",
-      "text": "The T900 title says poplar while a material field says willow. Ask the seller to resolve that difference. Do not assume a product title is a complete specification."
+      "heading": "Size and fit",
+      "text": "CHOICE, writing about children's bats, says to take your batting stance with the toe of the bat resting against the outside of your back foot. The top of the handle should rest against the inside groin of your front leg. It warns against buying a bigger bat to grow into, as it could be too long or heavy and frustrate play. SG lists lengths of 72, 74, 78 and 80 cm for sizes 3 to 6, and 85 cm for SH."
     },
     {
-      "heading": "Check preparation and coverage",
-      "text": "Ask the maker or seller about knocking-in, care and warranty exclusions for the supplied bat. Keep those instructions with your receipt."
+      "heading": "Weight and pick-up",
+      "text": "CHOICE says the balance, pick-up and overall feel of a bat matter more than its weight. CHOICE, writing about children's bats, says to get your child to hold the bat at arm's length with their top hand, and that if they cannot hold it comfortably the bat is too heavy for them. Wikipedia also calls the pick-up, or weight distribution, of a bat important. Of our three picks, SG gives a weight range, Cosco gives one figure of around 1144 g, and SS gives none."
     },
     {
-      "heading": "Check the exact listing before paying",
-      "text": "Check the current seller listing for availability, delivery to your pincode, returns and warranty coverage before ordering."
+      "heading": "Knocking-in and oiling",
+      "text": "CHOICE says to lightly hit the face and edges of a new bat with an old leather ball or a bat mallet, to toughen the wood. It also says linseed oil helps protect the wood, but you can overdo it, so get expert advice. CHOICE says a bat labelled pre-prepared or \"ready to play\" has had its initial knocking-in done. Wikipedia describes the same two steps. None of the three maker pages we read says if its bat comes ready to play."
+    },
+    {
+      "heading": "Grades and size limits",
+      "text": "Wikipedia says bats with 8 or fewer grains on the face are held to be harder and take longer to play well, but also to last longer. Bats with 16 or more grains are held to be softer and more playable immediately, with a reduced lifespan. It calls 8 to 12 grains the commonly desired range. The SS page names a Butterfly Grade and does not explain it. For size limits, Wikipedia says the Laws allow a bat up to 38 inches (96.5 cm) long and 4.25 inches (10.8 cm) wide. In our view, check the model name, size and wood against the maker's page."
     }
   ],
   "faq": [
     {
       "q": "Can I use a tennis-ball bat with a leather ball?",
-      "a": "No. Tennis-ball bats are not made for leather balls. Use a leather-ball bat for a leather ball."
+      "a": "In our view, use the ball the maker names. Cosco names the tennis ball for the Striker and does not list it for a leather ball. Wikipedia says bats require knocking-in to allow the soft fibres to strike a hard new cricket ball."
     },
     {
       "q": "Is Kashmir willow or English willow better for a beginner?",
-      "a": "Choose intended use, fit and pickup first. The KW190 is beginner-labelled Kashmir willow; the EW550 is intermediate-labelled English willow. We have not play-tested either and do not infer quality from wood alone."
+      "a": "CHOICE calls English willow the best type. It says Kashmir willow is harder, denser and less springy, and harder wearing, and many junior bats use it. Wikipedia says no evidence has been presented that the wood or finished product has different properties. In our view, Kashmir willow is a reasonable first wood for a beginner."
     },
     {
       "q": "What size cricket bat should I buy?",
-      "a": "Use the maker’s size guidance and try the bat if possible. The shortlist contains adult SH models; children and shorter players may need a different size."
+      "a": "In our view, go by fit. CHOICE, writing about children's bats, says to rest the toe against your back foot, so the top of the handle reaches the inside groin of your front leg. It warns against buying a bigger bat to grow into, as it could be too long or heavy and frustrate play. SG's page gives suitability for the Scorer Classic as age 15+ and height 5 ft 6 in and above."
     },
     {
       "q": "Do I need to knock in a new bat?",
-      "a": "Follow the instructions for the exact bat. The KW190 description says ready to play, but that does not settle the preparation of every other willow bat. Ask the maker or seller before use."
+      "a": "CHOICE describes knocking-in the face and edges by lightly hitting them with an old leather ball or a bat mallet, and says a bat labelled pre-prepared or \"ready to play\" has had its initial knocking-in done. The maker pages we read do not say if their bats are ready to play. In our view, check with the seller or maker before you use one."
+    },
+    {
+      "q": "What do the grades on English willow bats mean?",
+      "a": "Wikipedia describes quality by the number of grains on the face. It says bats with 8 or fewer grains are held to be harder and take longer to play well, but also to last longer, and bats with 16 or more are held to be softer and more playable immediately, with a reduced lifespan. The SS page names Butterfly Grade but does not explain it. In our view, check what it means with the maker."
+    },
+    {
+      "q": "How long can a cricket bat be?",
+      "a": "Wikipedia says the Laws of Cricket allow a bat up to 38 inches (96.5 cm) long and 4.25 inches (10.8 cm) wide."
     }
   ],
   "sources": [
     {
-      "label": "Decathlon India: T900 Power Kashmir poplar tennis-ball bat",
-      "url": "https://www.decathlon.in/p/8754614/kashmir-poplar-wood-t900-power-adult-cricket-tennis-ball-bat",
-      "checked": "2026-10-16"
+      "label": "Cosco store: Cricket Bat Striker (Kashmir willow, tennis ball)",
+      "url": "https://store.cosco.in/products/cricket-bat-striker-full-1"
     },
     {
-      "label": "Decathlon India: KW190 Kashmir willow bat",
-      "url": "https://www.decathlon.in/p/8937254/kashmir-willow-cricket-bat-kw-190-adult",
-      "checked": "2026-10-16"
+      "label": "SG store: Scorer Classic Kashmir Willow Cricket Bat",
+      "url": "https://shop.teamsg.in/products/scorer-classic"
     },
     {
-      "label": "Decathlon India: EW550 English willow bat",
-      "url": "https://www.decathlon.in/p/8937266/ew-550-adult",
-      "checked": "2026-10-16"
+      "label": "SS Cricket: Master-500 English Willow Cricket Bat",
+      "url": "https://www.sstoncricket.com/products/master-500-cr-bat"
+    },
+    {
+      "label": "Wikipedia: Cricket bat",
+      "url": "https://en.wikipedia.org/wiki/Cricket_bat"
+    },
+    {
+      "label": "CHOICE (Australia): how to buy a junior cricket bat",
+      "url": "https://www.choice.com.au/health-and-body/diet-and-fitness/sportswear-and-shoes/buying-guides/junior-cricket-bats"
     }
   ],
   "published": "2026-10-15",
