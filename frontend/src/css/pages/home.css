@@ -68,6 +68,7 @@
   .home-row-2 .home-track { animation-direction: reverse; animation-duration: 85s; }
   .home-row-3 .home-track { animation-duration: 95s; }
   @keyframes home-drift { to { transform: translateX(calc(-50% - 7px)); } }
+  .home-hero.is-offscreen .home-track, body:has(.nav-backdrop.is-on) .home-track { animation-play-state: paused; }
 }
 
 .home-section-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 16px; }

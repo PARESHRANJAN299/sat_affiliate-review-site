@@ -6,7 +6,8 @@
   var box = document.querySelector('[data-cat-showcase]');
   if (!box) return;
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var saveData = navigator.connection && navigator.connection.saveData;
+  var conn = navigator.connection || {};
+  var saveData = conn.saveData || /^(slow-2g|2g|3g)$/.test(conn.effectiveType || '');
   var slides = [];
   try { slides = JSON.parse(box.getAttribute('data-slides') || '[]'); } catch (e) { slides = []; }
   if (!slides.length || saveData) return;
@@ -113,6 +114,6 @@
     new IntersectionObserver(function (entries) { visible = entries[0].isIntersecting; sync(); }).observe(box);
   }
 
-  var begin = function () { window.setTimeout(load, 800); };
+  var begin = function () { if (window.requestIdleCallback) window.requestIdleCallback(load, { timeout: 4000 }); else window.setTimeout(load, 1500); };
   if (document.readyState === 'complete') begin(); else window.addEventListener('load', begin);
 })();
