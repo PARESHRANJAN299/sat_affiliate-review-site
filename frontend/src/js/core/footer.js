@@ -2,6 +2,8 @@
   'use strict';
   var footer = document.querySelector('.site-footer');
   if (!footer) return;
+  var year = footer.querySelector('[data-footer-year]');
+  if (year) year.textContent = String(new Date().getFullYear());
   var groups = footer.querySelectorAll('.footer-group');
   var mobile = window.matchMedia('(max-width: 620px)');
   function syncGroups() {
