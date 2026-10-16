@@ -6,7 +6,7 @@
   var btn = document.createElement('button');
   btn.type = 'button';
   btn.className = 'to-top';
-  btn.setAttribute('aria-label', 'Back to top');
+  btn.setAttribute('aria-label', __('Back to top'));
   btn.innerHTML =
     '<svg class="to-top-ring" viewBox="0 0 44 44" aria-hidden="true"><circle class="to-top-track" cx="22" cy="22" r="20"/>' +
     '<circle class="to-top-bar" cx="22" cy="22" r="20" stroke-dasharray="' + CIRC + '" stroke-dashoffset="' + CIRC + '"/></svg>' +

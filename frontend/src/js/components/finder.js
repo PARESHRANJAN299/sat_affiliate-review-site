@@ -11,18 +11,18 @@
   };
   function choose(level, want) {
     if (level === 'new' && want === 'cost') {
-      return ['perfly', 'The cheapest way to try the sport. Fine for casual games, and you will likely outgrow it.'];
+      return ['perfly', __('The cheapest way to try the sport. Fine for casual games, and you will likely outgrow it.')];
     }
     if (level === 'new') {
-      return ['arcsaber', 'Light and forgiving, so it is easy to improve with.'];
+      return ['arcsaber', __('Light and forgiving, so it is easy to improve with.')];
     }
     if (level === 'strong' && want === 'power') {
-      return ['astrox', 'Built for hard smashes. It is stiff and heavy at the top, so it suits players with solid technique.'];
+      return ['astrox', __('Built for hard smashes. It is stiff and heavy at the top, so it suits players with solid technique.')];
     }
     if (level === 'regular' && want === 'power') {
-      return ['arcsaber', 'Balanced and light, a good fit for regular play. The Astrox has more smash power, but it is made for strong players.'];
+      return ['arcsaber', __('Balanced and light, a good fit for regular play. The Astrox has more smash power, but it is made for strong players.')];
     }
-    return ['arcsaber', 'Balanced and light, a good all-round choice for regular play.'];
+    return ['arcsaber', __('Balanced and light, a good all-round choice for regular play.')];
   }
   function value(name) {
     var el = root.querySelector('input[name="' + name + '"]:checked');
@@ -38,11 +38,11 @@
     var r = choose(level, want);
     var pick = picks[r[0]];
     out.innerHTML = '<strong></strong><p></p><a class="read-link"></a>';
-    out.querySelector('strong').textContent = 'We suggest: ' + pick.name;
-    out.querySelector('p').textContent = r[1] + ' This is a starting point, not a test result.';
+    out.querySelector('strong').textContent = __('We suggest: {name}', { name: pick.name });
+    out.querySelector('p').textContent = r[1] + ' ' + __('This is a starting point, not a test result.');
     var link = out.querySelector('a');
     link.href = '#' + pick.id;
-    link.textContent = 'Jump to this pick';
+    link.textContent = __('Jump to this pick');
     var heading = document.getElementById(pick.id);
     if (heading && heading.closest('.product-block')) heading.closest('.product-block').classList.add('is-match');
   }

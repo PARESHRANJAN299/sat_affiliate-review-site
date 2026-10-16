@@ -17,12 +17,12 @@
       navigator.share({ title: document.title, url: url }).catch(function () {});
     } else if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(url).then(function () {
-        say('Link copied');
+        say(__('Link copied'));
       }, function () {
-        window.prompt('Copy this link', url);
+        window.prompt(__('Copy this link'), url);
       });
     } else {
-      window.prompt('Copy this link', url);
+      window.prompt(__('Copy this link'), url);
     }
   });
 })();

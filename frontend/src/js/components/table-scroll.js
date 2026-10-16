@@ -7,7 +7,7 @@
     if (wrap.scrollWidth > wrap.clientWidth + 1) {
       wrap.setAttribute('tabindex', '0');
       wrap.setAttribute('role', 'region');
-      wrap.setAttribute('aria-label', 'Racket comparison table');
+      wrap.setAttribute('aria-label', __('Racket comparison table'));
     } else {
       wrap.removeAttribute('tabindex');
       wrap.removeAttribute('role');

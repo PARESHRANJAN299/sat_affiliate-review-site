@@ -322,3 +322,33 @@ nav.main-nav .category-menu a.mega-all:hover { text-decoration: underline; backg
   .mega-cols { grid-template-columns: 1fr; }
 }
 @media (prefers-reduced-motion: reduce) { .mega-more .ic { transition: none; } }
+
+
+/* ---------- language menu (desktop header), phone logo menu row, footer row ---------- */
+.lang-menu { position: relative; display: none; }
+@media (min-width: 720px) { .lang-menu { display: block; margin-left: 4px; } }
+.lang-menu > summary { display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 12px; color: #eef1f8; font-size: .86rem; font-weight: 700; list-style: none; cursor: pointer; background: rgba(255, 255, 255, 0.09); border-radius: 999px; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.14); }
+.lang-menu > summary::-webkit-details-marker { display: none; }
+.lang-menu > summary:hover { background: rgba(255, 255, 255, 0.16); }
+.lang-menu > summary .ic { width: 18px; height: 18px; }
+.lang-menu[open] > summary { background: rgba(255, 255, 255, 0.18); }
+.lang-list { position: absolute; right: 0; top: calc(100% + 8px); z-index: 80; min-width: 150px; margin: 0; padding: 6px; list-style: none; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 12px; box-shadow: 0 12px 28px rgba(7, 11, 20, .22); }
+.lang-list a { display: flex; align-items: center; min-height: 44px; padding: 0 12px; color: var(--color-text); font-weight: 600; border-radius: 8px; text-decoration: none; }
+.lang-list a:hover, .lang-list a[aria-current="true"] { background: var(--color-accent-soft); color: var(--color-primary-dark); text-decoration: none; }
+.mobile-site-links .lang-row { margin-top: 4px; padding-top: 4px; border-top: 1px solid var(--color-border); }
+.mobile-site-links .lang-row ~ .lang-row { margin-top: 0; padding-top: 0; border-top: 0; }
+.footer-lang { margin: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 14px; }
+.footer-lang a { color: #c9d0e2; font-weight: 600; text-decoration: none; padding: 4px 0; }
+.footer-lang a[aria-current="true"] { color: #fff; text-decoration: underline; text-underline-offset: 3px; }
+.footer-lang a:hover { color: #fff; }
+.site-header .lang-menu :focus-visible, .footer-lang :focus-visible { outline-color: var(--color-primary-light); }
+
+/* ---------- Hindi and Tamil: fonts, line height, no letter spacing ---------- */
+html[lang="hi"] { --font-sans: "Noto Sans Devanagari", "Kohinoor Devanagari", "Mangal", "Nirmala UI", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; --font-display: "Noto Serif Devanagari", "Kohinoor Devanagari", "Mangal", "Nirmala UI", Georgia, serif; }
+html[lang="ta"] { --font-sans: "Noto Sans Tamil", "Tamil Sangam MN", "Latha", "Nirmala UI", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; --font-display: "Noto Serif Tamil", "Tamil Sangam MN", "Latha", "Nirmala UI", Georgia, serif; }
+html[lang="hi"] body, html[lang="ta"] body { line-height: 1.8; }
+html[lang="ta"] body { line-height: 1.9; }
+html[lang="hi"] :where(h1, h2, h3, h4), html[lang="ta"] :where(h1, h2, h3, h4) { line-height: 1.35; letter-spacing: 0; }
+html[lang="hi"] *:not(.logo-mark):not(.logo-mark *), html[lang="ta"] *:not(.logo-mark):not(.logo-mark *) { letter-spacing: normal !important; text-transform: none !important; }
+html[lang="hi"] :where(p, li, a, span, button, summary, td, th, label), html[lang="ta"] :where(p, li, a, span, button, summary, td, th, label) { overflow-wrap: anywhere; word-break: normal; }
+html[lang="hi"] .btn, html[lang="ta"] .btn { line-height: 1.5; }

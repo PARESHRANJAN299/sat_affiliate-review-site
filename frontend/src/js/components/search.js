@@ -13,7 +13,12 @@
    'good cheap cheapest looking get give list please under below within upto less than max maximum budget price ' +
    'rs inr rupee rupees rupaye only around approx about her him ml kg kgs g gm gms cm mm l ltr litre litres mah gb pcs')
     .split(' ').forEach(function (w) { STOP[w] = 1; });
+  ('के का की में से और सबसे अच्छा अच्छी अच्छे बेस्ट खरीदें कम तक चाहिए दिखाएं ' +
+   'சிறந்த வாங்க மற்றும் உள்ள வேண்டும் காட்டு').split(' ').forEach(function (w) { STOP[w] = 1; });
   var SYN = {
+    'घड़ी': 'watch', 'घड़ियाँ': 'watch', 'घडी': 'watch', 'घड़ियां': 'watch', 'கடிகாரம்': 'watch', 'கடிகாரங்கள்': 'watch',
+    'पुरुष': 'men', 'पुरुषों': 'men', 'मर्द': 'men', 'आदमी': 'men', 'ஆண்': 'men', 'ஆண்கள்': 'men', 'ஆண்களுக்கு': 'men',
+    'महिला': 'women', 'महिलाओं': 'women', 'औरत': 'women', 'लड़की': 'women', 'लड़कियों': 'women', 'பெண்': 'women', 'பெண்கள்': 'women', 'பெண்களுக்கு': 'women',
     watches: 'watch', wristwatch: 'watch', wristwatches: 'watch', timepiece: 'watch', timepieces: 'watch',
     gents: 'men', gent: 'men', male: 'men', males: 'men', mens: 'men', man: 'men', boys: 'men', boy: 'men', guys: 'men',
     ladies: 'women', lady: 'women', female: 'women', females: 'women', womens: 'women', woman: 'women', girls: 'women', girl: 'women',
@@ -22,6 +27,8 @@
     tshirt: 'tshirt', tshirts: 'tshirt', tee: 'tshirt', tees: 'tshirt'
   };
   var UNITS = '(?:ml|g|gm|gms|kg|kgs|w|watt|watts|l|ltr|litre|litres|cm|mm|inch|inches|mah|gb|pcs|pack|piece|pieces)';
+  Object.keys(SYN).forEach(function (k) { var n = k.normalize('NFD'); if (n !== k) SYN[n] = SYN[k]; });
+  Object.keys(STOP).forEach(function (k) { var n = k.normalize('NFD'); if (n !== k) STOP[n] = 1; });
   var KIND_WEIGHT = { 'Product': 5, 'Watch list': 4.5, 'Product type': 3.2, 'Guide': 3, 'Brand': 2.4, 'Style': 2, 'Category': 2.2, 'FAQ': 1.6, 'Page': 1 };
   var KIND_HUE = { 'Product': 22, 'Watch list': 38, 'Product type': 212, 'Guide': 160, 'Brand': 340, 'Style': 285, 'Category': 262, 'FAQ': 190, 'Page': 200 };
   var KIND_ICON = {
@@ -36,6 +43,9 @@
     'Page': '<path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5M10 13h6M10 17h6"/>'
   };
   var uid = 0;
+  var LP = /^\/(hi|ta)(\/|$)/.test(location.pathname) ? '/' + location.pathname.split('/')[1] : '';
+  var INDIC = '\u0900-\u097f\u0b80-\u0bff\u200c\u200d';
+  var NONWORD = new RegExp('[^a-z0-9' + INDIC + ']+', 'g');
   var data = null;
   var loading = null;
 
@@ -57,8 +67,8 @@
     return w;
   }
   function words(text) {
-    var clean = String(text).toLowerCase().replace(/(\d),(?=\d)/g, '$1')
-      .replace(/['’]s\b/g, '').replace(/\bt[\s-]+shirts?\b/g, 'tshirt').replace(/[^a-z0-9]+/g, ' ').trim();
+    var clean = String(text).normalize('NFD').toLowerCase().replace(/(\d),(?=\d)/g, '$1')
+      .replace(/['’]s\b/g, '').replace(/\bt[\s-]+shirts?\b/g, 'tshirt').replace(NONWORD, ' ').trim();
     if (!clean) return [];
     return clean.split(' ').map(stem);
   }
@@ -86,7 +96,7 @@
     return Math.round(n);
   }
   function parseQuery(raw) {
-    var q = ' ' + String(raw).toLowerCase().replace(/(\d),(?=\d)/g, '$1') + ' ';
+    var q = ' ' + String(raw).normalize('NFD').toLowerCase().replace(/(\d),(?=\d)/g, '$1') + ' ';
     var budget = null, min = null;
     var cur = '(?:₹|rs\\.?|inr)?\\s*';
     var amount = '(\\d+(?:\\.\\d+)?)\\s*(k|thousand|lakh|lac|l)?(?![a-z0-9])';
@@ -97,6 +107,7 @@
       { re: new RegExp('(?:₹|(?:^|[^a-z])rs\\.?|(?:^|[^a-z])inr)\\s*' + amount), type: 'max' },
       { re: new RegExp('(?:^|[^a-z0-9.])(\\d+(?:\\.\\d+)?)\\s*(k|thousand|lakh|lac)?\\s*(?:rupees?|rs|inr)(?![a-z])'), type: 'max' },
       { re: /(?:^|[^a-z0-9.])(\d+(?:\.\d+)?)\s*(k|thousand|lakh|lac)(?![a-z0-9])/, type: 'max' },
+      { re: new RegExp('(?:^|[^a-z0-9.])(\\d+(?:\\.\\d+)?)\\s*(k|thousand|lakh|lac)?\\s*(?:\u0938\u0947 \u0915\u092e|\u0915\u0947 \u0905\u0902\u0926\u0930|\u0915\u0947 \u092d\u0940\u0924\u0930|\u0924\u0915|\u0b95\u0bcd\u0b95\u0bc1\u0bb3\u0bcd|\u0b95\u0bc1\u0bb3\u0bcd|\u0b95\u0bcd\u0b95\u0bc1 \u0b95\u0bc0\u0bb4\u0bcd|\u0b95\u0bc0\u0bb4\u0bcd|\u0bb5\u0bb0\u0bc8)'), type: 'max' },
       { re: new RegExp('(?:^|[\\s(/\\-])(\\d{3,7})(?![a-z0-9.])()(?!\\s*' + UNITS + '(?![a-z]))'), type: 'max' }
     ];
     for (var i = 0; i < forms.length; i++) {
@@ -211,7 +222,7 @@
         return p.tokens.every(function (t) { return tokenScore(t, e) > 0; });
       }).sort(function (a, b) { return a.m - b.m; });
       if (cheapest.length) {
-        out.note = 'Nothing is listed under ' + rupees(p.budget) + ' yet. The closest list starts at ' + rupees(cheapest[0].m) + '.';
+        out.note = __('Nothing is listed under {budget} yet. The closest list starts at {start}.', { budget: rupees(p.budget), start: rupees(cheapest[0].m) });
         out.items = cheapest.filter(function (e) { return e.m === cheapest[0].m; }).map(function (e) { return { e: e, s: 1 }; });
       }
     }
@@ -227,12 +238,12 @@
   function highlight(text, p) {
     var raw = String(text);
     var parts = {};
-    String(p.raw).toLowerCase().split(/[^a-z0-9]+/).forEach(function (w) { if (w.length > 1 && !STOP[w] && !isNum(w)) parts[w] = 1; });
+    String(p.raw).toLowerCase().split(NONWORD).forEach(function (w) { if (w.length > 1 && !STOP[w] && !isNum(w)) parts[w] = 1; });
     p.tokens.forEach(function (w) { if (!isNum(w)) parts[w] = 1; });
     var list = Object.keys(parts).sort(function (a, b) { return b.length - a.length; })
       .map(function (w) { return w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); });
     if (!list.length) return esc(raw);
-    var re = new RegExp('(^|[^a-z0-9])(' + list.join('|') + ')', 'ig');
+    var re = new RegExp('(^|[^a-z0-9' + INDIC + '])(' + list.join('|') + ')', 'ig');
     var out = '', last = 0, m;
     while ((m = re.exec(raw))) {
       var start = m.index + m[1].length;
@@ -243,11 +254,11 @@
   }
   function resultHtml(r, id, p) {
     var e = r.e;
-    var sub = [e.k];
+    var sub = [__(e.k)];
     if (e.c && e.c !== e.t) sub.push(e.c);
     var chips = '';
-    if (e.m) chips += '<span class="sx-pill">Up to ' + rupees(e.m) + '</span>';
-    if (e.s) chips += '<span class="sx-pill sx-pill-soon">Being researched</span>';
+    if (e.m) chips += '<span class="sx-pill">' + esc(__('Up to {n}', { n: rupees(e.m) })) + '</span>';
+    if (e.s) chips += '<span class="sx-pill sx-pill-soon">' + esc(__('Being researched')) + '</span>';
     return '<li role="presentation"><a class="sx-row" role="option" id="' + id + '" href="' + esc(e.u) + '" tabindex="-1" aria-selected="false">' +
       iconTile(e.k) +
       '<span class="sx-text"><span class="sx-title">' + highlight(e.t, p) + '</span>' +
@@ -257,10 +268,10 @@
   }
   function readingOf(p) {
     var bits = [];
-    if (p.min !== null && p.budget !== null) bits.push(rupees(p.min) + ' to ' + rupees(p.budget));
-    else if (p.budget !== null) bits.push('up to ' + rupees(p.budget));
-    else if (p.min !== null) bits.push('above ' + rupees(p.min));
-    if (p.gender) bits.push(p.gender === 'men' ? 'men' : 'women');
+    if (p.min !== null && p.budget !== null) bits.push(__('{a} to {b}', { a: rupees(p.min), b: rupees(p.budget) }));
+    else if (p.budget !== null) bits.push(__('up to {n}', { n: rupees(p.budget) }));
+    else if (p.min !== null) bits.push(__('above {n}', { n: rupees(p.min) }));
+    if (p.gender) bits.push(p.gender === 'men' ? __('men') : __('women'));
     return bits;
   }
 
@@ -272,16 +283,16 @@
     this.listId = 'sx-list-' + n;
     host.innerHTML =
       '<div class="sx-panel">' +
-      '<form class="sx-form" role="search" action="/search/" method="get">' +
+      '<form class="sx-form" role="search" action="' + LP + '/search/" method="get">' +
       '<svg class="sx-lens" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.5-4.5"/></svg>' +
       '<input class="sx-input" type="search" name="q" role="combobox" aria-expanded="false" aria-controls="' + this.listId + '"' +
-      ' aria-autocomplete="list" aria-label="Search SAT" placeholder="Search products, guides, categories" autocomplete="off"' +
+      ' aria-autocomplete="list" aria-label="' + esc(__('Search SAT')) + '" placeholder="' + esc(__('Search products, guides, categories')) + '" autocomplete="off"' +
       ' autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="search" maxlength="80">' +
-      '<button class="sx-clear" type="button" aria-label="Clear search" hidden><svg class="sx-ic" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>' +
+      '<button class="sx-clear" type="button" aria-label="' + esc(__('Clear search')) + '" hidden><svg class="sx-ic" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>' +
       '</form>' +
       '<div class="sx-read" aria-hidden="true" hidden></div>' +
       '<p class="sx-status" role="status" aria-live="polite"></p>' +
-      '<ul class="sx-list" id="' + this.listId + '" role="listbox" aria-label="Search results" hidden></ul>' +
+      '<ul class="sx-list" id="' + this.listId + '" role="listbox" aria-label="' + esc(__('Search results')) + '" hidden></ul>' +
       '<div class="sx-home"></div>' +
       '</div>';
     this.form = host.querySelector('.sx-form');
@@ -304,7 +315,7 @@
       var target = links[self.active >= 0 ? self.active : 0];
       if (target) { window.location.href = target.getAttribute('href'); return; }
       var q = self.input.value.trim();
-      if (q && !self.opts.inline) window.location.href = '/search/?q=' + encodeURIComponent(q);
+      if (q && !self.opts.inline) window.location.href = LP + '/search/?q=' + encodeURIComponent(q);
     });
     this.input.addEventListener('keydown', function (e) { self.keys(e); });
     this.home.addEventListener('click', function (e) {
@@ -364,7 +375,7 @@
   };
   Panel.prototype.stopTyping = function () {
     if (this.typing) { clearTimeout(this.typing); this.typing = null; }
-    this.input.placeholder = 'Search products, guides, categories';
+    this.input.placeholder = __('Search products, guides, categories');
   };
   // the placeholder tries example searches, so people see what to type
   Panel.prototype.startTyping = function () {
@@ -375,7 +386,7 @@
       if (self.input.value || !self.typing) return;
       var full = data.ex[i % data.ex.length];
       c += del ? -1 : 1;
-      self.input.placeholder = 'Try “' + full.slice(0, c) + '”';
+      self.input.placeholder = __('Try “{q}”', { q: full.slice(0, c) });
       var wait = 70;
       if (!del && c === full.length) { del = true; wait = 1500; }
       else if (del && c === 0) { del = false; i++; wait = 350; }
@@ -387,7 +398,7 @@
   Panel.prototype.renderHome = function () {
     var self = this;
     var groups = data.kw || [];
-    if (!groups.length) { this.home.innerHTML = '<p class="sx-fine">Searches run in your browser.</p>'; return; }
+    if (!groups.length) { this.home.innerHTML = '<p class="sx-fine">' + esc(__('Searches run in your browser.')) + '</p>'; return; }
     if (!this.tab) this.tab = groups[0].id;
     var cur = groups[0];
     groups.forEach(function (g) { if (g.id === self.tab) cur = g; });
@@ -399,14 +410,14 @@
     var chips = cur.q.map(function (q, i) {
       return '<button type="button" class="sx-chip" data-q="' + esc(q) + '" style="--i:' + i + '"><span class="sx-chip-dot" aria-hidden="true"></span>' + esc(q) + '</button>';
     }).join('');
-    var more = cur.url ? '<a class="sx-more" href="' + esc(cur.url) + '">Open ' + esc(cur.name || cur.label) +
+    var more = cur.url ? '<a class="sx-more" href="' + esc(cur.url) + '">' + esc(__('Open {name}', { name: cur.name || cur.label })) +
       '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>' : '';
     this.home.innerHTML =
-      '<p class="sx-label">Browse by category</p>' +
-      '<div class="sx-tabs" role="tablist" aria-label="Browse by category">' + tabs + '</div>' +
-      '<p class="sx-label sx-label-tight">' + (cur.id === 'popular' ? 'Popular searches' : 'Search ideas in ' + esc(cur.name || cur.label)) + '</p>' +
+      '<p class="sx-label">' + esc(__('Browse by category')) + '</p>' +
+      '<div class="sx-tabs" role="tablist" aria-label="' + esc(__('Browse by category')) + '">' + tabs + '</div>' +
+      '<p class="sx-label sx-label-tight">' + (cur.id === 'popular' ? esc(__('Popular searches')) : esc(__('Search ideas in {name}', { name: cur.name || cur.label }))) + '</p>' +
       '<div class="sx-kw" style="--hue:' + cur.hue + '">' + chips + '</div>' + more +
-      '<p class="sx-fine">Searches run in your browser.</p>';
+      '<p class="sx-fine">' + esc(__('Searches run in your browser.')) + '</p>';
   };
   Panel.prototype.pickTab = function (id, focus) {
     this.tab = id;
@@ -423,7 +434,7 @@
     this.clear.hidden = !raw;
     if (this.opts.onQuery) this.opts.onQuery(trimmed);
     if (!data) {
-      this.status.textContent = 'Loading…';
+      this.status.textContent = __('Loading…');
       load().then(function () { self.run(); }, function () { failed(self); });
       return;
     }
@@ -444,19 +455,19 @@
     var bits = readingOf(p);
     var chips = [];
     if (p.budget !== null || p.min !== null) {
-      var money = p.min !== null && p.budget !== null ? rupees(p.min) + ' to ' + rupees(p.budget)
-        : (p.budget !== null ? 'Up to ' + rupees(p.budget) : 'Above ' + rupees(p.min));
-      chips.push('<span class="sx-read-chip sx-read-money">' + money + '</span>');
+      var money = p.min !== null && p.budget !== null ? __('{a} to {b}', { a: rupees(p.min), b: rupees(p.budget) })
+        : (p.budget !== null ? __('Up to {n}', { n: rupees(p.budget) }) : __('Above {n}', { n: rupees(p.min) }));
+      chips.push('<span class="sx-read-chip sx-read-money">' + esc(money) + '</span>');
     }
-    if (p.gender) chips.push('<span class="sx-read-chip">' + (p.gender === 'men' ? 'Men' : 'Women') + '</span>');
-    this.read.innerHTML = chips.length ? '<span class="sx-read-label">Showing</span>' + chips.join('') : '';
+    if (p.gender) chips.push('<span class="sx-read-chip">' + esc(p.gender === 'men' ? __('Men') : __('Women')) + '</span>');
+    this.read.innerHTML = chips.length ? '<span class="sx-read-label">' + esc(__('Showing')) + '</span>' + chips.join('') : '';
     this.read.hidden = !chips.length;
     if (!res.items.length) {
       this.list.hidden = true; this.list.innerHTML = '';
       this.input.setAttribute('aria-expanded', 'false');
       this.input.removeAttribute('aria-activedescendant');
       this.active = -1;
-      this.status.textContent = 'No match for “' + trimmed + '”.';
+      this.status.textContent = __('No match for “{q}”.', { q: trimmed });
       this.status.classList.remove('is-note');
       this.home.hidden = false;
       this.renderHome();
@@ -465,11 +476,11 @@
     this.list.innerHTML = res.items.map(function (r, i) { return resultHtml(r, self.listId + '-' + i, p); }).join('');
     this.list.hidden = false;
     this.input.setAttribute('aria-expanded', 'true');
-    var count = res.items.length + (res.items.length === 1 ? ' result' : ' results');
+    var count = res.items.length === 1 ? __('1 result') : __('{n} results', { n: res.items.length });
     var text;
     if (res.note) text = res.note;
-    else if (res.related) text = 'Closest matches';
-    else text = count + (p.fixes.length ? ' for “' + p.fixes.join(' ') + '”' : '') + (bits.length ? ', ' + bits.join(', ') : '');
+    else if (res.related) text = __('Closest matches');
+    else text = count + (p.fixes.length ? ' ' + __('for “{q}”', { q: p.fixes.join(' ') }) : '') + (bits.length ? ', ' + bits.join(', ') : '');
     this.status.textContent = text;
     this.status.classList.toggle('is-note', !!res.note || res.related);
     this.setActive(0, false);
@@ -495,7 +506,7 @@
     return loading;
   }
   function failed(panel) {
-    panel.status.textContent = 'Search could not load. Please try again.';
+    panel.status.textContent = __('Search could not load. Please try again.');
   }
 
   // ---------- the /search/ page ----------
@@ -541,9 +552,9 @@
     overlay.className = 'sx-overlay';
     overlay.hidden = true;
     overlay.innerHTML = '<div class="sx-scrim" data-close></div>' +
-      '<div class="sx-dialog" role="dialog" aria-modal="true" aria-label="Search SAT" tabindex="-1">' +
+      '<div class="sx-dialog" role="dialog" aria-modal="true" aria-label="' + esc(__('Search SAT')) + '" tabindex="-1">' +
       '<div class="sx-dialog-head"><span class="sx-grab" aria-hidden="true"></span>' +
-      '<button type="button" class="sx-close" data-close aria-label="Close search"><svg class="sx-ic" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>' +
+      '<button type="button" class="sx-close" data-close aria-label="' + esc(__('Close search')) + '"><svg class="sx-ic" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>' +
       '<div class="sx-host"></div></div>';
     document.body.appendChild(overlay);
     dialog = overlay.querySelector('.sx-dialog');

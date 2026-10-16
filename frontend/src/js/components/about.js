@@ -12,9 +12,9 @@
     copy.hidden = false;
     copy.addEventListener('click', function () {
       navigator.clipboard.writeText(email.textContent.trim()).then(function () {
-        copy.textContent = 'Copied \u2713';
-        if (status) status.textContent = 'Email address copied';
-        window.setTimeout(function () { copy.textContent = 'Copy email'; if (status) status.textContent = ''; }, 2200);
+        copy.textContent = __('Copied') + ' \u2713';
+        if (status) status.textContent = __('Email address copied');
+        window.setTimeout(function () { copy.textContent = __('Copy email'); if (status) status.textContent = ''; }, 2200);
       });
     });
   }
