@@ -11,6 +11,8 @@
   var slides = [];
   try { slides = JSON.parse(box.getAttribute('data-slides') || '[]'); } catch (e) { slides = []; }
   if (!slides.length || saveData) return;
+  // on phones the picture stays still: no extra downloads and no controls over the title
+  if (window.matchMedia && window.matchMedia('(max-width: 719px)').matches) return;
 
   var label = box.getAttribute('data-label') || 'Category';
   box.setAttribute('role', 'group');

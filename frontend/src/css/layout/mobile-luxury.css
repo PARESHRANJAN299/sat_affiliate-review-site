@@ -1,0 +1,47 @@
+/* Phone polish: champagne gold, deep navy and warm paper. Pure CSS, loaded after mobile-compact so it only refines what is already there. */
+@media (max-width: 719px) {
+  body { background: linear-gradient(180deg, #fbf9f6 0%, #f8f2e8 100%); -webkit-tap-highlight-color: transparent; }
+
+  /* header: a fine gold line under the dark bar */
+  .site-header { border-bottom: 1px solid rgba(201, 164, 92, 0.45); }
+
+  /* type: calmer, more editorial headings with a short gold rule */
+  .content-page h1, .home-section-head h2, .home-approach h2 { letter-spacing: -0.015em; }
+  .content-page h2 { position: relative; padding-top: 14px; }
+  .content-page h2::before { content: ""; position: absolute; top: 0; left: 0; width: 30px; height: 2px; background: linear-gradient(90deg, var(--gold), rgba(201, 164, 92, 0)); }
+  .home-section-head h2::after { content: ""; display: block; width: 30px; height: 2px; margin-top: 7px; background: linear-gradient(90deg, var(--gold), rgba(201, 164, 92, 0)); }
+  .breadcrumb { color: #7a6f60; }
+
+  /* buttons: pill shape, tall touch target, soft glow, press feedback */
+  .btn { min-height: 48px; border-radius: 999px; font-weight: 700; letter-spacing: 0.01em; transition: transform 0.15s ease, box-shadow 0.2s ease; }
+  .btn:active { transform: scale(0.97); }
+  .btn-primary { background: linear-gradient(135deg, #d9561f, #b03a0c); box-shadow: 0 10px 24px -6px rgba(194, 65, 12, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.28); }
+  .btn-outline { background: #fff; border-color: rgba(201, 164, 92, 0.7); }
+  .btn-small { min-height: 44px; }
+
+  /* home hero */
+  .home-hero-content::before { content: ""; display: block; width: 46px; height: 2px; margin: 0 auto 16px; background: linear-gradient(90deg, rgba(201, 164, 92, 0), #e7c987, rgba(201, 164, 92, 0)); }
+  .home-hero h1 { letter-spacing: -0.02em; }
+  .home-description { color: #e3e8f3; }
+  .home-hero::after { background: radial-gradient(420px 260px at 50% 0%, rgba(201, 164, 92, 0.22), transparent 70%), radial-gradient(420px 240px at 50% 110%, rgba(194, 65, 12, 0.4), transparent 70%); }
+
+  /* category strip: swipe sideways, thumbnails ringed in gold */
+  .home-cat-strip { flex-wrap: nowrap; overflow-x: auto; scroll-snap-type: x proximity; gap: 10px; padding: 4px 16px 10px; margin: 0 -16px; scrollbar-width: none; }
+  .home-cat-strip::-webkit-scrollbar { display: none; }
+  .home-cat-strip > li { flex: none; scroll-snap-align: start; }
+  .home-cat-strip a { min-height: 52px; background: #fff; border: 1px solid rgba(201, 164, 92, 0.5); box-shadow: 0 6px 16px -8px rgba(60, 40, 10, 0.35); }
+  .home-cat-strip img { box-shadow: 0 0 0 2px #fff, 0 0 0 3.5px var(--gold); }
+
+  /* guide chips */
+  .home-guide, .chip { min-height: 46px; padding: 0 16px; background: #fff; border-color: rgba(201, 164, 92, 0.5); box-shadow: 0 4px 12px -6px rgba(60, 40, 10, 0.3); }
+
+  /* cards and boxes: softer corners, gold hairline, layered shadow */
+  .article-card, .directory-card, .product-block, .pick-slot, .beauty-review, .tile, .about-card, .cover-card {
+    border-radius: 18px; border: 1px solid rgba(201, 164, 92, 0.32); box-shadow: 0 1px 2px rgba(60, 40, 10, 0.05), 0 14px 28px -18px rgba(60, 40, 10, 0.35);
+  }
+  .method-note, .family-status, .affiliate-box { background: var(--champagne); border: 1px solid rgba(201, 164, 92, 0.45); border-left: 4px solid var(--gold); border-radius: 14px; }
+  .compare-table-wrap { border-radius: 16px; border: 1px solid rgba(201, 164, 92, 0.35); }
+
+  /* footer: gold line instead of the plain grey rule */
+  footer.site-footer { border-top-color: rgba(201, 164, 92, 0.5); }
+}
