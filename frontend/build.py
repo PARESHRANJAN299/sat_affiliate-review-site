@@ -370,6 +370,11 @@ def category_banner(cat):
             f'<img class="is-on" src="{esc(urls[0])}" alt="" width="800" height="480" decoding="async"></div>')
 
 
+def lower_name(name):
+    """A product type name inside a sentence: lower case, but keep Gen Z as a proper noun."""
+    return name.lower().replace("gen z", "Gen Z")
+
+
 def cat_section_class(cat):
     """The section around a category page header gets has-banner when the category has banner pictures (the picture sits behind the header)."""
     return "section has-banner" if category_banner(cat) else "section"
@@ -506,6 +511,8 @@ def tag_outbound_links(text):
         host = (parts.hostname or "").lower()
         if parts.scheme not in ("http", "https"):
             return tag
+        if host.startswith("affiliate-program."):
+            return tag  # Amazon's own programme pages: not a shop link, never tagged
         if host == "amazon.in" or host.endswith(".amazon.in"):
             tag = tag.replace(hm.group(0), f' href="{esc(affiliate_url("amazon", href))}"', 1)
         if 'target="_blank"' in tag and 'data-source="1"' not in tag and not any(h in host for h in ("wa.me", "linkedin.com", "instagram.com")):
@@ -691,7 +698,7 @@ def beauty_family_body(cat, f, products, sibling_cards):
     return (
         '<section class="section">\n  <div class="container content-page family-page">\n'
         '    {{breadcrumb}}\n'
-        f'    <p class="family-kicker">{esc(kicker)}</p>\n    <h1>{esc(f["h1"] if products else f["name"] + " Buying Guide")}</h1>\n    <p class="lead">{esc(live_intro(f["intro"], bool(products)))}</p>\n'
+        f'    <p class="family-kicker">{esc(kicker)}</p>\n    <h1>{esc(f["h1"] if products else f["name"] + " Buying Advice")}</h1>\n    <p class="lead">{esc(live_intro(f["intro"], bool(products)))}</p>\n'
         f'    {status}\n'
         f'    <h2>Start with what you need</h2>\n    <ul class="family-tips">{needs}</ul>\n'
         f'    {picks}\n'
@@ -800,7 +807,7 @@ def beauty_pages(cat):
         sib = "".join(f'<li><a href="{esc(e["url"])}">{esc(e["name"])}</a></li>' for e, g in zip(entries, cat["families"]) if e["slug"] != f["slug"] and g.get("section") == f.get("section"))
         sib += f'<li><a href="{esc(cat["url"])}">All {esc(cat["name"])}</a></li>'
         pages.append({
-            "url": url, "title": f["h1"] if products else f["name"] + " Buying Guide", "description": f["meta"] if products else f'What to compare when choosing {f["name"].lower()}: practical buying tips and common questions.',
+            "url": url, "title": f["h1"] if products else f["name"] + " Buying Advice", "description": f["meta"] if products else f'What to compare when choosing {lower_name(f["name"])}: practical buying advice and common questions.',
             "css": ["buttons", "breadcrumb", "content-page", "faq", "watches", "families"]
                    + (["compare-table", "product-block", "product-listing"] if products else []),
             "js": ["product-listing"] if products else [],
@@ -907,7 +914,7 @@ def family_pages():
             others = [e for e, g in zip(entries, cat["families"]) if g["section"] == f["section"] and g["slug"] != f["slug"]][:4]
             related = "".join(f'<li><a href="{esc(e["url"])}">{esc(e["name"])}</a></li>' for e in others)
             product_section = family_products_html(cat, f, products) if products else ("" if guides else published_guides_help())
-            page_title = f["h1"] if products or guides else f["name"] + " Buying Guide"
+            page_title = f["h1"] if products else f["name"] + " Buying Advice"
             body = (
                 '<section class="section">\n  <div class="container content-page family-page">\n'
                 '    {{breadcrumb}}\n'
@@ -1008,6 +1015,15 @@ def category_chips(current_url):
     return '<nav class="chips" aria-label="Product categories">' + "".join(links) + "</nav>"
 
 
+OFFICIAL_AMAZON_SECTION = (
+    '    <h2>Official Amazon programme information</h2>\n'
+    '    <p>These pages belong to Amazon and explain the rules of its affiliate programme. We link to them so you can read the rules yourself. Linking to them does not mean Amazon has approved, reviewed or endorses SAT.</p>\n'
+    '    <ul>\n'
+    '      <li><a href="https://affiliate-program.amazon.in/help/operating/agreement" rel="noopener">Amazon Associates Program Operating Agreement (India)</a>, which includes the statement affiliates must show</li>\n'
+    '      <li><a href="https://affiliate-program.amazon.in/help/operating/participation" rel="noopener">Associates Program Participation Requirements (India)</a></li>\n'
+    '    </ul>\n')
+
+
 def affiliate_disclosure_body():
     """Disclosure text follows the real status (affiliate_active and amazon_tracking_id in site.config.json)."""
     if not CONFIG.get("affiliate_active"):
@@ -1023,13 +1039,15 @@ def affiliate_disclosure_body():
             '      <li>this will not increase the price paid by the customer</li>\n'
             '      <li>our picks will still come from our own research</li>\n'
             '    </ul>\n'
+            + OFFICIAL_AMAZON_SECTION +
             '    <h2>Questions</h2>\n'
             '    <p>Write to <a href="mailto:' + esc(CONFIG["contact_email"]) + '">' + esc(CONFIG["contact_email"]) + '</a>.</p>')
     amazon = (f'    <p>{ASSOCIATE_SENTENCE}</p>\n' if associate_on() else "")
     return (
         '    <p class="lead">Some links on this website are affiliate links.</p>\n'
         '    <p>If you buy through an affiliate link, SAT may earn a commission from qualifying purchases. This does not increase the price you pay. Our picks come from our own research, not from the commission.</p>\n'
-        + amazon +
+        + amazon
+        + OFFICIAL_AMAZON_SECTION +
         '    <p>Affiliate links are marked near the links. Questions: <a href="mailto:' + esc(CONFIG["contact_email"]) + '">' + esc(CONFIG["contact_email"]) + '</a>.</p>')
 
 
@@ -1182,7 +1200,7 @@ def category_menu(item, current_url=None):
             n = 0
         families = c.get("families") or []
         meta = (f"{len(families)} product types" if families else
-                (f"{n} guides" if n > 1 else ("1 guide" if n == 1 else "Coming soon")))
+                (f"{n} guides" if n > 1 else ("1 guide" if n == 1 else "Buying advice")))
         if families:
             n = len(families)
         soon = "" if n else " is-soon"
@@ -1193,9 +1211,9 @@ def category_menu(item, current_url=None):
                 + col("By price", m.get("price", [])) + col("By brand", m.get("brand", [])) + col("By style", m.get("feature", [])))
         if m.get("soon"):
             names = "".join(f'<li><a href="{esc(u)}">{esc(n)}</a></li>' for n, u in m["soon"][:20])
-            cols += f'<div class="mega-col mega-soon"><p class="mega-title">Researching now</p><ul>{names}</ul></div>'
+            cols += f'<div class="mega-col mega-soon"><p class="mega-title">Buying advice</p><ul>{names}</ul></div>'
         if not cols:
-            cols = '<div class="mega-col"><p class="mega-title">Coming soon</p><ul><li><a href="/how-we-pick/">How we pick</a></li></ul></div>'
+            cols = '<div class="mega-col"><p class="mega-title">Buying advice</p><ul><li><a href="/how-we-pick/">How we pick</a></li></ul></div>'
         panel = (f'<div class="mega-panel" id="mega-{esc(c["slug"])}"><div class="mega-cols">{cols}</div>'
                  f'<a class="mega-all" href="{c["url"]}">View all {esc(c["name"])} <svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></a></div>')
         rows.append(
@@ -1959,6 +1977,8 @@ def governance_report():
             host = (urllib.parse.urlsplit(href).hostname or "").lower()
             if host in ("amzn.to", "amzn.in", "bit.ly", "tinyurl.com", "t.co", "goo.gl", "is.gd"):
                 short.append(url)
+            if host.startswith("affiliate-program."):
+                continue
             if host == "amazon.in" or host.endswith(".amazon.in"):
                 has_amz = True; amazon_links += 1
                 q = dict(urllib.parse.parse_qsl(urllib.parse.urlsplit(href).query))

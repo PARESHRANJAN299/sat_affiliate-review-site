@@ -83,7 +83,7 @@
       types.forEach(function (b) { b.hidden = words(b.getAttribute('data-types')).indexOf(code) === -1; });
       if (heading) {
         var label = tabs.filter(function (t) { return t.getAttribute('data-seg') === code; })[0];
-        heading.textContent = (label ? label.textContent + ': p' : 'P') + 'roducts are being researched';
+        heading.textContent = (label ? label.textContent + ': b' : 'B') + 'uying advice';
       }
     }
     bindTabKeys(tabs, select);

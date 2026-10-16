@@ -472,10 +472,10 @@ class Kit:
                 for code, name in seg_values)
             tabs = f'<div class="pl-tabs" role="tablist" hidden>{tab_btns}</div>\n'
         types = self._type_chips(type_chips, seg_values) if type_chips else ""
-        text = soon_text or ("We add a product only after we have read the maker's page and the shop listings. "
+        text = soon_text or ("This is buying advice. We add a specific product only after we have read the maker's own page. "
                              "Read <a href=\"/how-we-pick/\">how we pick</a>.")
         return (f'<section class="pl pl-none" id="{uid}" data-pl data-segments="{1 if seg_values else 0}" aria-label="Products">\n{tabs}{types}'
-                f'<div class="empty-state"><h2>Products are being researched</h2><p>{text}</p></div>\n</section>')
+                f'<div class="empty-state"><h2>Buying advice</h2><p>{text}</p></div>\n</section>')
 
     # ---------- sample products for the preview page ----------
 

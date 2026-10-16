@@ -490,7 +490,7 @@ class Watches:
         body = self._listing_body(h1, f'{st["label"]} watches from our guides, across budgets and brands.', prods,
                                   f'The {st["label"].lower()} watch list', related=self._sibling_links(style=slug))
         crumbs = [["Watches", "/watches/"], [st["label"], url]]
-        return self._meta(url, h1, f'{st["label"]} classic and analog watches for Indian buyers, with a buying guide.', body, crumbs, prods)
+        return self._meta(url, h1, f'{st["label"]} watches for Indian buyers: what to look for and how to choose, with a buying guide.', body, crumbs, prods)
 
     def gender_page(self, gender):
         g = self.genders[gender]
@@ -535,7 +535,7 @@ class Watches:
         body = (
             '<section class="watch-hero">\n  <div class="container watch-hero-inner">\n    <div class="watch-hero-copy">\n'
             '      <p class="eyebrow">Classic &amp; analog watches</p>\n      <h1>Timeless Watches. Smart Choices.</h1>\n'
-            '      <p>Discover classic and analog watches selected by budget, brand and style.</p>\n'
+            '      <p>Explore classic watches by budget, brand and style.</p>\n'
             '      <div class="hero-actions"><a class="btn btn-primary" href="/watches/men/">Shop Men\'s Watches</a>'
             '<a class="btn btn-outline" href="/watches/women/">Shop Women\'s Watches</a></div>\n    </div>\n'
             f'    <div class="watch-hero-art">{watch_art("hero-watch")}</div>\n  </div>\n</section>\n'
