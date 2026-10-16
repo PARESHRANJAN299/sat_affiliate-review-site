@@ -25,3 +25,11 @@
   .to-top { bottom: calc(80px + env(safe-area-inset-bottom)); }
 }
 @media print { .bottom-nav { display: none; } }
+/* A raised active icon, with text labels retained for clear touch navigation. */
+@media (max-width: 719px) {
+  .bottom-nav { background: #101113; border-top: 1px solid #333333; box-shadow: 0 -3px 16px rgb(0 0 0 / .14); }
+  .bottom-nav a { min-height: 64px; color: #bdbdbf; letter-spacing: .015em; }
+  .bottom-nav a[aria-current="page"] { color: #e7c478; }
+  .bottom-nav a[aria-current="page"]::before { display: none; }
+  .bottom-nav a[aria-current="page"] .ic { width: 44px; height: 44px; padding: 10px; margin-top: -19px; margin-bottom: 2px; border-radius: 50%; background: #e4bf73; color: #131416; box-shadow: 0 0 0 7px #101113; }
+}
