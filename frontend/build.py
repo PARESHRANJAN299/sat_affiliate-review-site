@@ -359,7 +359,7 @@ def home_collage():
 
 
 def category_banner(cat):
-    """Picture showcase beside the header of a category page: every .jpg in static/images/banners/<category-slug>/ (in file-name order).
+    """Picture band behind the header of a category page, strongest on the right and fading out toward the title: every .jpg in static/images/banners/<category-slug>/ (in file-name order).
     Only the first picture is in the page; the others are listed in data-slides and added by cat-banner.js after the page has loaded."""
     folder = SRC / "static" / "images" / "banners" / cat["slug"]
     names = sorted(p.name for p in folder.glob("*.jpg")) if folder.exists() else []
@@ -370,10 +370,15 @@ def category_banner(cat):
             f'<img class="is-on" src="{esc(urls[0])}" alt="" width="800" height="480" decoding="async"></div>')
 
 
+def cat_section_class(cat):
+    """The section around a category page header gets has-banner when the category has banner pictures (the picture sits behind the header)."""
+    return "section has-banner" if category_banner(cat) else "section"
+
+
 def cat_head(cat, text_html):
-    """Header of a category landing page: breadcrumb, title and lead on the left, the picture showcase on the right (below the text on phones)."""
+    """Header of a category landing page: breadcrumb, title and lead, with the picture band behind them (see cat-banner.css)."""
     banner = category_banner(cat)
-    cls = "cat-head has-showcase" if banner else "cat-head"
+    cls = "cat-head"
     return f'<header class="{cls}">\n    <div class="cat-head-text">\n{text_html}    </div>\n    {banner}\n    </header>\n'
 
 
@@ -674,7 +679,7 @@ def audience_tabs_page(cat, entries, products):
     block = kit().listing(cat, products, f'pl-{cat["slug"]}', cat["families"], segment_tabs=True, type_chips=chips)
     notes = "".join(f'<li><a href="{esc(e["url"])}"><strong>{esc(e["name"])}</strong></a> {esc(e["description"])}</li>' for e in entries)
     body = (
-        '<section class="section">\n  <div class="container content-page family-page">\n'
+        f'<section class="{cat_section_class(cat)}">\n  <div class="container content-page family-page">\n'
         + cat_head(cat, '    {{breadcrumb}}\n' + f'    <h1>{esc(cat["name"])}</h1>\n    <p class="lead">{esc(cat.get("tagline") or cat["description"])}</p>\n') +
         f'    {block}\n'
         + ('    <div class="pl-reviews"><h2>Reviews</h2>\n' + "\n".join(product_review_html(p) for p in products) + '</div>\n' if products else '')
@@ -741,7 +746,7 @@ def beauty_pages(cat):
         cards_html = f'<div class="family-cards family-cards-3">{category_directory(entries, grid_id="family-results")}</div>'
     if not cat.get("audience_tabs"):
         body = (
-            '<section class="section">\n  <div class="container content-page family-page">\n'
+            f'<section class="{cat_section_class(cat)}">\n  <div class="container content-page family-page">\n'
             + cat_head(cat, '    {{breadcrumb}}\n' + f'    <h1>{esc(cat["name"])}</h1>\n    <p class="lead">{esc(cat.get("tagline") or cat["description"])}</p>\n') +
             f'    {cards_html}\n'
             f'    <p class="family-note">{esc(PRICE_NOTE)} This section is general information, not medical advice.</p>\n'
@@ -840,7 +845,7 @@ def family_pages():
                 f'<span class="family-count">{len(by_section[s["slug"]])} product types</span></div>\n'
                 f'  <p class="family-section-blurb">{esc(s["blurb"])}</p>\n  {cards}\n</section>')
         body = (
-            '<section class="section">\n  <div class="container content-page family-page">\n'
+            f'<section class="{cat_section_class(cat)}">\n  <div class="container content-page family-page">\n'
             + cat_head(cat, '    {{breadcrumb}}\n' + f'    <h1>{esc(cat["name"])}</h1>\n'
                       f'    <p class="lead">{esc(cat.get("tagline") or cat["description"])}</p>\n')
             + ('    <section class="family-guides" id="guides"><h2>Buying guides</h2>\n    {{articles_sports_fitness}}\n    </section>\n' if cat["slug"] == "sports-fitness" else "")
