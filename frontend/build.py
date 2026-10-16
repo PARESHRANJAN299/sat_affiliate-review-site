@@ -36,10 +36,10 @@ CONFIG["categories"] = [{"label": c["name"], "url": c["url"], "slug": c["slug"]}
 # Included in every page's CSS/JS bundle, in this order.
 ALWAYS_CSS = [
     "base/variables", "base/reset",
-    "base/icons", "layout/container", "layout/section", "layout/header", "layout/footer", "layout/search", "layout/to-top",
+    "base/icons", "layout/container", "layout/section", "layout/header", "layout/footer", "layout/search", "layout/to-top", "layout/bottom-nav",
 ]
 # Loaded after component/page CSS so they win the cascade.
-LAST_CSS = ["layout/mobile-compact", "base/accessibility", "base/print"]
+LAST_CSS = ["layout/mobile-compact", "layout/mobile-luxury", "base/accessibility", "base/print"]
 ALWAYS_JS = ["core/main", "core/menu", "core/search-lite", "core/to-top", "core/footer"]
 
 TITLE_MAX = 60
@@ -1075,6 +1075,18 @@ def write_asset(kind, key, content):
 SPEC_EXCLUDE = "[target=_blank],[rel~=sponsored],[rel~=nofollow],[download]"
 
 
+def bottom_nav_html(url):
+    """Phone-only quick menu fixed to the bottom of the screen (thumb reach): Home, Categories, Search, About. Hidden on wider screens by CSS."""
+    cat_urls = [c["url"] for c in CATEGORIES]
+    in_cat = url == "/products/" or any(url.startswith(u) for u in cat_urls) or (url.count("/") >= 3 and not url.startswith(("/about/", "/contact/", "/how-we-pick/", "/privacy-policy/", "/terms/", "/copyright/", "/affiliate-disclosure/")))
+    items = [("/", "i-home", "Home", url == "/", ""), ("/products/", "i-grid", "Categories", in_cat, ""),
+             ("/search/", "i-search", "Search", url == "/search/", ' data-bn-search'), ("/about/", "i-info", "About", url == "/about/", "")]
+    current = ' aria-current="page"'
+    lis = "".join(f'<li><a href="{u}"{extra}{current if cur else ""}><svg class="ic" aria-hidden="true"><use href="#{icon}"/></svg><span>{label}</span></a></li>'
+                  for u, icon, label, cur, extra in items)
+    return f'<nav class="bottom-nav" aria-label="Quick menu"><ul>{lis}</ul></nav>\n'
+
+
 def speculation_tag():
     """Chrome and Edge load the next page before the click: HTML prefetch for every internal link on hover or touch ("moderate"), and a full
     prerender for the header and footer links, so About, Contact and the categories open with no wait. Other browsers ignore this tag.
@@ -1084,7 +1096,7 @@ def speculation_tag():
     rules = {"prefetch": [{"where": {"and": [{"href_matches": "/*"}, {"not": {"href_matches": "/search/*"}},
                                              {"not": {"selector_matches": SPEC_EXCLUDE}}]}, "eagerness": "moderate"}]}
     if CONFIG.get("speculation_prerender", True):
-        rules["prerender"] = [{"where": {"and": [{"selector_matches": "header a, footer a"},
+        rules["prerender"] = [{"where": {"and": [{"selector_matches": "header a, footer a, .bottom-nav a"},
                                                  {"not": {"href_matches": ["/", "/search/*"]}},
                                                  {"not": {"selector_matches": SPEC_EXCLUDE}}]}, "eagerness": "moderate"}]
     return '<script type="speculationrules">' + json.dumps(rules, separators=(",", ":")) + "</script>\n"
@@ -1582,7 +1594,7 @@ def build_page(meta, base, header_t, footer_t, year, articles):
                              if CONFIG.get("google_site_verification") else ""),
         "robots_tag": '<meta name="robots" content="noindex, follow">\n' if meta.get("noindex") else "",
         "og_type": meta.get("og_type", "website"),
-        "css_tag": css_tag, "speculation_tag": speculation_tag(), "js_src": js_src,
+        "css_tag": css_tag, "speculation_tag": speculation_tag(), "js_src": js_src, "bottom_nav": bottom_nav_html(meta["url"]),
         "body_class": ("theme-" + meta["theme"]) if meta.get("theme") else "",
         "jsonld": json_ld(structured_data(meta, canonical, title)),
         "header": header, "content": content, "footer": footer,

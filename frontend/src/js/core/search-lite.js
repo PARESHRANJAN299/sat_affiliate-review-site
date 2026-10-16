@@ -54,6 +54,14 @@
     e.preventDefault();
     toggle();
   });
+  // the Search tab in the phone bottom bar opens the same overlay
+  Array.prototype.forEach.call(document.querySelectorAll('[data-bn-search]'), function (tab) {
+    tab.addEventListener('click', function (e) {
+      if (e.ctrlKey || e.metaKey || e.shiftKey || e.button !== 0) return;
+      e.preventDefault();
+      toggle();
+    });
+  });
   ['pointerenter', 'focus', 'touchstart'].forEach(function (name) {
     opener.addEventListener(name, function () {
       ensure().then(function (api) { api.warm(); }, function () { /* tried again on click */ });

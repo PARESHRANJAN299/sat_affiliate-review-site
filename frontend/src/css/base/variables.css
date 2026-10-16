@@ -26,6 +26,9 @@
   --shadow: 0 1px 2px rgba(40, 28, 10, 0.06), 0 6px 18px rgba(40, 28, 10, 0.07);
   --shadow-lift: 0 2px 4px rgba(40, 28, 10, 0.08), 0 16px 34px rgba(40, 28, 10, 0.16);
 
+  --gold: #c9a45c;
+  --gold-deep: #a8802f;
+  --champagne: #f6eddb;
   --color-bg: #fbf9f6;
   --color-surface: #ffffff;
   --color-bg-alt: #f2ede5;
