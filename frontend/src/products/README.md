@@ -71,3 +71,13 @@ One JSON file per product, in `src/products/<category-slug>/`, for example `src/
 * No ratings, reviews or testing claims unless they are true.
 * Retailer links are plain until `affiliate_active` is true in `site.config.json`. Then links get `rel="sponsored"` and a disclosure line. The Amazon Associate sentence appears only when `amazon_associate_approved` is also true.
 * Files in `_sample/` are template previews only and never appear as products.
+
+## Amazon links: before and after you are approved
+
+You do **not** need to be an approved Amazon Associate to link to an Amazon product. Before approval a link is just a normal link to the shop page, and you earn nothing from it.
+
+1. Open the product on amazon.in and copy the address. The clean form is `https://www.amazon.in/dp/<ASIN>` (the 10-character code after `/dp/`). Remove everything after the ASIN: no `ref=`, no `tag=`, no tracking codes.
+2. Put it in the product file: `"retailers": {"amazon": {"url": "https://www.amazon.in/dp/B0XXXXXXXX"}}`.
+3. Do not copy Amazon's pictures, star ratings, review text or prices onto SAT. Write your own words and use your own photo; show only the price band.
+4. After Amazon accepts your sign-up, get your tracking ID (it looks like `sat-21`) and put it in `src/site.config.json`: `"amazon_tracking_id": "sat-21"`, then switch on `affiliate_active` (and `amazon_associate_approved` once approved). From then on every amazon.in link on product and guide pages gets `?tag=sat-21` automatically, gets `rel="sponsored"`, and the disclosure line appears. You never edit the links by hand. The build stops if the tracking ID is missing when the flags are on.
+5. The static Badminton Rackets page has hand-written shop links; add the tag to those by hand at that time.
