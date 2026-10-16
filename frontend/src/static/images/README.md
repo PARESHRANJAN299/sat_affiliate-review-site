@@ -6,7 +6,7 @@ Served from the site root, so `src/static/images/categories/sports-fitness.jpg` 
 images/
   categories/   one picture per top-level category: <category-slug>.jpg (4:3, about 736 x 552)
                 and <category-slug>-thumb.jpg (square, 160 x 160, used in the menu)
-  home/         lifestyle pictures for the home hero (4:5 portrait, 320 x 400, about 30 KB each); every .jpg in this folder joins the drifting rows
+  home/         lifestyle pictures for the home hero (4:5 portrait, 320 x 400, about 50 KB each); every .jpg in this folder joins the drifting rows, in file-name order (01-, 02-, 03- ... put one rotating picture in each of the three rows, so number them to mix the categories)
   products/     <product-id>.jpg  (square, about 800 x 800)
   brands/       <brand-slug>.svg or .png
 ```
