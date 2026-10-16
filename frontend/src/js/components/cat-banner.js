@@ -1,7 +1,7 @@
 (function () {
   'use strict';
   // Category page picture showcase: the first picture is already in the page; the others are added after load, fade into each other
-  // (the progress bar on the current dot is the timer), and can be changed with the dots or a swipe. Nothing runs for visitors who ask
+  // (the progress bar on the current dot is the timer), and can be changed with the dots. Nothing runs for visitors who ask
   // for less motion except the dots, and nothing extra loads when Data Saver is on.
   var box = document.querySelector('[data-cat-showcase]');
   if (!box) return;
@@ -104,35 +104,14 @@
     });
   }
 
-  box.addEventListener('pointerenter', function (e) { if (e.pointerType === 'mouse') { hover = true; sync(); } });
-  box.addEventListener('pointerleave', function () { hover = false; sync(); box.style.setProperty('--tilt-x', '0deg'); box.style.setProperty('--tilt-y', '0deg'); });
+  box.addEventListener('pointerover', function (e) { if (e.target.closest && e.target.closest('.cat-controls')) { hover = true; sync(); } });
+  box.addEventListener('pointerout', function (e) { if (e.target.closest && e.target.closest('.cat-controls')) { hover = false; sync(); } });
   box.addEventListener('focusin', function () { focus = true; sync(); });
   box.addEventListener('focusout', function () { focus = false; sync(); });
   document.addEventListener('visibilitychange', sync);
   if ('IntersectionObserver' in window) {
     new IntersectionObserver(function (entries) { visible = entries[0].isIntersecting; sync(); }).observe(box);
   }
-
-  // a light 3D tilt that follows the mouse (not on touch screens)
-  if (!reduce && window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
-    box.addEventListener('pointermove', function (e) {
-      var r = box.getBoundingClientRect();
-      var x = (e.clientX - r.left) / r.width - 0.5;
-      var y = (e.clientY - r.top) / r.height - 0.5;
-      box.style.setProperty('--tilt-y', (x * 7).toFixed(2) + 'deg');
-      box.style.setProperty('--tilt-x', (-y * 5).toFixed(2) + 'deg');
-    });
-  }
-
-  // swipe on touch screens
-  var startX = null;
-  box.addEventListener('pointerdown', function (e) { if (e.pointerType === 'touch') startX = e.clientX; });
-  box.addEventListener('pointerup', function (e) {
-    if (startX === null || imgs.length < 2) { startX = null; return; }
-    var dx = e.clientX - startX;
-    startX = null;
-    if (Math.abs(dx) > 40) show(current + (dx < 0 ? 1 : -1));
-  });
 
   var begin = function () { window.setTimeout(load, 800); };
   if (document.readyState === 'complete') begin(); else window.addEventListener('load', begin);
