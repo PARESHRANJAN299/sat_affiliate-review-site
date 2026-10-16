@@ -447,9 +447,9 @@ class Watches:
         shown = [p for p in products if matches(p)]
         groups = [
             {"key": "brand", "title": "Brands", "checked": [brand] if brand else [],
-             "items": [(slug, value["name"], sum(p["brand"] == slug for p in products)) for slug, value in self.brands.items() if slug != "sample"]},
+             "items": [(slug, value["name"], sum(p["brand"] == slug for p in products)) for slug, value in self.brands.items() if slug != "sample" and any(p["brand"] == slug for p in products)]},
             {"key": "budget", "title": "Budget guide", "checked": [budget] if budget else [],
-             "items": [(slug, value["label"], sum(p.get("budget") == slug for p in products)) for slug, value in self.budgets.items()] + [("unlisted", "Price at retailer", sum(not p.get("budget") for p in products))]},
+             "items": [(slug, value["label"], sum(p.get("budget") == slug for p in products)) for slug, value in self.budgets.items() if any(p.get("budget") == slug for p in products)] + [("unlisted", "Price at retailer", sum(not p.get("budget") for p in products))]},
             {"key": "style", "title": "Style", "checked": [style] if style else [],
              "items": [(slug, value["label"], sum(slug in p["styles"] for p in products)) for slug, value in self.styles.items()]},
         ]
