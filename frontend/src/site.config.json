@@ -1,6 +1,5 @@
 {
   "site_name": "SAT",
-  "footer_mission": "Independent research for timeless style, everyday value and practical products. Buy directly from the retailer.",
   "logo_primary": "SAT",
   "site_url": "https://sat.net.in",
   "contact_email": "sat.support7327@gmail.com",
@@ -63,5 +62,10 @@
   ],
   "affiliate_active": false,
   "amazon_associate_approved": false,
-  "amazon_tracking_id": ""
+  "amazon_tracking_id": "",
+  "footer_mission_lines": [
+    "Our goal is simple: help you find products that offer good value, timeless style, and everyday usefulness.",
+    "We combine independent research and practical analysis to make buying decisions easier.",
+    "SAT does not sell products — all purchases are completed directly with the retailer."
+  ]
 }

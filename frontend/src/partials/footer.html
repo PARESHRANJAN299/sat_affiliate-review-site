@@ -3,9 +3,6 @@
     <div class="footer-grid">
       <div class="footer-brand-col">
         <a class="footer-brand" href="/" aria-label="{{site_name}} home">{{site_name}}<span aria-hidden="true">.</span></a>
-        <p class="footer-lead">Our goal is simple: help you find products that offer good value, timeless style, and everyday usefulness.</p>
-        <p class="footer-about">We combine independent research and practical analysis to make buying decisions easier.</p>
-        <p class="footer-note"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6z"/><path d="M9 12l2.2 2.2L15.5 10"/></svg><span>{{site_name}} does not sell products &mdash; all purchases are completed directly with the retailer.</span></p>
       </div>
       <details class="footer-group" open>
         <summary><span class="footer-title">Categories</span><svg class="footer-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
@@ -40,7 +37,7 @@
       </div>
     </div>
     <div class="footer-bottom">
-      <p class="footer-mission">{{footer_mission}}</p>
+      {{footer_mission_html}}
       {{footer_affiliate_notice}}
       <div class="footer-meta">
         <p>&copy; <span data-footer-year>{{year}}</span> {{site_name}}. All rights reserved.</p>
