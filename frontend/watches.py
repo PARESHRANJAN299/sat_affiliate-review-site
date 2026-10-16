@@ -338,11 +338,11 @@ class Watches:
                 'Read <a href="/how-we-pick/">how we pick</a>.</p></aside>')
 
     def empty_state(self, what, level="h2"):
-        return (f'<div class="empty-state"><{level}>' + esc(what) + f' is being researched</{level}>'
-                "<p>We add a watch only after we have read the maker's page and the shop listings. "
-                "This page will show top picks, a comparison table and short reviews once it has at least "
-                f"{self.min_index} watches.</p>"
-                '<p><a href="/watches/guide/">Read our watch buying guide</a> &middot; <a href="/how-we-pick/">How we pick</a></p></div>')
+        return (f'<div class="empty-state"><{level}>Choose a watch with confidence</{level}>'
+                "<p>Compare case size, movement, strap and warranty before choosing a model. "
+                "This page offers selection advice rather than a product shortlist.</p>"
+                '<p><a href="/watches/guide/">Read the watch buying guide</a> &middot; '
+                '<a href="/sports-fitness/#guides">Explore published sports and fitness guides</a></p></div>')
 
     SIZE = {
         "men": "Many men's dress watches have a case of about 36 to 42 mm. Pick by wrist size: a smaller case suits a slim wrist.",
@@ -450,7 +450,7 @@ class Watches:
         adj = g["adjective"].capitalize()
         h1 = f'Best Classic Watches for {adj} {b["label"]}' if ready else f'Classic Watches for {adj} {b["label"]}'
         intro = (f"A short list of classic analog watches for {g['adjective']} in this budget. We choose by dial, strap, case size and warranty, and we say what we could not confirm."
-                 if ready else f"We are researching classic analog watches for {g['adjective']} in this budget. This page fills in when the list is ready.")
+                 if ready else f"Compare case size, movement and strap options for {g['adjective']} within your budget. Start with our watch buying guide below.")
         crumbs = [["Watches", "/watches/"], [f"{g['label']} watches", f"/watches/{gender}/"], [b["label"], url]]
         body = self._listing_body(h1, intro, prods, f"The {g['label'].lower()} {b['label'].lower()} list", gender, budget,
                                   self._sibling_links(gender=gender, budget=budget))
@@ -464,7 +464,7 @@ class Watches:
         for gender in br["genders"]:
             # each watch is shown once, under its first listed gender
             prods = [p for p in all_p if self.primary_gender(p) == gender]
-            title = f'Best {br["name"]} {br["line"]} Watches for {self.genders[gender]["adjective"].capitalize()}'
+            title = f'{br["name"]} {br["line"]} Watches for {self.genders[gender]["adjective"].capitalize()}'
             if prods:
                 blocks.append(f'<h2>{esc(title)}</h2>\n' + self.grid(prods[:6], local=True) + "\n" +
                               self.table(prods, title) + "\n" + "\n".join(self.review(p) for p in prods))
@@ -479,7 +479,7 @@ class Watches:
             f'    {note}\n    {filters}\n' + "\n".join(blocks) + "\n"
             f'    {self.short_guide()}\n    {self.faq(products=all_p)}\n    {self.related(self._sibling_links(brand=slug))}\n    {self.affiliate_box(all_p)}\n  </div>\n</section>')
         crumbs = [["Watches", "/watches/"], [br["name"], url]]
-        return self._meta(url, f'Best {br["name"]} {br["line"]} Watches in India', f'{br["name"]} {br["line"].lower()} watches picked for Indian buyers, with a buying guide. Research-based.', body, crumbs, all_p)
+        return self._meta(url, f'{br["name"]} {br["line"]} Watches in India', f'{br["name"]} {br["line"].lower()} watches picked for Indian buyers, with a buying guide. Research-based.', body, crumbs, all_p)
 
     def style_page(self, slug):
         st = self.styles[slug]
@@ -507,7 +507,7 @@ class Watches:
         if picks:
             grid = "<h2>Editor's picks</h2>\n" + self.grid(picks)
         else:
-            grid = "<h2>Editor's picks</h2>\n<div class=\"empty-state\"><p>Editor's picks appear here once we have researched real watches.</p></div>"
+            grid = self.empty_state("Watch selection advice")
         body = (
             '<section class="section">\n  <div class="container content-page watch-page">\n'
             f'    {{{{breadcrumb}}}}\n    <h1>{esc(h1)}</h1>\n    <p class="lead">Classic and analog watches for {g["adjective"]}, picked by budget, brand and style.</p>\n'
@@ -531,9 +531,7 @@ class Watches:
             for b in value)
         style_chips = "".join(f'<a class="chip" href="/watches/style/{s["slug"]}/">{esc(s["label"])}</a>' for s in self.config["styles"])
         picks = [p for p in self.products if p.get("editors_pick")][:4]
-        picks_html = self.grid(picks) if picks else (
-            '<div class="empty-state"><p>Editor\'s picks appear here once we have researched real watches. '
-            'We do not show sample watches as picks.</p></div>')
+        picks_html = self.grid(picks) if picks else self.empty_state("Watch selection advice")
         body = (
             '<section class="watch-hero">\n  <div class="container watch-hero-inner">\n    <div class="watch-hero-copy">\n'
             '      <p class="eyebrow">Classic &amp; analog watches</p>\n      <h1>Timeless Watches. Smart Choices.</h1>\n'
@@ -545,7 +543,7 @@ class Watches:
             f'  <h2>Shop by Budget</h2>\n  <div class="tile-grid">{budget_cards}</div>\n'
             f'  <h2>Explore by Brand</h2>\n  <div class="tile-grid brand-grid">{brand_cards}</div>\n'
             f'  <h2>Shop by Style</h2>\n  <div class="chips">{style_chips}</div>\n'
-            f'  <h2>Editor\'s Picks</h2>\n  {picks_html}\n'
+            f'  {"<h2>Editor’s Picks</h2>" if picks else ""}\n  {picks_html}\n'
             '  <p class="more-link"><a href="/watches/guide/">Read our watch buying guide</a></p>\n'
             f'  {self.affiliate_box(picks)}\n</div></section>')
         return self._meta("/watches/", "Classic & Analog Watches in India", "Classic and analog watches picked by budget, brand and style, for men and women. Research-based buying guides.", body, [["Watches", "/watches/"]], self.products, js=False)

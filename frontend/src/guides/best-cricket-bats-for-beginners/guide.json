@@ -4,7 +4,7 @@
   "tag": "Cricket",
   "summary": "Plain guide to 3 cricket bats for beginners in India: tennis ball, Kashmir willow and English willow. Not hand-tested; based on shop pages.",
   "description": "Helps first-time buyers in India pick a cricket bat for tennis ball or leather ball. Three picks, from poplar to English willow.",
-  "lead": "Which cricket bat should a beginner buy in India? It depends on the ball. This guide has three picks. One is a tennis-ball bat for gully cricket. One is a Kashmir willow bat for a first leather-ball bat. One is an English willow bat for a serious beginner. We have not hand-tested any of them. We read the Decathlon India pages and we say what those pages do not tell you. The Budget, Mid-range and Premium tags are our own rough judgement about the kind of bat. They are not about price. For general advice we use the MCC Laws of Cricket and a buying guide from CHOICE, an Australian consumer group.",
+  "lead": "Start with the ball you use and a bat you can handle comfortably. This comparison covers an adult tennis-ball model, a beginner-labelled Kashmir-willow leather-ball bat and an intermediate-labelled English-willow option. We checked the Decathlon India specifications, including a conflicting wood description, and have not played with these bats.",
   "columns": [
     "Ball type",
     "Wood",
@@ -13,32 +13,31 @@
   "picks": [
     {
       "name": "Decathlon Adult Kashmir Poplar Wood Cricket Bat T900 Power, size SH (tennis ball)",
-      "label": "Suits first-timers (tennis ball only)",
+      "label": "For tennis-ball play; check suitability",
       "tier": "Budget",
       "cells": [
         "Tennis ball",
-        "Kashmir poplar",
-        "SH, adult"
+        "Wood description conflicts",
+        "SH; listed length 86 cm"
       ],
-      "verdict": "A simple tennis-ball bat from a large retailer, with 2-year warranty and 30-day returns listed. The page does not give weight.",
+      "verdict": "A tennis-ball option to inspect in person; confirm the conflicting wood description before buying.",
       "paragraphs": [
-        "The T900 Power is a tennis-ball bat in adult size SH. The Decathlon India page names the wood as Kashmir poplar. It lists a 2-year warranty and 30-day returns. It showed about 3.8 out of 5 from 65 reviews when we opened it.",
-        "Here is what to know. The page does not give weight or length. We could not read the review text, so we cannot say what buyers like or dislike. The page shows no stock status, so check that it can be ordered. This is a tennis-ball bat, so do not use it with a leather ball. If you can, hold it in a store first."
+        "The T900 title identifies an adult SH tennis-ball bat in Kashmir poplar. Its technical section lists 86 cm, but a separate material field says Kashmir willow. That conflict needs confirmation from the seller; we would not present the wood as independently settled.",
+        "This listing is for tennis-ball cricket, not a substitute for a leather-ball bat. The page classifies the practice level as advanced, so it is not automatically a beginner’s choice. Check actual weight and pickup in person."
       ],
       "good": [
-        "It is made for tennis-ball cricket, which suits gully and park games.",
-        "Decathlon India lists a 2-year warranty and 30-day returns.",
-        "The page showed about 3.8 out of 5 from 65 reviews. That is a fair number of reviews, but the score is not high."
+        "Clearly identified as a tennis-ball model.",
+        "Adult SH sizing and a length are listed."
       ],
       "not_good": [
-        "No weight or length is listed, so fit is hard to judge online.",
-        "We could not read the review text. The page shows no stock status.",
-        "It is not meant for leather balls."
+        "The title and material field disagree on the wood.",
+        "The listed advanced level needs considering for a first bat."
       ],
       "search_query": "Decathlon T900 Power Kashmir poplar tennis ball cricket bat SH",
       "stores": [
         "Decathlon"
-      ]
+      ],
+      "product_url": "https://www.decathlon.in/p/8754614/kashmir-poplar-wood-t900-power-adult-cricket-tennis-ball-bat"
     },
     {
       "name": "Decathlon Flx KW190 Adult Kashmir Willow Cricket Bat, size SH",
@@ -49,27 +48,24 @@
         "Kashmir willow",
         "SH, adult"
       ],
-      "verdict": "A sensible first leather-ball bat from a large retailer, with 2-year warranty and 30-day returns listed. The page does not give weight or length.",
+      "verdict": "A beginner-labelled adult leather-ball option with a published weight limit; check pickup before choosing.",
       "paragraphs": [
-        "The KW190 is a Kashmir willow bat in adult size SH. The Decathlon India page calls it a lightweight leather-ball bat. It lists a 2-year warranty and 30-day returns. It showed about 4.6 out of 5 from 12 reviews when we opened it.",
-        "CHOICE says Kashmir willow is harder and denser than English willow, and that many junior bats use it. CHOICE also says top-end Kashmir can play about as well as low-grade English willow.",
-        "Here is what to know. The page does not give weight, length or what comes in the box. Twelve reviews is a small sample, and we could not read them. The page does not explain what the warranty covers. It shows no stock status, so check that it can be ordered. Check weight and size in a store if you can."
+        "Decathlon identifies the KW190 as an adult SH Kashmir-willow leather-ball bat for beginners. A benefit entry gives a weight below 1,250 g. That is a limit, not the measured weight of the individual bat you receive.",
+        "This is the clearest beginner-labelled leather-ball option in this shortlist. The listing describes it as ready to play, but ask what preparation and maintenance are required for your exact bat. Choose by pickup and fit, not the wood name alone."
       ],
       "good": [
-        "It is made for leather-ball cricket, so it suits a player moving up from tennis ball.",
-        "Decathlon India lists a 2-year warranty and 30-day returns.",
-        "The page showed about 4.6 out of 5 from 12 reviews. That is a good sign, but a small sample.",
-        "CHOICE says many junior bats use Kashmir willow."
+        "Beginner level is stated in the listing.",
+        "The page gives a weight limit below 1,250 g."
       ],
       "not_good": [
-        "No weight, length or box contents are listed, so fit is hard to judge online.",
-        "Only 12 reviews, and we could not read them.",
-        "CHOICE says Kashmir willow is less springy than English willow. We found no neutral test of this exact bat."
+        "Individual bat weight and pickup can vary.",
+        "Confirm preparation and care instructions for the supplied bat."
       ],
       "search_query": "Decathlon KW190 Kashmir willow cricket bat SH",
       "stores": [
         "Decathlon"
-      ]
+      ],
+      "product_url": "https://www.decathlon.in/p/8937254/kashmir-willow-cricket-bat-kw-190-adult"
     },
     {
       "name": "Decathlon Flx EW550 Adult English Willow Cricket Bat G5, size SH, with cover",
@@ -80,53 +76,46 @@
         "English willow, grade G5",
         "SH, with cover"
       ],
-      "verdict": "A step up for a beginner who plans to play a lot of leather-ball cricket and will look after the bat.",
+      "verdict": "An intermediate-labelled English-willow option for regular leather-ball practice.",
       "paragraphs": [
-        "The EW550 is an English willow bat in grade G5, size SH. The product title says it comes with a cover. CHOICE calls English willow the best type of cricket bat wood. Decathlon India lists five English willow grades, from G5 (this bat) to G1. So G5 is the lowest grade in that range. Grades differ between brands, so do not compare a G5 here with a G5 from another maker.",
-        "The Decathlon India page lists a 2-year warranty and 30-day returns.",
-        "Here is what to know. The page gives no weight or length, and it shows no rating or reviews. The size options were still loading, and the page shows no stock status. CHOICE advises knocking-in (gently hitting the bat to toughen it) and light oiling of a new bat before real use, unless it comes pre-treated. The page does not say if this bat comes prepared. We also do not know what the warranty covers. We tag it Premium as our own rough call. It is not the obvious first bat for everyone."
+        "Decathlon lists the EW550 as an adult SH English-willow G5 leather-ball bat with a cover. Its benefit details give 1,150 ± 50 g for SH, and its practice level is intermediate.",
+        "It is an option to compare for regular leather-ball practice rather than a default first purchase. The G5 label belongs to this maker’s range; it does not prove how it compares with another brand’s grade. Ask about preparation before using a new willow bat."
       ],
       "good": [
-        "It is an English willow bat from a large retailer, with a cover listed in the title.",
-        "Decathlon India lists a 2-year warranty and 30-day returns.",
-        "G5 is the lowest of the five English willow grades on Decathlon India, so it is a starter grade in that range.",
-        "CHOICE calls English willow the best type of bat wood."
+        "A cover and a size-specific weight range are listed.",
+        "The listing identifies the wood and practice level."
       ],
       "not_good": [
-        "No weight, length or buyer reviews on the page, so there is little to go on.",
-        "A new bat usually needs knocking-in and oiling, says CHOICE. The page does not say if this is done for you.",
-        "It needs more care than a Kashmir willow bat, so it is not the best first bat for a casual player."
+        "Intermediate positioning may be unnecessary for a casual first purchase.",
+        "Grade alone does not establish performance or value."
       ],
       "search_query": "Decathlon EW550 English willow cricket bat G5 SH",
       "stores": [
         "Decathlon"
-      ]
+      ],
+      "product_url": "https://www.decathlon.in/p/8937266/ew-550-adult"
     }
   ],
   "choose": [
     {
-      "heading": "Match the bat to the ball",
-      "text": "Tennis-ball bats are not built for leather balls. The Decathlon tennis-ball bat in this guide is listed as Kashmir poplar. Pick the bat for the ball you will actually play with."
+      "heading": "Choose for the ball you use",
+      "text": "Start with tennis-ball or leather-ball use. These are different buying decisions. Check the exact model’s intended ball type before comparing wood grades."
     },
     {
-      "heading": "Kashmir willow or English willow",
-      "text": "CHOICE says Kashmir willow is harder and denser, and less springy. It says many junior bats use it. CHOICE calls English willow the best type, and it needs more care. We found no neutral test of the bats in this guide, so compare weight on each listing."
+      "heading": "Try the pickup",
+      "text": "Two bats with similar stated weights can feel different in the hand. Try a controlled backlift and stance in a shop. Junior players need a suitable size, rather than automatically choosing adult SH."
     },
     {
-      "heading": "Understand grades",
-      "text": "English willow bats come in grades. Decathlon India lists five grades, from G5 to G1. Grades differ by brand, so ask the seller what a grade means and compare weight on each listing."
+      "heading": "Read conflicting fields carefully",
+      "text": "The T900 title says poplar while a material field says willow. Ask the seller to resolve that difference. Do not assume a product title is a complete specification."
     },
     {
-      "heading": "Check size and weight",
-      "text": "CHOICE says player height decides the right size. It warns that a bat too big to grow into can lead to bad habits. Look for the weight in grams on the listing. The MCC Laws of Cricket say a bat can be at most 38 inches long and the blade at most 4.25 inches wide. None of the three Decathlon pages we opened gives a weight, so ask the seller or check in a store."
+      "heading": "Check preparation and coverage",
+      "text": "Ask the maker or seller about knocking-in, care and warranty exclusions for the supplied bat. Keep those instructions with your receipt."
     },
     {
-      "heading": "Plan for knocking-in and oiling",
-      "text": "CHOICE advises knocking-in a new bat with an old leather ball or a bat mallet, and light oiling with linseed oil, before real use. It warns that you can overdo both. Pre-treated bats may already be done. Ask the seller what your bat needs."
-    },
-    {
-      "heading": "Read returns, warranty and the box",
-      "text": "The three Decathlon India pages we opened list 30-day returns and a 2-year warranty. Small sellers often have shorter or conditional return windows. Also check for a cover and grip. Before you buy, make sure the page lets you order."
+      "heading": "Check the exact listing before paying",
+      "text": "Check the current seller listing for availability, delivery to your pincode, returns and warranty coverage before ordering."
     }
   ],
   "faq": [
@@ -136,48 +125,35 @@
     },
     {
       "q": "Is Kashmir willow or English willow better for a beginner?",
-      "a": "CHOICE calls Kashmir willow harder, denser and less springy. It calls English willow the best type, but that needs more care. Our own view: start with Kashmir willow unless you will play often."
+      "a": "Choose intended use, fit and pickup first. The KW190 is beginner-labelled Kashmir willow; the EW550 is intermediate-labelled English willow. We have not play-tested either and do not infer quality from wood alone."
     },
     {
       "q": "What size cricket bat should I buy?",
-      "a": "Go by height, says CHOICE. Adults commonly use SH. Shorter players and children need junior sizes. Check the size chart on the product page, and try the bat in a store if you can."
+      "a": "Use the maker’s size guidance and try the bat if possible. The shortlist contains adult SH models; children and shorter players may need a different size."
     },
     {
       "q": "Do I need to knock in a new bat?",
-      "a": "CHOICE advises knocking-in and light oiling of a new bat before real use, unless it is sold pre-treated. The Decathlon pages we opened do not say if their bats come prepared, so ask before you buy."
+      "a": "Follow the instructions for the exact bat. The KW190 description says ready to play, but that does not settle the preparation of every other willow bat. Ask the maker or seller before use."
     }
   ],
   "sources": [
     {
       "label": "Decathlon India: T900 Power Kashmir poplar tennis-ball bat",
-      "url": "https://www.decathlon.in/p/8754614/kashmir-poplar-wood-t900-power-adult-cricket-tennis-ball-bat"
+      "url": "https://www.decathlon.in/p/8754614/kashmir-poplar-wood-t900-power-adult-cricket-tennis-ball-bat",
+      "checked": "2026-10-16"
     },
     {
       "label": "Decathlon India: KW190 Kashmir willow bat",
-      "url": "https://www.decathlon.in/p/8937254/kashmir-willow-cricket-bat-kw-190-adult"
-    },
-    {
-      "label": "Decathlon India: Kashmir willow bats category",
-      "url": "https://www.decathlon.in/c/kashmir-willow-cricket-bat-26010"
+      "url": "https://www.decathlon.in/p/8937254/kashmir-willow-cricket-bat-kw-190-adult",
+      "checked": "2026-10-16"
     },
     {
       "label": "Decathlon India: EW550 English willow bat",
-      "url": "https://www.decathlon.in/p/8937266/ew-550-adult"
-    },
-    {
-      "label": "Decathlon India: English willow bats category",
-      "url": "https://www.decathlon.in/c/cricket-bat-english-willow-26013"
-    },
-    {
-      "label": "MCC Laws of Cricket: Law 5, The Bat (bat size limits)",
-      "url": "https://lawsofcricket.lords.org/laws-of-cricket/setting-up-the-game/the-bat"
-    },
-    {
-      "label": "CHOICE (Australia): how to buy a junior cricket bat",
-      "url": "https://www.choice.com.au/health-and-body/diet-and-fitness/sportswear-and-shoes/buying-guides/junior-cricket-bats"
+      "url": "https://www.decathlon.in/p/8937266/ew-550-adult",
+      "checked": "2026-10-16"
     }
   ],
   "published": "2026-10-15",
-  "updated": "2026-10-15",
+  "updated": "2026-10-16",
   "featured": true
 }

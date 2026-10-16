@@ -1,0 +1,232 @@
+{
+  "checked_on": "2026-10-16",
+  "scope": "Ten published sports/fitness editorial guides and informational shopping pages. The future product catalogue remains empty by owner strategy; no products or affiliate tracking IDs added.",
+  "method": "Checked primary product pages, including embedded specifications where visible sections were lazy-loaded. Removed static ratings, stock assertions, fixed return promises and unsupported performance comparisons. No physical testing was performed.",
+  "corrections": [
+    "Run Active: restored listed weight of 245 g in size 8.5 and 10 mm drop.",
+    "Yoga mats: restored 1.85 kg and 2.5 kg weights; disclosed conflicting 600 g / 0.52 kg figures on the 5 mm mat.",
+    "Dumbbells: confirmed 3 kg / 5 kg pairs and individually sold 7.5 kg model; corrected coating uncertainty.",
+    "Skipping ropes: replaced overseas specification references with India product data; disclosed speed-rope length discrepancy.",
+    "Shuttlecocks: restored listed feather/cork materials; did not independently certify event approvals.",
+    "Cricket bats: restored available length/weight figures, disclosed T900 wood conflict and distinguished stated playing levels.",
+    "Resistance bands: retained tube resistance conflict and added pull-up-assistant resistance conflict.",
+    "Badminton rackets: added primary source links and India starter-set specifications; removed anonymous buyer claims and unsupported performance comparisons.",
+    "Removed empty pick slots and comparison promises; informational pages link to published guidance."
+  ],
+  "source_checks": [
+    {
+      "url": "https://in.puma.com/in/en/pd/electrify-nitro-4-mens-running-shoes/310789",
+      "http_status": "200",
+      "sha256": "17ce8ff46beae080d28e99c3a6927bf3cafe865169ae38b1825753ccef73b379"
+    },
+    {
+      "url": "https://in.puma.com/in/en/pd/velocity-nitro-5-mens-running-shoes/312944",
+      "http_status": "200",
+      "sha256": "2d6cf1af8e4a834efc2b832447a1ad1d7052f61805bdcf1a8d20344d499b8faa"
+    },
+    {
+      "url": "https://in.puma.com/in/en/running-guides/best-running-shoes-for-beginners",
+      "http_status": "200",
+      "sha256": "b995195e3b4687d3253531854e5a7fb06292c62cbbc02f778f11825fb6752137"
+    },
+    {
+      "url": "https://www.decathlon.com/blogs/sports-advice/how-to-choose-the-perfect-yoga-mat",
+      "http_status": "200",
+      "sha256": "2dd31317826fc1a723d62b404899339ec3a594842ac8957cb4e29e5284d3d78c"
+    },
+    {
+      "url": "https://www.decathlon.com/blogs/sports-advice/how-to-choose-the-right-shuttlecock",
+      "http_status": "200",
+      "sha256": "f012d85c1fcf26a0f8b52142cecdc44c8c005aabf51d0e8085c9f22063f9c1f1"
+    },
+    {
+      "url": "https://www.decathlon.in/c/24061",
+      "http_status": "200",
+      "sha256": "f5cfa475a9d0773cd59410cc5af4bdc76c2dd6c5950147649da061ce9b161ef2"
+    },
+    {
+      "url": "https://www.decathlon.in/c/adjustable-dumbbell-set-703144",
+      "http_status": "200",
+      "sha256": "f265c7173480a3b0c58dcde30690f3a455394c15c23169538ed14f772bc0ca65"
+    },
+    {
+      "url": "https://www.decathlon.in/c/badminton-squash-shoes-for-men-25614",
+      "http_status": "200",
+      "sha256": "bd858db02d22364f5539fd238572bd4e9ae4989c80ac8c6c2824a0712507da27"
+    },
+    {
+      "url": "https://www.decathlon.in/c/dumbbells-dumbbell-sets-weights-25449",
+      "http_status": "200",
+      "sha256": "d8868215d931b0e74ed899699eacd69ea21dab1671ea38235f15e249d02fba6c"
+    },
+    {
+      "url": "https://www.decathlon.in/c/massagers-and-sports-recovery-26170",
+      "http_status": "200",
+      "sha256": "cbaac1c6ea7d1921f529fc5bad4f1e0bd7836963a2b5b83343429aab3549cab7"
+    },
+    {
+      "url": "https://www.decathlon.in/c/yoga-mats-727236",
+      "http_status": "200",
+      "sha256": "125ba59ea99e58dc3cefd3129cb4fd37b538ccb9d3e6e58af772b7f3c520a386"
+    },
+    {
+      "url": "https://www.decathlon.in/p/8333131/badminton-plastic-shuttlecock-psc-100x6-yellow",
+      "http_status": "200",
+      "sha256": "657ea495c494bf6e367299c03107d51de85b534b546aad672ff2768ff63ecc9f"
+    },
+    {
+      "url": "https://www.decathlon.in/p/8336580/5-kg-fitness-dumbbells-twin-pack-partially-recycled-cast-iron-black",
+      "http_status": "200",
+      "sha256": "709ac38747712e4ccedb1228ea62641f1399c9fd4e3d419023ce6ef8af66b7fa"
+    },
+    {
+      "url": "https://www.decathlon.in/p/8336581/3-kg-fitness-dumbbells-twin-pack-partially-recycled-cast-iron-grey",
+      "http_status": "200",
+      "sha256": "2132aaf54dfab81f40f48e3752434ebbd7a45b6a0e7caf9cf94dcbab95052f93"
+    },
+    {
+      "url": "https://www.decathlon.in/p/8339227/resistance-tube-with-handles-10-kg-medium-",
+      "http_status": "200",
+      "sha256": "f0c3a27204d244f28ff955b5242adfa51fed9ee409df8b4970e42644597573ae"
+    },
+    {
+      "url": "https://www.decathlon.in/p/8380428/yoga-mat-8mm-thick-anti-slip-foam-173-x-61-cm-with-carry-strap-jungle-blue",
+      "http_status": "200",
+      "sha256": "0992a0b28cd1f5665733dc5137e94f6769465db1723fb6031c66aae287c8ad7a"
+    },
+    {
+      "url": "https://www.decathlon.in/p/8490819/badminton-feather-shuttlecock-fsc-990-speed-76-x12",
+      "http_status": "200",
+      "sha256": "f183aa280773568e05159d70620b01348f8c0bcc242a58053c53ea1ed92702b1"
+    },
+    {
+      "url": "https://www.decathlon.in/p/8491565/badminton-feather-shuttlecock-fsc-590-speed-76-x12",
+      "http_status": "200",
+      "sha256": "6835cffb8ae4641b1a7d05f68b5c44da0a05b91ab1e300edb664e843e5831271"
+    },
+    {
+      "url": "https://www.decathlon.in/p/8528803/elastic-training-mini-resistance-bands-set-of-3-5-6-and-7kg-blue-purple-black",
+      "http_status": "200",
+      "sha256": "a5ab98316a323f5e28b3baa548bd90a2c8cb2925587f42a050e2c2338c11cc5b"
+    },
+    {
+      "url": "https://www.decathlon.in/p/8554891/men-badminton-shoes-bs-190-grey",
+      "http_status": "200",
+      "sha256": "64544380eccf1ac71a05b7744a8cc10696123ad3b726f3e06575937c8dccc34e"
+    },
+    {
+      "url": "https://www.decathlon.in/p/8560956/skipping-rope-jr100",
+      "http_status": "200",
+      "sha256": "f8c26422abf65f6a75664763b160fdd86ed78eb7ce78d5e858c14d6f6f57ce97"
+    },
+    {
+      "url": "https://www.decathlon.in/p/8600698/yoga-mat-1-3mm-thick-foldable-anti-slip-rubber-180-x-62-cm-grey",
+      "http_status": "200",
+      "sha256": "cd95a7f2ed8b0956ca6a93dd1e684eae2794b1c39c199d5c9fb1813f9d68b506"
+    },
+    {
+      "url": "https://www.decathlon.in/p/8603282/cross-training-and-weight-training-7-5-kg-80-recycled-cast-iron-dumbbell",
+      "http_status": "200",
+      "sha256": "c0d3e878937d04129e0b452501724fd6e6a7d12fc7be5cb8cbe46bcf1a5418d9"
+    },
+    {
+      "url": "https://www.decathlon.in/p/8619714/men-badminton-shoes-bs-530-navy-flash",
+      "http_status": "200",
+      "sha256": "88cd8d693e05d03eea3741626135bb650b38687291e3a9a65bebd337d253aa60"
+    },
+    {
+      "url": "https://www.decathlon.in/p/8641821/cross-training-speed-skipping-rope-black",
+      "http_status": "200",
+      "sha256": "02b67c6abfd1a935fc374f2301ad66529a878e7444649492cdd75d3570f647f6"
+    },
+    {
+      "url": "https://www.decathlon.in/p/8643988/adjustable-band-for-pull-up-assistance",
+      "http_status": "200",
+      "sha256": "ba85372e9e495db08fab8834d7fb5daeb74c4bbcbb9a5b5b8add8aa3d6a1a7e9"
+    },
+    {
+      "url": "https://www.decathlon.in/p/8647288/smooth-massage-roller",
+      "http_status": "200",
+      "sha256": "9f35e205943cfdf7f8b7ecf50efbfff46b236660e360287d110269a35b10a141"
+    },
+    {
+      "url": "https://www.decathlon.in/p/8647291/hand-foam-massage-roller-deep-tissue-and-muscle-relief-38cm-black",
+      "http_status": "200",
+      "sha256": "fcb74a2fbe2d49be515ead35cfff2968e916615e5563f9814387b669298037dc"
+    },
+    {
+      "url": "https://www.decathlon.in/p/8670185/men-running-shoes-comfort-fit-upto-10km-week-run-active-blue-and-brown",
+      "http_status": "200",
+      "sha256": "13709e870f15dce94f896b6d425dcb9d595c3e00349bc21e11f4150213f6c91f"
+    },
+    {
+      "url": "https://www.decathlon.in/p/8754614/kashmir-poplar-wood-t900-power-adult-cricket-tennis-ball-bat",
+      "http_status": "200",
+      "sha256": "72cadfa201cd780d6ab651eef7b4e5e9d9c25c18715b5551a49f792e4c59e7c1"
+    },
+    {
+      "url": "https://www.decathlon.in/p/8810330/weighted-skipping-rope-700",
+      "http_status": "200",
+      "sha256": "f67f841b12805aa82f78afa455920a04854c26d60855467780bcde1ddece4205"
+    },
+    {
+      "url": "https://www.decathlon.in/p/8843405/yoga-mat-5mm-thick-foam-200-x-75-cm-with-carry-strap-for-tall-people-grey",
+      "http_status": "200",
+      "sha256": "5863109ee9fd0c38343dcd6e4bc2e4914f1d9fb008931cb37b082f2305671d86"
+    },
+    {
+      "url": "https://www.decathlon.in/p/8912837/pilates-foam-roller-length-38-cm-diameter-13-cm-purple",
+      "http_status": "200",
+      "sha256": "504b32818ea035143b5cb3de4767166a7b161dfd87a352ee09fc7a6377a4f510"
+    },
+    {
+      "url": "https://www.decathlon.in/p/8928286/yoga-mat-5mm-thick-eva-180-x-58-cm-ultra-lightweight-with-carry-strap-brown",
+      "http_status": "200",
+      "sha256": "32b2080963ff9f7a54adf55b9eff4d4a3daf47a5531c1ec6dc07feb9c0a38d1a"
+    },
+    {
+      "url": "https://www.decathlon.in/p/8932954/men-badminton-shoes-bs-perform-590-optical-white",
+      "http_status": "200",
+      "sha256": "0d5fd91861c5acad3c30ca08fe88d56dfa86a44be1f36f3cca30790f164af528"
+    },
+    {
+      "url": "https://www.decathlon.in/p/8936896/yoga-mat-4mm-thick-rubber-foam-185-x-65-cm-with-carry-straps-blue",
+      "http_status": "200",
+      "sha256": "62a527a79053e3433337444319c922882533c22e2cb050506a94d69db72c0833"
+    },
+    {
+      "url": "https://www.decathlon.in/p/8937254/kashmir-willow-cricket-bat-kw-190-adult",
+      "http_status": "200",
+      "sha256": "75f59fcbbb1acd28d2a46bc2e775bf87d236fd4ede1fe6c478f4d719b47eedd2"
+    },
+    {
+      "url": "https://www.decathlon.in/p/8937266/ew-550-adult",
+      "http_status": "200",
+      "sha256": "0f980d9021290d2d24c6045a14c8a5db66ce8a23bfe168620fe876de07bdee17"
+    },
+    {
+      "url": "https://www.nike.com/a/buy-right-running-shoes",
+      "http_status": "200",
+      "sha256": "c160eea39e44ee357c19d17f2c153339c77874c9b64bd52e90b4abca49704f1b"
+    },
+    {
+      "url": "https://www.yonex.com/mavis-350",
+      "http_status": "200",
+      "sha256": "33a5c14a5a21e6f19611e5ad01734b8c75dfebe92041575356f7f94c50b4afa9"
+    }
+  ],
+  "additional_sources": [
+    "https://www.yonex.com/badminton/racquets/arc11-pl",
+    "https://us.yonex.com/products/astrox-99-pro",
+    "https://www.decathlon.in/p/8515771/adult-badminton-racket-br-100-set-starter-blue-red"
+  ],
+  "remaining": "The real founder photograph still has an unconfirmed provenance record. Privacy and tracking configuration must be updated when affiliate participation starts.",
+  "validation": {
+    "production_pages": 107,
+    "build_errors": 0,
+    "governance_failures": 0,
+    "remaining_governance_warning": "Founder photograph provenance not yet confirmed.",
+    "browser_checks": "Eight representative pages checked at widths 320, 390, 1024 and 1440; 176 assertions passed.",
+    "catalogue": "Development sample previews still build; excluded from the production build. No live product catalogue entries added."
+  }
+}

@@ -4,7 +4,7 @@
   "tag": "Badminton",
   "summary": "Three Decathlon India shuttlecock packs: one plastic, two feather. Based on product pages and maker advice, not hand-tested.",
   "description": "For badminton players in India choosing between plastic and feather shuttlecocks. Explains speed numbers and compares three Decathlon packs.",
-  "lead": "Which shuttlecock should you buy for badminton in India? This guide looks at three Decathlon India packs: one plastic pack and two Kuikma feather packs. We have not hand-tested any of them. We read the Decathlon India product pages, Decathlon's advice page, the BWF Laws of Badminton and a Yonex page on cap colours. The product pages are short. They list the pack size, speed, rating, warranty and return terms, but not the feather or cork type. So we use Decathlon's advice page to explain the choice, and we say where a detail is missing. Stock changes often, so check the Decathlon India page before you buy.",
+  "lead": "Compare a plastic six-pack and two feather twelve-packs from Decathlon India. The published specifications distinguish their tip and cork materials and intended playing levels. We have not tested flight or durability; ask your club which model and speed it uses.",
   "columns": [
     "Type",
     "Pack size",
@@ -16,31 +16,28 @@
       "label": "For casual and beginner play",
       "tier": "Budget",
       "cells": [
-        "Plastic",
+        "Plastic skirt, foam tip",
         "6 shuttles",
-        "Medium (in page title)"
+        "Medium"
       ],
-      "verdict": "A plastic shuttle pack that fits casual games, going by Decathlon's own advice. The product page has very few details.",
+      "verdict": "A six-pack of medium-speed plastic shuttles for occasional leisure play.",
       "paragraphs": [
-        "The PSC 100x6 is a plastic shuttle sold in a pack of 6, in yellow. The page title says Medium. Decathlon sells it under its own brand. The page shows a Made in India badge and says it is sold and fulfilled by Decathlon Sports India.",
-        "The page shows a 2 year warranty and a 30 days return option. The rating is 4.5 out of 5 from 225 reviews, but we could not see the review text. The page has no description, so we cannot tell you the head type, the weight or how long a shuttle lasts. Decathlon's advice page suggests a durable plastic shuttle for casual weekend play with family and friends. It also says plastic and feather shuttles fly differently."
+        "The India specifications list a plastic skirt, foam tip, 5 g weight and medium speed for the six-shuttle PSC 100 pack. Decathlon positions it for beginner and occasional leisure play.",
+        "We see it as the simpler pack to compare for casual practice. Plastic and feather shuttles are different purchases, so match the type to your group rather than assuming either is universally better."
       ],
       "good": [
-        "Decathlon's advice page suggests plastic shuttles for casual weekend play.",
-        "The page shows a Made in India badge.",
-        "The page shows a 2 year warranty and 30 days returns.",
-        "The average rating is 4.5 from 225 reviews."
+        "Beginner and leisure use are stated.",
+        "A six-pack is smaller than the feather packs here."
       ],
       "not_good": [
-        "Decathlon's advice page says plastic and feather shuttles have different flight paths, so it will not feel like a feather shuttle.",
-        "The page has no description. Head type, weight and durability are not listed.",
-        "The page does not say if it is allowed in any event. Ask your organiser.",
-        "We could not see the review text, so we cannot say what buyers liked or disliked."
+        "It will not replicate every aspect of feather-shuttle play.",
+        "Ask your club which shuttle type and speed it uses."
       ],
       "search_query": "Decathlon badminton plastic shuttlecock PSC 100x6 yellow",
       "stores": [
         "Decathlon"
-      ]
+      ],
+      "product_url": "https://www.decathlon.in/p/8333131/badminton-plastic-shuttlecock-psc-100x6-yellow"
     },
     {
       "name": "Kuikma Badminton Feather Shuttlecock FSC 590 Speed 76 x12",
@@ -51,27 +48,24 @@
         "12 shuttles",
         "Speed 76"
       ],
-      "verdict": "A pack of 12 feather shuttles at speed 76. The page does not say which feather or cork it uses.",
+      "verdict": "A speed-76 feather twelve-pack with composite cork, positioned for intermediate training.",
       "paragraphs": [
-        "The FSC 590 is a feather shuttle pack sold under the Kuikma brand on Decathlon India. The pack has 12 shuttles and the speed is 76. The page is sold and fulfilled by Decathlon Sports India. It shows a 2 year warranty and a 30 days return option.",
-        "The rating is 4.6 out of 5 from 251 reviews. We could not see the review text. The page has no description, so it does not list the feather type, cork type, weight or any approval. Decathlon's advice page suggests natural feather with mixed cork for regular players, who want good feel and durability. We could not confirm that this pack matches that advice. We put it in Mid-range only because it is the lower model number of the two feather packs."
+        "The FSC 590 India specifications list goose feathers, composite cork, 5 g weight and speed 76, in a pack of twelve. Decathlon positions it for intermediate training and regular play.",
+        "Those published materials replace the earlier uncertainty in this guide. They do not establish measured durability or an event approval. Check your club’s preferred shuttle and speed before buying a full tube."
       ],
       "good": [
-        "It is a feather shuttle, which is what Decathlon's advice page points regular players towards.",
-        "The page shows a 2 year warranty and 30 days returns.",
-        "The average rating is 4.6 from 251 reviews.",
-        "The pack has 12 shuttles, which suits people who play often."
+        "Feather and cork types are published.",
+        "Twelve-pack for regular practice."
       ],
       "not_good": [
-        "The page does not list the feather type, cork type or weight.",
-        "The page shows no approval for official events.",
-        "Only speed 76 is listed. Decathlon's advice page says heavier shuttles suit cold, dry conditions and lighter ones suit heat and humidity, so match it to your court.",
-        "A pack of 12 may be more than a casual player needs. The plastic pick is the simpler choice for leisure games."
+        "We have not compared its flight or durability with the FSC 990.",
+        "Speed 76 may not be the right match for your court."
       ],
       "search_query": "Decathlon Kuikma FSC 590 speed 76 feather shuttlecock x12",
       "stores": [
         "Decathlon"
-      ]
+      ],
+      "product_url": "https://www.decathlon.in/p/8491565/badminton-feather-shuttlecock-fsc-590-speed-76-x12"
     },
     {
       "name": "Kuikma Badminton Feather Shuttlecock FSC 990 Speed 76 x12",
@@ -82,27 +76,24 @@
         "12 shuttles",
         "Speed 76"
       ],
-      "verdict": "A pack of 12 feather shuttles at speed 76, with only a few buyer reviews so far.",
+      "verdict": "A speed-76 feather twelve-pack with full cork, positioned for advanced play.",
       "paragraphs": [
-        "The FSC 990 is a feather shuttle pack sold under the Kuikma brand on Decathlon India. The pack has 12 shuttles and the speed is 76. The page is sold and fulfilled by Decathlon Sports India. It shows a 2 year warranty and a 30 days return option.",
-        "Only 10 reviews are shown, with an average of 3.9 out of 5. That is too few to say much, and we could not see the review text. The page has no description. It does not list the feather type, cork type, weight or any BWF approval. Decathlon's advice page suggests goose feather with full cork for advanced players. We could not confirm that this pack matches that advice. We put it in Premium only because it is the higher model number of the two feather packs. Check the pack itself if approval matters to you."
+        "The FSC 990 India specifications list goose feathers, full cork, 5 g weight and speed 76, in a pack of twelve. The maker positions it for advanced competition play.",
+        "The retailer also lists approval claims. We have not independently checked current federation certification, so confirm acceptance with your event organiser rather than relying on this guide as proof. Full cork and a higher model number do not establish longer life in our own tests."
       ],
       "good": [
-        "It is a feather shuttle pack from the higher model number of the two here.",
-        "The page shows a 2 year warranty and 30 days returns.",
-        "The pack has 12 shuttles.",
-        "The page lists speed 76 clearly, so you can compare it with the other feather pack."
+        "Full cork and feather materials are published.",
+        "Advanced competition use is the maker’s stated purpose."
       ],
       "not_good": [
-        "Only 10 reviews are shown, with an average of 3.9 out of 5. This is a small sample.",
-        "The page does not list the feather type, cork type, weight or any approval.",
-        "Only speed 76 is listed. Check it against your court and the weather.",
-        "The page gives no figure for how long the shuttles last."
+        "Event acceptance needs a current check with the organiser.",
+        "No independent durability comparison from SAT."
       ],
       "search_query": "Decathlon Kuikma FSC 990 speed 76 feather shuttlecock x12",
       "stores": [
         "Decathlon"
-      ]
+      ],
+      "product_url": "https://www.decathlon.in/p/8490819/badminton-feather-shuttlecock-fsc-990-speed-76-x12"
     }
   ],
   "choose": [
@@ -112,7 +103,7 @@
     },
     {
       "heading": "Check your event rules",
-      "text": "The BWF Laws of Badminton say a shuttle may be made of natural or synthetic materials, or both. They say its flight should be similar to a natural feather shuttle. Which shuttle your own event uses is up to the organiser, so ask before you buy. This is general advice."
+      "text": "Ask the organiser which type, model and speed it accepts before buying for a tournament. A retailer’s approval badge does not establish that a particular event accepts the exact pack."
     },
     {
       "heading": "Understand the speed number",
@@ -124,11 +115,15 @@
     },
     {
       "heading": "Do a quick speed check",
-      "text": "The BWF Laws test shuttle speed with a full underhand stroke from over the back boundary line. The shuttle is hit upward and parallel to the side lines. A shuttle of correct speed lands 530 mm to 990 mm short of the other back boundary line. You can try the same stroke on your court. If the shuttle lands well short, a faster one may suit you. If it goes past the line, a slower one may suit you. That last part is our own suggestion, not a rule."
+      "text": "Try a shuttle on the court before buying a large quantity. Ask your coach or club to check the speed under its normal playing conditions; a single speed number is not suitable for every venue."
     },
     {
       "heading": "Check pack size, stock and approval",
-      "text": "The plastic pick has 6 shuttles and the two feather picks have 12 each. Stock changes often, so check the Decathlon India page before you plan a purchase. The product pages did not list any approval or feather and cork details. If these matter to you, check the pack itself or ask your event organiser."
+      "text": "Compare pack size and the speed your club uses. The feather packs contain twelve, while the plastic pack contains six. Published retailer approval claims are not a substitute for checking current event requirements."
+    },
+    {
+      "heading": "Check the exact listing before paying",
+      "text": "Check the current seller listing for availability, delivery to your pincode, returns and warranty coverage before ordering."
     }
   ],
   "faq": [
@@ -138,11 +133,11 @@
     },
     {
       "q": "Can I use a plastic shuttlecock in a tournament?",
-      "a": "The BWF Laws allow a shuttle made of natural or synthetic materials if its flight is similar to a feather shuttle. Which type an event uses is the organiser's choice. Ask them before you buy. This is general advice."
+      "a": "Ask your organiser for the accepted shuttle type and model. Do not rely on this shopping comparison as a statement of current tournament eligibility."
     },
     {
       "q": "Which speed should I choose for India?",
-      "a": "Decathlon's advice page gives the direction but no fixed numbers. Use a lighter, lower-number shuttle in high heat, high humidity or at high altitude. Use a heavier, higher-number one in cold, dry places. Our two feather picks list only speed 76, so check that against your court. The BWF underhand check in this guide can help."
+      "a": "There is no single speed for every Indian court. Ask your club which speed works in its playing conditions. The two feather packs compared here are labelled speed 76; confirm that this is what your group uses."
     },
     {
       "q": "What do green, blue and red caps mean?",
@@ -156,30 +151,31 @@
   "sources": [
     {
       "label": "Decathlon India: Badminton Plastic Shuttlecock PSC 100x6 Yellow",
-      "url": "https://www.decathlon.in/p/8333131/badminton-plastic-shuttlecock-psc-100x6-yellow"
+      "url": "https://www.decathlon.in/p/8333131/badminton-plastic-shuttlecock-psc-100x6-yellow",
+      "checked": "2026-10-16"
     },
     {
       "label": "Decathlon India: Kuikma Feather Shuttlecock FSC 590 Speed 76 x12",
-      "url": "https://www.decathlon.in/p/8491565/badminton-feather-shuttlecock-fsc-590-speed-76-x12"
+      "url": "https://www.decathlon.in/p/8491565/badminton-feather-shuttlecock-fsc-590-speed-76-x12",
+      "checked": "2026-10-16"
     },
     {
       "label": "Decathlon India: Kuikma Feather Shuttlecock FSC 990 Speed 76 x12",
-      "url": "https://www.decathlon.in/p/8490819/badminton-feather-shuttlecock-fsc-990-speed-76-x12"
+      "url": "https://www.decathlon.in/p/8490819/badminton-feather-shuttlecock-fsc-990-speed-76-x12",
+      "checked": "2026-10-16"
     },
     {
       "label": "Decathlon: how to choose the right shuttlecock (maker advice)",
-      "url": "https://www.decathlon.com/blogs/sports-advice/how-to-choose-the-right-shuttlecock"
-    },
-    {
-      "label": "BWF Laws of Badminton (as published on worldbadminton.com)",
-      "url": "https://worldbadminton.com/laws/index.html"
+      "url": "https://www.decathlon.com/blogs/sports-advice/how-to-choose-the-right-shuttlecock",
+      "checked": "2026-10-16"
     },
     {
       "label": "Yonex: Mavis 350 (maker page, cap colours)",
-      "url": "https://www.yonex.com/mavis-350"
+      "url": "https://www.yonex.com/mavis-350",
+      "checked": "2026-10-16"
     }
   ],
   "published": "2026-10-15",
-  "updated": "2026-10-15",
+  "updated": "2026-10-16",
   "featured": false
 }
