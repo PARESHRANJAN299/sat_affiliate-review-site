@@ -1378,6 +1378,17 @@ def output_path(meta):
     return DIST / meta["url"].strip("/") / "index.html"
 
 
+def footer_mission_html():
+    """The footer statement: one slim line that rotates through its sentences with a script, all of it visible without one."""
+    lines = CONFIG.get("footer_mission_lines") or []
+    if not lines:
+        return ""
+    spans = "".join(f'<span class="footer-mission-line">{esc(t)}</span> ' for t in lines)
+    return ('<div class="footer-mission" data-footer-rotator>'
+            '<svg class="footer-mission-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6z"/><path d="M9 12l2.2 2.2L15.5 10"/></svg>'
+            f'<p class="footer-mission-stage">{spans}</p></div>')
+
+
 def build_page(meta, base, header_t, footer_t, year, articles):
     site_url = CONFIG["site_url"].rstrip("/")
     canonical = site_url + meta["url"]
@@ -1451,7 +1462,7 @@ def build_page(meta, base, header_t, footer_t, year, articles):
             meta["url"]),
     })
     footer = render(footer_t, {**base_ctx,
-                               "footer_mission": esc(CONFIG["footer_mission"]),
+                               "footer_mission_html": footer_mission_html(),
                                "footer_affiliate_notice": ('<p class="footer-affiliate">' + esc(base_ctx["affiliate_note"]) + '</p>') if CONFIG.get("affiliate_active") else "",
                                "footer_site_items": link_list(CONFIG["footer_site"], meta["url"]),
                                "footer_category_items": link_list([{"label": c["name"], "url": c["url"]} for c in CATEGORIES], meta["url"]),

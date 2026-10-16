@@ -7,10 +7,7 @@ footer.site-footer::before { content: ""; position: absolute; inset: 0 0 auto; h
 .footer-brand { display: inline-flex; margin: 0 0 14px; color: #fff; font-size: 1.75rem; font-weight: 900; letter-spacing: .12em; line-height: 1.1; }
 .footer-brand span { color: #ff8a4c; }
 .footer-brand:hover { text-decoration: none; color: #fff; }
-.footer-lead { max-width: 36ch; margin: 0 0 12px; color: #f4f4f4; font-family: var(--font-display); font-size: 1.12rem; font-weight: 600; line-height: 1.5; letter-spacing: .005em; text-wrap: balance; }
-.footer-about { max-width: 38ch; margin: 0; color: #b8b8b8; font-size: .84rem; line-height: 1.75; }
-.footer-note { display: flex; align-items: flex-start; gap: 10px; max-width: 40ch; margin: 18px 0 0; padding: 12px 14px; color: #dcdcdc; font-size: .78rem; line-height: 1.6; background: linear-gradient(135deg, #111, #0a0a0a); border: 1px solid #2c2c2c; border-left: 3px solid #ff8a4c; border-radius: 10px; }
-.footer-note svg { flex: none; width: 18px; height: 18px; margin-top: 1px; fill: none; stroke: #ff8a4c; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.footer-about { display: none; }
 .footer-title { display: block; margin: 0 0 12px; color: #f5f5f5; font-size: .7rem; font-weight: 750; letter-spacing: .12em; text-transform: uppercase; }
 .footer-group { min-width: 0; }
 .footer-group > summary { display: flex; align-items: center; justify-content: space-between; gap: 12px; list-style: none; margin-bottom: 12px; pointer-events: none; }
@@ -30,7 +27,6 @@ footer.site-footer::before { content: ""; position: absolute; inset: 0 0 auto; h
 .footer-copy-status { min-height: 1.5em; margin: 7px 0 0; color: #d3d3d3; font-size: .72rem; line-height: 1.5; }
 .footer-bottom { border-top: 1px solid #262626; padding-top: 18px; font-size: .74rem; line-height: 1.7; color: #a6a6a6; }
 .footer-bottom p { margin: 0; }
-.footer-mission { max-width: 86ch; color: #c8c8c8; font-size: .82rem; line-height: 1.65; }
 .footer-bottom .footer-affiliate { max-width: 90ch; margin-top: 8px; font-size: .74rem; }
 .footer-meta { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px 24px; margin-top: 16px; }
 .footer-bottom .footer-meta p { margin: 0; }
@@ -47,16 +43,12 @@ main:has(> .section-alt:last-child) + footer.site-footer { margin-top: 0; }
 @media (max-width: 1100px) {
   .footer-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
   .footer-brand-col, .footer-contact-col { grid-column: 1 / -1; }
-  .footer-lead, .footer-about, .footer-note { max-width: 62ch; }
 }
 @media (max-width: 620px) {
   footer.site-footer { margin-top: 32px; padding-top: 30px; }
   .footer-grid { grid-template-columns: minmax(0, 1fr); gap: 0; margin-bottom: 20px; }
   .footer-brand-col { padding-bottom: 22px; }
   .footer-brand { margin-bottom: 12px; }
-  .footer-lead { max-width: 30ch; font-size: 1.2rem; line-height: 1.45; }
-  .footer-about { font-size: .86rem; max-width: 44ch; }
-  .footer-note { max-width: none; margin-top: 16px; padding: 13px 14px; font-size: .8rem; }
   .footer-group { border-top: 1px solid #262626; }
   .footer-group > summary { min-height: 52px; margin: 0; padding: 12px 0; cursor: pointer; pointer-events: auto; }
   .footer-group > nav { padding-bottom: 12px; }
@@ -68,8 +60,31 @@ main:has(> .section-alt:last-child) + footer.site-footer { margin-top: 0; }
   .footer-contact a { min-height: 44px; display: inline-flex; align-items: center; }
   .footer-copy { margin-top: 4px; }
   .footer-bottom { display: block; padding-top: 16px; padding-right: 42px; }
-  .footer-mission { font-size: .8rem; line-height: 1.65; }
   .footer-bottom p + p { margin-top: 10px; }
   .footer-meta { display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; margin-top: 18px; }
   .footer-origin { justify-self: end; }
 }
+
+/* ---------- the statement at the very bottom: one slim line, rotated by a script ---------- */
+.footer-brand-col { padding-bottom: 4px; }
+.footer-mission { position: relative; display: flex; align-items: flex-start; gap: 10px; max-width: 96ch; color: #cfcfcf; font-size: .8rem; line-height: 1.6; }
+.footer-mission-icon { flex: none; width: 17px; height: 17px; margin-top: 3px; fill: none; stroke: #ff8a4c; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.footer-mission-stage { flex: 1; min-width: 0; margin: 0; }
+.footer-mission-line { display: inline; }
+.footer-mission.is-rotating { align-items: center; padding: 4px 0 10px; }
+.footer-mission.is-rotating .footer-mission-stage { position: relative; }
+.footer-mission.is-rotating .footer-mission-line { position: absolute; left: 0; right: 0; top: 0; display: block; opacity: 0; visibility: hidden; transform: translateY(8px); transition: opacity .5s ease, transform .5s ease, visibility 0s .5s; }
+.footer-mission.is-rotating .footer-mission-line.is-on { position: relative; opacity: 1; visibility: visible; transform: none; transition-delay: 0s; }
+.footer-mission.is-instant .footer-mission-line { transition: none !important; }
+.footer-mission-dots { flex: none; display: flex; align-items: center; }
+.footer-mission-dots button { position: relative; width: 24px; height: 28px; padding: 0; background: none; border: 0; cursor: pointer; }
+.footer-mission-dots button::after { content: ""; position: absolute; left: 50%; top: 50%; width: 6px; height: 6px; margin: -3px 0 0 -3px; border-radius: 50%; background: #4a4a4a; transition: background .2s ease, transform .2s ease; }
+.footer-mission-dots button[aria-current="true"]::after { background: #ff8a4c; transform: scale(1.35); }
+.footer-mission-dots button:focus-visible { outline: 2px solid #ffc09c; outline-offset: -2px; border-radius: 6px; }
+.footer-mission-bar { position: absolute; left: 27px; right: 0; bottom: 0; height: 2px; overflow: hidden; background: #1e1e1e; border-radius: 2px; }
+.footer-mission-bar::after { content: ""; display: block; height: 100%; width: 100%; background: linear-gradient(90deg, #ff8a4c, #c2410c); transform-origin: 0 50%; transform: scaleX(0); }
+.footer-mission.is-rotating .footer-mission-bar::after { animation: footer-mission-run 6s linear forwards; }
+.footer-mission.is-paused .footer-mission-bar::after { animation-play-state: paused; }
+@keyframes footer-mission-run { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@media (max-width: 620px) { .footer-mission { font-size: .78rem; } .footer-mission-dots button { height: 32px; } }
+@media (prefers-reduced-motion: reduce) { .footer-mission.is-rotating .footer-mission-line { transition: none; } }
