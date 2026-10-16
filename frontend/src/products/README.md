@@ -26,7 +26,7 @@ Required: `id` (same as the file name), `family`, `name`, `brand`, `price_band`.
 * `editor_pick`: `true` puts "Our pick" on the card and lists it first. `rank` (1, 2, 3...) orders the picks. Leave `rank` as `null` otherwise.
 * `checked`: the day you last looked at the shop listing. It shows on the card. The check warns when it is older than 90 days.
 * `image`: your own photo, or one you have the right to use, saved in `src/static/images/products/`. Do not copy shop or Amazon images. Without an image the card shows a neutral "Photo coming" tile.
-* `retailers`: `amazon`, `flipkart`, `brand_store`, `other`, each `{ "url": "https://..." }`. Links must start with `https://`. They are plain links until `affiliate_active` is true in `site.config.json`; then they get `rel="sponsored"` and the disclosure line appears once above the list. The "As an Amazon Associate" sentence also needs `amazon_associate_approved`.
+* `retailers`: `amazon`, `flipkart`, `brand_store`, `other`, each `{ "url": "https://..." }`. Links must start with `https://`. They are plain links until `affiliate_active` is true in `site.config.json`; then they get `rel="sponsored"` and the disclosure line appears once above the list. The "As an Amazon Associate" sentence appears as soon as `amazon_tracking_id` is also set (see "Amazon links: sign-up day" below).
 * `sources`: pages you read (they show under "Pages we read").
 * `slot`: optional, one of `best_overall`, `best_budget`, `best_value`, `best_daily`, `best_premium`, `best_beginner` and the other keys of the category's pick slots.
 
@@ -69,15 +69,27 @@ One JSON file per product, in `src/products/<category-slug>/`, for example `src/
 * `slot`: `best_overall`, `best_budget`, `best_value`, `best_daily`, `best_premium` or `best_beginner`.
 * `price_band` is one of: Under \u20b9500, \u20b9500\u2013\u20b91,000, \u20b91,000\u2013\u20b92,000, Premium. Never type a live price.
 * No ratings, reviews or testing claims unless they are true.
-* Retailer links are plain until `affiliate_active` is true in `site.config.json`. Then links get `rel="sponsored"` and a disclosure line. The Amazon Associate sentence appears only when `amazon_associate_approved` is also true.
+* Retailer links are plain until `affiliate_active` is true in `site.config.json`. Then links get `rel="sponsored"` and a disclosure line. The Amazon Associate sentence appears on every page once `amazon_tracking_id` is set as well.
 * Files in `_sample/` are template previews only and never appear as products.
 
-## Amazon links: before and after you are approved
+## Amazon links: sign-up day (this is NOT "after approval")
 
-You do **not** need to be an approved Amazon Associate to link to an Amazon product. Before approval a link is just a normal link to the shop page, and you earn nothing from it.
+Amazon approves you only **after** you have driven at least 3 qualifying sales within the first 180 days after you sign up, and those sales count only through your tagged links. Amazon rejects accounts whose links are not tagged, and requires the sentence "As an Amazon Associate I earn from qualifying purchases." on the site. So the links, the tag and the sentence must be live from the day you sign up, not after approval. (Source: affiliate-program.amazon.in/help/node/topic/G8TW5AE9XL2VX9VM and the Operating Agreement section 10.)
 
-1. Open the product on amazon.in and copy the address. The clean form is `https://www.amazon.in/dp/<ASIN>` (the 10-character code after `/dp/`). Remove everything after the ASIN: no `ref=`, no `tag=`, no tracking codes.
-2. Put it in the product file: `"retailers": {"amazon": {"url": "https://www.amazon.in/dp/B0XXXXXXXX"}}`.
+Before you sign up, keep `affiliate_active` false and `amazon_tracking_id` empty. Amazon links are then plain links and earn nothing. Run `python3 build.py --governance --simulate-signup` any time to see what would fail on sign-up day.
+
+1. Open the product on amazon.in and copy the address. The clean form is `https://www.amazon.in/dp/<ASIN>` (the 10-character code after `/dp/`). Remove everything after the ASIN: no `ref=`, no `tag=`, no tracking codes. Never use a shortener such as bit.ly or amzn.to.
+2. Put it in the product file: `"retailers": {"amazon": {"url": "https://www.amazon.in/dp/B0XXXXXXXX"}}`. Guides use the `stores` list; hand-written pages can just contain the plain amazon.in link.
 3. Do not copy Amazon's pictures, star ratings, review text or prices onto SAT. Write your own words and use your own photo; show only the price band.
-4. After Amazon accepts your sign-up, get your tracking ID (it looks like `sat-21`) and put it in `src/site.config.json`: `"amazon_tracking_id": "sat-21"`, then switch on `affiliate_active` (and `amazon_associate_approved` once approved). From then on every amazon.in link on product and guide pages gets `?tag=sat-21` automatically, gets `rel="sponsored"`, and the disclosure line appears. You never edit the links by hand. The build stops if the tracking ID is missing when the flags are on.
-5. The static Badminton Rackets page has hand-written shop links; add the tag to those by hand at that time.
+4. **Sign-up day:** Amazon gives you a tracking ID (it looks like `sat-21`). In `src/site.config.json` set `"amazon_tracking_id": "sat-21"` and `"affiliate_active": true`, run `python3 build.py --governance`, fix every FAIL, push, and check the live site in a private window. From then on every amazon.in link on product, guide and hand-written pages gets `?tag=sat-21` and `rel="sponsored"` automatically, the sentence appears in the footer of every page, next to Amazon buttons and on the disclosure page, and the build stops if the tracking ID is missing. Update the privacy page the same day (Amazon links, Amazon cookies). `amazon_associate_approved` is only a note for you: set it to true after Amazon's approval email; it changes nothing on the site.
+5. Hand-written pages (for example Badminton Rackets) are tagged by the build too; you do not edit those links.
+
+## Rules after you sign up (zero tolerance)
+
+* Never buy through your own links or ask family or friends to; never offer money, discounts or points for using a link.
+* No price alerts, price history or live prices; no Amazon prices, pictures, ratings or review text.
+* No link shorteners, redirect pages or cloaked links; no Amazon logos; do not imply Amazon endorses SAT.
+* No Amazon links in emails or messages; no bidding on Amazon trademarks.
+* Keep content real and recent: at least 10 useful guides, each updated with real changes at least every 60 days.
+* Declare every site or social page you use in the Associates account; use the tracking ID on those sites only.
+* Run `python3 build.py --governance` before every push once links are live.
