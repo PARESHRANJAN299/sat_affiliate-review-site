@@ -1,0 +1,107 @@
+/* Style-first watch catalogue: all discovery controls stay above the product grid. */
+.watch-store { padding: 24px 0 40px; background: #f7f7f5; }
+.watch-store-inner { max-width: 1400px; }
+.watch-store .breadcrumb { margin-bottom: 18px; font-size: .78rem; }
+.watch-store-head { display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 24px; }
+.watch-kicker { margin: 0 0 5px; text-transform: uppercase; letter-spacing: .16em; font-size: .65rem; font-weight: 700; color: #846631; }
+.watch-store-head h1 { font-size: clamp(1.65rem, 3vw, 2.5rem); margin: 0 0 7px; line-height: 1.15; }
+.watch-store-head p:last-child { margin: 0; color: var(--color-text-muted); font-size: .91rem; }
+.watch-guide-link { flex: none; font-size: .85rem; font-weight: 600; }
+.watch-store .collection { margin: 0; display: flex; flex-direction: column; }
+.watch-discovery { order: 0; background: white; border: 1px solid var(--color-border); border-radius: 16px 16px 0 0; padding: 20px; }
+.watch-style-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+.watch-style-head h2 { margin: 0; font-size: 1rem; font-family: var(--font-sans); }
+.watch-style-head a { font-size: .77rem; }
+.watch-style-row { display: flex; gap: 12px; overflow-x: auto; padding: 3px 2px 10px; scrollbar-width: thin; overscroll-behavior-x: contain; }
+.watch-style { display: flex; flex: 1 0 96px; flex-direction: column; align-items: center; justify-content: center; gap: 8px; border-radius: 10px; padding: 9px 8px; color: #343536; text-decoration: none; font-size: .77rem; white-space: nowrap; border: 1px solid transparent; }
+.watch-style:hover { background: #f8f5ef; text-decoration: none; }
+.style-dot { width: 48px; height: 48px; border-radius: 50%; background: #f5f2eb; display: flex; align-items: center; justify-content: center; }
+.style-art { width: 30px; height: 39px; fill: none; stroke: #8a7044; stroke-width: 4; }
+.style-minimal { background: #f1f1ee; }.style-metal-strap { background: #eceff1; }.style-office { background: #eef0ef; }.style-elegant { background: #f5eeee; }.style-leather-strap { background: #f0e6db; }
+.watch-style[aria-current="true"] { border-color: #a08450; background: #faf6ed; color: #5f491e; font-weight: 700; }
+.watch-quick-row { display: flex; gap: 14px; border-top: 1px solid var(--color-border); padding-top: 16px; margin-top: 6px; }
+.watch-quick { display: flex; align-items: center; gap: 12px; flex: 0 1 320px; font-size: .8rem; font-weight: 700; }
+.watch-quick select { width: 100%; min-width: 0; min-height: 44px; padding: 8px 12px; border: 1px solid var(--color-border); border-radius: 8px; background: #fafaf8; color: var(--color-text); font-size: .84rem; }
+.watch-store .collection-controls { order: 1; border-top: 0; border-radius: 0 0 16px 16px; padding: 14px 20px; gap: 12px; }
+.watch-store .collection-controls .collection-search { flex: 1 1 200px; }
+.watch-store .collection-controls .collection-segments { flex: 0 0 auto; }
+.watch-store .collection-controls .collection-segments button { border-radius: 7px; font-size: .8rem; }
+.watch-store .collection-active { order: 2; padding-bottom: 0; }
+.watch-store .collection-head { order: 3; margin: 22px 0 12px; }
+.watch-store .collection-head h2 { font: 700 .95rem var(--font-sans); }
+.watch-store .collection-head > div { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; }
+.watch-store .collection-head p { margin: 0; font-size: .78rem; scroll-margin-top: 100px; }
+.watch-store .collection-layout, .watch-store .collection.is-enhanced .collection-layout { order: 4; display: block; margin: 0; }
+.watch-store .collection .watch-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+.watch-store .collection .watch-card, .watch-store .collection .watch-card:only-child { display: flex; grid-column: auto; border-radius: 12px; box-shadow: 0 2px 6px rgb(0 0 0 / .025); min-height: 0; background: #fff; }
+.watch-store .collection .watch-card:only-child { max-width: 330px; }
+.watch-store .collection .watch-media { aspect-ratio: 1 / 1; min-height: 0; max-height: 240px; padding: 16px; background: #fafaf8; }
+.watch-store .collection .watch-body { padding: 18px; gap: 9px; }
+.watch-store .collection .watch-brand { font-size: .68rem; letter-spacing: .1em; }
+.watch-store .collection .watch-model { font: 650 1rem/1.45 var(--font-sans); }
+.watch-store .collection .watch-card-specs { margin: 0; font-size: .78rem; line-height: 1.6; color: #68696a; }
+.watch-store .collection .watch-verdict { font-size: .8rem; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.watch-product-bottom { margin-top: auto; padding-top: 12px; }
+.watch-detail-link { display: inline-flex; align-items: center; min-height: 36px; font-size: .76rem; font-weight: 600; color: #65625c; }
+.watch-store .collection .watch-actions { padding-top: 7px; display: flex; flex-direction: column; gap: 4px; }
+.watch-store .collection .watch-actions .btn { width: 100%; border-radius: 7px; padding: 10px; font-size: .8rem; }
+.watch-store .collection-filter-open { display: inline-flex; font-size: .8rem; padding: 10px 14px; border-radius: 8px; }
+.watch-store .collection-filters[open] { position: fixed; inset: auto 0 0; margin: 0 auto; width: min(100%, 580px); max-height: 85dvh; border-radius: 20px 20px 0 0; padding: 0 20px; overflow: auto; }
+.watch-store .collection-filters::backdrop { background: rgb(0 0 0 / .5); }
+.watch-store .cf-head, .watch-store .cf-foot { display: flex; position: sticky; background: #fff; z-index: 1; padding: 12px 0; }
+.watch-store .cf-head { top: 0; }.watch-store .cf-foot { bottom: 0; padding-bottom: calc(14px + env(safe-area-inset-bottom)); }
+.watch-store .cf-head button, .watch-store .cf-foot [data-filter-close] { display: inline-flex; align-items: center; justify-content: center; }
+.collection-pagination { display: flex; gap: 7px; justify-content: center; flex-wrap: wrap; margin: 26px 0 0; }
+.collection-pagination button { min-height: 44px; min-width: 40px; padding: 8px 10px; border: 1px solid var(--color-border); background: #fff; border-radius: 7px; color: var(--color-text); cursor: pointer; font-size: .8rem; }
+.collection-pagination button[aria-current] { background: #252624; color: #fff; border-color: #252624; }
+.collection-pagination button:disabled { opacity: .45; cursor: default; }
+.watch-product-page { max-width: 1120px; }.watch-product-page h1 { font-size: clamp(1.5rem, 3vw, 2.25rem); }
+@media (min-width: 1500px) { .watch-store .collection .watch-grid { grid-template-columns: repeat(5,minmax(0,1fr)); } }
+@media (max-width: 1100px) { .watch-store .collection .watch-grid { grid-template-columns: repeat(3,minmax(0,1fr)); } }
+@media (max-width: 719px) {
+  .watch-store { padding: 18px 0 30px; }
+  .watch-store-head { margin-bottom: 18px; }.watch-guide-link { display: none; }
+  .watch-store-head h1 { font-size: 1.7rem; }.watch-store-head p:last-child { font-size: .82rem; }
+  .watch-discovery { padding: 14px 12px; }.watch-style-row { gap: 4px; }.watch-style { flex: 0 0 76px; padding: 8px 4px; font-size: .7rem; }
+  .watch-style-head h2 { font-size: .91rem; }.watch-style-head a { font-size: .7rem; }
+  .watch-quick-row { gap: 9px; padding-top: 12px; }.watch-quick { flex: 1 1 0; flex-direction: column; align-items: stretch; gap: 5px; font-size: .72rem; min-width: 0; }
+  .watch-quick select { padding: 7px; font-size: .78rem; }
+  .watch-store .collection-controls { padding: 12px; gap: 10px; }
+  .watch-store .collection-controls .collection-segments { flex-basis: 100%; }
+  .watch-store .collection-controls .collection-segments button { flex: 1; padding: 8px 10px; }
+  .watch-store .collection-controls .collection-search { flex-basis: 100%; order: 0; }
+  .watch-store .collection-sort { margin-left: auto; }
+  .watch-store .collection-sort select { font-size: .78rem; max-width: 125px; }
+  .watch-store .collection-head { margin-top: 18px; }.watch-store .collection-head > div { justify-content: space-between; width: 100%; }
+  .watch-store .collection .watch-grid { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 10px; }
+  .watch-store .collection .watch-body { padding: 12px; gap: 8px; }
+  .watch-store .collection .watch-model { font-size: .88rem; }
+  .watch-store .collection .watch-card-specs { font-size: .72rem; }
+  .watch-store .collection .watch-verdict { font-size: .74rem; -webkit-line-clamp: 2; }
+  .watch-store .collection .watch-actions .btn { font-size: .73rem; padding: 9px 6px; }
+  .watch-store .collection .watch-actions .ic { display: none; }
+  .watch-store .watch-detail-link { font-size: .7rem; }
+}
+@media (max-width: 359px) { .watch-store-inner { padding: 0 12px; }.watch-store .collection .watch-body { padding: 10px; }.collection-pagination { gap: 4px; }.collection-pagination button { min-width: 32px; padding: 7px; } }
+.watch-review:not(:has(.watch-review-media)) { grid-template-columns: minmax(0, 1fr); }
+.watch-quick-row > .collection-filter-open { align-self: flex-end; flex: none; min-height: 44px; }
+@media (max-width: 719px) {
+  .watch-store { padding-top: 12px; }.watch-store .breadcrumb { margin-bottom: 12px; }
+  .watch-store-head { margin-bottom: 14px; }.watch-kicker { font-size: .6rem; }.watch-store-head h1 { font-size: 1.5rem; }
+  .watch-store-head p:last-child { font-size: .78rem; }
+  .watch-discovery { padding: 12px; }.watch-style-head { margin-bottom: 8px; }
+  .style-dot { width: 34px; height: 34px; }.style-art { width: 23px; height: 29px; }
+  .watch-style { padding: 6px 4px; gap: 5px; }.watch-style-row { padding-bottom: 6px; }
+  .watch-quick-row { padding-top: 10px; gap: 7px; }.watch-quick-row > .collection-filter-open { padding: 8px; font-size: .72rem; }
+  .watch-quick { font-size: .68rem; }.watch-quick select { padding: 6px; font-size: .72rem; }
+  .watch-store .collection-controls { display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 8px; padding: 10px 12px; }
+  .watch-store .collection-controls .collection-segments { grid-column: 1/-1; }
+  .watch-store .collection-controls .collection-search { min-width: 0; }
+  .watch-store .collection-controls .collection-search input { padding: 8px; font-size: .82rem; }
+  .watch-store .collection-sort { gap: 5px; font-size: .73rem; }
+  .watch-store .collection-sort select { max-width: 105px; padding: 7px; font-size: .72rem; }
+}
+@media (min-width: 1000px) {
+  .watch-store .collection-filters[open] { inset: 0 0 0 auto; width: 380px; height: 100dvh; max-height: 100dvh; margin: 0; border-radius: 16px 0 0 16px; }
+}
+.watch-quick > span { white-space: nowrap; }

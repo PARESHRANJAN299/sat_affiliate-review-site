@@ -64,6 +64,33 @@ class CollectionTests(unittest.TestCase):
             else:
                 self.assertEqual(rendered.count('<article '), len(category['families']))
 
+    def test_watch_routes_share_style_first_browser_and_correct_server_selection(self):
+        shop = watches.Watches(build.SRC, build.CONFIG)
+        class Cards(HTMLParser):
+            def __init__(self, text):
+                super().__init__(); self.visible = []; self.feed(text)
+            def handle_starttag(self, tag, attrs):
+                attrs = dict(attrs)
+                if tag == "article" and attrs.get("class") == "watch-card" and "hidden" not in attrs:
+                    self.visible.append(attrs["data-id"])
+        for gender in ("men", "women"):
+            page = shop.gender_page(gender)
+            self.assertEqual(set(Cards(page["_body"]).visible), {p["id"] for p in shop.products if gender in p["gender"]})
+            self.assertLess(page["_body"].index("watch-style-row"), page["_body"].index("watch-quick-row"))
+            self.assertLess(page["_body"].index("watch-quick-row"), page["_body"].index("collection-controls"))
+            self.assertIn('data-page-size="24"', page["_body"])
+            self.assertNotIn("affiliate-box", page["_body"])
+            self.assertNotIn("Model reference", page["_body"])
+
+    def test_compact_disclosure_preserves_destination_and_uses_short_label(self):
+        destination = 'https://www.amazon.in/dp/TEST?tag=example-21'
+        source = '<aside class="affiliate-box" id="affiliate-note"><p>Repeated banner</p></aside><a href="' + destination + '" rel="sponsored nofollow">View on Amazon</a>'
+        rendered = build.compact_affiliate_notices(source)
+        self.assertNotIn("Repeated banner", rendered)
+        self.assertIn('id="affiliate-note"', rendered)
+        self.assertIn('class="paid-link">Paid link', rendered)
+        self.assertEqual(Links(rendered).links[0]["href"], destination)
+
     def test_future_product_records_populate_filters_and_exact_link(self):
         for category in build.CATEGORIES:
             if category['slug'] in ('watches', 'sports-fitness'):

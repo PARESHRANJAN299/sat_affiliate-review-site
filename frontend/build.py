@@ -37,7 +37,7 @@ CONFIG["categories"] = [{"label": c["name"], "url": c["url"], "slug": c["slug"]}
 # Included in every page's CSS/JS bundle, in this order.
 ALWAYS_CSS = [
     "base/variables", "base/reset",
-    "base/icons", "layout/container", "layout/section", "layout/header", "layout/footer", "layout/search", "layout/to-top", "layout/bottom-nav",
+    "base/icons", "base/affiliate", "layout/container", "layout/section", "layout/header", "layout/footer", "layout/search", "layout/to-top", "layout/bottom-nav",
 ]
 # Loaded after component/page CSS so they win the cascade.
 LAST_CSS = ["layout/mobile-compact", "layout/mobile-luxury", "base/accessibility", "base/print"]
@@ -524,6 +524,24 @@ def tag_outbound_links(text):
                 tag = tag[:-1] + ' rel="sponsored nofollow noopener">'
         return tag
     return re.sub(r"<a\b[^>]*>", fix, text)
+
+
+def compact_affiliate_notices(content):
+    """Keep the full policy in the footer; identify paid retailer links without repeated banners."""
+    content = re.sub(r'<aside\b[^>]*class="affiliate-box"[^>]*>.*?</aside>', '<span id="affiliate-note"></span>', content, flags=re.S)
+    content = re.sub(r'<p\b[^>]*class="(?:watch-card-disclosure|collection-disclosure)"[^>]*>.*?</p>', '', content, flags=re.S)
+    def compact_note(match):
+        plain = re.sub(r'<[^>]+>', '', match.group(0))
+        return '' if ('Affiliate links.' in plain or ASSOCIATE_SENTENCE in plain) else match.group(0)
+    content = re.sub(r'<p\b[^>]*class="cta-note"[^>]*>.*?</p>', compact_note, content, flags=re.S)
+    def paid_label(match):
+        href = re.search(r'\bhref="([^"]+)"', match.group(0))
+        url = urllib.parse.urlsplit(html.unescape(href.group(1))) if href else None
+        query = urllib.parse.parse_qs(url.query) if url else {}
+        # A rel=sponsored attribute alone does not establish an affiliate relationship.
+        paid = bool(url and (url.hostname == "amazon.in" or (url.hostname or "").endswith(".amazon.in")) and query.get("tag"))
+        return match.group(0) + ('<small class="paid-link">Paid link</small>' if paid else '')
+    return re.sub(r'<a\b[^>]*\brel="[^"]*\bsponsored\b[^"]*"[^>]*>.*?</a>', paid_label, content, flags=re.S)
 
 
 def affiliate_url(key, url):
@@ -1655,6 +1673,7 @@ def build_page(meta, base, header_t, footer_t, year, articles):
                           + article_cards([a for a in in_cat if a["article"]["tag"] == tag]) + '\n</div>')
         article_ctx["groups_" + slugify(cat)] = "\n".join(groups)
     content = tag_outbound_links(render(meta["_body"], {**base_ctx, **article_ctx, "breadcrumb": breadcrumb_html(meta.get("breadcrumbs"))}))
+    content = compact_affiliate_notices(content)
     toc_html = ""
     if meta.get("toc"):
         content, toc_html = decorate(content)
