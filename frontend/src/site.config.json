@@ -60,9 +60,9 @@
       "url": "/copyright/"
     }
   ],
-  "affiliate_active": false,
+  "affiliate_active": true,
   "amazon_associate_approved": false,
-  "amazon_tracking_id": "",
+  "amazon_tracking_id": "pareshsat-21",
   "footer_mission_lines": [
     "Our goal is simple: help you find products that offer good value, timeless style, and everyday usefulness.",
     "We combine careful research and practical analysis to make buying decisions easier.",
