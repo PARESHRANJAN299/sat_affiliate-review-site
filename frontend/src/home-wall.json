@@ -1,0 +1,23 @@
+{
+  "_note": "Which category each picture in static/images/home opens when it is clicked. category is a slug from categories.json. A picture that is not listed here still shows, but is not a link. The picture order (row 1, 2, 3, row 1 again ...) comes from the file names.",
+  "tiles": [
+    {"file": "01-watch-leather-stone.jpg", "category": "watches"},
+    {"file": "02-haircare-spa.jpg", "category": "beauty-personal-care"},
+    {"file": "03-home-workout-gear.jpg", "category": "sports-fitness"},
+    {"file": "04-kitchen-prep.jpg", "category": "home-kitchen"},
+    {"file": "05-cricket-gear.jpg", "category": "sports-fitness"},
+    {"file": "06-neutral-lifestyle.jpg", "category": "clothing-accessories"},
+    {"file": "07-spa-skincare.jpg", "category": "beauty-personal-care"},
+    {"file": "08-watch-rose-gold.jpg", "category": "watches"},
+    {"file": "09-home-organisation.jpg", "category": "home-kitchen"},
+    {"file": "10-clothing-wardrobe.jpg", "category": "clothing-accessories"},
+    {"file": "11-kitchen-farmhouse.jpg", "category": "home-kitchen"},
+    {"file": "12-couple-wardrobe.jpg", "category": "clothing-accessories"},
+    {"file": "13-sports-studio-gear.jpg", "category": "sports-fitness"},
+    {"file": "14-gentleman-style.jpg", "category": "clothing-accessories"},
+    {"file": "15-watch-two-tone.jpg", "category": "watches"},
+    {"file": "16-vanity-skincare.jpg", "category": "beauty-personal-care"},
+    {"file": "17-watch-collection.jpg", "category": "watches"},
+    {"file": "18-multisport-training.jpg", "category": "sports-fitness"}
+  ]
+}

@@ -320,11 +320,20 @@ HOME_ROW_MIN_TILES = 16  # about 3,300 px of tiles at full size, so one copy fil
 
 
 def home_collage():
-    """Home hero background: drifting rows of lifestyle pictures from static/images/home (a video can sit under it)."""
+    """Home hero background: drifting rows of pictures from static/images/home (a video can sit under it).
+    Each picture opens its category when clicked (src/home-wall.json); the links are for mouse and touch users, the category strip below the hero is the keyboard route."""
     folder = SRC / "static" / "images" / "home"
     names = sorted(p.name for p in folder.glob("*.jpg")) if folder.exists() else []
     if not names:
         return ""
+    wall_path = SRC / "home-wall.json"
+    wall = {t["file"]: t["category"] for t in json.loads(read(wall_path)).get("tiles", [])} if wall_path.exists() else {}
+    cats = {c["slug"]: c for c in CATEGORIES}
+    for f, slug in wall.items():
+        if f not in names:
+            warnings.append(f"src/home-wall.json lists {f}, which is not in static/images/home")
+        if slug not in cats:
+            errors.append(f"src/home-wall.json: {f} points to unknown category {slug}")
     rows = [names[k::3] for k in range(3)]
     out = []
     for n, row in enumerate(rows):
@@ -334,13 +343,19 @@ def home_collage():
         row = row * -(-HOME_ROW_MIN_TILES // len(row))
         # the row is written twice so the loop never shows a gap; the copy is hidden from assistive tech
         def tiles(copy):
-            return "".join(
-                f'<span class="tile"><img src="/images/home/{esc(name)}" alt="" width="320" height="400" '
-                f'loading="{"eager" if (n == 0 and not copy and i < 6) else "lazy"}" decoding="async"></span>'
-                for i, name in enumerate(row))
+            parts = []
+            for i, name in enumerate(row):
+                img = (f'<img src="/images/home/{esc(name)}" alt="" width="256" height="320" '
+                       f'loading="{"eager" if (n == 0 and not copy and i < 6) else "lazy"}" decoding="async">')
+                cat = cats.get(wall.get(name))
+                if cat:
+                    parts.append(f'<a class="tile" href="{esc(cat["url"])}" data-cat="{esc(cat["name"])}" tabindex="-1">{img}</a>')
+                else:
+                    parts.append(f'<span class="tile">{img}</span>')
+            return "".join(parts)
         out.append(f'<div class="home-row home-row-{n + 1}"><div class="home-track">{tiles(False)}'
-                   f'<span class="home-dup" aria-hidden="true">{tiles(True)}</span></div></div>')
-    return '<div class="home-collage">\n      ' + "\n      ".join(out) + "\n    </div>"
+                   f'<span class="home-dup">{tiles(True)}</span></div></div>')
+    return '<div class="home-collage" aria-hidden="true">\n      ' + "\n      ".join(out) + "\n    </div>"
 
 
 def category_banner(cat):
@@ -1652,6 +1667,8 @@ def write_headers():
         "/assets/*\n  Cache-Control: public, max-age=31536000, immutable\n\n"
         "/search-index.*\n  Cache-Control: public, max-age=31536000, immutable\n\n"
         "/videos/*\n  Cache-Control: public, max-age=86400\n\n"
+        "/images/*\n  Cache-Control: public, max-age=604800, stale-while-revalidate=86400\n\n"
+        "/favicon.svg\n  Cache-Control: public, max-age=604800\n\n"
         "/*\n  X-Content-Type-Options: nosniff\n  Referrer-Policy: strict-origin-when-cross-origin\n",
         encoding="utf-8")
 
