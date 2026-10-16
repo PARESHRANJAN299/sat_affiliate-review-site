@@ -1017,38 +1017,74 @@ def category_chips(current_url):
 
 OFFICIAL_AMAZON_SECTION = (
     '    <h2>Official Amazon programme information</h2>\n'
-    '    <p>These pages belong to Amazon and explain the rules of its affiliate programme. We link to them so you can read the rules yourself. Linking to them does not mean Amazon has approved, reviewed or endorses SAT.</p>\n'
+    '    <p>These pages belong to Amazon and set out the rules of its affiliate programme. We summarise them in plain language on this page, and Amazon\'s own text applies if there is any difference. Linking to them does not mean Amazon has approved, reviewed or endorses SAT.</p>\n'
     '    <ul>\n'
     '      <li><a href="https://affiliate-program.amazon.in/help/operating/agreement" rel="noopener">Amazon Associates Program Operating Agreement (India)</a>, which includes the statement affiliates must show</li>\n'
     '      <li><a href="https://affiliate-program.amazon.in/help/operating/participation" rel="noopener">Associates Program Participation Requirements (India)</a></li>\n'
-    '    </ul>\n')
+    '    </ul>\n'
+    '    <p>Amazon, Amazon.in and related marks are trademarks of Amazon.com, Inc. or its affiliates. SAT does not use Amazon\'s logos.</p>\n')
 
 
 def affiliate_disclosure_body():
-    """Disclosure text follows the real status (affiliate_active and amazon_tracking_id in site.config.json)."""
-    if not CONFIG.get("affiliate_active"):
-        return (
-            '    <p class="lead">SAT is currently not earning commissions from the product links displayed on this website.</p>\n'
-            '    <p>Some links may direct users to third-party retailers, brand websites or shopping platforms. SAT does not currently receive compensation when users visit or purchase through these links.</p>\n'
-            '    <h2>What may change</h2>\n'
-            '    <p>In the future, SAT may participate in affiliate programs, including Amazon Associates and other retailer or brand affiliate programs.</p>\n'
-            '    <p>If affiliate links are introduced:</p>\n'
-            '    <ul>\n'
-            '      <li>they will be clearly disclosed</li>\n'
-            '      <li>SAT may earn a commission from qualifying purchases</li>\n'
-            '      <li>this will not increase the price paid by the customer</li>\n'
-            '      <li>our picks will still come from our own research</li>\n'
-            '    </ul>\n'
-            + OFFICIAL_AMAZON_SECTION +
-            '    <h2>Questions</h2>\n'
-            '    <p>Write to <a href="mailto:' + esc(CONFIG["contact_email"]) + '">' + esc(CONFIG["contact_email"]) + '</a>.</p>')
-    amazon = (f'    <p>{ASSOCIATE_SENTENCE}</p>\n' if associate_on() else "")
+    """Affiliate Disclosure page. It reads correctly both before the switch (affiliate_active off) and after it (on, with the tracking ID set)."""
+    live = bool(CONFIG.get("affiliate_active"))
+    email = esc(CONFIG["contact_email"])
+    if live:
+        lead = ('    <p class="lead">Some links on this website are affiliate links. If you buy through one, SAT may earn a commission from qualifying purchases. This does not increase the price you pay.</p>\n'
+                + (f'    <p>{ASSOCIATE_SENTENCE}</p>\n' if associate_on() else ""))
+        amazon = ('    <p>SAT takes part in the Amazon Associates Programme, an affiliate programme that lets websites earn fees by linking to Amazon.in. '
+                  'Our links to Amazon.in carry our Associates tracking ID, so Amazon can tell that a visit came from SAT. '
+                  'Amazon pays us a fee for qualifying purchases made after a visit through our link. Amazon does not tell us who you are.</p>\n')
+        marked = ('    <p>Affiliate links are marked as sponsored in the page code, open in a new tab and sit next to the sentence about commissions. '
+                  'Buttons such as "Search on Amazon" open a search or product page on Amazon.in.</p>\n')
+        other = '    <p>SAT may join other retailer or brand affiliate programmes. Their links will be marked in the same way, and this page will be updated.</p>\n'
+    else:
+        lead = ('    <p class="lead">SAT is a buying-guide website that is set up to earn commissions through affiliate programmes. Right now, no link on this website earns SAT a commission.</p>\n'
+                '    <p>Some links lead to third-party retailers, brand websites or shopping platforms. SAT does not currently receive any payment when you visit them or buy from them.</p>\n')
+        amazon = ('    <p>SAT has an Amazon Associates account (India) and plans to add Amazon.in links to its recommendations. '
+                  'When those links go live they will carry SAT\'s Associates tracking ID, they will be marked, and this page will say so.</p>\n')
+        marked = ('    <p>When affiliate links are added, they will be marked as sponsored in the page code, will open in a new tab and will sit next to a sentence about commissions.</p>\n')
+        other = '    <p>SAT may also join other retailer or brand affiliate programmes. Any such link will be marked and disclosed in the same way before it goes live.</p>\n'
     return (
-        '    <p class="lead">Some links on this website are affiliate links.</p>\n'
-        '    <p>If you buy through an affiliate link, SAT may earn a commission from qualifying purchases. This does not increase the price you pay. Our picks come from our own research, not from the commission.</p>\n'
+        lead
+        + '    <h2>What affiliate marketing means</h2>\n'
+        '    <p>A website recommends a product, and the shop pays the website a small commission if a reader follows the link and buys. The price you pay is the same with or without our link.</p>\n'
+        '    <h2>SAT and Amazon</h2>\n'
         + amazon
-        + OFFICIAL_AMAZON_SECTION +
-        '    <p>Affiliate links are marked near the links. Questions: <a href="mailto:' + esc(CONFIG["contact_email"]) + '">' + esc(CONFIG["contact_email"]) + '</a>.</p>')
+        + '    <h2>How we pick products</h2>\n'
+        '    <p>Our picks come from our own research: we read the maker\'s own pages and neutral sources, and we name them on each guide. We have not tested the products. A commission does not change what we write about a product, and we do not rank products by the commission they pay.</p>\n'
+        '    <h2>How affiliate links are marked</h2>\n'
+        + marked
+        + '    <h2>What we do not do</h2>\n'
+        '    <ul>\n'
+        '      <li>We do not sell products or take payments. You buy on the shop\'s own website.</li>\n'
+        '      <li>We do not show Amazon\'s prices, star ratings or customer reviews. We show price bands only, so please check the shop for the current price.</li>\n'
+        '      <li>We do not offer rewards, discounts or cashback for using our links.</li>\n'
+        '      <li>We do not buy through our own links.</li>\n'
+        '      <li>We do not suggest that Amazon or any shop or brand endorses SAT.</li>\n'
+        '    </ul>\n'
+        '    <h2>Prices and availability</h2>\n'
+        '    <p>Prices, offers and availability on Amazon and other shops are set by them and change often. The details on the shop\'s product page when you buy are the ones that apply.</p>\n'
+        '    <h2>Other affiliate programmes</h2>\n'
+        + other
+        + OFFICIAL_AMAZON_SECTION
+        + '    <h2>Questions or corrections</h2>\n'
+        '    <p>Write to <a href="mailto:' + email + '">' + email + '</a>. See also our <a href="/privacy-policy/">Privacy Policy</a> and <a href="/how-we-pick/">How We Pick</a>.</p>')
+
+
+def privacy_affiliate_body():
+    """The affiliate part of the Privacy Policy; reads correctly before and after the switch."""
+    if bool(CONFIG.get("affiliate_active")):
+        return (
+            '    <h2>Amazon and other affiliate links</h2>\n'
+            '    <p>SAT takes part in the Amazon Associates Programme. Product links to Amazon.in carry our Associates tracking ID, so Amazon can tell that a visit came from SAT. When you click one of these links you leave our site. Amazon may then set cookies or use similar tools on your device and collect information under its own privacy notice, which you can find at the bottom of every Amazon.in page.</p>\n'
+            '    <p>Amazon reports to us the number of clicks, orders and earnings for our links. These reports do not identify you, and we do not receive your name, address or contact details from Amazon. We do not collect or store personal information from affiliate links ourselves.</p>\n'
+            '    <p>Links to other retailers may carry tracking information in the same way, and the same applies: the retailer\'s own privacy policy covers what happens after you click.</p>\n'
+            '    <p>You can block or delete cookies in your browser settings. The links will still work, but the shop may not be able to credit SAT for a visit.</p>\n'
+            '    <p>Every affiliate link is marked. Our <a href="/affiliate-disclosure/">Affiliate Disclosure</a> explains how SAT earns from them and links to Amazon\'s official programme pages.</p>\n')
+    return (
+        '    <h2>Affiliate links</h2>\n'
+        '    <p>SAT has an Amazon Associates account and plans to add affiliate links. Today none of our links tracks visitors for SAT. Before affiliate links go live we will update this page to explain what Amazon and other retailers may collect, and our <a href="/affiliate-disclosure/">Affiliate Disclosure</a> will say so.</p>\n')
 
 
 def human_date(iso):
@@ -1544,7 +1580,7 @@ def build_page(meta, base, header_t, footer_t, year, articles):
         "site_name": esc(CONFIG["site_name"]), "contact_email": esc(CONFIG["contact_email"]),
         "logo_primary": esc(CONFIG["logo_primary"]),
         "logo_html": logo_html(CONFIG["logo_primary"]),
-        "affiliate_disclosure_body": affiliate_disclosure_body(),
+        "affiliate_disclosure_body": affiliate_disclosure_body(), "privacy_affiliate": privacy_affiliate_body(),
         "affiliate_note": ("Some links on this site are affiliate links. We may earn a commission from qualifying purchases, at no extra cost to you. See our Affiliate Disclosure."
                            if CONFIG.get("affiliate_active") else
                            "SAT does not currently earn commissions from product links. If this changes, affiliate relationships will be clearly disclosed."),
@@ -2012,8 +2048,8 @@ def governance_report():
     # 5) privacy page must match reality once links are tagged
     priv = pages.get("privacy-policy/index.html", "")
     if active:
-        ok = "Amazon" in priv and "cookie" in priv.lower() and "does not set its own cookies" not in priv and "Future affiliate links" not in priv
-        add("ok" if ok else "FAIL", "privacy page describes Amazon links and cookies" if ok else "privacy page still says affiliate links are in the future / no cookies: update it before tagged links go live")
+        ok = "Amazon" in priv and "cookie" in priv.lower() and "plans to add affiliate links" not in priv
+        add("ok" if ok else "FAIL", "privacy page describes Amazon links and cookies" if ok else "privacy page still says affiliate links are only planned: switch affiliate_active on so its Amazon text appears")
     else:
         add("info", "privacy page must be updated (Amazon links, cookies) on the same day the flags are switched on; --simulate-signup checks it")
     ext = [u for u, t in pages.items() if re.search(r'<script[^>]+src="https?://', t)]
