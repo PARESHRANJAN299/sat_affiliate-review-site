@@ -1,27 +1,56 @@
-/* Faint rotating picture behind the header of a category page. It is decoration only: no text sits on it and it never takes clicks. */
-.has-banner { position: relative; overflow: hidden; isolation: isolate; }
-.cat-banner {
-  position: absolute; top: 0; right: 0; z-index: -1;
-  width: min(66%, 900px); height: min(430px, 100%);
-  opacity: 0.3; pointer-events: none;
-  -webkit-mask-image: radial-gradient(100% 90% at 100% 20%, #000 0%, rgba(0, 0, 0, 0.6) 40%, transparent 80%);
-  mask-image: radial-gradient(100% 90% at 100% 20%, #000 0%, rgba(0, 0, 0, 0.6) 40%, transparent 80%);
+/* Category page header: title on the left, a rotating picture showcase on the right (below the text on phones). */
+.cat-head { margin-bottom: var(--space-5); }
+.cat-head-text { min-width: 0; }
+.cat-head.has-showcase { display: grid; gap: var(--space-4); }
+@media (min-width: 900px) {
+  .cat-head.has-showcase { grid-template-columns: minmax(0, 1fr) minmax(340px, 500px); align-items: center; gap: 44px; }
 }
-.cat-banner img {
+
+.cat-showcase {
+  position: relative; isolation: isolate; overflow: hidden; width: 100%; aspect-ratio: 5 / 3;
+  border-radius: 22px; background: #e9e2d6;
+  box-shadow: 0 26px 60px -22px rgba(194, 65, 12, 0.42), 0 10px 28px rgba(7, 11, 20, 0.16);
+  transform: perspective(1000px) rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg));
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+}
+.cat-showcase img {
   position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;
   opacity: 0; transform: scale(1);
-  transition: opacity 1.8s ease, transform 9s linear;
+  transition: opacity 1.1s ease, transform 8s ease-out;
 }
-.cat-banner img.is-on { opacity: 1; transform: scale(1.06); }
-@media (max-width: 700px) {
-  .cat-banner {
-    width: 100%; height: 230px; opacity: 0.16;
-    -webkit-mask-image: linear-gradient(to bottom, #000 0%, rgba(0, 0, 0, 0.5) 45%, transparent 90%);
-    mask-image: linear-gradient(to bottom, #000 0%, rgba(0, 0, 0, 0.5) 45%, transparent 90%);
-  }
+.cat-showcase img.is-on { opacity: 1; transform: scale(1.07); }
+/* soft shade at the bottom for the controls, and a light sheen on the top-left corner */
+.cat-showcase::after {
+  content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background: linear-gradient(to top, rgba(7, 11, 20, 0.6), rgba(7, 11, 20, 0) 40%), linear-gradient(135deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0) 38%);
+}
+
+.cat-controls { position: absolute; left: 12px; right: 12px; bottom: 8px; z-index: 2; display: flex; align-items: center; gap: 10px; }
+.cat-dots { display: flex; align-items: center; gap: 4px; flex: 1 1 auto; min-width: 0; }
+.cat-dots button { position: relative; flex: 0 1 34px; min-width: 22px; height: 24px; padding: 0; border: 0; background: transparent; cursor: pointer; }
+.cat-dots button::before { content: ""; position: absolute; left: 0; right: 0; top: 10px; height: 4px; border-radius: 4px; background: rgba(255, 255, 255, 0.45); }
+.cat-dots button[aria-current="true"]::before { background: rgba(255, 255, 255, 0.7); }
+.cat-dots button[aria-current="true"]::after {
+  content: ""; position: absolute; left: 0; right: 0; top: 10px; height: 4px; border-radius: 4px;
+  background: var(--color-primary-light); transform: scaleX(1); transform-origin: left;
+}
+.cat-showcase.is-playing .cat-dots button[aria-current="true"]::after { transform: scaleX(0); animation: cat-progress 6s linear forwards; }
+.cat-showcase.is-paused .cat-dots button[aria-current="true"]::after { animation-play-state: paused; }
+.cat-dots button:focus-visible, .cat-pp:focus-visible { outline: 2px solid #fff; outline-offset: 2px; border-radius: 6px; }
+.cat-count { color: #fff; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.04em; font-variant-numeric: tabular-nums; text-shadow: 0 1px 6px rgba(0, 0, 0, 0.5); }
+.cat-pp { width: 32px; height: 32px; padding: 0; border: 0; border-radius: 50%; background: rgba(255, 255, 255, 0.22); color: #fff; font-size: 0.7rem; line-height: 1; cursor: pointer; backdrop-filter: blur(6px); }
+.cat-pp:hover { background: rgba(255, 255, 255, 0.36); }
+@keyframes cat-progress { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
+@media (prefers-reduced-motion: no-preference) {
+  .cat-showcase { animation: cat-in 0.7s ease-out both; }
+  @keyframes cat-in { from { opacity: 0; transform: translateY(14px) scale(0.98); } to { opacity: 1; } }
 }
 @media (prefers-reduced-motion: reduce) {
-  .cat-banner img { transition: none; transform: none; }
-  .cat-banner img.is-on { transform: none; }
+  .cat-showcase, .cat-showcase img { transition: none; }
+  .cat-showcase img.is-on { transform: none; }
 }
-@media print { .cat-banner { display: none; } }
+@media (max-width: 700px) {
+  .cat-showcase { aspect-ratio: 16 / 10; border-radius: 18px; margin-top: var(--space-2); }
+}
+@media print { .cat-showcase { display: none; } }
