@@ -1450,6 +1450,8 @@ def build_page(meta, base, header_t, footer_t, year, articles):
             meta["url"]),
     })
     footer = render(footer_t, {**base_ctx,
+                               "footer_mission": esc(CONFIG["footer_mission"]),
+                               "footer_affiliate_notice": ('<p class="footer-affiliate">' + esc(base_ctx["affiliate_note"]) + '</p>') if CONFIG.get("affiliate_active") else "",
                                "footer_site_items": link_list(CONFIG["footer_site"], meta["url"]),
                                "footer_category_items": link_list([{"label": c["name"], "url": c["url"]} for c in CATEGORIES], meta["url"]),
                                "footer_legal_items": link_list(CONFIG["footer_legal"], meta["url"])})
