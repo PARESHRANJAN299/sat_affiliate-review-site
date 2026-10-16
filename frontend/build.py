@@ -380,7 +380,7 @@ MEGA = {}
 def kit():
     if _KIT[0] is None:
         _KIT[0] = listing.Kit(SRC, CONFIG, CATEGORIES, PRICE_BANDS, RETAILER_ORDER, RETAILER_LABEL, SLOT_KEYS,
-                              PRICE_NOTE, category_icon, errors, warnings)
+                              PRICE_NOTE, category_icon, errors, warnings, affiliate_url)
     return _KIT[0]
 
 
@@ -438,6 +438,20 @@ def load_products(cat_slug):
     return items
 
 
+def affiliate_url(key, url):
+    """Add your Amazon tracking ID (amazon_tracking_id in site.config.json) to amazon.in links once affiliate links are switched on.
+    Before that, links stay exactly as written: plain links to the product page."""
+    if key != "amazon" or not url or not CONFIG.get("affiliate_active"):
+        return url
+    tag = (CONFIG.get("amazon_tracking_id") or "").strip()
+    parts = urllib.parse.urlsplit(url)
+    host = (parts.hostname or "").lower()
+    if not tag or not (host == "amazon.in" or host.endswith(".amazon.in")):
+        return url
+    query = [(k, v) for k, v in urllib.parse.parse_qsl(parts.query, keep_blank_values=True) if k != "tag"] + [("tag", tag)]
+    return urllib.parse.urlunsplit(parts._replace(query=urllib.parse.urlencode(query)))
+
+
 def product_buttons(p):
     """One button per retailer that has a link: Product > Amazon > Flipkart > Brand website > Other retailer.
     Plain links until affiliate_active is set; then rel=sponsored and a disclosure line are added."""
@@ -446,7 +460,7 @@ def product_buttons(p):
     retailers = p.get("retailers") or {}
     out, have_amazon = [], False
     for k, key in enumerate(RETAILER_ORDER):
-        url = (retailers.get(key) or {}).get("url", "")
+        url = affiliate_url(key, (retailers.get(key) or {}).get("url", ""))
         if not url:
             continue
         have_amazon = have_amazon or key == "amazon"
@@ -1202,7 +1216,7 @@ def render_guide(g, related=()):
             q = urllib.parse.quote_plus(p["search_query"])
             cls = "btn-primary" if k == 0 else "btn-outline"
             buttons.append(
-                f'<a href="{STORES[store]}{q}" class="btn {cls} btn-small" target="_blank" rel="{"sponsored nofollow noopener" if CONFIG.get("affiliate_active") else "nofollow noopener"}" '
+                f'<a href="{esc(affiliate_url(store.lower(), STORES[store] + q))}" class="btn {cls} btn-small" target="_blank" rel="{"sponsored nofollow noopener" if CONFIG.get("affiliate_active") else "nofollow noopener"}" '
                 f'aria-label="Search on {store} for {esc(p["name"])} (opens in a new tab)">Search on {store} '
                 '<svg class="ic" aria-hidden="true"><use href="#i-external"/></svg></a>')
         if buttons:
@@ -1611,6 +1625,12 @@ def write_headers():
         encoding="utf-8")
 
 
+def check_amazon_tag():
+    """Once Amazon affiliate links are on, the tracking ID must be set, or the links would earn nothing."""
+    if CONFIG.get("affiliate_active") and CONFIG.get("amazon_associate_approved") and not (CONFIG.get("amazon_tracking_id") or "").strip():
+        errors.append('affiliate_active and amazon_associate_approved are on, but amazon_tracking_id is empty in site.config.json (it looks like "yourname-21")')
+
+
 def check_affiliate_rel():
     """When affiliate links are live, every outbound shop link must say sponsored."""
     if not CONFIG.get("affiliate_active"):
@@ -1690,6 +1710,7 @@ def build():
     write_headers()
     check_links()
     check_affiliate_rel()
+    check_amazon_tag()
 
     for w in warnings:
         print("warning:", w)

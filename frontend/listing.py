@@ -56,7 +56,7 @@ class Kit:
     """Everything this module borrows from build.py."""
 
     def __init__(self, src, config, categories, default_bands, retailer_order, retailer_label, slot_keys,
-                 price_note, category_icon, errors, warnings):
+                 price_note, category_icon, errors, warnings, link_for=None):
         self.src = Path(src)
         self.config = config
         self.categories = categories
@@ -68,6 +68,7 @@ class Kit:
         self.category_icon = category_icon
         self.errors = errors
         self.warnings = warnings
+        self.link_for = link_for or (lambda key, url: url)
         try:
             raw = json.loads((self.src / "facets.json").read_text(encoding="utf-8"))
         except ValueError as exc:
@@ -282,7 +283,7 @@ class Kit:
         out = []
         short = {"amazon": "View on Amazon", "flipkart": "View on Flipkart", "brand_store": "Brand website", "other": "View on shop"}
         for key in self.retailer_order:
-            url = (retailers.get(key) or {}).get("url", "")
+            url = self.link_for(key, (retailers.get(key) or {}).get("url", ""))
             if not url:
                 continue
             cls = "btn-primary" if not out else "btn-outline"

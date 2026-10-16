@@ -61,5 +61,6 @@
     }
   ],
   "affiliate_active": false,
-  "amazon_associate_approved": false
+  "amazon_associate_approved": false,
+  "amazon_tracking_id": ""
 }
