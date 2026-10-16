@@ -22,7 +22,7 @@
     tshirt: 'tshirt', tshirts: 'tshirt', tee: 'tshirt', tees: 'tshirt'
   };
   var UNITS = '(?:ml|g|gm|gms|kg|kgs|w|watt|watts|l|ltr|litre|litres|cm|mm|inch|inches|mah|gb|pcs|pack|piece|pieces)';
-  var KIND_WEIGHT = { 'Product': 5, 'Watch list': 4.5, 'Product type': 3.2, 'Guide': 3, 'Brand': 2.4, 'Style': 2, 'Category': 2.2, 'FAQ': 1.6, 'Page': 1 };
+  var KIND_WEIGHT = { 'Product': 5, 'Watch list': 4.5, 'Product type': 3.2, 'Guide': 4.4, 'Brand': 2.4, 'Style': 2, 'Category': 2.2, 'FAQ': 1.6, 'Page': 1 };
   var KIND_HUE = { 'Product': 22, 'Watch list': 38, 'Product type': 212, 'Guide': 160, 'Brand': 340, 'Style': 285, 'Category': 262, 'FAQ': 190, 'Page': 200 };
   var KIND_ICON = {
     'Product': '<path d="M20.6 13.4l-7.2 7.2a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z"/><circle cx="7.5" cy="7.5" r="1.2"/>',
@@ -193,7 +193,10 @@
       var base = total + (KIND_WEIGHT[e.k] || 1) * 0.8;
       if (p.budget !== null && e.m) base += 4 * (e.m / p.budget);
       if (p.gender) base += e.gg === p.gender ? 1.5 : -1.2;
-      if (e.k === 'Category' && p.tokens.length && p.tokens.every(function (t) { return e.tw.indexOf(t) > -1; })) base += 3;
+      if (e.k === 'Category' && !e.s && p.tokens.length && p.tokens.every(function (t) { return e.tw.indexOf(t) > -1; })) base += 3;
+      // a finished guide beats a page that only gives general buying advice
+      if (e.k === 'Guide') base += 1.5;
+      if (e.s) base -= 2;
       if (p.tokens.length) {
         if (hits === p.tokens.length) strict.push({ e: e, s: base });
         else if (hits > 0) loose.push({ e: e, s: base - 3 });
@@ -247,7 +250,7 @@
     if (e.c && e.c !== e.t) sub.push(e.c);
     var chips = '';
     if (e.m) chips += '<span class="sx-pill">Up to ' + rupees(e.m) + '</span>';
-    if (e.s) chips += '<span class="sx-pill sx-pill-soon">Being researched</span>';
+    if (e.s) chips += '<span class="sx-pill sx-pill-soon">Buying advice</span>';
     return '<li role="presentation"><a class="sx-row" role="option" id="' + id + '" href="' + esc(e.u) + '" tabindex="-1" aria-selected="false">' +
       iconTile(e.k) +
       '<span class="sx-text"><span class="sx-title">' + highlight(e.t, p) + '</span>' +
