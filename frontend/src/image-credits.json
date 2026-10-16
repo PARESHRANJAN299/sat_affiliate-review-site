@@ -224,6 +224,14 @@
       "licence": "",
       "proof": "",
       "status": "needs-confirmation"
+    },
+    {
+      "file": "/images/india-flag.svg",
+      "use": "Indian flag in the footer origin credit",
+      "source": "Original SVG drawn for SAT using geometric shapes and 24 spokes",
+      "licence": "Original site artwork; no third-party image copied",
+      "proof": "SVG source tracked at frontend/src/static/images/india-flag.svg",
+      "status": "confirmed"
     }
   ]
 }
