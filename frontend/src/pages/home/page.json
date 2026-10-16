@@ -1,7 +1,8 @@
 {
   "url": "/",
-  "title": "Everyday Buying Guides for India",
-  "description": "Research-based buying guides for Indian shoppers. Explore watches, fitness, beauty, home and fashion to find what fits your lifestyle and budget.",
+  "title": "SAT | Smart Buying Guides & Product Research for India",
+  "title_full": true,
+  "description": "Research-based buying guides for Indian shoppers: sports and fitness, watches, beauty, home and kitchen, and clothing. Clear pros, cons and who each pick suits.",
   "css": [
     "buttons"
   ],
