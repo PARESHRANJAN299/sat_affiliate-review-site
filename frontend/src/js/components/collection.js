@@ -21,7 +21,7 @@
     var pageSize = Number(root.dataset.pageSize) || 0;
     var page = 1;
     var heading = topFilters ? root.closest('.watch-store').querySelector('h1') : null;
-    function inlinePanel() { return desktop.matches && !topFilters; }
+    function inlinePanel() { return desktop.matches; }
     if (topFilters) root.querySelector('[data-quick-controls]').hidden = false;
     cards.forEach(function (card, index) { card.dataset.order = index; card._searchText = card.textContent.toLocaleLowerCase(); });
     root.querySelector('[data-controls]').hidden = false;

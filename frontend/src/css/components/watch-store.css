@@ -146,3 +146,29 @@
 .tile-brand { display: none; }
 @media (min-width: 900px) { .watch-quick-row { grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr) auto; } .watch-quick-row > .collection-filter-open { grid-column: auto; align-self: end; margin-bottom: 6px; } }
 @media (max-width: 719px) { .watch-store .collection .watch-card .watch-tile { height: 104px; } }
+
+/* ===== simpler page: no search box; on laptops the filters live in a sticky panel on the right ===== */
+.watch-store .collection-search { display: none; }
+.watch-store .collection-controls { justify-content: space-between; }
+.watch-store .collection-controls .collection-sort { margin-left: auto; }
+@media (min-width: 1000px) {
+  .watch-quick-row, .watch-store .collection-filter-open { display: none; }
+  .watch-store .collection-layout, .watch-store .collection.is-enhanced .collection-layout { display: grid; grid-template-columns: minmax(0, 1fr) 290px; grid-template-areas: "main panel"; gap: 24px; align-items: start; }
+  .watch-store .collection-layout .collection-main { grid-area: main; }
+  .watch-store .collection-layout .collection-filters, .watch-store .collection-layout .collection-filters[open] {
+    grid-area: panel; display: block; position: sticky; top: 88px; inset: auto; width: auto; height: auto; max-height: calc(100vh - 110px); margin: 0; padding: 18px 18px 8px;
+    overflow: auto; border: 1px solid rgba(176, 141, 87, 0.4); border-radius: 18px; color: var(--color-text);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(251, 246, 235, 0.96)); box-shadow: 0 24px 48px -32px rgba(80, 55, 15, 0.7);
+  }
+  .watch-store .collection-layout .cf-head { position: static; padding: 0 0 8px; }
+  .watch-store .collection-layout .cf-head strong { font: 700 .72rem var(--font-sans); letter-spacing: .14em; text-transform: uppercase; color: #846631; }
+  .watch-store .collection-layout .cf-head button, .watch-store .collection-layout .cf-foot [data-filter-close] { display: none; }
+  .watch-store .collection-layout .cf-foot { position: static; padding: 6px 0 12px; border-top: 0; }
+  .watch-store .collection-layout .fgroup:has(input[data-group="style"]) { display: none; }
+  .watch-store .collection-layout .fopt { min-height: 40px; }
+  .watch-store .collection .watch-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (min-width: 1500px) { .watch-store .collection .watch-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+@media (max-width: 719px) { .watch-store .collection-controls { grid-template-columns: minmax(0, 1fr) auto; } }
+.watch-store .collection-filter-open, .watch-quick-row > .collection-filter-open { display: none; }
+@media (max-width: 719px) { .watch-quick-row { padding-top: 8px; } .watch-store .collection-controls { padding-top: 8px; } }
