@@ -1,0 +1,49 @@
+{
+  "id": "timex-fria-twel18301",
+  "brand": "timex",
+  "model": "Fria TWEL18301",
+  "gender": [
+    "women"
+  ],
+  "budget": "under-5000",
+  "styles": [
+    "classic",
+    "analog",
+    "metal-strap"
+  ],
+  "dial_style": "White dial, 3 hands",
+  "strap": "Gold-tone brass strap",
+  "case_size_mm": 30,
+  "water_resistance": "30 m",
+  "best_for": "White-dial watch with a gold-tone strap",
+  "verdict": "A 30 mm white-dial watch with a gold-tone brass strap, in the Fria range.",
+  "paragraphs": [
+    "The Timex India listing gives a 30 mm brass case, a round white dial with three hands, and a brass strap in gold tone. The glass is mineral glass and the movement is quartz.",
+    "The listing gives 30 m water resistance and a one-year warranty against manufacturer defects. It also lists scratch resistance and shock resistance as \"No\".",
+    "The listing describes it as \"an elegant and versatile timepiece\" with a \"pristine white round dial\"."
+  ],
+  "good": [
+    "Quartz movement, per the listing",
+    "In our view, a plain white dial is easy to match with clothes",
+    "Mineral glass cover, per the listing",
+    "1 year warranty against manufacturer defects, per Timex India"
+  ],
+  "not_good": [
+    "The listing says no scratch resistance or shock resistance",
+    "The listing gives only \"30m\" for water resistance"
+  ],
+  "query": "Timex Fria TWEL18301 watch",
+  "merchants": {
+    "amazon": {
+      "url": ""
+    }
+  },
+  "sources": [
+    {
+      "label": "Timex India store page, TWEL18301",
+      "url": "https://shop.timexindia.com/products/timex-fria-women-white-round-analog-brass-dial-watch-twel18301"
+    }
+  ],
+  "editors_pick": false,
+  "rating": null
+}

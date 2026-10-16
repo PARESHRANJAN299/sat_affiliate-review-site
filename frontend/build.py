@@ -717,6 +717,10 @@ def beauty_family_body(cat, f, products, sibling_cards):
         '  </div>\n</section>')
 
 
+GUIDE_BRANDS = sorted(["Li-Ning", "Nivia", "Hundred", "Cosco", "Yonex", "SG", "SS", "Kore", "Kakss", "Boldfit", "Lifelong", "TriggerPoint",
+                       "Nike", "Skechers", "USI", "Manduka", "Victor", "Carlton", "Strauss"], key=len, reverse=True)
+
+
 def category_collection(cat, products=None):
     """The same controls for published products, existing recommendations, or buying advice."""
     products = load_products(cat["slug"]) if products is None else products
@@ -737,7 +741,7 @@ def category_collection(cat, products=None):
                 continue
             for pick in guide["picks"]:
                 # Existing guide names identify these brands; no additional product claims are created here.
-                brand = pick.get("brand") or next((name for name in ("Decathlon", "Domyos", "Corength", "Kuikma", "Kalenji", "Puma", "Kimjaly") if pick["name"].startswith(name + " ")), "")
+                brand = pick.get("brand") or next((name for name in GUIDE_BRANDS if pick["name"].lower().startswith(name.lower() + " ")), pick["name"].split()[0])
                 filters = {"brand": brand, "type": guide["tag"]}
                 items.append({"name": pick["name"], "label": guide["tag"], "description": pick["verdict"], "filters": filters,
                               "url": "/" + slugify(guide["tag"]).replace("_", "-") + "/" + guide["slug"] + "/#" + slugify_heading(pick["name"], set()), "action": "Read recommendation"})
