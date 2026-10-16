@@ -11,18 +11,18 @@
   };
   function choose(level, want) {
     if (level === 'new' && want === 'cost') {
-      return ['perfly', 'The cheapest way to try the sport. Fine for casual games, and you will likely outgrow it.'];
+      return ['perfly', 'Compare this beginner-labelled two-racket set for occasional games. Check the current pack price and whether its published 105 g weight feels comfortable.'];
     }
     if (level === 'new') {
-      return ['arcsaber', 'Light and forgiving, so it is easy to improve with.'];
+      return ['arcsaber', 'Compare its published 4U weight and medium flex. Try the grip and confirm whether strings are included.'];
     }
     if (level === 'strong' && want === 'power') {
-      return ['astrox', 'Built for hard smashes. It is stiff and heavy at the top, so it suits players with solid technique.'];
+      return ['astrox', 'Compare this head-heavy, extra-stiff option with your current racket. Verify the model generation and stringing requirements.'];
     }
     if (level === 'regular' && want === 'power') {
-      return ['arcsaber', 'Balanced and light, a good fit for regular play. The Astrox has more smash power, but it is made for strong players.'];
+      return ['arcsaber', 'Start by comparing its 4U specification and medium flex. SAT has not measured smash performance against the other options.'];
     }
-    return ['arcsaber', 'Balanced and light, a good all-round choice for regular play.'];
+    return ['arcsaber', 'A medium-flex graphite option to compare for regular play. Fit and feel need a try-on, rather than a specification alone.'];
   }
   function value(name) {
     var el = root.querySelector('input[name="' + name + '"]:checked');

@@ -633,10 +633,16 @@ def product_table_html(products, caption):
 
 
 def live_intro(text, has_products):
-    """Once a product type has products, drop the 'This page will list...' promise from its intro."""
-    if not has_products:
-        return text
+    """Keep the useful introduction without a promise about a future product list."""
     return re.sub(r"\s*This page will (list|show)[^.]*\.", "", text).strip() or text
+
+
+def published_guides_help():
+    """Give informational pages a useful next step without implying they contain picks."""
+    return ('<aside class="family-guides"><h2>Explore our published guides</h2>'
+            '<p>Use the checklist below to compare your options. For researched product shortlists, '
+            'browse our <a href="/sports-fitness/#guides">sports and fitness buying guides</a> '
+            'or read our <a href="/watches/guide/">watch buying guide</a>.</p></aside>')
 
 
 def family_products_html(cat, f, products, intro_slots=""):
@@ -659,9 +665,6 @@ def beauty_family_body(cat, f, products, sibling_cards):
         if p:
             slot_html.append(f'<li class="pick-slot is-filled"><span class="pick-slot-label">{esc(label)}</span>'
                              f'<a href="#r-{esc(p["id"])}"><strong>{esc(p["name"])}</strong></a></li>')
-        else:
-            slot_html.append(f'<li class="pick-slot"><span class="pick-slot-label">{esc(label)}</span>'
-                             '<span class="pick-slot-state">Being researched</span></li>')
     needs = "".join(f'<li><strong>{esc(n["name"])}.</strong> {esc(n["text"])}</li>' for n in f.get("needs", []))
     tips = "".join(f'<li><strong>{esc(h)}.</strong> {esc(x)}</li>' for h, x in f["tips"])
     faqs = "".join(
@@ -670,7 +673,7 @@ def beauty_family_body(cat, f, products, sibling_cards):
     sec_names = {s["slug"]: s["name"] for s in cat.get("sections", [])}
     kicker = sec_names.get(f.get("section"), cat["name"])
     planned = ""
-    if f.get("planned_guides"):
+    if products and f.get("planned_guides"):
         items = "".join(f'<li><span>{esc(g["title"])}</span><span class="planned-tag">Planned</span></li>' for g in f["planned_guides"])
         planned = ('    <h2>Guides we plan to write</h2>\n    <p class="family-note">These are not written yet. Each one will use the same buying-guide template: picks, comparison, buying guide and FAQs.</p>\n'
                    f'    <ul class="planned-list">{items}</ul>\n')
@@ -680,17 +683,15 @@ def beauty_family_body(cat, f, products, sibling_cards):
                                      '<h2>Our picks</h2>\n<ul class="pick-slots">' + "".join(slot_html) + '</ul>\n')
         status = '<p class="family-status"><strong>How we picked these:</strong> we read the maker\'s and the shops\' pages. We have not tested these products ourselves. Read <a href="/how-we-pick/">how we pick</a>.</p>'
     else:
-        picks = ('<h2>Our picks</h2>\n<ul class="pick-slots">' + "".join(slot_html) + '</ul>\n'
-                 '<h2>Comparison</h2>\n<div class="empty-state"><p>A comparison table appears here once the first picks are added.</p></div>')
-        status = (f'<p class="family-status"><strong>{esc(cat.get("pending_note", "Picks coming soon."))}</strong> '
-                  'We add a product only after we have read the maker\'s page and the shop listings. Read <a href="/how-we-pick/">how we pick</a>.</p>')
+        picks = ""
+        status = published_guides_help()
     affiliate = ('We have no approved affiliate accounts yet, and this page earns us nothing today. If that changes, we will say so here first.'
                  if not CONFIG.get("affiliate_active") else
                  'Some links on this page are affiliate links. We may earn a commission if you buy, at no extra cost to you.')
     return (
         '<section class="section">\n  <div class="container content-page family-page">\n'
         '    {{breadcrumb}}\n'
-        f'    <p class="family-kicker">{esc(kicker)}</p>\n    <h1>{esc(f["h1"])}</h1>\n    <p class="lead">{esc(live_intro(f["intro"], bool(products)))}</p>\n'
+        f'    <p class="family-kicker">{esc(kicker)}</p>\n    <h1>{esc(f["h1"] if products else f["name"] + " Buying Guide")}</h1>\n    <p class="lead">{esc(live_intro(f["intro"], bool(products)))}</p>\n'
         f'    {status}\n'
         f'    <h2>Start with what you need</h2>\n    <ul class="family-tips">{needs}</ul>\n'
         f'    {picks}\n'
@@ -712,7 +713,7 @@ def audience_tabs_page(cat, entries, products):
     for e, f in zip(entries, cat["families"]):
         by_section.setdefault(f.get("section"), []).append((e["name"], e["url"]))
     chips = {t["slug"]: [x for sec in t["sections"] for x in by_section.get(sec, [])] for t in tabs}
-    block = kit().listing(cat, products, f'pl-{cat["slug"]}', cat["families"], segment_tabs=True, type_chips=chips)
+    block = kit().listing(cat, products, f'pl-{cat["slug"]}', cat["families"], segment_tabs=True, type_chips=chips) if products else published_guides_help()
     notes = "".join(f'<li><a href="{esc(e["url"])}"><strong>{esc(e["name"])}</strong></a> {esc(e["description"])}</li>' for e in entries)
     body = (
         f'<section class="{cat_section_class(cat)}">\n  <div class="container content-page family-page">\n'
@@ -784,7 +785,7 @@ def beauty_pages(cat):
         body = (
             f'<section class="{cat_section_class(cat)}">\n  <div class="container content-page family-page">\n'
             + cat_head(cat, '    {{breadcrumb}}\n' + f'    <h1>{esc(cat["name"])}</h1>\n    <p class="lead">{esc(cat.get("tagline") or cat["description"])}</p>\n') +
-            f'    {cards_html}\n'
+            (published_guides_help() if not all_products else "") + f'    {cards_html}\n'
             f'    <p class="family-note">{esc(PRICE_NOTE)} This section is general information, not medical advice.</p>\n'
             '  </div>\n</section>')
         pages.append({
@@ -799,7 +800,7 @@ def beauty_pages(cat):
         sib = "".join(f'<li><a href="{esc(e["url"])}">{esc(e["name"])}</a></li>' for e, g in zip(entries, cat["families"]) if e["slug"] != f["slug"] and g.get("section") == f.get("section"))
         sib += f'<li><a href="{esc(cat["url"])}">All {esc(cat["name"])}</a></li>'
         pages.append({
-            "url": url, "title": f["h1"], "description": f["meta"],
+            "url": url, "title": f["h1"] if products else f["name"] + " Buying Guide", "description": f["meta"] if products else f'What to compare when choosing {f["name"].lower()}: practical buying tips and common questions.',
             "css": ["buttons", "breadcrumb", "content-page", "faq", "watches", "families"]
                    + (["compare-table", "product-block", "product-listing"] if products else []),
             "js": ["product-listing"] if products else [],
@@ -860,9 +861,6 @@ def home_guides_strip():
 def family_pages():
     """Landing page for each category that has product families, plus one page per family."""
     pages = []
-    note_slots = "".join(
-        f'<li class="pick-slot"><span class="pick-slot-label">{esc(s)}</span><span class="pick-slot-state">Being researched</span></li>'
-        for s in PICK_SLOTS)
     for cat in CATEGORIES:
         if not cat.get("families"):
             continue
@@ -908,19 +906,15 @@ def family_pages():
                 for q in f["faqs"])
             others = [e for e, g in zip(entries, cat["families"]) if g["section"] == f["section"] and g["slug"] != f["slug"]][:4]
             related = "".join(f'<li><a href="{esc(e["url"])}">{esc(e["name"])}</a></li>' for e in others)
+            product_section = family_products_html(cat, f, products) if products else ("" if guides else published_guides_help())
+            page_title = f["h1"] if products or guides else f["name"] + " Buying Guide"
             body = (
                 '<section class="section">\n  <div class="container content-page family-page">\n'
                 '    {{breadcrumb}}\n'
                 f'    <p class="family-kicker">{esc(sec_names.get(f["section"], ""))}</p>\n'
-                f'    <h1>{esc(f["h1"])}</h1>\n    <p class="lead">{esc(live_intro(f["intro"], bool(products) or bool(guides)))}</p>\n'
+                f'    <h1>{esc(page_title)}</h1>\n    <p class="lead">{esc(live_intro(f["intro"], bool(products) or bool(guides)))}</p>\n'
                 + guide_cards_html(guides)
-                + (('    <p class="family-status"><strong>How we picked these:</strong> we read the maker\'s and the shops\' pages. We have not tested these products ourselves. Read <a href="/how-we-pick/">how we pick</a>.</p>\n'
-                    + family_products_html(cat, f, products) + '\n') if products else (
-                ('    <p class="family-status"><strong>Our guide is ready.</strong> More picks will be added here after we read each maker\'s page and the shop listings. Read <a href="/how-we-pick/">how we pick</a>.</p>\n') if guides else (
-                '    <p class="family-status"><strong>Picks coming soon.</strong> We add a product only after we have read the maker\'s page and the shop listings. '
-                'Read <a href="/how-we-pick/">how we pick</a>.</p>\n'
-                f'    <h2>Our picks</h2>\n    <ul class="pick-slots">{note_slots}</ul>\n'
-                '    <h2>Comparison</h2>\n    <div class="empty-state"><p>A comparison table appears here once the first picks are added.</p></div>\n'))) +
+                + product_section +
                 f'    <h2>Buying guide</h2>\n    <ul class="family-tips">{tips}</ul>\n'
                 f'    <h2>Common questions</h2>\n{faqs}\n'
                 f'    <h2>More {esc(sec_names.get(f["section"], "").lower())} guides</h2>\n    <ul class="related-links">{related}'
@@ -929,7 +923,7 @@ def family_pages():
                 f'<p><strong>Affiliate disclosure.</strong> {esc(affiliate_text)} <a href="/affiliate-disclosure/">Read the full disclosure</a>.</p></aside>\n'
                 '  </div>\n</section>')
             pages.append({
-                "url": url, "title": f["h1"], "description": f["meta"],
+                "url": url, "title": page_title, "description": f["meta"],
                 "css": ["buttons", "breadcrumb", "content-page", "faq", "watches", "families"]
                        + (["compare-table", "product-block", "product-listing"] if products else []),
                 "js": ["product-listing"] if products else [], "noindex": len(products) < 3,
@@ -1309,12 +1303,12 @@ def render_guide(g, related=()):
         f'<strong>{esc(p["name"])}</strong><span class="qp-for">{esc(p["cells"][0])}</span></a></li>'
         for i, p in enumerate(picks))
 
-    head = "".join(f'<th scope="col" role="columnheader">{esc(c)}</th>' for c in ["Pick"] + cols + ["Price level"])
+    head = "".join(f'<th scope="col" role="columnheader">{esc(c)}</th>' for c in ["Pick"] + cols)
     rows = []
     for p in picks:
         cells = "".join(f'<td role="cell" data-label="{esc(c)}">{esc(v)}</td>' for c, v in zip(cols, p["cells"]))
         rows.append(f'          <tr role="row"><th scope="row" role="rowheader">{esc(p["name"])}</th>{cells}'
-                    f'<td role="cell" data-label="Price level">{esc(p["tier"])}</td></tr>')
+                    '</tr>')
     table = ('    <div class="compare-table-wrap">\n      <table class="compare-table" role="table">\n'
              '        <caption class="visually-hidden">Comparison of three picks</caption>\n'
              f'        <thead><tr role="row">{head}</tr></thead>\n        <tbody>\n' + "\n".join(rows) +
@@ -1326,13 +1320,16 @@ def render_guide(g, related=()):
         for k, store in enumerate(p["stores"]):
             q = urllib.parse.quote_plus(p["search_query"])
             cls = "btn-primary" if k == 0 else "btn-outline"
+            direct = p.get("product_url") if k == 0 else None
+            destination = direct or STORES[store] + q
+            action = "View at" if direct else "Search on"
             buttons.append(
-                f'<a href="{esc(affiliate_url(store.lower(), STORES[store] + q))}" class="btn {cls} btn-small" target="_blank" rel="{"sponsored nofollow noopener" if CONFIG.get("affiliate_active") else "nofollow noopener"}" '
-                f'aria-label="Search on {store} for {esc(p["name"])} (opens in a new tab)">Search on {store} '
+                f'<a href="{esc(affiliate_url(store.lower(), destination))}" class="btn {cls} btn-small" target="_blank" rel="{"sponsored nofollow noopener" if CONFIG.get("affiliate_active") else "nofollow noopener"}" '
+                f'aria-label="{action} {store}: {esc(p["name"])} (opens in a new tab)">{action} {store} '
                 '<svg class="ic" aria-hidden="true"><use href="#i-external"/></svg></a>')
         if buttons:
             cta_html = " ".join(buttons)
-            cta_note = '      <p class="cta-note">Opens a search on the shop. We do not sell products or take payments.</p>\n'
+            cta_note = '      <p class="cta-note">Check the exact model, current price, availability and seller policies at the retailer.</p>\n'
             if associate_on() and any(st.lower() == "amazon" for st in p["stores"]):
                 cta_note += f'      <p class="cta-note">{ASSOCIATE_SENTENCE}</p>\n'
         else:
@@ -1352,7 +1349,7 @@ def render_guide(g, related=()):
             f'        <div class="cons"><h4>Not so good</h4><ul>{bad}</ul></div>\n'
             '      </div>\n'
             '      <div class="cta-row">\n'
-            f'        <span class="price-tag">{esc(p["tier"])} <span class="approx">(check the price at the shop)</span></span>\n'
+
             f'        {cta_html}\n'
             '      </div>\n'
             + cta_note +
@@ -1381,7 +1378,7 @@ def render_guide(g, related=()):
         f'    <p class="lead">{esc(g["lead"])}</p>\n\n'
         '    <aside class="method-note">\n'
         '      <svg class="ic" aria-hidden="true"><use href="#i-info"/></svg>\n'
-        "      <p><strong>How we picked these:</strong> we read the maker and shop details and what buyers say online. We have not tested these products ourselves yet. Details can change from seller to seller, so check the listing before you pay. The buttons below open each shop's own search page. These three are a short list for different needs, not a ranking of every product. Budget, Mid-range and Premium are our own rough judgement, not based on prices. Read <a href=\"/how-we-pick/\">how we pick</a>.</p>\n"
+        "      <p><strong>How we picked these:</strong> we compared published manufacturer and retailer specifications. We have not tested these products. Recommendations are editorial judgements for different needs, not a ranking of every product. Check the exact listing before paying. Read <a href=\"/how-we-pick/\">how we pick</a>.</p>\n"
         '    </aside>\n\n'
         f'    <ol class="quick-picks">\n{quick}\n    </ol>\n\n'
         '    <div class="article-layout">\n      {{toc}}\n      <div class="article-main">\n'

@@ -4,11 +4,11 @@
   "tag": "Running",
   "summary": "Three first running shoes for India: Kalenji Run Active, Puma Electrify NITRO 4 and Velocity NITRO 5, based on shop pages and maker guides.",
   "description": "Helps new runners in India pick a first pair: Kalenji Run Active, Puma Electrify NITRO 4 and Velocity NITRO 5, compared from shop pages and guides.",
-  "lead": "Which running shoe should a new runner buy in India? Here are three picks from three tiers. One is a simple shoe for light jogging. One is an everyday road shoe. One is a neutral daily trainer for people who plan to run often. We read the shop pages and maker guides and did not hand-test any shoe. Stock can change, so check your size before you buy.",
+  "lead": "Compare three road-running options: a shoe listed for occasional jogging, a neutral daily road shoe and a model positioned for frequent runners. Choose by fit and intended use. We checked manufacturer specifications and have not run in these shoes.",
   "columns": [
     "Made for",
     "Sold on",
-    "Returns shown"
+    "Heel-to-toe drop"
   ],
   "picks": [
     {
@@ -18,28 +18,26 @@
       "cells": [
         "Up to 10 km a week",
         "Decathlon India",
-        "30-day exchange, 2-year warranty"
+        "10 mm"
       ],
-      "verdict": "A simple first pair for light, occasional jogging. Decathlon says it is made for up to 10 km a week, and the page shows a 30-day exchange.",
+      "verdict": "An option for light, occasional jogging within the maker’s stated workload.",
       "paragraphs": [
-        "Kalenji is a Decathlon running brand. The page calls this a lightweight, cushioned shoe for running up to 10 km a week. It also mentions a flexible sole and heel cushioning. The limit is clear, which helps a new runner who is not sure how much they will run.",
-        "The page does not give the weight, the heel-to-toe drop (how much higher the heel sits than the toe) or the upper material. The sizes shown are in UK sizes, from 6.5 to 12, but they skip 9 and 10. The size list was still loading on the page, so check that your size is open for sale. This is the men's version. We did not look for a women's one."
+        "Decathlon India lists the men's Run Active for occasional road or path running up to 10 km a week. Its published technical details give a 10 mm drop and 245 g in size 8.5. Those figures describe this version and size; they are not a fit guarantee.",
+        "The listing describes heel cushioning and a flexible sole. We see it as an option to compare for light jogging rather than a shoe chosen for high weekly mileage. Try your normal running socks and check the current size chart. We have not run in this shoe."
       ],
       "good": [
-        "Decathlon says it is made for up to 10 km a week, which suits light jogging as a first pair.",
-        "The page describes a cushioned, lightweight shoe with a flexible sole.",
-        "Decathlon India shows a 30-day exchange and a 2-year warranty, which gives room to fix a wrong size.",
-        "The page shows a rating of 4.6 out of 5 from about 9.6 thousand reviews. We did not read the review text."
+        "Published use limit makes its intended workload clear.",
+        "The listing provides both a drop and a size-specific weight."
       ],
       "not_good": [
-        "It is meant for up to 10 km a week only, so you may outgrow it as you run more.",
-        "The page gives no weight, drop or upper material, so it is hard to compare closely with the other two.",
-        "The listed sizes skip 9 and 10, so check that your size is there first."
+        "The stated use is occasional running, not high-mileage training.",
+        "Fit and comfort need a try-on; specifications cannot settle them."
       ],
       "search_query": "Kalenji Run Active men running shoes",
       "stores": [
         "Decathlon"
-      ]
+      ],
+      "product_url": "https://www.decathlon.in/p/8670185/men-running-shoes-comfort-fit-upto-10km-week-run-active-blue-and-brown"
     },
     {
       "name": "Puma Electrify NITRO 4 (men's, road)",
@@ -48,29 +46,27 @@
       "cells": [
         "Everyday road runs",
         "Puma India",
-        "10 days, on qualifying orders"
+        "10 mm"
       ],
       "verdict": "A neutral everyday road shoe that Puma's own beginner guide lists for new runners. Its page gives the drop and stack height.",
       "paragraphs": [
         "Puma describes the fourth Electrify as a daily shoe for road runners. The Puma India page lists a regular fit, neutral support and an engineered mesh upper with breathable and stretch zones. The midsole mixes NITROFOAM, a lightweight foam, with PROFOAMLITE, an EVA foam. The outsole is PUMAGRIP rubber.",
-        "The page lists a 10 mm heel-to-toe drop and a stack height of 35 mm at the heel and 25 mm at the front. Puma's beginner guide lists this shoe for new runners and for short to medium-distance training. That is the maker's own view, not an independent one. The page gives no weight and no rating. Some colours may be sold out, so check your colour and size. This is the men's road version."
+        "The page lists a 10 mm heel-to-toe drop and a stack height of 35 mm at the heel and 25 mm at the front. Puma's beginner guide lists this shoe for new runners and for short to medium-distance training. That is the maker's own view, not an independent one. This is the men's road version."
       ],
       "good": [
         "Puma India lists neutral support, a 10 mm drop and a 35 mm / 25 mm stack height, so the key specs are on the page.",
         "Puma's beginner guide lists it for new runners and for short to medium-distance training.",
-        "The Puma page lists an engineered mesh upper and a PUMAGRIP rubber outsole.",
-        "Puma India shows free returns within 10 days of delivery on qualifying orders."
+        "The Puma page lists an engineered mesh upper and a PUMAGRIP rubber outsole."
       ],
       "not_good": [
         "The page does not give the weight or say how soft the cushioning is.",
-        "No customer rating was shown on the page, so there is no buyer feedback to report.",
-        "The beginner advice comes from Puma's own guide, and the return window is shorter than Decathlon's.",
         "Stock can depend on the colour and size you want."
       ],
       "search_query": "Puma Electrify NITRO 4 men running shoes",
       "stores": [
         "Puma"
-      ]
+      ],
+      "product_url": "https://in.puma.com/in/en/pd/electrify-nitro-4-mens-running-shoes/310789"
     },
     {
       "name": "Puma Velocity NITRO 5 (men's, road)",
@@ -79,29 +75,25 @@
       "cells": [
         "Daily road runs, neutral",
         "Puma India",
-        "10 days, on qualifying orders"
+        "8 mm"
       ],
       "verdict": "A neutral daily trainer with medium cushioning and an 8 mm drop on its page. It may be more shoe than you need if you are not sure you will keep running.",
       "paragraphs": [
-        "The Puma India page lists NITROFOAM cushioning, an engineered mesh upper and a PUMAGRIP outsole. The details list shows road running, neutral pronation (no extra support built in for feet that roll inward), medium cushioning and an 8 mm heel-to-toe drop. Puma lists an average life of 800 km. That is the maker's own figure. Puma also sells a Wide version.",
-        "Puma's beginner guide says the Velocity NITRO suits 5K and 10K training and first-race preparation. The details list marks the runner type as Frequent, so a person who runs only now and then may prefer a simpler shoe. The page gives no weight and no rating. Some colours may be sold out, so check your colour and size."
+        "The Puma India page lists NITROFOAM cushioning, an engineered mesh upper and a PUMAGRIP outsole. The details list shows road running, neutral pronation (no extra support built in for feet that roll inward), medium cushioning and an 8 mm heel-to-toe drop.  Puma also sells a Wide version.",
+        "Puma's beginner guide says the Velocity NITRO suits 5K and 10K training and first-race preparation. The details list marks the runner type as Frequent, so a person who runs only now and then may prefer a simpler shoe."
       ],
       "good": [
-        "The Puma page lists neutral support, medium cushioning, an 8 mm drop and an 800 km average life, so the key specs are on the page.",
         "Puma's beginner guide says it suits 5K and 10K training and first-race preparation.",
-        "Puma sells a Wide version of the same shoe, which may help if regular shoes feel tight across the front of the foot.",
-        "Puma India shows free returns within 10 days of delivery on qualifying orders."
+        "Puma sells a Wide version of the same shoe, which may help if regular shoes feel tight across the front of the foot."
       ],
       "not_good": [
-        "The details list the runner type as Frequent, so it may suit regular runners better than very occasional ones.",
-        "The page does not give the weight, and no customer rating was shown.",
-        "The 800 km life and the beginner fit both come from Puma, not from an independent source.",
-        "Stock can depend on colour and size, and the return window is shorter than Decathlon's."
+        "The details list the runner type as Frequent, so it may suit regular runners better than very occasional ones."
       ],
       "search_query": "Puma Velocity NITRO 5 men running shoes",
       "stores": [
         "Puma"
-      ]
+      ],
+      "product_url": "https://in.puma.com/in/en/pd/velocity-nitro-5-mens-running-shoes/312944"
     }
   ],
   "choose": [
@@ -126,14 +118,14 @@
       "text": "Decathlon says the Run Active is for up to 10 km a week. Puma's Velocity NITRO 5 page marks the runner type as Frequent. These notes tell you when a shoe may be too simple, or more than you need."
     },
     {
-      "heading": "Check returns, stock and the seller",
-      "text": "Decathlon India shows a 30-day exchange and a 2-year warranty on the Run Active. Puma India shows free returns within 10 days of delivery on qualifying orders. Stock can differ by colour and size, so check your exact size first. Buy from the maker's store or an authorised seller."
+      "heading": "Check the exact listing before paying",
+      "text": "Check the current seller listing for availability, delivery to your pincode, returns and warranty coverage before ordering."
     }
   ],
   "faq": [
     {
       "q": "Which of these is the easiest first pair?",
-      "a": "The Kalenji Run Active is made for light running of up to 10 km a week, and the Decathlon India page shows a 30-day exchange. Puma's own guide lists the Electrify NITRO for new runners. It says the Velocity NITRO suits 5K and 10K training."
+      "a": "The Run Active is listed for occasional running up to 10 km a week. The Electrify NITRO 4 is another road-running option to try. Choose by comfort, fit and expected use, rather than by the most technical specification."
     },
     {
       "q": "Do I need a stability shoe as a beginner?",
@@ -145,36 +137,41 @@
     },
     {
       "q": "How do I know when to replace my shoes?",
-      "a": "Nike's guide gives a general guideline of every 300 to 500 miles. That is about 480 to 800 km, by our own sum. Puma lists an average life of 800 km for the Velocity NITRO 5. Look at the sole and cushioning too, and replace the pair when they look worn."
+      "a": "Inspect wear, grip and changes in comfort. A maker’s mileage estimate is not a guaranteed lifespan or a replacement schedule for every runner. Ask a running shop for help assessing a worn pair."
     },
     {
       "q": "Should I buy online or in a store?",
-      "a": "A store is better for fit, because you can try the shoe on. If you buy online, check the return window and the seller name first."
+      "a": "A store is better for fit, because you can try the shoe on."
     }
   ],
   "sources": [
     {
       "label": "Decathlon India: Kalenji Run Active Comfort Fit",
-      "url": "https://www.decathlon.in/p/8670185/men-running-shoes-comfort-fit-upto-10km-week-run-active-blue-and-brown"
+      "url": "https://www.decathlon.in/p/8670185/men-running-shoes-comfort-fit-upto-10km-week-run-active-blue-and-brown",
+      "checked": "2026-10-16"
     },
     {
       "label": "Puma India: Electrify NITRO 4 men's running shoes",
-      "url": "https://in.puma.com/in/en/pd/electrify-nitro-4-mens-running-shoes/310789"
+      "url": "https://in.puma.com/in/en/pd/electrify-nitro-4-mens-running-shoes/310789",
+      "checked": "2026-10-16"
     },
     {
       "label": "Puma India: Velocity NITRO 5 men's running shoes",
-      "url": "https://in.puma.com/in/en/pd/velocity-nitro-5-mens-running-shoes/312944"
+      "url": "https://in.puma.com/in/en/pd/velocity-nitro-5-mens-running-shoes/312944",
+      "checked": "2026-10-16"
     },
     {
       "label": "Puma India: Select your first running shoes (maker guide)",
-      "url": "https://in.puma.com/in/en/running-guides/best-running-shoes-for-beginners"
+      "url": "https://in.puma.com/in/en/running-guides/best-running-shoes-for-beginners",
+      "checked": "2026-10-16"
     },
     {
       "label": "Nike: How to choose running shoes (maker guide)",
-      "url": "https://www.nike.com/a/buy-right-running-shoes"
+      "url": "https://www.nike.com/a/buy-right-running-shoes",
+      "checked": "2026-10-16"
     }
   ],
   "published": "2026-10-15",
-  "updated": "2026-10-15",
+  "updated": "2026-10-16",
   "featured": true
 }
