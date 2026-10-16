@@ -1,48 +1,139 @@
 (function () {
   'use strict';
-  // Category page banner: the first picture is already in the page; the rest are added after load and fade into each other.
-  var box = document.querySelector('[data-cat-banner]');
+  // Category page picture showcase: the first picture is already in the page; the others are added after load, fade into each other
+  // (the progress bar on the current dot is the timer), and can be changed with the dots or a swipe. Nothing runs for visitors who ask
+  // for less motion except the dots, and nothing extra loads when Data Saver is on.
+  var box = document.querySelector('[data-cat-showcase]');
   if (!box) return;
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var saveData = navigator.connection && navigator.connection.saveData;
   var slides = [];
   try { slides = JSON.parse(box.getAttribute('data-slides') || '[]'); } catch (e) { slides = []; }
-  if (reduce || !slides.length) return;
+  if (!slides.length || saveData) return;
+
+  var label = box.getAttribute('data-label') || 'Category';
+  box.setAttribute('role', 'group');
+  box.setAttribute('aria-roledescription', 'carousel');
+  box.setAttribute('aria-label', label + ' pictures');
 
   var imgs = [box.querySelector('img')];
   var current = 0;
-  var timer = null;
-  var visible = true;
+  var userPaused = false, hover = false, focus = false, visible = true;
+  var dots = null, count = null, pp = null, controls = null;
 
+  function sync() {
+    var paused = userPaused || hover || focus || !visible || document.hidden;
+    box.classList.toggle('is-paused', paused);
+  }
   function show(n) {
     imgs[current].classList.remove('is-on');
-    current = n;
+    if (dots) dots.children[current].removeAttribute('aria-current');
+    current = (n + imgs.length) % imgs.length;
     imgs[current].classList.add('is-on');
+    if (dots) {
+      // removing and re-adding the attribute restarts the progress animation
+      var d = dots.children[current];
+      d.setAttribute('aria-current', 'true');
+    }
+    if (count) count.textContent = (current + 1) + ' / ' + imgs.length;
   }
-  function next() {
-    if (document.hidden || !visible || imgs.length < 2) return;
-    show((current + 1) % imgs.length);
+
+  function buildControls() {
+    controls = document.createElement('div');
+    controls.className = 'cat-controls';
+    dots = document.createElement('div');
+    dots.className = 'cat-dots';
+    imgs.forEach(function (img, i) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.setAttribute('aria-label', 'Show picture ' + (i + 1) + ' of ' + imgs.length);
+      b.addEventListener('click', function () { show(i); });
+      dots.appendChild(b);
+    });
+    dots.children[0].setAttribute('aria-current', 'true');
+    controls.appendChild(dots);
+    count = document.createElement('span');
+    count.className = 'cat-count';
+    count.setAttribute('aria-hidden', 'true');
+    count.textContent = '1 / ' + imgs.length;
+    controls.appendChild(count);
+    if (!reduce) {
+      pp = document.createElement('button');
+      pp.type = 'button';
+      pp.className = 'cat-pp';
+      pp.setAttribute('aria-label', 'Pause pictures');
+      pp.innerHTML = '<span aria-hidden="true">❚❚</span>';
+      pp.addEventListener('click', function () {
+        userPaused = !userPaused;
+        pp.setAttribute('aria-label', userPaused ? 'Play pictures' : 'Pause pictures');
+        pp.firstChild.textContent = userPaused ? '▶' : '❚❚';
+        sync();
+      });
+      controls.appendChild(pp);
+    }
+    box.appendChild(controls);
+    if (!reduce) {
+      box.classList.add('is-playing');
+      // the progress bar on the current dot ends -> the next picture
+      dots.addEventListener('animationend', function (e) {
+        if (e.animationName === 'cat-progress') show(current + 1);
+      });
+    }
   }
-  function start() {
-    if (!timer) timer = window.setInterval(next, 7000);
-  }
+
   function load() {
-    slides.forEach(function (src) {
+    var pending = slides.length;
+    var made = [];
+    slides.forEach(function (src, i) {
       var img = new Image();
       img.alt = '';
-      img.width = 900;
-      img.height = 405;
+      img.width = 800;
+      img.height = 480;
       img.decoding = 'async';
-      img.onload = function () {
-        box.appendChild(img);
-        imgs.push(img);
-        start();
+      var done = function (ok) {
+        if (ok) made[i] = img;
+        pending -= 1;
+        if (pending === 0) {
+          made.forEach(function (m) { if (m) { box.insertBefore(m, box.querySelector('.cat-controls')); imgs.push(m); } });
+          if (imgs.length > 1) { buildControls(); sync(); }
+        }
       };
+      img.onload = function () { done(true); };
+      img.onerror = function () { done(false); };
       img.src = src;
     });
   }
+
+  box.addEventListener('pointerenter', function (e) { if (e.pointerType === 'mouse') { hover = true; sync(); } });
+  box.addEventListener('pointerleave', function () { hover = false; sync(); box.style.setProperty('--tilt-x', '0deg'); box.style.setProperty('--tilt-y', '0deg'); });
+  box.addEventListener('focusin', function () { focus = true; sync(); });
+  box.addEventListener('focusout', function () { focus = false; sync(); });
+  document.addEventListener('visibilitychange', sync);
   if ('IntersectionObserver' in window) {
-    new IntersectionObserver(function (entries) { visible = entries[0].isIntersecting; }).observe(box);
+    new IntersectionObserver(function (entries) { visible = entries[0].isIntersecting; sync(); }).observe(box);
   }
-  var begin = function () { window.setTimeout(load, 1200); };
+
+  // a light 3D tilt that follows the mouse (not on touch screens)
+  if (!reduce && window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+    box.addEventListener('pointermove', function (e) {
+      var r = box.getBoundingClientRect();
+      var x = (e.clientX - r.left) / r.width - 0.5;
+      var y = (e.clientY - r.top) / r.height - 0.5;
+      box.style.setProperty('--tilt-y', (x * 7).toFixed(2) + 'deg');
+      box.style.setProperty('--tilt-x', (-y * 5).toFixed(2) + 'deg');
+    });
+  }
+
+  // swipe on touch screens
+  var startX = null;
+  box.addEventListener('pointerdown', function (e) { if (e.pointerType === 'touch') startX = e.clientX; });
+  box.addEventListener('pointerup', function (e) {
+    if (startX === null || imgs.length < 2) { startX = null; return; }
+    var dx = e.clientX - startX;
+    startX = null;
+    if (Math.abs(dx) > 40) show(current + (dx < 0 ? 1 : -1));
+  });
+
+  var begin = function () { window.setTimeout(load, 800); };
   if (document.readyState === 'complete') begin(); else window.addEventListener('load', begin);
 })();

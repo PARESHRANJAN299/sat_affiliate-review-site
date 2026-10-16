@@ -359,15 +359,22 @@ def home_collage():
 
 
 def category_banner(cat):
-    """Faint rotating picture behind the header of a category page: every .jpg in static/images/banners/<category-slug>/ (in file-name order).
+    """Picture showcase beside the header of a category page: every .jpg in static/images/banners/<category-slug>/ (in file-name order).
     Only the first picture is in the page; the others are listed in data-slides and added by cat-banner.js after the page has loaded."""
     folder = SRC / "static" / "images" / "banners" / cat["slug"]
     names = sorted(p.name for p in folder.glob("*.jpg")) if folder.exists() else []
     if not names:
         return ""
     urls = [f'/images/banners/{cat["slug"]}/{n}' for n in names]
-    return (f'<div class="cat-banner" aria-hidden="true" data-cat-banner data-slides="{esc(json.dumps(urls[1:]))}">'
-            f'<img class="is-on" src="{esc(urls[0])}" alt="" width="900" height="405" decoding="async" fetchpriority="low"></div>')
+    return (f'<div class="cat-showcase" data-cat-showcase data-label="{esc(cat["name"])}" data-slides="{esc(json.dumps(urls[1:]))}">'
+            f'<img class="is-on" src="{esc(urls[0])}" alt="" width="800" height="480" decoding="async"></div>')
+
+
+def cat_head(cat, text_html):
+    """Header of a category landing page: breadcrumb, title and lead on the left, the picture showcase on the right (below the text on phones)."""
+    banner = category_banner(cat)
+    cls = "cat-head has-showcase" if banner else "cat-head"
+    return f'<header class="{cls}">\n    <div class="cat-head-text">\n{text_html}    </div>\n    {banner}\n    </header>\n'
 
 
 def family_url(cat, fam):
@@ -667,9 +674,8 @@ def audience_tabs_page(cat, entries, products):
     block = kit().listing(cat, products, f'pl-{cat["slug"]}', cat["families"], segment_tabs=True, type_chips=chips)
     notes = "".join(f'<li><a href="{esc(e["url"])}"><strong>{esc(e["name"])}</strong></a> {esc(e["description"])}</li>' for e in entries)
     body = (
-        f'<section class="section has-banner">\n  {category_banner(cat)}\n  <div class="container content-page family-page">\n'
-        '    {{breadcrumb}}\n'
-        f'    <h1>{esc(cat["name"])}</h1>\n    <p class="lead">{esc(cat.get("tagline") or cat["description"])}</p>\n'
+        '<section class="section">\n  <div class="container content-page family-page">\n'
+        + cat_head(cat, '    {{breadcrumb}}\n' + f'    <h1>{esc(cat["name"])}</h1>\n    <p class="lead">{esc(cat.get("tagline") or cat["description"])}</p>\n') +
         f'    {block}\n'
         + ('    <div class="pl-reviews"><h2>Reviews</h2>\n' + "\n".join(product_review_html(p) for p in products) + '</div>\n' if products else '')
         + f'    <h2>Product types</h2>\n    <ul class="pl-type-notes">{notes}</ul>\n'
@@ -735,9 +741,8 @@ def beauty_pages(cat):
         cards_html = f'<div class="family-cards family-cards-3">{category_directory(entries, grid_id="family-results")}</div>'
     if not cat.get("audience_tabs"):
         body = (
-            f'<section class="section has-banner">\n  {category_banner(cat)}\n  <div class="container content-page family-page">\n'
-            '    {{breadcrumb}}\n'
-            f'    <h1>{esc(cat["name"])}</h1>\n    <p class="lead">{esc(cat.get("tagline") or cat["description"])}</p>\n'
+            '<section class="section">\n  <div class="container content-page family-page">\n'
+            + cat_head(cat, '    {{breadcrumb}}\n' + f'    <h1>{esc(cat["name"])}</h1>\n    <p class="lead">{esc(cat.get("tagline") or cat["description"])}</p>\n') +
             f'    {cards_html}\n'
             f'    <p class="family-note">{esc(PRICE_NOTE)} This section is general information, not medical advice.</p>\n'
             '  </div>\n</section>')
@@ -835,10 +840,9 @@ def family_pages():
                 f'<span class="family-count">{len(by_section[s["slug"]])} product types</span></div>\n'
                 f'  <p class="family-section-blurb">{esc(s["blurb"])}</p>\n  {cards}\n</section>')
         body = (
-            f'<section class="section has-banner">\n  {category_banner(cat)}\n  <div class="container content-page family-page">\n'
-            '    {{breadcrumb}}\n'
-            f'    <h1>{esc(cat["name"])}</h1>\n'
-            f'    <p class="lead">{esc(cat.get("tagline") or cat["description"])}</p>\n'
+            '<section class="section">\n  <div class="container content-page family-page">\n'
+            + cat_head(cat, '    {{breadcrumb}}\n' + f'    <h1>{esc(cat["name"])}</h1>\n'
+                      f'    <p class="lead">{esc(cat.get("tagline") or cat["description"])}</p>\n')
             + ('    <section class="family-guides" id="guides"><h2>Buying guides</h2>\n    {{articles_sports_fitness}}\n    </section>\n' if cat["slug"] == "sports-fitness" else "")
             + "\n".join(blocks) +
             '\n  </div>\n</section>')

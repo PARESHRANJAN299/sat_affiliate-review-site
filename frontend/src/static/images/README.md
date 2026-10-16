@@ -7,8 +7,9 @@ images/
   categories/   one picture per top-level category: <category-slug>.jpg (4:3, about 736 x 552)
                 and <category-slug>-thumb.jpg (square, 160 x 160, used in the menu)
   home/         lifestyle pictures for the home hero (4:5 portrait, 256 x 320, JPEG quality about 60, about 25 KB each; each one opens a category through src/home-wall.json); every .jpg in this folder joins the drifting rows, in file-name order (01-, 02-, 03- ... picture 1 goes to row 1, picture 2 to row 2, picture 3 to row 3, picture 4 to row 1 again, so number them to mix the categories). 18 pictures give six per row; a row with fewer is repeated automatically so it still fills wide screens
-  banners/      one folder per category slug (clothing-accessories, sports-fitness, beauty-personal-care, home-kitchen) with 900 x 405 pictures (about 2.2:1, quality 55-60, under 80 KB each).
-                They fade softly behind the category page header and rotate every few seconds, in file-name order (01-, 02- ...). Add or remove a .jpg to change them. Watches has no banner folder on purpose.
+  banners/      one folder per category slug (clothing-accessories, sports-fitness, beauty-personal-care, home-kitchen) with 800 x 480 pictures (5:3, JPEG quality about 56, about 80 KB each).
+                They are shown in a showcase card beside the category page title (below the text on phones) and rotate in file-name order (01-, 02- ...) with dots, a swipe and a pause button.
+                Add or remove a .jpg to change them. Watches has no banner folder on purpose.
   products/     <product-id>.jpg  (square, about 800 x 800)
   brands/       <brand-slug>.svg or .png
 ```
