@@ -343,6 +343,18 @@ def home_collage():
     return '<div class="home-collage">\n      ' + "\n      ".join(out) + "\n    </div>"
 
 
+def category_banner(cat):
+    """Faint rotating picture behind the header of a category page: every .jpg in static/images/banners/<category-slug>/ (in file-name order).
+    Only the first picture is in the page; the others are listed in data-slides and added by cat-banner.js after the page has loaded."""
+    folder = SRC / "static" / "images" / "banners" / cat["slug"]
+    names = sorted(p.name for p in folder.glob("*.jpg")) if folder.exists() else []
+    if not names:
+        return ""
+    urls = [f'/images/banners/{cat["slug"]}/{n}' for n in names]
+    return (f'<div class="cat-banner" aria-hidden="true" data-cat-banner data-slides="{esc(json.dumps(urls[1:]))}">'
+            f'<img class="is-on" src="{esc(urls[0])}" alt="" width="900" height="405" decoding="async" fetchpriority="low"></div>')
+
+
 def family_url(cat, fam):
     if fam.get("section"):
         return f'{cat["url"]}{fam["section"]}/{fam["slug"]}/'
@@ -640,7 +652,7 @@ def audience_tabs_page(cat, entries, products):
     block = kit().listing(cat, products, f'pl-{cat["slug"]}', cat["families"], segment_tabs=True, type_chips=chips)
     notes = "".join(f'<li><a href="{esc(e["url"])}"><strong>{esc(e["name"])}</strong></a> {esc(e["description"])}</li>' for e in entries)
     body = (
-        '<section class="section">\n  <div class="container content-page family-page">\n'
+        f'<section class="section has-banner">\n  {category_banner(cat)}\n  <div class="container content-page family-page">\n'
         '    {{breadcrumb}}\n'
         f'    <h1>{esc(cat["name"])}</h1>\n    <p class="lead">{esc(cat.get("tagline") or cat["description"])}</p>\n'
         f'    {block}\n'
@@ -651,8 +663,8 @@ def audience_tabs_page(cat, entries, products):
     return {
         "url": cat["url"], "title": f'{cat["name"]} Buying Guides for India',
         "description": cat.get("landing_meta") or f'{cat["name"]} buying guides for Indian shoppers.',
-        "css": ["buttons", "breadcrumb", "content-page", "families", "product-block", "product-listing"],
-        "js": ["product-listing"],
+        "css": ["buttons", "breadcrumb", "content-page", "families", "product-block", "product-listing", "cat-banner"],
+        "js": ["product-listing", "cat-banner"],
         "breadcrumbs": [["Shop by Category", "/products/"], [cat["name"], cat["url"]]],
         "updated": "2026-10-16", "_slug": cat["slug"], "_body": body}
 
@@ -708,7 +720,7 @@ def beauty_pages(cat):
         cards_html = f'<div class="family-cards family-cards-3">{category_directory(entries, grid_id="family-results")}</div>'
     if not cat.get("audience_tabs"):
         body = (
-            '<section class="section">\n  <div class="container content-page family-page">\n'
+            f'<section class="section has-banner">\n  {category_banner(cat)}\n  <div class="container content-page family-page">\n'
             '    {{breadcrumb}}\n'
             f'    <h1>{esc(cat["name"])}</h1>\n    <p class="lead">{esc(cat.get("tagline") or cat["description"])}</p>\n'
             f'    {cards_html}\n'
@@ -717,7 +729,7 @@ def beauty_pages(cat):
         pages.append({
             "url": cat["url"], "title": f'{cat["name"]} Buying Guides for India',
             "description": cat.get("landing_meta") or f'{cat["name"]} buying guides for Indian shoppers.',
-            "css": ["buttons", "breadcrumb", "content-page", "category-directory", "families"], "js": [],
+            "css": ["buttons", "breadcrumb", "content-page", "category-directory", "families", "cat-banner"], "js": ["cat-banner"],
             "breadcrumbs": [["Shop by Category", "/products/"], [cat["name"], cat["url"]]],
             "updated": "2026-10-16", "_slug": cat["slug"], "_body": body})
     for f in cat["families"]:
@@ -808,7 +820,7 @@ def family_pages():
                 f'<span class="family-count">{len(by_section[s["slug"]])} product types</span></div>\n'
                 f'  <p class="family-section-blurb">{esc(s["blurb"])}</p>\n  {cards}\n</section>')
         body = (
-            '<section class="section">\n  <div class="container content-page family-page">\n'
+            f'<section class="section has-banner">\n  {category_banner(cat)}\n  <div class="container content-page family-page">\n'
             '    {{breadcrumb}}\n'
             f'    <h1>{esc(cat["name"])}</h1>\n'
             f'    <p class="lead">{esc(cat.get("tagline") or cat["description"])}</p>\n'
@@ -818,7 +830,7 @@ def family_pages():
         pages.append({
             "url": cat["url"], "title": f'{cat["name"]} Buying Guides for India',
             "description": f'Browse sports and fitness product types, from {cat["families"][0]["name"].lower()} to {cat["families"][-1]["name"].lower()}. Buying guides for Indian shoppers.',
-            "css": ["buttons", "breadcrumb", "content-page", "category-directory", "families"] + (["cards"] if cat["slug"] == "sports-fitness" else []), "js": [],
+            "css": ["buttons", "breadcrumb", "content-page", "category-directory", "families", "cat-banner"] + (["cards"] if cat["slug"] == "sports-fitness" else []), "js": ["cat-banner"],
             "breadcrumbs": [["Shop by Category", "/products/"], [cat["name"], cat["url"]]],
             "updated": "2026-10-16", "_slug": cat["slug"], "_body": body})
         sec_names = {s["slug"]: s["name"] for s in sections}
