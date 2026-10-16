@@ -1753,6 +1753,8 @@ def write_headers():
         "/videos/*\n  Cache-Control: public, max-age=86400\n\n"
         "/images/*\n  Cache-Control: public, max-age=604800, stale-while-revalidate=86400\n\n"
         "/favicon.svg\n  Cache-Control: public, max-age=604800\n\n"
+        "/favicon.ico\n  Cache-Control: public, max-age=604800\n\n"
+        "/apple-touch-icon.png\n  Cache-Control: public, max-age=604800\n\n"
         "/*\n  X-Content-Type-Options: nosniff\n  Referrer-Policy: strict-origin-when-cross-origin\n",
         encoding="utf-8")
 
