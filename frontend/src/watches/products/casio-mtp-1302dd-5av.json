@@ -50,5 +50,10 @@
     }
   ],
   "editors_pick": false,
-  "rating": null
+  "rating": null,
+  "case_material": "stainless-steel",
+  "purpose": [
+    "casual",
+    "formal"
+  ]
 }

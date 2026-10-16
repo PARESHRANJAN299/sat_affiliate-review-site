@@ -55,3 +55,12 @@ The watch browser puts style tiles first, then quick brand/budget selectors, the
 JavaScript paginates matching watches in batches of 24; filters and sorting reset pagination. With JavaScript disabled, route-matching products remain server rendered and style/brand/audience links remain available. Filter counts describe published catalogue records, not live retailer inventory. The `unlisted` budget value means the current price must be checked with the retailer.
 
 Repeated disclosure banners are removed by `compact_affiliate_notices()` in the builder. Retailer buttons carry a short “Paid link” label; the full disclosure and Amazon Associate statement remain in the footer and disclosure page.
+
+## Filter fields (optional, add only what the maker's page states)
+
+The filter panel on `/watches/` builds itself from the watch files. Besides brand, budget and style it can use:
+* `purpose`: a list from `casual`, `formal`, `swimming`, `hiking`, `running` (only if the listing names the occasion or use).
+* `case_material`: one of `alloy-steel`, `brass`, `metal`, `plastic`, `polycarbonate`, `resin`, `stainless-steel` (only if the page states it).
+* Water resistance depth comes from the existing `water_resistance` text ("50 m", "5 ATM" is read as 50 m). The groups are Up to 29 m, 30 to 40 m, 41 to 51 m and 52 m and above.
+
+A watch without a field simply does not appear when that filter is ticked. Filter options with no watch yet are hidden, except brands, which stay visible and dimmed so visitors can see which brands are coming.

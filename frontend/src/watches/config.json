@@ -101,6 +101,28 @@
       ],
       "line": "Classic",
       "blurb": "A value brand from Titan Company, with simple classic watches."
+    },
+    {
+      "slug": "daniel-hechter",
+      "name": "Daniel Hechter",
+      "tier": "value",
+      "genders": [
+        "men",
+        "women"
+      ],
+      "line": "Classic",
+      "blurb": "Daniel Hechter watches are listed here as models are added."
+    },
+    {
+      "slug": "carlington",
+      "name": "Carlington",
+      "tier": "value",
+      "genders": [
+        "men",
+        "women"
+      ],
+      "line": "Classic",
+      "blurb": "Carlington watches are listed here as models are added."
     }
   ],
   "styles": [

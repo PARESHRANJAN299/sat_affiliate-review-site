@@ -12,6 +12,7 @@ A collection becomes indexable once it has at least `min_products_to_index` watc
 Standard library only (Python 3.9+).
 """
 import html
+import re
 import collection
 import json
 import math
@@ -236,7 +237,8 @@ class Watches:
         specs = p.get("card_specs") or " · ".join(str(value) for value in (p.get("dial_style"), p.get("strap")) if value)
         return (
             f'<article class="watch-card" data-id="{esc(p["id"])}" data-name="{esc(brand + " " + p["model"])}" data-brand="{esc(p["brand"])}" '
-            f'data-gender="{esc(" ".join(p["gender"]))}" data-style="{esc(" ".join(p["styles"]))}" data-budget="{esc(p.get("budget") or "unlisted")}" data-styles="{esc(" ".join(p["styles"]))}">'
+            f'data-gender="{esc(" ".join(p["gender"]))}" data-style="{esc(" ".join(p["styles"]))}" data-budget="{esc(p.get("budget") or "unlisted")}" data-styles="{esc(" ".join(p["styles"]))}" '
+            f'data-purpose="{esc(" ".join(p.get("purpose", [])))}" data-water="{esc(self.water_bucket(p))}" data-case="{esc(p.get("case_material", ""))}">'
             + media + '<div class="watch-body">'
             f'<p class="watch-brand">{esc(brand)}</p><h3 class="watch-model"><a href="{esc(href)}">{esc(p["model"])}</a></h3>'
             f'<p class="watch-card-specs">{esc(specs)}</p><p class="watch-verdict">{esc(p["verdict"])}</p>'
@@ -439,35 +441,57 @@ class Watches:
         links.append(("Watch buying guide", "/watches/guide/"))
         return links
 
+    PURPOSES = [("casual", "Casual Wear"), ("formal", "Formal Wear"), ("swimming", "Swimming"), ("hiking", "Hiking"), ("running", "Running")]
+    WATER = [("up-to-29", "Up to 29 m", 0, 29), ("30-40", "30 to 40 m", 30, 40), ("41-51", "41 to 51 m", 41, 51), ("52-plus", "52 m and above", 52, 10 ** 6)]
+    CASES = [("alloy-steel", "Alloy Steel"), ("brass", "Brass"), ("metal", "Metal"), ("plastic", "Plastic"), ("polycarbonate", "Polycarbonate"),
+             ("resin", "Resin"), ("stainless-steel", "Stainless Steel")]
+
+    @staticmethod
+    def water_metres(p):
+        """Depth in metres from the stated water resistance ("50 m", "5 ATM", "10 ATM"); None when it is not stated."""
+        text = str(p.get("water_resistance", ""))
+        m = re.search(r"(\d+(?:\.\d+)?)\s*(m|metres|meters|atm|bar)\b", text, re.I)
+        if not m:
+            return None
+        n = float(m.group(1))
+        return n * 10 if m.group(2).lower() in ("atm", "bar") else n
+
+    def water_bucket(self, p):
+        n = self.water_metres(p)
+        return next((slug for slug, _, lo, hi in self.WATER if n is not None and lo <= n <= hi), "")
+
     def catalog(self, url, title, intro, *, gender="", brand="", budget="", style="", crumbs=None):
         products = self.products
         def matches(p):
             return ((not gender or gender in p["gender"]) and (not brand or p["brand"] == brand)
                     and (not budget or p.get("budget") == budget) and (not style or style in p["styles"]))
         shown = [p for p in products if matches(p)]
+        def n(pred):
+            return sum(1 for p in products if pred(p))
         groups = [
-            {"key": "brand", "title": "Brands", "checked": [brand] if brand else [],
-             "items": [(slug, value["name"], sum(p["brand"] == slug for p in products)) for slug, value in self.brands.items() if slug != "sample" and any(p["brand"] == slug for p in products)]},
-            {"key": "budget", "title": "Budget guide", "checked": [budget] if budget else [],
-             "items": [(slug, value["label"], sum(p.get("budget") == slug for p in products)) for slug, value in self.budgets.items() if any(p.get("budget") == slug for p in products)] + [("unlisted", "Price at retailer", sum(not p.get("budget") for p in products))]},
+            {"key": "brand", "title": "Brand", "checked": [brand] if brand else [], "show_empty": True,
+             "items": [(slug, value["name"], n(lambda p, s=slug: p["brand"] == s)) for slug, value in self.brands.items() if slug != "sample"]},
+            {"key": "budget", "title": "Price", "checked": [budget] if budget else [],
+             "items": [(slug, value["label"], n(lambda p, s=slug: p.get("budget") == s)) for slug, value in self.budgets.items() if n(lambda p, s=slug: p.get("budget") == s)]
+                      + ([("unlisted", "Price at retailer", n(lambda p: not p.get("budget")))] if n(lambda p: not p.get("budget")) else [])},
+            {"key": "purpose", "title": "Purpose", "checked": [],
+             "items": [(slug, label, n(lambda p, s=slug: s in p.get("purpose", []))) for slug, label in self.PURPOSES if n(lambda p, s=slug: s in p.get("purpose", []))]},
+            {"key": "water", "title": "Water resistance depth", "checked": [],
+             "items": [(slug, label, n(lambda p, s=slug: self.water_bucket(p) == s)) for slug, label, lo, hi in self.WATER if n(lambda p, s=slug: self.water_bucket(p) == s)]},
+            {"key": "case", "title": "Case material", "checked": [],
+             "items": [(slug, label, n(lambda p, s=slug: p.get("case_material") == s)) for slug, label in self.CASES if n(lambda p, s=slug: p.get("case_material") == s)]},
             {"key": "style", "title": "Style", "checked": [style] if style else [],
-             "items": [(slug, value["label"], sum(slug in p["styles"] for p in products)) for slug, value in self.styles.items()]},
+             "items": [(slug, value["label"], n(lambda p, s=slug: s in p["styles"])) for slug, value in self.styles.items()]},
         ]
         style_links = '<a class="watch-style" href="/watches/" data-style-toggle="" aria-current="false"><span class="style-dot" aria-hidden="true">' + watch_art("style-art") + '</span><span>All styles</span></a>'
         for slug, value in self.styles.items():
             style_links += (f'<a class="watch-style" href="/watches/style/{slug}/" data-style-toggle="{esc(slug)}" aria-current="false">'
                             f'<span class="style-dot style-{esc(slug)}" aria-hidden="true">{watch_art("style-art")}</span><span>{esc(value["label"])}</span></a>')
         quick = ""
-        for group in groups[:2]:
-            chips = ''.join(
-                f'<button type="button" class="watch-chip" data-quick-chip="{group["key"]}" data-value="{esc(value)}" aria-pressed="false">{esc(label)} <em>{count}</em></button>'
-                for value, label, count in group["items"] if count)
-            quick += (f'<div class="watch-quick" role="group" aria-label="{esc(group["title"])}"><span class="watch-quick-label">{esc(group["title"])}</span>'
-                      f'<div class="watch-chip-row">{chips}</div></div>')
         top = ('<div class="watch-discovery"><div class="watch-style-head"><h2>Shop by style</h2><a href="/watches/guide/">Buying guide &rarr;</a></div>'
                f'<nav class="watch-style-row" aria-label="Watch styles">{style_links}</nav>'
                f'<div class="watch-quick-row" data-quick-controls hidden>{quick}'
-               '<button type="button" class="btn btn-outline btn-small collection-filter-open" data-filter-open aria-haspopup="dialog" aria-controls="watch-collection-filters">More filters <span data-filter-badge></span></button></div></div>')
+               '<button type="button" class="btn btn-outline btn-small collection-filter-open" data-filter-open aria-haspopup="dialog" aria-controls="watch-collection-filters">Filters <span data-filter-badge></span></button></div></div>')
         top = top.replace(f'data-style-toggle="{esc(style)}" aria-current="false"', f'data-style-toggle="{esc(style)}" aria-current="true"', 1)
         block = collection.render([self.card(p) for p in products], groups, uid="watch-collection", title="Explore watches", noun="watch", plural="watches",
                                   preset_gender=gender, genders=[("", "All watches"), ("men", "Men"), ("women", "Women")],
