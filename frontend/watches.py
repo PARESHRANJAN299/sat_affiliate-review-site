@@ -227,7 +227,12 @@ class Watches:
     def card(self, p, local=False):
         brand = self.brands[p["brand"]]["name"]
         href = f'#r-{p["id"]}' if local else self.review_url(p)
-        media = f'<a class="watch-media" href="{esc(href)}" tabindex="-1" aria-hidden="true">{self.media(p)}</a>' if p.get("image") else ""
+        band = self.budgets[p["budget"]]["label"] if p.get("budget") in self.budgets else ""
+        if p.get("image"):
+            media = f'<a class="watch-media" href="{esc(href)}" tabindex="-1" aria-hidden="true">{self.media(p)}</a>'
+        else:
+            media = (f'<a class="watch-media watch-tile" href="{esc(href)}" tabindex="-1" aria-hidden="true">{watch_art("tile-art")}'
+                     f'<span class="tile-brand">{esc(brand)}</span>' + (f'<span class="tile-band">{esc(band)}</span>' if band else "") + '</a>')
         specs = p.get("card_specs") or " · ".join(str(value) for value in (p.get("dial_style"), p.get("strap")) if value)
         return (
             f'<article class="watch-card" data-id="{esc(p["id"])}" data-name="{esc(brand + " " + p["model"])}" data-brand="{esc(p["brand"])}" '
@@ -454,13 +459,15 @@ class Watches:
                             f'<span class="style-dot style-{esc(slug)}" aria-hidden="true">{watch_art("style-art")}</span><span>{esc(value["label"])}</span></a>')
         quick = ""
         for group in groups[:2]:
-            options = ''.join(f'<option value="{esc(value)}">{esc(label)}</option>' for value, label, count in group["items"])
-            quick += (f'<label class="watch-quick"><span>{esc(group["title"])}</span><select data-quick-filter="{group["key"]}">'
-                      f'<option value="">All {"brands" if group["key"] == "brand" else "budgets"}</option>{options}<option value="__multiple" disabled>Multiple selected</option></select></label>')
+            chips = ''.join(
+                f'<button type="button" class="watch-chip" data-quick-chip="{group["key"]}" data-value="{esc(value)}" aria-pressed="false">{esc(label)} <em>{count}</em></button>'
+                for value, label, count in group["items"] if count)
+            quick += (f'<div class="watch-quick" role="group" aria-label="{esc(group["title"])}"><span class="watch-quick-label">{esc(group["title"])}</span>'
+                      f'<div class="watch-chip-row">{chips}</div></div>')
         top = ('<div class="watch-discovery"><div class="watch-style-head"><h2>Shop by style</h2><a href="/watches/guide/">Buying guide &rarr;</a></div>'
                f'<nav class="watch-style-row" aria-label="Watch styles">{style_links}</nav>'
                f'<div class="watch-quick-row" data-quick-controls hidden>{quick}'
-               '<button type="button" class="btn btn-outline btn-small collection-filter-open" data-filter-open aria-haspopup="dialog" aria-controls="watch-collection-filters">Filters <span data-filter-badge></span></button></div></div>')
+               '<button type="button" class="btn btn-outline btn-small collection-filter-open" data-filter-open aria-haspopup="dialog" aria-controls="watch-collection-filters">More filters <span data-filter-badge></span></button></div></div>')
         top = top.replace(f'data-style-toggle="{esc(style)}" aria-current="false"', f'data-style-toggle="{esc(style)}" aria-current="true"', 1)
         block = collection.render([self.card(p) for p in products], groups, uid="watch-collection", title="Explore watches", noun="watch", plural="watches",
                                   preset_gender=gender, genders=[("", "All watches"), ("men", "Men"), ("women", "Women")],

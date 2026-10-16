@@ -105,3 +105,44 @@
   .watch-store .collection-filters[open] { inset: 0 0 0 auto; width: 380px; height: 100dvh; max-height: 100dvh; margin: 0; border-radius: 16px 0 0 16px; }
 }
 .watch-quick > span { white-space: nowrap; }
+
+/* ===== premium finish: gold-glass style tiles, chip rows, product tiles ===== */
+.watch-store { background: linear-gradient(180deg, #faf7f0 0%, #f4efe4 100%); }
+.watch-discovery { border-color: rgba(176, 141, 87, 0.35); box-shadow: 0 18px 40px -30px rgba(80, 55, 15, 0.6); }
+.watch-style { border-radius: 16px; transition: transform .15s ease, box-shadow .2s ease, background .2s ease; }
+.watch-style:hover { transform: translateY(-2px); background: linear-gradient(180deg, #fff, #f8f1e3); box-shadow: 0 10px 18px -14px rgba(80, 55, 15, 0.7); }
+.style-dot { box-shadow: inset 0 1px 0 #fff, 0 6px 12px -8px rgba(80, 55, 15, 0.6); background: linear-gradient(180deg, #fffdf8, #f1e8d4); }
+.watch-style[aria-current="true"] { border-color: #c9a96a; background: linear-gradient(180deg, #34363b, #15171a); color: #fff; box-shadow: 0 0 0 2px rgba(201, 169, 106, 0.35), 0 12px 22px -14px rgba(0, 0, 0, 0.7); }
+.watch-style[aria-current="true"] .style-dot { background: linear-gradient(180deg, #4a4c52, #26282c); }
+.watch-style[aria-current="true"] .style-art { stroke: #e6c98a; }
+.watch-quick-row { display: grid; gap: 10px; }
+.watch-quick { display: grid; flex: none; gap: 6px; font-size: .7rem; }
+.watch-quick-label { font-size: .68rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: #846631; }
+.watch-chip-row { display: flex; gap: 8px; overflow-x: auto; padding: 2px 2px 6px; scrollbar-width: none; }
+.watch-chip-row::-webkit-scrollbar { display: none; }
+.watch-chip { flex: none; display: inline-flex; align-items: center; gap: 7px; min-height: 40px; padding: 0 15px; border: 1px solid var(--color-border); border-radius: 999px; background: linear-gradient(180deg, #fff, #faf5ea); color: var(--color-text); font: 600 .84rem var(--font-sans); cursor: pointer; transition: transform .15s ease, background .2s ease, color .2s ease; }
+.watch-chip em { font-style: normal; font-size: .72rem; color: var(--color-text-muted); }
+.watch-chip:active { transform: scale(.97); }
+.watch-chip[aria-pressed="true"] { background: linear-gradient(180deg, #34363b, #15171a); border-color: #15171a; color: #fff; }
+.watch-chip[aria-pressed="true"] em { color: #e6c98a; }
+.watch-quick-row > .collection-filter-open { justify-self: start; }
+@media (min-width: 900px) { .watch-quick-row { grid-template-columns: 1fr 1fr; align-items: start; } .watch-quick-row > .collection-filter-open { grid-column: 1 / -1; } .watch-chip-row { flex-wrap: wrap; overflow: visible; } }
+.watch-store .collection-controls { background: linear-gradient(180deg, #fff, #fbf7ee); }
+.watch-store .collection-controls .collection-segments button[aria-pressed="true"] { background: linear-gradient(180deg, #34363b, #15171a); color: #fff; }
+.watch-store .collection-controls .collection-search input { border-radius: 999px; padding-left: 18px; }
+/* product tile while a photo is not available yet */
+.watch-tile { position: relative; display: flex; align-items: center; justify-content: center; aspect-ratio: 4 / 3; max-height: 190px; background: radial-gradient(circle at 50% 36%, #fffaf0 0%, #efe3c8 100%); text-decoration: none; overflow: hidden; }
+.watch-tile .tile-art { height: 74%; width: auto; fill: none; stroke: #b08d57; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; filter: drop-shadow(0 10px 12px rgba(120, 90, 40, .2)); }
+.tile-brand { position: absolute; left: 12px; bottom: 10px; font-size: .64rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: #8a6d3b; }
+.tile-band { position: absolute; right: 10px; top: 10px; padding: 3px 9px; border-radius: 999px; background: rgba(255, 255, 255, .85); font-size: .68rem; font-weight: 700; color: #5f491e; box-shadow: 0 4px 10px -6px rgba(60, 40, 10, .5); }
+.watch-store .collection .watch-card { border-color: rgba(176, 141, 87, 0.28); transition: transform .2s ease, box-shadow .2s ease; }
+@media (hover: hover) { .watch-store .collection .watch-card:hover { transform: translateY(-3px); box-shadow: 0 20px 34px -22px rgba(60, 40, 10, .6); } }
+.watch-store .collection .watch-actions .btn-primary, .watch-store .collection .watch-actions .btn { background: linear-gradient(180deg, #34363b, #101214); color: #fff; border-color: #101214; }
+.watch-store .collection .watch-actions .btn:hover { background: linear-gradient(180deg, #c9a96a, #a8802f); color: #1f2124; }
+@media (max-width: 719px) { .watch-tile { aspect-ratio: 5 / 3; max-height: 120px; } .watch-chip { min-height: 38px; padding: 0 13px; font-size: .8rem; } .watch-store .collection .watch-grid { gap: 10px; } }
+@media (min-width: 1300px) { .watch-store .collection .watch-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
+/* tighter tile (the brand is already named in the card text), filter button beside the chip rows */
+.watch-store .collection .watch-card .watch-tile { aspect-ratio: auto; height: 150px; max-height: none; }
+.tile-brand { display: none; }
+@media (min-width: 900px) { .watch-quick-row { grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr) auto; } .watch-quick-row > .collection-filter-open { grid-column: auto; align-self: end; margin-bottom: 6px; } }
+@media (max-width: 719px) { .watch-store .collection .watch-card .watch-tile { height: 104px; } }
