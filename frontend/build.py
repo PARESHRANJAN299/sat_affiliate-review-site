@@ -2017,7 +2017,10 @@ def governance_report():
     path = SRC / "image-credits.json"
     recs = json.loads(read(path)).get("images", []) if path.exists() else []
     unconf = [r["file"] for r in recs if r.get("status") != "confirmed"]
-    add("ok" if not unconf else "WARN", "every picture has a confirmed licence record" if not unconf else f"{len(unconf)} of {len(recs)} pictures still need their licence confirmed (save a dated copy of the generator's terms, then set status to confirmed)")
+    ai_confirmed = [r for r in recs if r.get("ai_generated") and r.get("status") == "confirmed"]
+    if ai_confirmed:
+        add("info", f"{len(ai_confirmed)} AI-generated illustrative images have confirmed provenance records; see src/image-credits.json for the owner's confirmation and ownership basis")
+    add("ok" if not unconf else "WARN", "every picture has a confirmed provenance record" if not unconf else f"{len(unconf)} of {len(recs)} pictures still need provenance confirmation: {', '.join(unconf[:4])}")
 
     order = {"FAIL": 0, "WARN": 1, "ok": 2, "info": 3}
     for lvl, msg in sorted(rows, key=lambda r: order[r[0]]):
