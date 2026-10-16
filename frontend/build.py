@@ -316,6 +316,9 @@ def home_video():
             f'{poster} aria-hidden="true" tabindex="-1">' + "".join(sources) + '</video>')
 
 
+HOME_ROW_MIN_TILES = 16  # about 3,300 px of tiles at full size, so one copy fills screens up to roughly 2,600 px wide
+
+
 def home_collage():
     """Home hero background: drifting rows of lifestyle pictures from static/images/home (a video can sit under it)."""
     folder = SRC / "static" / "images" / "home"
@@ -327,12 +330,14 @@ def home_collage():
     for n, row in enumerate(rows):
         if not row:
             continue
+        # one copy of a row must be wider than the screen, or the drifting row shows a gap on wide screens
+        row = row * -(-HOME_ROW_MIN_TILES // len(row))
         # the row is written twice so the loop never shows a gap; the copy is hidden from assistive tech
         def tiles(copy):
             return "".join(
                 f'<span class="tile"><img src="/images/home/{esc(name)}" alt="" width="320" height="400" '
-                f'loading="{"eager" if (n == 0 and not copy) else "lazy"}" decoding="async"></span>'
-                for name in row)
+                f'loading="{"eager" if (n == 0 and not copy and i < 6) else "lazy"}" decoding="async"></span>'
+                for i, name in enumerate(row))
         out.append(f'<div class="home-row home-row-{n + 1}"><div class="home-track">{tiles(False)}'
                    f'<span class="home-dup" aria-hidden="true">{tiles(True)}</span></div></div>')
     return '<div class="home-collage">\n      ' + "\n      ".join(out) + "\n    </div>"
