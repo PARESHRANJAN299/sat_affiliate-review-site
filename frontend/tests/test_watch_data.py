@@ -255,9 +255,15 @@ class Slider(unittest.TestCase):
         shop = watches.Watches(build.SRC, build.CONFIG)
         body = shop.landing()["_body"]
         self.assertIn("data-price-slider", body)
-        self.assertIn('<span class="ladder-lab">\u20b92k</span></button>', body)
-        self.assertIn('<span class="ladder-lab">\u20b93k</span></button>', body)
-        self.assertNotIn("\u20b91k", body)           # no watch sits in Under 1,000 yet, so that step is not offered
+        steps = shop.price_steps()
+        labels = [short for _, _, short, _ in steps]
+        for short in labels:
+            self.assertIn(f'<span class="ladder-lab">{short}</span></button>', body)
+        # a band with no watch under it is not offered as a step
+        empty = [info["label"] for slug_, info in shop.budgets.items() if not any(slug_ in shop.qualifies(p) for p in shop.products)]
+        shown = {label for _, label, _, _ in steps}
+        for label in empty:
+            self.assertNotIn(label, shown)
 
     def test_slider_needs_two_steps_and_shows_no_prices(self):
         self.assertEqual(collection.price_slider([("under-2000", "Under \u20b92,000", "\u20b92k", 3)]), "")
