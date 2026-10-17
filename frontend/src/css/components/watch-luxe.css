@@ -232,3 +232,31 @@
 .ladder-curated span { font: 700 .6rem var(--font-sans); letter-spacing: .16em; text-transform: uppercase; color: var(--lx-gold); }
 .ladder-curated a { color: var(--lx-char); text-underline-offset: 3px; }
 .watch-store .collection .fgroup, .watch-store .collection .price-slider { scroll-margin-top: 90px; }
+
+/* ---------- lead cards: the magazine rhythm ---------- */
+.watch-store .collection .watch-card.is-lead { grid-column: 1 / -1; }
+.watch-store[data-mobile-grid="two"] .collection .watch-card.is-lead .watch-tile { aspect-ratio: 4 / 3.2; }
+.watch-store[data-mobile-grid="two"] .collection .watch-card.is-lead .watch-tile .dial-art { height: 92%; }
+.watch-store[data-mobile-grid="two"] .collection .watch-card.is-lead .watch-body { padding: 16px 18px 18px; }
+.watch-store[data-mobile-grid="two"] .collection .watch-card.is-lead .watch-meta { flex-direction: row; align-items: baseline; justify-content: space-between; margin-bottom: 8px; }
+.watch-store[data-mobile-grid="two"] .collection .watch-card.is-lead .watch-brand { font-size: .64rem; }
+.watch-store[data-mobile-grid="two"] .collection .watch-card.is-lead .watch-band { font-size: .74rem; }
+.watch-store[data-mobile-grid="two"] .collection .watch-card.is-lead .watch-model { margin: 0; font-size: 1.22rem; -webkit-line-clamp: 2; }
+.watch-store[data-mobile-grid="two"] .collection .watch-card.is-lead .watch-spec-rows { display: grid; margin: 14px 0 16px; padding-top: 14px; }
+.watch-store[data-mobile-grid="two"] .collection .watch-card.is-lead .watch-facts { display: none; }
+.watch-store[data-mobile-grid="two"] .collection .watch-card.is-lead .watch-actions .btn { min-height: 48px; font-size: .92rem; }
+.watch-store[data-mobile-grid="two"] .collection .watch-card.is-lead .watch-actions .btn .ic { display: inline-block; }
+.watch-store[data-mobile-grid="two"] .collection .watch-card.is-lead .watch-actions .paid-link { font-size: .64rem; }
+@media (min-width: 720px) {
+  .watch-store .collection .watch-card.is-lead { display: grid; grid-template-columns: minmax(0, 1.08fr) minmax(0, 1fr); }
+  .watch-store .collection .watch-card.is-lead .watch-tile { height: 100%; min-height: 380px; aspect-ratio: auto; }
+  .watch-store .collection .watch-card.is-lead .watch-body { justify-content: center; padding: 32px 36px; }
+  .watch-store .collection .watch-card.is-lead .watch-meta { margin-bottom: 12px; }
+  .watch-store .collection .watch-card.is-lead .watch-model { font-size: 1.7rem; line-height: 1.2; margin-bottom: 0; }
+  .watch-store .collection .watch-card.is-lead .watch-spec-rows { display: grid; gap: 18px 24px; margin: 24px 0 26px; padding-top: 22px; }
+  .watch-store .collection .watch-card.is-lead .watch-spec-rows dd { font-size: 1.02rem; }
+  .watch-store .collection .watch-card.is-lead .watch-product-bottom { margin-top: 0; }
+  .watch-store .collection .watch-card.is-lead .watch-actions { align-items: flex-start; }
+  .watch-store .collection .watch-card.is-lead .watch-actions .btn { min-width: 240px; min-height: 52px; }
+  .watch-store .collection .watch-card.is-lead .watch-facts { display: none; }
+}

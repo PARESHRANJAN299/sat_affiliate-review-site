@@ -71,7 +71,7 @@ class CollectionTests(unittest.TestCase):
                 super().__init__(); self.visible = []; self.feed(text)
             def handle_starttag(self, tag, attrs):
                 attrs = dict(attrs)
-                if tag == "article" and attrs.get("class") == "watch-card" and "hidden" not in attrs:
+                if tag == "article" and "watch-card" in (attrs.get("class") or "").split() and "hidden" not in attrs:
                     self.visible.append(attrs["data-id"])
         for gender in ("men", "women"):
             page = shop.gender_page(gender)

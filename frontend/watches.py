@@ -917,7 +917,11 @@ f'<linearGradient id="g{uid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-
         hub_top, hub_bottom = hub or ("", "")
         note = ('<p class="watch-affiliate-note">Amazon links on this page are affiliate links. As an Amazon Associate I earn from qualifying purchases. '
                 '<a href="/affiliate-disclosure/">How we earn</a></p>') if any(self.merchant_links(p) for p in shown) else ""
-        block = collection.render([self.card(p) for p in products], groups, uid="watch-collection", title="Explore watches", noun="watch", plural="watches",
+        card_html = [self.card(p) for p in products]
+        lead_at = next((i for i, p in enumerate(products) if matches(p)), None)
+        if lead_at is not None and len(shown) >= 4:
+            card_html[lead_at] = card_html[lead_at].replace('class="watch-card"', 'class="watch-card is-lead"', 1)
+        block = collection.render(card_html, groups, uid="watch-collection", title="Explore watches", noun="watch", plural="watches",
                                   preset_gender=gender, genders=[("men", "Men"), ("women", "Women")],
                                   top_html=top, visible=[matches(p) for p in products], page_size=24, grid_note=note,
                                   panel_top=ladder + curated, after_html=after, tips_html=tips, controls_html=chips_html, main_toolbar=True)

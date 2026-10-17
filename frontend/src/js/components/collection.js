@@ -79,11 +79,18 @@
       button.addEventListener('click', function () { callback(); update(); });
       active.appendChild(button);
     }
-    function placeTips(visible) {   // an editorial tip after every sixth watch shown, never at the very end
-      tips.forEach(function (tip, index) {
-        var after = visible[(index + 1) * 6 - 1];
-        tip.hidden = !after || visible.length < (index + 1) * 6 + 2;
-        if (after) after.insertAdjacentElement('afterend', tip);
+    // Magazine rhythm: the first watch shown (and one every 12 grid cells after it) is a wide lead card; an editorial tip follows every 6 cells.
+    function rhythm(visible) {
+      var cols = desktop.matches ? 3 : 2, units = 0, next = 0;
+      cards.forEach(function (card) { card.classList.remove('is-lead'); });
+      tips.forEach(function (tip) { tip.hidden = true; });
+      visible.forEach(function (card, index) {
+        var lead = visible.length >= 4 && units % 12 === 0;
+        card.classList.toggle('is-lead', lead);
+        units += lead ? cols : 1;
+        if (units % 6 === 0 && next < tips.length && index < visible.length - 2) {
+          card.insertAdjacentElement('afterend', tips[next]); tips[next].hidden = false; next++;
+        }
       });
     }
     function update(resetPage) {
@@ -115,7 +122,7 @@
       root.querySelector('[data-empty]').hidden = matched.length !== 0;
       var applyLabel = root.querySelector('[data-apply-label]');
       if (applyLabel) applyLabel.textContent = 'Show ' + matched.length + ' ' + (matched.length === 1 ? root.dataset.noun : plural);
-      placeTips(matched.slice(start, end));
+      rhythm(matched.slice(start, end));
       if (pager) {
         pager.replaceChildren(); pager.hidden = totalPages <= 1;
         function pageButton(label, number, disabled, current) {
@@ -278,6 +285,7 @@
       if (panel.open) panel.close();
       document.documentElement.classList.remove('collection-modal-open');
       if (inlinePanel()) panel.setAttribute('open', '');
+      if (typeof update === 'function') update(false);
     }
     desktop.addEventListener('change', resize);
     // /watches/?price=under-3000 (the home page slider) opens the list with that price band chosen
