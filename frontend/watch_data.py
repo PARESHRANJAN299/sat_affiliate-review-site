@@ -15,7 +15,7 @@ FACT_FIELDS = ["case_diameter_mm", "case_thickness_mm", "band_material", "band_c
                "water_resistance_atm", "water_resistance_metres", "warranty_type", "warranty_duration", "country_of_origin"]
 EDITORIAL_FIELDS = ["styles", "occasions", "features", "editorial_labels", "best_for", "editorial_notes"]
 COLOUR_ALIASES = {"offwhite": "white", "off-white": "white", "off white": "white", "rose gold": "rose-gold", "rosegold": "rose-gold", "golden": "gold",
-                  "grey": "silver", "gray": "silver", "teal green": "green", "dark brown": "brown", "dark-brown": "brown", "teal-green": "green", "tan": "brown", "camel": "brown"}
+                  "gray": "grey", "teal green": "green", "dark brown": "brown", "dark-brown": "brown", "teal-green": "green", "tan": "brown", "camel": "brown"}
 MATERIAL_ALIASES = {"stainless steel": "stainless-steel", "steel": "stainless-steel", "stainless": "stainless-steel", "leather": "leather", "mesh": "mesh",
                     "silicone": "silicone-rubber", "rubber": "silicone-rubber", "silicone / rubber": "silicone-rubber", "silicone/rubber": "silicone-rubber",
                     "fabric": "fabric-nylon", "nylon": "fabric-nylon", "fabric / nylon": "fabric-nylon"}

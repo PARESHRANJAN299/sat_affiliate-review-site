@@ -357,6 +357,12 @@ Other Specs: Dial colour Black, Display Analog, Strap colour Brown; Features dat
         self.assertNotIn("brand", raw)
 
 
+class Colours(unittest.TestCase):
+    def test_grey_is_not_turned_into_silver(self):
+        p = watch_data.normalise({"id": "g", "brand": "titan", "product_name": "G", "gender": "men", "band_colour": "Gray", "dial_colour": "Grey"}, BUDGETS)
+        self.assertEqual((p["band_colour"], p["dial_colour"]), (["grey"], ["grey"]))
+
+
 class Duplicates(unittest.TestCase):
     def test_same_id_asin_or_name_is_flagged(self):
         a = {"id": "titan-a-b000000001", "product_name": "Titan A", "amazon_url": "https://www.amazon.in/dp/B000000001?tag=x"}
