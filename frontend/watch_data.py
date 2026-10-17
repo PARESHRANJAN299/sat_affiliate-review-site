@@ -291,13 +291,27 @@ INTAKE_KEYS = {
 
 
 def parse_other_specs(value):
-    """'Other Specs: Dial colour Black, Display Analog' -> {'dial_colour': 'Black', 'display_type': 'Analog'}; segments that start with no known label come back as unknown."""
+    """'Other Specs: Dial colour Black, Display Analog, Strap colour Silver, Rose gold' -> {'dial_colour': 'Black', 'display_type': 'Analog', 'band_colour': 'Silver, Rose gold'}.
+    A comma only starts a new spec when the text after it begins with a known label; otherwise it belongs to the value before it. Unlabelled text comes back as unknown."""
+    keys = sorted(INTAKE_KEYS, key=len, reverse=True)
+
+    def label_of(part):
+        return next((key for key in keys if re.match(re.escape(key) + r"(?:\s*[:=-]\s*|\s+)\S", part, re.I)), None)
+
+    pieces = []
+    for chunk in re.split(r"[;|\n]", value):
+        for part in chunk.split(","):
+            part = part.strip(" .")
+            if not part:
+                continue
+            # a continuation is plain words ("Rose gold", "date"); anything with digits or symbols is reported as unknown instead of being glued on
+            if pieces and not label_of(part) and label_of(pieces[-1]) and re.fullmatch(r"[A-Za-z][A-Za-z \-]*", part):
+                pieces[-1] = pieces[-1] + ", " + part      # a continuation such as "Rose gold" after "Strap colour Silver"
+            else:
+                pieces.append(part)
     found, unknown = {}, []
-    for part in re.split(r"[;|\n]|,(?=\s*[A-Za-z ]+?\s+\S)", value):
-        part = part.strip(" .")
-        if not part:
-            continue
-        label = next((key for key in sorted(INTAKE_KEYS, key=len, reverse=True) if re.match(re.escape(key) + r"(?:\s*[:=-]\s*|\s+)\S", part, re.I)), None)
+    for part in pieces:
+        label = label_of(part)
         if label:
             found.setdefault(INTAKE_KEYS[label], re.sub(r"^" + re.escape(label) + r"(?:\s*[:=-]\s*|\s+)", "", part, flags=re.I).strip())
         else:

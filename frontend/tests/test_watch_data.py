@@ -339,6 +339,13 @@ Other Specs: Dial colour Black, Display Analog, Strap colour Brown; Features dat
         p = watch_data.normalise(raw, BUDGETS)
         self.assertEqual(p["budget"], "under-3000")
 
+    def test_multi_word_values_after_a_comma_stay_with_their_spec(self):
+        found, unknown = watch_data.parse_other_specs("Strap colour Silver, Rose gold, Dial colour Black, Features chronograph, date, Wibble 7")
+        self.assertEqual(found["band_colour"], "Silver, Rose gold")
+        self.assertEqual(found["dial_colour"], "Black")
+        self.assertEqual(found["features"], "chronograph, date")
+        self.assertEqual(unknown, ["Wibble 7"])
+
     def test_brand_line_wins_and_unknown_brand_is_not_invented(self):
         raw, _ = watch_data.parse_intake("Product: Acme Watch\nBrand: Zed", BUDGETS, {"titan": "Titan"})
         self.assertEqual(raw["brand"], "Zed")
