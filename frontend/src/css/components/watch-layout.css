@@ -93,3 +93,29 @@
   .wd-quick { flex-wrap: nowrap; overflow-x: auto; margin: 0 -12px; padding: 0 12px; }
   .watch-store .collection-head { margin: 14px 0 10px; }
 }
+
+/* ===== shop-style cards: facts line instead of fact boxes on phones; two cards across, photo first, little text ===== */
+.watch-facts { display: none; }
+@media (max-width: 719px) {
+  .watch-store .collection .watch-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .watch-store .collection .watch-card, .watch-store .collection .watch-card:has(.watch-media) { display: flex; flex-direction: column; grid-template-columns: none; border-radius: 12px; box-shadow: none; border-color: #e6dec9; }
+  .watch-store .collection .watch-card .watch-tile { height: 168px; min-height: 0; align-self: auto; border-right: 0; }
+  .watch-store .collection .watch-card .watch-tile .tile-brand { display: none; }
+  .watch-store .collection .watch-card .watch-tile .tile-band { top: auto; bottom: 8px; left: 8px; right: auto; width: auto; padding: 3px 8px; font-size: .62rem; }
+  .watch-tile::after { bottom: 34px; }
+  .watch-store .collection .watch-card .watch-body { padding: 10px 10px 12px; gap: 3px; }
+  .watch-store .collection .watch-brand { font-size: .64rem; letter-spacing: .1em; }
+  .watch-store .collection .watch-model { font-size: .86rem; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .watch-store .collection .watch-spec-rows { display: none; }
+  .watch-facts { display: -webkit-box; margin: 2px 0 8px; font-size: .72rem; line-height: 1.4; color: #6b6a64; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .watch-store .collection .watch-product-bottom { margin-top: auto; }
+  .watch-store .collection .watch-actions { display: flex; flex-direction: column; align-items: stretch; gap: 3px; padding-top: 0; }
+  .watch-store .collection .watch-actions .btn { min-height: 38px; padding: 0 8px; font-size: .8rem; border-radius: 9px; }
+  .watch-store .collection .watch-actions .paid-link { text-align: center; font-size: .62rem; }
+  .watch-store .collection .watch-detail-link { display: none; }
+}
+@media (max-width: 719px) {
+  .watch-store .collection-search { display: none; }
+  .watch-store .collection-controls { grid-template-columns: auto minmax(0, 1fr); }
+  .watch-store .collection .watch-card .watch-tile { height: 156px; }
+}

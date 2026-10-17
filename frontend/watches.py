@@ -393,10 +393,18 @@ f'<linearGradient id="g{uid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-
             + media + '<div class="watch-body">'
             f'<p class="watch-brand">{esc(brand)}</p>' + (f'<p class="watch-label">{esc(watch_data.EDITORIAL_LABELS.get(p["editorial_labels"][0], ""))}</p>' if p.get("editorial_labels") and p["editorial_labels"][0] in watch_data.EDITORIAL_LABELS else "") +
             f'<h3 class="watch-model"><a href="{esc(href)}">{esc(p["model"])}</a></h3>'
-            + self.spec_rows(p) +
+            + self.spec_rows(p) + self.facts_line(p) +
             ''
             f'<div class="watch-product-bottom"><div class="watch-actions">{self.check_price(p, include_more=False)}'
             f'<a class="watch-detail-link" href="{esc(href)}">Product details &rarr;</a></div></div></div></article>')
+
+    def facts_line(self, p):
+        """One short line of the same facts for phone cards (case size, movement, strap); the 2 x 2 fact boxes are shown on larger screens."""
+        mm = p.get("case_diameter_mm")
+        strap = " ".join(x for x in (((p.get("band_colour") or [""])[0]).replace("-", " ").title(), (p.get("band_material") or "").replace("-", " ")) if x)
+        bits = [f"{mm:g} mm" if mm else "", (p.get("movement") or "").title(), strap]
+        text = " \u00b7 ".join(b for b in bits if b)
+        return f'<p class="watch-facts">{esc(text)}</p>' if text else ""
 
     def spec_rows(self, p):
         """Compact facts on a card: best for (only when approved), case size, movement, strap, water resistance. The rest stays on the product page."""
