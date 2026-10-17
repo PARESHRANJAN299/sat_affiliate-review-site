@@ -1275,7 +1275,7 @@ def mega_data(pages):
     MEGA.clear()
     live = {p["url"]: p for p in pages if not p.get("noindex")}
     for c in CATEGORIES:
-        entry = {"types": [], "soon": [], "guides": [], "price": [], "brand": [], "feature": []}
+        entry = {"types": [], "soon": [], "guides": [], "price": [], "brand": [], "feature": [], "cards": [], "shopfor": [], "brandlive": []}
         entries = {e["slug"]: e for e in (family_entries(c) if c.get("families") else [])}
         for f in c.get("families", []):
             url = family_url(c, f)
@@ -1286,11 +1286,20 @@ def mega_data(pages):
                 entry["soon"].append((f["name"], url))
         entry["guides"] = [(g["title"], g["url"]) for g in _GUIDES if g["category"] == c["name"]]
         if c["slug"] == "watches" and SHOP[0] is not None:
-            entry["soon"] = ([("Men\u2019s watches", "/watches/men/"), ("Women\u2019s watches", "/watches/women/")]
-                             + [(b["name"], f'/watches/brands/{b["slug"]}/') for b in SHOP[0].config["brands"]])
+            shop = SHOP[0]
+            entry["soon"] = []
+            # one editorial card per published, indexable collection (SEO heading and a short sentence); fewer than two are not shown as cards
+            featured = sorted([x for x in shop.published_collections() if x["featured_on_watch_hub"]], key=lambda x: (-x["count"], x["heading"]))
+            entry["cards"] = [(x["heading"], x["summary"], x["url"]) for x in featured] if len(featured) >= 2 else []
+            entry["shopfor"] = [(f'{info["label"]} watches', f"/watches/{g}/", sum(1 for p in shop.products if g in p["gender"])) for g, info in shop.genders.items()]
+            entry["shopfor"] = [x for x in entry["shopfor"] if x[2]]
+            entry["brandlive"] = [(name, f"/watches/brands/{slug_}/", n) for slug_, name, n in shop.active_brands()]
         if c["slug"] == "watches":
             for url, p in sorted(live.items()):
                 m = re.fullmatch(r"/watches/(men|women)/under-(\d+)/", url)
+                if SHOP[0] is not None and entry["cards"]:
+                    if re.fullmatch(r"/watches/[a-z0-9-]+/under-\d+/", url) or m:
+                        continue
                 if m:
                     entry["price"].append((f'{m.group(1).title()}\u2019s watches under \u20b9{int(m.group(2)):,}', url))
                 elif re.fullmatch(r"/watches/[a-z0-9-]+/under-\d+/", url):
@@ -1329,8 +1338,17 @@ def category_menu(item, current_url=None):
         if c.get("menu_hint"):
             meta, soon = esc(c["menu_hint"]), ""
         m = MEGA.get(c["slug"], {})
-        cols = (col("Product types", m.get("types", [])) + col("Buying guides", m.get("guides", []), 10)
-                + col("By price", m.get("price", [])) + col("By brand", m.get("brand", [])) + col("By style", m.get("feature", [])))
+        cols = ""
+        if m.get("cards"):
+            cards = "".join(f'<li><a class="mega-card" href="{esc(u)}"><strong>{esc(t)}</strong><small>{esc(s)}</small>'
+                            '<span class="mega-go">Explore <i aria-hidden="true">&rarr;</i></span></a></li>' for t, s, u in m["cards"][:4])
+            cols += f'<div class="mega-col mega-cards"><p class="mega-title">Popular watch collections</p><ul>{cards}</ul></div>'
+        if m.get("shopfor") or m.get("brandlive"):
+            chips = "".join(f'<li><a href="{esc(u)}"><span>{esc(t)}</span><em>{n}</em></a></li>' for t, u, n in (m.get("shopfor", []) + m.get("brandlive", [])))
+            cols += f'<div class="mega-col mega-counts"><p class="mega-title">Shop for</p><ul>{chips}</ul></div>'
+        cols += (col("Product types", m.get("types", [])) + col("Buying guides", m.get("guides", []), 10)
+                 + (col("By price", m.get("price", [])) + col("By brand", m.get("brand", [])) + col("By style", m.get("feature", []))))
+
         if m.get("soon"):
             names = "".join(f'<li><a href="{esc(u)}">{esc(n)}</a></li>' for n, u in m["soon"][:20])
             cols += f'<div class="mega-col mega-soon"><p class="mega-title">Buying advice</p><ul>{names}</ul></div>'

@@ -192,7 +192,7 @@
         var onlyThis = Object.keys(selected).filter(function (g) { return g !== 'gender'; });
         card.setAttribute('aria-current', onlyThis.length === 1 && onlyThis[0] === parts[0] && selected[parts[0]].length === 1 && selected[parts[0]][0] === parts[1] ? 'true' : 'false');
       });
-      brandTiles.forEach(function (tile) { tile.setAttribute('aria-pressed', (selected.brand || []).indexOf(tile.dataset.brandTile) !== -1 ? 'true' : 'false'); });
+      brandTiles.forEach(function (tile) { tile.setAttribute('aria-current', (selected.brand || []).indexOf(tile.dataset.brandTile) !== -1 ? 'true' : 'false'); });
       if (heading && !heading.hasAttribute('data-static')) {
         var brands = boxes.filter(function (box) {return box.dataset.group === 'brand' && box.checked;});
         var styles = boxes.filter(function (box) {return box.dataset.group === 'style' && box.checked;});
@@ -276,7 +276,7 @@
     }
     // ---- visual sub-sheets (Case size, Strap) ----
     var DIAL_CARDS = { '36-and-under': ['Small', '≤36 mm', 14], '37-40': ['Balanced', '37–40 mm', 18], '41-44': ['Bold', '41–44 mm', 22], '45-plus': ['Oversized', '45 mm+', 26] };
-    var STRAPS = [['Leather', 'Classic look', ['leather'], 'leather'], ['Metal', 'Durable', ['stainless-steel', 'brass', 'metal'], 'metal'], ['Mesh', 'Modern', ['mesh'], 'mesh'],
+    var STRAPS = [['Leather', 'Classic look', ['leather'], 'leather'], ['Metal', 'Formal / durable', ['stainless-steel', 'brass', 'metal'], 'metal'], ['Mesh', 'Slim / modern', ['mesh'], 'mesh'],
                   ['Silicone', 'Sporty', ['silicone-rubber'], 'silicone'], ['Nylon', 'Lightweight', ['fabric-nylon'], 'nylon'], ['Other', 'Unique styles', ['ceramic', 'resin', 'plastic', 'polyurethane'], 'other']];
     function caseSvg(r) {
       return '<svg viewBox="0 0 60 70" aria-hidden="true"><rect x="22" y="2" width="16" height="16" rx="3"/><rect x="22" y="52" width="16" height="16" rx="3"/><circle cx="30" cy="35" r="' + r + '"/><circle cx="30" cy="35" r="' + (r - 4) + '"/><path d="M30 35V26M30 35l6 3"/></svg>';

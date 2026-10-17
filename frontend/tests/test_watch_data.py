@@ -130,8 +130,8 @@ class Hub(unittest.TestCase):
         self.assertIn('href="/watches/titan/under-3000/"', bottom)
         self.assertNotIn("Fossil", bottom)             # no published collection for it
         self.assertNotIn("Under \u20b95,000", bottom)  # no published collection for that band
-        self.assertIn('href="/watches/men/"', bottom)
-        self.assertIn('href="/watches/women/"', bottom)
+        for slug_ in ("men", "women"):
+            self.assertNotIn(f'href="/watches/{slug_}/"', bottom)   # the journey card shows only the strongest published collections
 
     def test_unapproved_or_thin_collections_never_surface(self):
         shop = watches.Watches(build.SRC, build.CONFIG)
@@ -158,7 +158,7 @@ class HubExtras(unittest.TestCase):
         top, bottom = self.shop.hub_html()
         self.assertEqual(top, "")                      # the top of the page stays short
         self.assertNotIn("<details", bottom)           # no accordion
-        self.assertIn("Explore more", bottom)
+        self.assertIn("Continue your watch journey", bottom)
         self.assertEqual(bottom.count('href="/watches/guide/"'), 1)      # one card, one link to the guide
         how = bottom.split('id="lx-how"')[1]
         words = len(re.sub(r"<[^>]+>", " ", how).split())
@@ -178,7 +178,7 @@ class HubExtras(unittest.TestCase):
     def test_counts_are_generated(self):
         c = next(c for c in self.shop.published_collections() if c["url"] == "/watches/titan/under-2000/")
         html = self.shop.hub_html()[1]
-        self.assertIn(f'<span>Titan under \u20b92,000</span><em>{c["count"]}<span class="visually-hidden"> watches</span></em>', html)
+        self.assertIn(f'<span>Best Titan Watches Under \u20b92,000</span><em>{c["count"]}<span class="visually-hidden"> watches</span></em>', html)
         self.assertEqual(c["count"], sum(1 for p in self.shop.products if p["brand"] == "titan" and "under-2000" in self.shop.qualifies(p)))
 
     def test_hub_page_order_is_watches_then_help(self):
@@ -427,10 +427,25 @@ class PremiumCards(unittest.TestCase):
             self.assertGreaterEqual(html.count('class="lx-intent"'), 2)
             shop.settings["intent_cards"] = []
             self.assertEqual(shop.intent_cards(fill=False), "")
-            self.assertIn("watches with", shop.intent_cards())
-            self.assertNotIn("chronograph", shop.intent_cards().lower())      # editorial fields never feed a data-backed card
+            html2 = shop.intent_cards()
+            self.assertIn("watches with a", html2)
+            self.assertNotIn("chronograph", html2.lower())      # editorial fields never feed a data-backed card
+            self.assertNotIn("lx-i-art", html2)                 # compact cards, no large product pictures
         finally:
             shop.settings["intent_cards"] = saved
+
+    def test_popular_collections_come_from_published_pages_and_hide_under_two(self):
+        shop = self.shop
+        pubs = [c for c in shop.published_collections() if c["featured_on_watch_hub"]]
+        html = shop.popular_collections(pubs)
+        self.assertIn("Popular watch collections", html)
+        self.assertEqual(html.count('class="pc-card"'), len(pubs))
+        for c in pubs:
+            self.assertIn(f'href="{c["url"]}"', html)
+            self.assertTrue(c["heading"].startswith("Best "))
+            self.assertTrue(c["summary"])
+        self.assertEqual(shop.popular_collections(pubs[:1]), "")
+        self.assertEqual(shop.popular_collections([]), "")
 
     def test_budget_cards_come_only_from_published_collections(self):
         body = self.shop.landing()["_body"]

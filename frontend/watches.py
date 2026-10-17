@@ -742,9 +742,11 @@ f'<linearGradient id="g{uid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-
                 continue
             band = self.budgets[key["price_band"]]["label"] if key.get("price_band") else ""
             name = self.brands[key["brand"]]["name"] if key.get("brand") else (self.genders[key["gender"]]["label"] if key.get("gender") else self.styles[key["style"]]["label"])
+            heading = f"Best {name} Watches {band}" if band else f"Best {name} Watches"
+            summary = str(entry.get("summary") or "").strip() or (f"{len(shown)} {name} watches {band.lower()} to compare." if band else f"{len(shown)} {name} watches to compare.")
             out.append({"category": "watches", "url": url, **key, "genders": sorted({g for p in shown for g in p["gender"]}), "count": len(shown),
                         "seo_status": "indexable", "featured_on_watch_hub": entry.get("featured_on_watch_hub", True) is not False,
-                        "label": name, "title": f"{name} watches {band.lower()}" if band else f"{name} watches"})
+                        "label": name, "title": f"{name} watches {band.lower()}" if band else f"{name} watches", "heading": heading, "summary": summary})
         return out
 
     def hub_html(self):
@@ -753,33 +755,29 @@ f'<linearGradient id="g{uid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-
         pubs = [c for c in self.published_collections() if c["featured_on_watch_hub"]]
         order = list(self.budgets)
         pubs.sort(key=lambda c: (order.index(c["price_band"]) if c.get("price_band") in order else -1, c["label"]))
-        items = []
-        for c in pubs:
-            band = self.budgets[c["price_band"]]["label"].lower() if c.get("price_band") else ""
-            text = f'{c["label"]} {band}' if band else c["label"]
-            items.append((c["url"], text, c["count"]))
-        for g, info in self.genders.items():
-            count = sum(1 for p in self.products if g in p["gender"])
-            if count:
-                items.append((f"/watches/{g}/", f'{info["label"]} watches', count))
-        links = "".join(f'<li><a href="{esc(u)}"><span>{esc(t)}</span><em>{n}<span class="visually-hidden"> {"watch" if n == 1 else "watches"}</span></em><i aria-hidden="true">&rarr;</i></a></li>' for u, t, n in items)
-        curated = (f'<div class="lx-mcard lx-mcol"><p class="lx-mk">Curated collections</p><h3>Pick a ready-made list</h3><ul class="lx-mlinks">{links}</ul></div>' if links else "")
+        top3 = sorted(pubs, key=lambda c: (-c["count"], c["heading"]))[:3]
+        has_budget = any(c.get("price_band") in self.budgets for c in pubs)
+        cta = '<a class="lx-mcta" href="#lx-budgets">Explore collections <i aria-hidden="true">&rarr;</i></a>' if has_budget else ""
+        links = "".join(f'<li><a href="{esc(c["url"])}"><span>{esc(c["heading"])}</span><em>{c["count"]}<span class="visually-hidden"> {"watch" if c["count"] == 1 else "watches"}</span></em><i aria-hidden="true">&rarr;</i></a></li>' for c in top3)
+        curated = ('<div class="lx-mcard lx-mcol"><p class="lx-mk">Curated collections</p><h3>Curated for every budget</h3>'
+                   '<p>Browse ready-made collections by brand and price, selected to make comparison easier.</p>'
+                   f'<ul class="lx-mlinks">{links}</ul>{cta}</div>') if len(top3) >= 2 else ""
         pool = [p for p in self.products if not p.get("sample")]
         art_a = f'<span class="lx-mart" aria-hidden="true">{self.art_copy(pool[min(1, len(pool) - 1)], "g1")}</span>' if pool else ""
         art_b = f'<span class="lx-mart" aria-hidden="true">{self.art_copy(pool[min(5, len(pool) - 1)], "g2")}</span>' if pool else ""
         guide = ('<a class="lx-mcard lx-mlink" href="/watches/guide/"><p class="lx-mk">Watch buying guide</p><h3>Choose with confidence</h3>'
-                 f'<p>Learn how to choose the right case size, strap, movement and water resistance.</p><span class="lx-mcta">Read the guide <i aria-hidden="true">&rarr;</i></span>{art_a}</a>')
-        fit = ('<a class="lx-mcard lx-mlink" href="#watch-filters"><p class="lx-mk">Find your fit</p><h3>Not sure where to start?</h3>'
-               f'<p>Compare watches by budget, brand and style.</p><span class="lx-mcta">Start exploring <i aria-hidden="true">&rarr;</i></span>{art_b}</a>')
+                 f'<p>Understand case size, movement, strap type and water resistance before you buy.</p><span class="lx-mcta">Read the buying guide <i aria-hidden="true">&rarr;</i></span>{art_a}</a>')
+        fit = ('<a class="lx-mcard lx-mlink" href="#watch-filters"><p class="lx-mk">Find your fit</p><h3>Find a watch that feels right</h3>'
+               f'<p>Start with your budget, style or wrist size and narrow down the options that suit you.</p><span class="lx-mcta">Find your fit <i aria-hidden="true">&rarr;</i></span>{art_b}</a>')
         how = [("Compare clearly", "See case size, strap, movement and water resistance exactly as the seller lists them."),
-               ("No guessing", "Anything a listing does not state is shown as unknown, never guessed."),
-               ("Check before buying", "Prices change often, so check the current price on Amazon before you buy.")]
+               ("No guessing", "Anything not stated stays unknown."),
+               ("Check before buying", "Retailer prices change, so confirm the current price before purchase.")]
         how_cards = "".join(f'<li><h3>{esc(t)}</h3><p>{esc(d)}</p></li>' for t, d in how)
         lede = ("Use this page to find a watch you can compare properly. Start with a budget, a brand or a style, or choose Men or Women, "
-                "then narrow the list by strap material, case size, dial colour, movement or water resistance.")
+                "then narrow the list by strap material, case size, dial colour, movement or water resistance. Anything a listing does not state is shown as unknown, never guessed.")
         bottom = ('<section class="hub-after" aria-label="About these watches">'
-                  '<section class="lx-sec lx-more" aria-labelledby="lx-more"><div class="lx-sec-head"><div><h2 id="lx-more">Explore more</h2><p class="lx-sec-sub">More ways to find the right watch.</p></div></div>'
-                  f'<div class="lx-more-row">{curated}{guide}{fit}</div></section>'
+                  '<section class="lx-sec lx-more" aria-labelledby="lx-more"><div class="lx-sec-head"><div><h2 id="lx-more">Continue your watch journey</h2><p class="lx-sec-sub">Explore curated collections, learn what matters, or find the style that fits you.</p></div></div>'
+                  f'<div class="lx-more-row" data-count="{(1 if curated else 0) + 2}">{curated}{guide}{fit}</div></section>'
                   '<section class="lx-sec lx-how" aria-labelledby="lx-how"><div class="lx-sec-head"><div><h2 id="lx-how">How SAT helps you choose</h2>'
                   f'<p class="lx-sec-sub lx-how-lede">{esc(lede)}</p></div></div><ul class="lx-how-row">{how_cards}</ul></section></section>')
         return "", bottom
@@ -868,6 +866,8 @@ f'<linearGradient id="g{uid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-
             svg = svg.replace(f'id="{i}"', f'id="{i}-{tag}"').replace(f"url(#{i})", f"url(#{i}-{tag})").replace(f'href="#{i}"', f'href="#{i}-{tag}"')
         return svg
 
+    WATCH_GLYPH = '<svg viewBox="0 0 24 24"><rect x="8.5" y="2" width="7" height="4.5" rx="1.2"/><rect x="8.5" y="17.5" width="7" height="4.5" rx="1.2"/><circle cx="12" cy="12" r="5.4"/><path d="M12 9.4V12l1.9 1.3"/></svg>'
+
     def icon(self, name):
         return f'<svg viewBox="0 0 24 24" aria-hidden="true">{self.ICONS[name]}</svg>'
 
@@ -896,10 +896,19 @@ f'<linearGradient id="g{uid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-
         getter = next((g for k, _, _, g in self.FILTERS if k == group), None)
         return [p for p in self.products if getter and value in getter(self, p)]
 
+    def popular_collections(self, pubs):
+        """'Popular watch collections': one editorial card per published, indexable collection (SEO heading, a short sentence, an arrow). Hidden with fewer than two.
+        The sentence is the collection's approved summary in collections.json, otherwise a neutral count line. One card = one link."""
+        if len(pubs) < 2:
+            return ""
+        cards = "".join(f'<li><a class="pc-card" href="{esc(c["url"])}"><strong>{esc(c["heading"])}</strong><small>{esc(c["summary"])}</small>'
+                        '<span class="pc-go">Explore <i aria-hidden="true">&rarr;</i></span></a></li>' for c in pubs)
+        return (f'<section class="pc" aria-labelledby="pc-h"><h2 id="pc-h" class="pc-title">Popular watch collections</h2><ul class="pc-list" data-count="{len(pubs)}">{cards}</ul></section>')
+
     # Data-backed destinations used to fill the discovery rail when fewer than four editorial cards are approved. They use only listing facts (movement, display),
     # never editorial fields such as features or styles; the text is a plain count. Without scripts a card link only scrolls to the list; scripts apply the filter.
-    FACT_CARDS = [("movement", "automatic", "Automatic watches", "with an automatic movement"), ("display", "digital", "Digital watches", "with a digital display"),
-                  ("movement", "quartz", "Quartz watches", "with a quartz movement")]
+    FACT_CARDS = [("movement", "automatic", "Automatic watches", "Mechanical movement with a more traditional feel."), ("display", "digital", "Digital watches", "{n} {w} with a digital display."),
+                  ("movement", "quartz", "Quartz watches", "{n} {w} with a quartz movement.")]
 
     def intent_cards(self, fill=True):
         """The 'What are you looking for?' rail: up to four cards. Approved editorial cards come first (each needs an approved flag and a filter that matches a watch);
@@ -914,20 +923,19 @@ f'<linearGradient id="g{uid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-
                 return
             seen.add(key)
             n = len(cards)
-            cards.append(f'<li><a class="lx-intent" href="{esc(href)}" data-intent="{esc(flt["group"])}:{esc(flt["value"])}"><span class="lx-i-t"><strong>{esc(title)}</strong>'
-                         f'<small>{esc(text)}</small><span class="lx-i-go">Explore <i aria-hidden="true">&rarr;</i></span></span>'
-                         f'<span class="lx-i-art" aria-hidden="true">{self.art_copy(matches[0], "i" + str(n))}</span></a></li>')
+            cards.append(f'<li><a class="lx-intent" href="{esc(href)}" data-intent="{esc(flt["group"])}:{esc(flt["value"])}"><span class="lx-i-ico" aria-hidden="true">{self.WATCH_GLYPH}</span>'
+                         f'<span class="lx-i-t"><strong>{esc(title)}</strong><small>{esc(text)}</small><span class="lx-i-go">Explore <i aria-hidden="true">&rarr;</i></span></span></a></li>')
         for card in self.settings.get("intent_cards", []):
             flt = card.get("filter")
             if card.get("approved") and flt:
                 href = f'/watches/style/{flt["value"]}/' if flt["group"] == "style" else "#watch-collection"
                 add(card["title"], card["text"], flt, href)
         if fill:
-            for group, value, title, what in self.FACT_CARDS:
+            for group, value, title, text in self.FACT_CARDS:
                 flt = {"group": group, "value": value}
                 n = len(self.filter_count(flt))
                 if n:
-                    add(title, f'{n} {"watch" if n == 1 else "watches"} {what}.', flt, "#watch-collection")
+                    add(title, text.format(n=n, w="watch" if n == 1 else "watches"), flt, "#watch-collection")
         if len(cards) < 2:
             return ""
         return ('<section class="lx-sec lx-intents" aria-labelledby="lx-intents"><div class="lx-sec-head"><h2 id="lx-intents">What are you looking for?</h2></div>'
@@ -953,7 +961,7 @@ f'<linearGradient id="g{uid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-
     def brand_tiles(self, active):
         if len(active) < 2:
             return ""
-        tiles = "".join(f'<li><a class="lx-brandtile" href="/watches/brands/{esc(s)}/" data-brand-tile="{esc(s)}" aria-pressed="false"><strong>{esc(name.upper())}</strong>'
+        tiles = "".join(f'<li><a class="lx-brandtile" href="/watches/brands/{esc(s)}/" data-brand-tile="{esc(s)}" aria-current="false"><strong>{esc(name.upper())}</strong>'
                         f'<small>{cnt} {"watch" if cnt == 1 else "watches"}</small></a></li>' for s, name, cnt in active)
         return ('<section class="lx-sec lx-brands" aria-labelledby="lx-brands"><div class="lx-sec-head"><h2 id="lx-brands">Shop by brand</h2></div>'
                 f'<ul class="lx-brand-row">{tiles}</ul></section>')
@@ -987,7 +995,7 @@ f'<linearGradient id="g{uid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-
                        "items": [(g, info["label"], n(lambda p, g=g: g in p["gender"])) for g, info in self.genders.items()]})
         groups.append({"key": "style", "title": "Style", "checked": [style] if style else [],
                        "items": [(slug_, value["label"], n(lambda p, s=slug_: s in p["styles"])) for slug_, value in self.styles.items()]})
-        priority = ["brand", "budget", "gender", "dial", "strapmat", "movement", "water", "style", "occasion"]
+        priority = ["brand", "budget", "gender", "dial", "strapmat", "dialcolour", "movement", "water", "style", "occasion"]
         groups.sort(key=lambda g: priority.index(g["key"]) if g["key"] in priority else len(priority))
         steps = self.price_steps()
         budget_rail = collection.price_slider(steps, title="Budget")
@@ -995,8 +1003,7 @@ f'<linearGradient id="g{uid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-
         order = list(self.budgets)
         pubs = sorted([c for c in self.published_collections() if c["featured_on_watch_hub"] and c.get("price_band") in order],
                       key=lambda c: (order.index(c["price_band"]), c["label"])) if hub else []
-        curated = ('<p class="pb-curated"><span>Curated</span>' + " ".join(
-            f'<a href="{esc(c["url"])}">{esc(c["label"])} {esc(self.budgets[c["price_band"]]["label"].lower())}</a>' for c in pubs) + '</p>') if pubs else ""
+        curated = self.popular_collections([c for c in self.published_collections() if c["featured_on_watch_hub"]]) if hub else ""
         quick_row = f'<div class="lx-quick" data-quick-controls hidden>{quick}</div>' if quick else ""
         headline, sub = (("Timeless Watches. Smart Choices.", "Discover classic and analog watches by budget, brand, style and fit.") if hub else (title, intro))
         reviewed = (f'<span class="lx-reviewed">Last reviewed: <time datetime="{esc(self.updated(shown))}">{esc(self.human_date(self.updated(shown)))}</time></span>' if shown else "")
