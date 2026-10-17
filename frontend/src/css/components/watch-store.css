@@ -181,3 +181,24 @@
 @media (max-width: 999px) { .watch-quick-row { display: flex; } .watch-store .watch-quick-row > .collection-filter-open { display: inline-flex; width: 100%; justify-content: center; min-height: 44px; } }
 /* no search box and no sort on the Watches page */
 .watch-store .collection-sort { display: none; }
+
+/* ===== shopper flow: style, brand, Men | Women, Filters, active chips, grid ===== */
+.watch-quick-row { display: none !important; }
+.watch-brand-head { margin: 4px 0 8px; }
+.watch-brand-head h2 { margin: 0; font-size: 1rem; font-family: var(--font-sans); }
+.watch-discovery { border-radius: 16px 16px 0 0; }
+.watch-chip.is-empty { opacity: .45; }
+.watch-store .collection-controls { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; padding: 12px 16px 16px; }
+.watch-store .collection-controls .collection-segments { display: grid; grid-template-columns: 1fr 1fr; gap: 0; padding: 4px; border: 1px solid var(--color-border); border-radius: 999px; background: rgba(255, 255, 255, .8); }
+.watch-store .collection-controls .collection-segments button { min-height: 44px; border: 0; border-radius: 999px; background: transparent; font: 600 .92rem var(--font-sans); }
+.watch-store .collection-controls .collection-segments button[aria-pressed="true"] { background: linear-gradient(180deg, #34363b, #15171a); color: #fff; }
+.watch-store .collection-filter-open { display: inline-flex; width: 100%; justify-content: center; align-items: center; gap: 8px; min-height: 48px; border-radius: 14px; font-size: .95rem; font-weight: 700; }
+.watch-store .collection-active { display: flex; flex-wrap: nowrap; gap: 8px; overflow-x: auto; padding: 12px 2px 0; scrollbar-width: none; }
+.watch-store .collection-active::-webkit-scrollbar { display: none; }
+.watch-store .collection-active .filter-chip, .watch-store .collection-active .linklike { flex: none; white-space: nowrap; }
+@media (min-width: 1000px) {
+  .watch-store .collection-controls { grid-template-columns: 320px; justify-content: start; }
+  .watch-store .collection-filter-open { display: none; }
+  .watch-chip-row { flex-wrap: wrap; overflow: visible; }
+}
+.watch-brand-head { margin-top: 18px; }

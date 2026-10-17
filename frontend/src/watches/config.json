@@ -13,6 +13,12 @@
   ],
   "budgets": [
     {
+      "slug": "under-1000",
+      "label": "Under ₹1,000",
+      "max": 1000,
+      "expect": "Prices under ₹1,000 are rare for watches worth recommending, so check the strap and warranty first."
+    },
+    {
       "slug": "under-2000",
       "label": "Under ₹2,000",
       "max": 2000,
@@ -31,10 +37,28 @@
       "expect": "Look for better finishing, a more solid strap or bracelet and a clearer dial. Some watches at this level add scratch-resistant glass, so check the listing."
     },
     {
+      "slug": "under-6000",
+      "label": "Under ₹6,000",
+      "max": 6000,
+      "expect": "Around this budget look for a sturdier case, a better strap and a clear warranty."
+    },
+    {
       "slug": "under-10000",
       "label": "Under ₹10,000",
       "max": 10000,
       "expect": "You may see more refined finishing and metal bracelets. Compare the glass, the case material and the warranty on each listing."
+    },
+    {
+      "slug": "under-15000",
+      "label": "Under ₹15,000",
+      "max": 15000,
+      "expect": "At this level compare finishing, glass and the warranty provider, and check the exact model code."
+    },
+    {
+      "slug": "under-20000",
+      "label": "Under ₹20,000",
+      "max": 20000,
+      "expect": "Compare the movement, case finishing and warranty carefully, and buy from the brand or an authorised seller."
     }
   ],
   "brands": [

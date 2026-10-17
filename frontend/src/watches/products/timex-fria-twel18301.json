@@ -46,5 +46,16 @@
   ],
   "editors_pick": false,
   "rating": null,
-  "case_material": "brass"
+  "case_material": "brass",
+  "movement": "quartz",
+  "case_shape": "round",
+  "dial_colour": [
+    "white"
+  ],
+  "strap_colour": [
+    "gold"
+  ],
+  "features": [
+    "second-hand"
+  ]
 }

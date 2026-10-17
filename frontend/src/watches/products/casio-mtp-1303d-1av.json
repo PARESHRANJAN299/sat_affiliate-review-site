@@ -52,7 +52,14 @@
   "editors_pick": false,
   "rating": null,
   "case_material": "stainless-steel",
-  "purpose": [
+  "strap_material": "stainless-steel",
+  "occasion": [
     "formal"
+  ],
+  "strap_colour": [
+    "silver"
+  ],
+  "dial_colour": [
+    "black"
   ]
 }
