@@ -1,5 +1,6 @@
 """Progressively enhanced collections shared by category landing pages."""
 import html
+import json
 import re
 from collections import Counter
 
@@ -45,6 +46,23 @@ def render(cards, groups, *, uid, title, noun='product', plural='products', pres
         '<div class="collection-main">' + grid_note + '<div class="watch-grid" data-collection-grid>' + card_html + '</div>'
         f'<div class="collection-empty" data-empty {"hidden" if shown else ""}><h3>No matching {esc(plural)}</h3><p>Try another search or remove a filter.</p><button type="button" class="btn btn-outline" data-filter-clear>Clear filters</button></div>'
         '<nav class="collection-pagination" data-pagination aria-label="Product pages" hidden></nav></div></div></section>')
+
+
+def price_slider(steps, group="budget", title="Price"):
+    """Stepped price-band slider (no prices are shown or stored). steps = [(value, label, short label, watches in that band)], lowest band first.
+    Position 0 is "Any price". It drives the checkbox group `group`, and each category passes its own bands. Hidden until the script enables it."""
+    if len(steps) < 2:
+        return ''
+    most = max(count for *_, count in steps) or 1
+    bars = '<span class="price-bar-gap"></span>' + ''.join(
+        f'<span data-price-bar style="height:{max(10, round(100 * count / most))}%"></span>' for *_, count in steps)
+    ticks = '<span>Any</span>' + ''.join(f'<span>{esc(short)}</span>' for _, _, short, _ in steps)
+    data = json.dumps([[value, label] for value, label, _, _ in steps], ensure_ascii=False)
+    return (f'<div class="price-slider" data-price-slider data-group="{esc(group)}" data-steps="{esc(data)}" hidden>'
+            f'<div class="price-slider-head"><h2>{esc(title)}</h2><output data-price-label>Any price</output></div>'
+            f'<div class="price-bars" aria-hidden="true">{bars}</div>'
+            f'<input type="range" min="0" max="{len(steps)}" step="1" value="0" aria-label="Maximum price band" aria-valuetext="Any price">'
+            f'<div class="price-ticks" aria-hidden="true">{ticks}</div></div>')
 
 
 def groups(items, specs):

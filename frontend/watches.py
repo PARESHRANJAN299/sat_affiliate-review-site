@@ -760,10 +760,14 @@ class Watches:
         brand_pills = "".join(
             f'<button type="button" class="watch-chip" data-quick-chip="brand" data-value="{esc(slug_)}" aria-pressed="false">{esc(name)} <em>{cnt}</em></button>'
             for slug_, name, cnt in active) if len(active) >= 2 else ""
+        steps = [(slug_, label, "\u20b9" + (f'{self.budgets[slug_]["max"] // 1000}k' if self.budgets[slug_].get("max") else ""), n(lambda p, s=slug_: p.get("budget") == s))
+                 for slug_, label, count in next((g["items"] for g in groups if g["key"] == "budget"), []) if slug_ in self.budgets]
+        slider = collection.price_slider(steps)
         quick = self.keyword_chips(url, shown)
         top = ('<div class="watch-discovery"><div class="watch-style-head"><h2>Shop by style</h2><a href="/watches/guide/">Buying guide &rarr;</a></div>'
                f'<nav class="watch-style-row" aria-label="Watch styles">{style_links}</nav>'
                + (f'<div class="watch-brand-head"><h2>Shop by brand</h2></div><div class="watch-chip-row" role="group" aria-label="Shop by brand" data-brand-row>{brand_pills}</div>' if brand_pills else "")
+               + slider
                + f'<div class="watch-quick-row" data-quick-controls hidden>{quick}'
                '</div></div>')
         hub_html, hub_keys = hub or ("", set())

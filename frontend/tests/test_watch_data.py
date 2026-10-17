@@ -7,6 +7,7 @@ import unittest
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 import build
+import collection
 import watch_data
 import watches
 
@@ -123,7 +124,8 @@ class Hub(unittest.TestCase):
         self.assertIn('href="/watches/titan/under-2000/"', html)
         self.assertIn("Looking for watches by budget?", html)
         self.assertNotIn("Fossil", html)             # no published collection for it
-        self.assertNotIn("Under \u20b93,000", html)  # no published collection for that band
+        self.assertIn('href="/watches/titan/under-3000/"', html)
+        self.assertNotIn("Under \u20b95,000", html)  # no published collection for that band
         self.assertLessEqual({"budget", "brand", "people", "guides"}, keys)
         self.assertNotIn("style", keys)               # no published style collection yet
 
@@ -133,7 +135,7 @@ class Hub(unittest.TestCase):
         shop.approved["/watches/men/under-5000/"] = {"intro": "too short"}
         shop.approved["/watches/titan/under-1000/"] = {"intro": " ".join(["word"] * 120)}   # no Titan watch sits in this band, so no page exists
         urls = [c["url"] for c in shop.published_collections()]
-        self.assertEqual(urls, ["/watches/titan/under-2000/"])
+        self.assertEqual(urls, ["/watches/titan/under-2000/", "/watches/titan/under-3000/"])
 
     def test_hidden_from_hub_when_not_featured(self):
         shop = watches.Watches(build.SRC, build.CONFIG)
@@ -182,8 +184,10 @@ class HubExtras(unittest.TestCase):
 
     def test_related_collections_appear_with_a_second_published_page(self):
         shop = watches.Watches(build.SRC, build.CONFIG)
-        self.assertEqual(shop.related_collections("/watches/titan/under-2000/"), "")      # only one published
-        shop.approved = dict(shop.approved)
+        only = {"/watches/titan/under-2000/": shop.approved["/watches/titan/under-2000/"]}
+        shop.approved = only
+        self.assertEqual(shop.related_collections("/watches/titan/under-2000/"), "")      # only one published: nothing to relate
+        shop.approved = dict(only)
         shop.approved["/watches/men/under-2000/"] = {"intro": " ".join(["word"] * 110)}
         html = shop.related_collections("/watches/titan/under-2000/")
         self.assertIn('href="/watches/men/under-2000/"', html)
@@ -231,6 +235,25 @@ class Under3000(unittest.TestCase):
         self.assertNotIn("formal", html.lower())      # needs an approved occasion tag first
         self.assertNotIn("slim", html.lower())        # no matching filter
         self.assertNotIn("rose-gold", html)           # no Titan women's watch has a rose gold strap yet
+
+
+class Slider(unittest.TestCase):
+    def test_slider_steps_are_the_bands_that_have_watches(self):
+        shop = watches.Watches(build.SRC, build.CONFIG)
+        body = shop.landing()["_body"]
+        self.assertIn("data-price-slider", body)
+        self.assertIn("<span>\u20b92k</span><span>\u20b93k</span><span>\u20b95k</span>", body)
+        self.assertNotIn("\u20b91k", body)           # no watch sits in Under 1,000 yet, so that step is not offered
+
+    def test_slider_needs_two_steps_and_shows_no_prices(self):
+        self.assertEqual(collection.price_slider([("under-2000", "Under \u20b92,000", "\u20b92k", 3)]), "")
+        html = collection.price_slider([("a", "Under A", "A", 3), ("b", "Under B", "B", 1)])
+        self.assertIn('max="2"', html)
+        self.assertIn("hidden", html)
+
+    def test_slider_is_on_collection_pages_too(self):
+        shop = watches.Watches(build.SRC, build.CONFIG)
+        self.assertIn("data-price-slider", shop.brand_budget_page("titan", "under-3000")["_body"])
 
 
 class Duplicates(unittest.TestCase):

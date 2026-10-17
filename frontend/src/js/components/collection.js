@@ -17,12 +17,22 @@
     var quick = Array.from(root.querySelectorAll('[data-quick-filter]'));
     var styleButtons = Array.from(root.querySelectorAll('[data-style-toggle]'));
     var chips = Array.from(root.querySelectorAll('[data-quick-chip]'));
+    var sliders = Array.from(root.querySelectorAll('[data-price-slider]'));
     var pager = root.querySelector('[data-pagination]');
     var pageSize = Number(root.dataset.pageSize) || 0;
     var page = 1;
     var heading = topFilters ? root.closest('.watch-store').querySelector('h1') : null;
     function inlinePanel() { return desktop.matches; }
     if (topFilters) root.querySelector('[data-quick-controls]').hidden = false;
+    sliders.forEach(function (slider) {
+      var steps = JSON.parse(slider.dataset.steps);
+      slider.hidden = false;
+      slider.querySelector('input').addEventListener('input', function (event) {
+        var at = Number(event.target.value);  // 0 is "Any price"; step n picks the n-th band, which already means "under" that price
+        boxes.filter(function (box) { return box.dataset.group === slider.dataset.group; }).forEach(function (box) { box.checked = at > 0 && box.value === steps[at - 1][0]; });
+        update();
+      });
+    });
     cards.forEach(function (card, index) { card.dataset.order = index; card._searchText = card.textContent.toLocaleLowerCase(); });
     root.querySelector('[data-controls]').hidden = false;
     root.classList.add('is-enhanced');
@@ -82,6 +92,16 @@
       });
       chips.forEach(function (chip) {
         chip.setAttribute('aria-pressed', (selected[chip.dataset.quickChip] || []).indexOf(chip.dataset.value) !== -1 && (!chip.dataset.chipGender || chip.dataset.chipGender === gender) ? 'true' : 'false');
+      });
+      sliders.forEach(function (slider) {
+        var steps = JSON.parse(slider.dataset.steps);
+        var picked = selected[slider.dataset.group] || [];
+        var at = picked.length === 1 ? steps.map(function (step) { return step[0]; }).indexOf(picked[0]) + 1 : 0;
+        var text = at ? steps[at - 1][1] : picked.length > 1 ? 'Several price bands' : picked[0] === 'unlisted' ? 'Price at retailer' : 'Any price';
+        var input = slider.querySelector('input');
+        input.value = at; input.setAttribute('aria-valuetext', text);
+        slider.querySelector('[data-price-label]').textContent = text;
+        Array.from(slider.querySelectorAll('[data-price-bar]')).forEach(function (bar, index) { bar.classList.toggle('is-in', at > 0 && index < at); });
       });
       styleButtons.forEach(function (button) {
         var values = selected.style || [];
