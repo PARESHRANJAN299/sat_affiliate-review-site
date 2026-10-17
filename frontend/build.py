@@ -1032,6 +1032,20 @@ def home_category_strip():
     return '<ul class="home-cat-strip">' + "".join(items) + '</ul>'
 
 
+def home_watches_block():
+    """Compact Watches block for the home page: a link into the /watches/ hub plus up to three published collections."""
+    shop = SHOP[0]
+    if shop is None:
+        return ""
+    pubs = [c for c in shop.published_collections() if c["featured_on_watch_hub"]][:3]
+    links = ('<li><a href="/watches/men/">Men\u2019s watches</a></li><li><a href="/watches/women/">Women\u2019s watches</a></li>'
+             + "".join(f'<li><a href="{esc(c["url"])}">{esc(c["title"])}</a></li>' for c in pubs))
+    return ('<section class="home-watches" id="home-watches" aria-labelledby="home-watches-title">'
+            '<div class="home-section-head"><h2 id="home-watches-title">Watches</h2>'
+            '<a class="home-text-link" href="/watches/">Explore watches <svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></a></div>'
+            f'<p>Compare watches by budget, brand and style.</p><ul class="home-watch-links">{links}</ul></section>')
+
+
 def about_cover_cards():
     items = []
     for c in CATEGORIES:
@@ -1268,6 +1282,8 @@ def mega_data(pages):
                 m = re.fullmatch(r"/watches/(men|women)/under-(\d+)/", url)
                 if m:
                     entry["price"].append((f'{m.group(1).title()}\u2019s watches under \u20b9{int(m.group(2)):,}', url))
+                elif re.fullmatch(r"/watches/[a-z0-9-]+/under-\d+/", url):
+                    entry["price"].append((p["title"].replace("Best ", ""), url))
                 elif url.startswith("/watches/brands/"):
                     entry["brand"].append((p["title"].replace("Best ", "").replace(" in India", ""), url))
                 elif url.startswith("/watches/style/"):
@@ -1655,6 +1671,7 @@ def build_page(meta, base, header_t, footer_t, year, articles):
         "about_cover_cards": about_cover_cards(),
         "about_faq": about_faq(),
         "home_category_strip": home_category_strip(),
+        "home_watches_block": home_watches_block(),
         "home_guides_strip": home_guides_strip(),
         "home_collage": home_collage(),
         "home_video": home_video(),
@@ -1805,6 +1822,9 @@ def search_entries(pages):
                 g = m.group(1)
                 add(t=title, u=url, k="Watch list", c="Watches", d=desc, g=g, m=int(m.group(2)) if m.group(2) else None,
                     x=f"watch watches wristwatch {g}", s=soon)
+            elif re.fullmatch(r"/watches/[a-z0-9-]+/under-(\d+)/", url):
+                add(t=title, u=url, k="Watch list", c="Watches", d=desc, m=int(re.search(r"under-(\d+)", url).group(1)),
+                    x="watch watches wristwatch brand", s=soon)
             elif url.startswith("/watches/brands/"):
                 add(t=title, u=url, k="Brand", c="Watches", d=desc, x="watch watches wristwatch brand", s=soon)
             elif url.startswith("/watches/style/"):
@@ -2128,7 +2148,7 @@ def governance_report():
     indep = [u for u, t in live.items() if re.search(r"\bindependent\b", visible(t), re.I)]
     if active and indep:
         add("WARN", f"the word 'independent' appears on {len(indep)} pages while affiliate links are on (e.g. {indep[0]}); the owner's decision is that SAT is an affiliate portal")
-    price = [u for u, t in live.items() if re.search(r"(?:\u20b9|Rs\.?)\s?\d[\d,]*(?!\s*(?:to|\u2013|-))", visible(t)) and u.count("/") <= 2 and u.startswith(("sports", "beauty", "home", "clothing", "badminton", "cricket", "fitness", "home-gym"))]
+    price = [u for u, t in live.items() if re.search(r"(?:\u20b9|Rs\.?)\s?\d[\d,]*(?!\s*(?:to|\u2013|-))", re.sub(r"\b[Uu]nder\s+\u20b9\s?\d[\d,]*", " ", visible(t))) and u.count("/") <= 2 and u.startswith(("sports", "beauty", "home", "clothing", "badminton", "cricket", "fitness", "home-gym"))]
     add("ok" if not price else "WARN", "no typed rupee prices on guide pages" if not price else f"rupee amounts on {len(price)} guide pages (e.g. {price[0]}); price bands only")
 
     # 7) pictures

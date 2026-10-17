@@ -523,6 +523,95 @@ class Watches:
             parts.append(f'<h3>Common questions</h3>{faqs}')
         return '<section class="watch-collection-copy">' + "".join(parts) + '</section>'
 
+    def parse_collection_url(self, url):
+        """The filter combination a collection URL stands for ({'brand': ..., 'price_band': ...}), or None when no such page is generated."""
+        parts = [x for x in url.strip("/").split("/") if x]
+        if not parts or parts[0] != "watches":
+            return None
+        parts = parts[1:]
+        if len(parts) == 1 and parts[0] in self.genders:
+            return {"gender": parts[0]}
+        if len(parts) == 2 and parts[0] == "brands" and parts[1] in self.brands:
+            return {"brand": parts[1]}
+        if len(parts) == 2 and parts[0] == "style" and parts[1] in self.styles:
+            return {"style": parts[1]}
+        if len(parts) == 2 and parts[1] in self.budgets:
+            if parts[0] in self.genders:
+                return {"gender": parts[0], "price_band": parts[1]}
+            if parts[0] in self.brands and (parts[0], parts[1]) in self.brand_budget_pairs():
+                return {"brand": parts[0], "price_band": parts[1]}
+        return None
+
+    def published_collections(self):
+        """Collections open to Google: approved in collections.json, with their own introduction and enough watches. Each entry carries
+        the metadata the Watches hub is built from: category, brand, price_band, gender, style, seo_status, featured_on_watch_hub.
+        An entry in collections.json may set "featured_on_watch_hub": false to keep a published page off the hub."""
+        out = []
+        for url, entry in self.approved.items():
+            key = self.parse_collection_url(url)
+            if not key:
+                continue
+            shown = [p for p in self.products if (not key.get("gender") or key["gender"] in p["gender"]) and (not key.get("brand") or p["brand"] == key["brand"])
+                     and (not key.get("price_band") or key["price_band"] in self.qualifies(p)) and (not key.get("style") or key["style"] in p["styles"])]
+            if self.collection_noindex(url, shown):
+                continue
+            band = self.budgets[key["price_band"]]["label"] if key.get("price_band") else ""
+            name = self.brands[key["brand"]]["name"] if key.get("brand") else (self.genders[key["gender"]]["label"] if key.get("gender") else self.styles[key["style"]]["label"])
+            out.append({"category": "watches", "url": url, **key, "genders": sorted({g for p in shown for g in p["gender"]}), "count": len(shown),
+                        "seo_status": "indexable", "featured_on_watch_hub": entry.get("featured_on_watch_hub", True) is not False,
+                        "label": name, "title": f"{name} watches {band.lower()}" if band else f"{name} watches"})
+        return out
+
+    def hub_html(self):
+        """Discovery sections of /watches/ built from the published collections: real links to their own pages, never a filter state.
+        Returns (html, keys of the sections shown). Brand, budget and style links appear only for collections that are published."""
+        pubs = [c for c in self.published_collections() if c["featured_on_watch_hub"]]
+        blocks, keys = [], set()
+
+        def block(key, heading, inner):
+            keys.add(key)
+            blocks.append(f'<section class="hub-block hub-{key}" aria-labelledby="hub-{key}"><h2 id="hub-{key}">{esc(heading)}</h2>{inner}</section>')
+
+        rows = ""
+        for band, info in self.budgets.items():
+            links = [c for c in pubs if c.get("price_band") == band]
+            if links:
+                rows += (f'<div class="hub-row"><h3>{esc(info["label"])}</h3><ul class="hub-pills">'
+                         + "".join(f'<li><a class="hub-pill" href="{esc(c["url"])}">{esc(c["label"])}</a></li>' for c in links) + '</ul></div>')
+        if rows:
+            block("budget", "Looking for watches by budget?", rows)
+
+        by_brand = {}
+        for c in pubs:
+            if c.get("brand"):
+                by_brand.setdefault(c["brand"], []).append(c)
+        pills = ""
+        for slug_, name, _ in self.active_brands():
+            cs = by_brand.get(slug_)
+            if cs:
+                target = next((c for c in cs if not c.get("price_band")), cs[0])
+                pills += f'<li><a class="hub-pill" href="{esc(target["url"])}">{esc(name)}</a></li>'
+        if pills:
+            block("brand", "Shop by Brand", f'<ul class="hub-pills">{pills}</ul>')
+
+        pills = "".join(f'<li><a class="hub-pill" href="{esc(c["url"])}">{esc(c["label"])}</a></li>' for c in pubs if c.get("style") and not c.get("brand"))
+        if pills:
+            block("style", "Shop by Style", f'<ul class="hub-pills">{pills}</ul>')
+
+        cards = ""
+        for g, info in self.genders.items():
+            count = sum(1 for p in self.products if g in p["gender"])
+            if count:
+                cards += f'<li><a class="hub-person" href="/watches/{esc(g)}/"><strong>{esc(info["label"])}</strong><span>{count} {"watch" if count == 1 else "watches"}</span></a></li>'
+        if cards:
+            block("people", "Men or women?", f'<ul class="hub-people">{cards}</ul>')
+
+        guides = [("How to choose a watch", "/watches/guide/", "What to check before you buy, in plain words.")]
+        guides += [(g["title"], g["url"], g.get("note", "")) for g in self.config.get("hub_guides", [])]
+        items = "".join(f'<li><a class="hub-guide" href="{esc(u)}"><strong>{esc(t)}</strong>' + (f'<span>{esc(n)}</span>' if n else "") + '</a></li>' for t, u, n in guides)
+        block("guides", "Popular buying guides", f'<ul class="hub-guides">{items}</ul>')
+        return '<div class="watch-hub">' + "".join(blocks) + '</div>', keys
+
     def collection_table(self, products):
         """Comparison table for a collection page: Model | Best for | Gender | Case size | Movement | Strap | Water resistance | CTA."""
         if len(products) < 2:
@@ -543,7 +632,7 @@ class Watches:
         return ('<section class="watch-collection-table"><h2>Compare these watches</h2><div class="compare-table-wrap"><table class="compare-table" role="table">'
                 f'<caption class="visually-hidden">Comparison of the watches on this page</caption><thead><tr role="row">{head}</tr></thead><tbody>' + "".join(rows) + '</tbody></table></div></section>')
 
-    def catalog(self, url, title, intro, *, gender="", brand="", budget="", style="", crumbs=None, extra_html="", table=False):
+    def catalog(self, url, title, intro, *, gender="", brand="", budget="", style="", crumbs=None, extra_html="", table=False, hub=None):
         products = self.products
         def matches(p):
             return ((not gender or gender in p["gender"]) and (not brand or p["brand"] == brand)
@@ -583,13 +672,18 @@ class Watches:
                + (f'<div class="watch-brand-head"><h2>Shop by brand</h2></div><div class="watch-chip-row" role="group" aria-label="Shop by brand" data-brand-row>{brand_pills}</div>' if brand_pills else "")
                + f'<div class="watch-quick-row" data-quick-controls hidden>{quick}'
                '</div></div>')
+        hub_html, hub_keys = hub or ("", set())
+        if "brand" in hub_keys:  # the hub lists the brands that have their own page; this row only filters the list below
+            top = top.replace("<h2>Shop by brand</h2>", "<h2>Filter by brand</h2>")
+        if "style" in hub_keys:
+            top = top.replace("<h2>Shop by style</h2>", "<h2>Filter by style</h2>")
         top = top.replace(f'data-style-toggle="{esc(style)}" aria-current="false"', f'data-style-toggle="{esc(style)}" aria-current="true"', 1)
         block = collection.render([self.card(p) for p in products], groups, uid="watch-collection", title="Explore watches", noun="watch", plural="watches",
                                   preset_gender=gender, genders=[("men", "Men"), ("women", "Women")],
                                   top_html=top, visible=[matches(p) for p in products], page_size=24)
         body = ('<section class="section watch-store"><div class="container watch-store-inner">{{breadcrumb}}'
                 f'<header class="watch-store-head"><div><p class="watch-kicker">The SAT watch edit</p><h1>{esc(title)}</h1><p>{esc(intro)}</p></div>'
-                '<a class="watch-guide-link" href="/watches/guide/">Find your fit &rarr;</a></header>' + block + (self.collection_table(shown) if table else "") + self.collection_copy(url) + extra_html + '<noscript><nav class="watch-static-links" aria-label="Browse watches"><a href="/watches/men/">Men</a> · <a href="/watches/women/">Women</a> · ' + ' · '.join(f'<a href="/watches/brands/{esc(slug)}/">{esc(value["name"])}</a>' for slug, value in self.brands.items() if slug != 'sample') + '</nav></noscript></div></section>')
+                '<a class="watch-guide-link" href="/watches/guide/">Find your fit &rarr;</a></header>' + hub_html + block + (self.collection_table(shown) if table else "") + self.collection_copy(url) + extra_html + '<noscript><nav class="watch-static-links" aria-label="Browse watches"><a href="/watches/men/">Men</a> · <a href="/watches/women/">Women</a> · ' + ' · '.join(f'<a href="/watches/brands/{esc(slug)}/">{esc(value["name"])}</a>' for slug, value in self.brands.items() if slug != 'sample') + '</nav></noscript></div></section>')
         meta = self._meta(url, title, intro, body, crumbs or [["Watches", "/watches/"]], shown, js=False)
         meta["noindex"] = self.collection_noindex(url, shown)
         meta["css"] += ["collection", "watch-store"]
@@ -731,7 +825,7 @@ class Watches:
                             crumbs=[["Watches", "/watches/"], [g["label"], url]])
 
     def landing(self):
-        return self.catalog("/watches/", "Watches for every day.", "Classic style. Everyday usefulness. Find a watch that feels like you.")
+        return self.catalog("/watches/", "Watches for every day.", "Classic style. Everyday usefulness. Find a watch that feels like you.", hub=self.hub_html())
 
     def product_detail(self, p):
         brand = self.brands[p["brand"]]["name"]

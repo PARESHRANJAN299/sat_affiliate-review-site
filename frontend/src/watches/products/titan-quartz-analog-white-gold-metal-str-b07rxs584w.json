@@ -10,12 +10,6 @@
   "price_band": "under-2000",
   "case_diameter_mm": 25,
   "band_material": "metal",
-  "band_colour": [
-    "gold"
-  ],
-  "dial_colour": [
-    "white"
-  ],
   "movement": "quartz",
   "display_type": "analog",
   "water_resistance_atm": 3,
@@ -27,11 +21,12 @@
   ],
   "good": [
     "The listing gives a compact 25 mm case",
-    "The listing describes a white dial with slim gold-tone hour markers and hands",
-    "The listing describes a bracelet-style metal strap with polished and matte gold finishes"
+    "The listing describes a minimal dial with slim hour markers and hands",
+    "The listing describes a bracelet-style metal strap with polished and matte finishes"
   ],
   "not_good": [
     "The listing gives 30 m water resistance, which suits splashes, handwashing and light rain but not swimming or snorkelling",
+    "Dial and strap colours are not confirmed here, so check the colours shown on the Amazon page before you buy",
     "Case material, case thickness and warranty length are not stated in the information we have, so check the Amazon page before buying"
   ],
   "source_verified": "owner-provided from the seller listing, not independently verified"

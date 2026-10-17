@@ -84,3 +84,13 @@ A collection is a combination of up to two filters. `python3 build.py --collecti
 
 ### Questions shoppers ask
 Each watch page shows at most 6 questions chosen by what the record states: fit (needs a case diameter), water resistance (needs a rating), strap material, quartz (needs the movement), style (needs `occasions`) and value (needs a price band). Answers use only the record's facts and plain definitions. A brand comparison appears only when both brands have live watches and `brand-notes.json` holds our own note for them.
+
+## The Watches hub (`/watches/`)
+
+The hub builds its discovery sections from the **published collections**: entries in `collections.json` that have their own introduction (100 words or more), a page that exists, and at least 3 watches. Each published collection carries metadata (`category`, `brand`, `price_band`, `gender`, `seo_status: indexable`, `featured_on_watch_hub`), taken from its URL and its watches. The hub shows:
+
+- **Looking for watches by budget?** one row per price band, with a link to each published brand or gender page in that band.
+- **Shop by Brand** and **Shop by Style**, only for brands and styles that have a published page.
+- **Men or women?**, **Popular buying guides** (extra guides can be listed under `hub_guides` in `config.json`).
+
+Every link goes to the collection's own URL, never to a JavaScript filter state. To keep a published page off the hub, set `"featured_on_watch_hub": false` in its `collections.json` entry. Deep filter combinations stay normal filter states with no page of their own. The home page shows a compact Watches block that links into the hub.

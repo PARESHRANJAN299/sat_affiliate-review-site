@@ -92,20 +92,54 @@ class Site(unittest.TestCase):
 
 
 class NeoIV(unittest.TestCase):
-    def test_titan_under_2000_collection_exists_and_is_gated(self):
+    def test_titan_under_2000_collection_is_published(self):
         shop = watches.Watches(build.SRC, build.CONFIG)
         neo = next(p for p in shop.products if p["id"] == "titan-neo-iv-analog-black-b07mxgl85j")
         self.assertEqual(shop.qualifies(neo)[0], "under-2000")
         self.assertIn(("titan", "under-2000"), shop.brand_budget_pages if hasattr(shop, "brand_budget_pages") else shop.brand_budget_pairs())
         meta = shop.brand_budget_page("titan", "under-2000")
         self.assertEqual(meta["url"], "/watches/titan/under-2000/")
-        self.assertTrue(meta["noindex"])           # one watch and no approved copy yet
+        self.assertFalse(meta["noindex"])          # approved by the owner, with its own introduction and at least 3 watches
         self.assertEqual((neo["water_resistance_metres"], neo["band_material"], neo["case_material"]), (50, "leather", "metal"))
         self.assertEqual(neo["movement"], "")      # not stated: never guessed
 
     def test_sentences_in_intake_are_split_on_bars(self):
         raw, _ = watch_data.parse_intake("What we like: First point | Second point", BUDGETS)
         self.assertEqual(raw["good"], ["First point", "Second point"])
+
+
+class Hub(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.shop = watches.Watches(build.SRC, build.CONFIG)
+
+    def test_published_collection_carries_metadata(self):
+        c = next(c for c in self.shop.published_collections() if c["url"] == "/watches/titan/under-2000/")
+        self.assertEqual((c["category"], c["brand"], c["price_band"], c["seo_status"], c["featured_on_watch_hub"]), ("watches", "titan", "under-2000", "indexable", True))
+        self.assertEqual(c["genders"], ["men", "women"])
+
+    def test_hub_links_only_to_published_collections(self):
+        html, keys = self.shop.hub_html()
+        self.assertIn('href="/watches/titan/under-2000/"', html)
+        self.assertIn("Looking for watches by budget?", html)
+        self.assertNotIn("Fossil", html)             # no published collection for it
+        self.assertNotIn("Under \u20b93,000", html)  # no published collection for that band
+        self.assertLessEqual({"budget", "brand", "people", "guides"}, keys)
+        self.assertNotIn("style", keys)               # no published style collection yet
+
+    def test_unapproved_or_thin_collections_never_surface(self):
+        shop = watches.Watches(build.SRC, build.CONFIG)
+        shop.approved = dict(shop.approved)
+        shop.approved["/watches/men/under-5000/"] = {"intro": "too short"}
+        shop.approved["/watches/titan/under-3000/"] = {"intro": " ".join(["word"] * 120)}   # no page exists for this pair
+        urls = [c["url"] for c in shop.published_collections()]
+        self.assertEqual(urls, ["/watches/titan/under-2000/"])
+
+    def test_hidden_from_hub_when_not_featured(self):
+        shop = watches.Watches(build.SRC, build.CONFIG)
+        shop.approved = {u: dict(e) for u, e in shop.approved.items()}
+        shop.approved["/watches/titan/under-2000/"]["featured_on_watch_hub"] = False
+        self.assertNotIn("/watches/titan/under-2000/", shop.hub_html()[0])
 
 
 class Duplicates(unittest.TestCase):
