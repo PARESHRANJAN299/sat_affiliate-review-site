@@ -134,6 +134,7 @@
       "name": "Sonata",
       "tier": "value",
       "genders": [
+        "men",
         "women"
       ],
       "line": "Classic",
