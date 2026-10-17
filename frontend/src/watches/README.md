@@ -56,32 +56,31 @@ JavaScript paginates matching watches in batches of 24; filters and sorting rese
 
 Repeated disclosure banners are removed by `compact_affiliate_notices()` in the builder. Retailer buttons carry a short “Paid link” label; the full disclosure and Amazon Associate statement remain in the footer and disclosure page.
 
-## Filter fields and how to add a filter
+## The watch data engine (one record per watch)
 
-The page order for shoppers is: Shop by style, Shop by brand, Men | Women, Filters (a bottom sheet on phones, a sticky panel on the right on laptops), removable filter chips, then the watches.
+Every watch is one file in `src/watches/products/`. Brands, filters, counts, price bands, the Shop by brand row, product pages and the list of possible SEO collections are all generated from those files. **Nothing is entered twice, and a watch is never duplicated for another view.**
 
-The filter panel builds itself from the watch files. Every field is optional, and a value is filled in **only where the maker's page states it**. A watch without a value is not matched when that filter is ticked, and a group with no values is not shown.
+### Adding a watch
+1. Paste what you know as plain `Key: value` lines into a text file (see `intake-example.txt`), for example `Product`, `Brand`, `Gender`, `Case diameter`, `Strap`, `Strap colour`, `Dial colour`, `Movement`, `Water resistance`, `Warranty`, `Amazon URL`, `Price band`, `Styles`, `Occasions`, `Labels`, `Source`.
+2. Run `python3 build.py --watch-intake your-file.txt` for the report: Accepted or Rejected, missing required and optional fields, warnings, categories assigned automatically, filter groups it switches on, and the SEO collections it could belong to.
+3. Add `--write` to save the normalised record. Missing facts are left out and shown as "not stated". They are never guessed.
 
-| Filter | Watch-file field | Values |
-|---|---|---|
-| Brand | `brand` | slug from `config.json` brands |
-| Price | `budget` | slug from `config.json` budgets (the band of the maker's listed price; never type a price) |
-| Style | `styles` (list) | slugs from `config.json` styles |
-| Occasion | `occasion` (list) | `office`, `formal`, `casual`, `everyday`, `party`, `gift` |
-| Dial size | `case_size_mm` | grouped by the page: 36 and under, 37-40, 41-44, 45+ |
-| Strap material | `strap_material` | `leather`, `stainless-steel`, `mesh`, `silicone-rubber`, `fabric-nylon` |
-| Movement | `movement` | `quartz`, `automatic`, `mechanical` |
-| Water resistance | `water_resistance` text | read from "50 m" or "5 ATM" (1 ATM = 10 m): Splash resistant (under 30 m), 30 m, 50 m, 100 m, 200 m and above. Say "water-resistant", never "waterproof" |
-| Dial colour | `dial_colour` (list) | black, white, blue, green, silver, gold, brown |
-| Strap colour | `strap_colour` (list) | black, brown, silver, gold, blue, rose-gold |
-| Case shape | `case_shape` | round, square, rectangular |
-| Features | `features` (list) | date, day-date, chronograph, luminous-hands, second-hand, minimal-dial |
-| Case material | `case_material` | alloy-steel, brass, metal, plastic, polycarbonate, resin, stainless-steel |
+### Fields
+**Required:** `id`, `brand`, `product_name`, `gender`. **Buying link:** `amazon_url` (your full tagged link, used exactly as pasted, never edited), `image_source`. **Price:** `price_band` (a configured band such as `under-2000`, never a price). A watch in a band also appears under every higher band.
+**Facts (from the maker or listing):** `case_diameter_mm`, `case_thickness_mm`, `band_material`, `band_colour`, `dial_colour`, `case_shape`, `movement`, `display_type`, `water_resistance_atm`, `water_resistance_metres` (ATM x 10 is used when only ATM is given, and flagged), `warranty_type`, `warranty_duration`, `country_of_origin`.
+**Editorial (our judgement, kept separate):** `styles`, `occasions`, `features`, `editorial_labels` (`best-value`, `office-pick`, `classic-pick`, `minimal-pick`, `first-watch-pick`), `best_for`, `editorial_notes`, `who_should_buy`, `who_should_skip`, plus the written `verdict`, `paragraphs`, `good`, `not_good`, `sources`.
+**Verification:** `source_verified` (a source, or "owner-provided, not independently verified"), `last_verified`.
 
-**To add a new filter:** add one row to `Watches.FILTERS` in `watches.py` (key, title, options, and a function that returns the values of a watch), then add the field to the watch files. The cards, the panel, the counts, the chips and the browser script pick it up with no other change. A watch can have many styles and occasions, so no watch file is ever duplicated for a filtered view.
+Analog, Leather Strap and Metal Strap styles are added automatically from `display_type` and `band_material`. Office, Formal, Minimal and similar are editorial and are never inferred. Colour names are normalised (for example OffWhite becomes White).
 
-Filter options that no watch has yet are hidden, except brands, which stay visible and dimmed. The safeguards in `build.py --check` (no typed prices, ratings or "tested" claims, valid https links) apply to every watch file as before.
+### Rules the build enforces
+No `price`, `mrp`, `rating`, `reviews` or `discount` fields; no rupee prices, star ratings, "tested" claims or the word "waterproof" in any text; a configured price band; valid labels; an https `amazon_url`. Unsupported facts are never created.
 
-## Landing pages
+### Filters, brands and counts
+A filter option appears only when at least one live watch has it, and a group appears only when it has two or more different values. The Shop by brand row lists brands that have live watches. A product from a new brand creates the brand automatically (a warning tells you). `settings.json` controls `brand_order`, `featured_brands`, `hidden_brands`, `planned_filters` (an option shown dimmed before any watch has it) and `brand_names`. To add a new kind of filter, add one row to `Watches.FILTERS` in `watches.py`.
 
-Each budget, gender, brand and style has its own page (for example `/watches/men/under-3000/`, `/watches/brands/casio/`, `/watches/style/formal/`). A page stays hidden from Google until it lists at least `min_products_to_index` watches (3). Filters only add temporary `?` states and never replace these URLs.
+### SEO collections
+A collection is a combination of up to two filters. `python3 build.py --collections` lists the combinations that have at least 3 watches. A collection page is indexed by Google only when it is listed in `collections.json` with its own introduction of at least 100 words (plus optional `who_for`, `advice`, `faqs`). Otherwise it stays a normal filter result with `noindex`. The hubs `/watches/`, `/watches/men/` and `/watches/women/` need no approval. A product page without a written review stays `noindex` until it has one.
+
+### Questions shoppers ask
+Each watch page shows at most 6 questions chosen by what the record states: fit (needs a case diameter), water resistance (needs a rating), strap material, quartz (needs the movement), style (needs `occasions`) and value (needs a price band). Answers use only the record's facts and plain definitions. A brand comparison appears only when both brands have live watches and `brand-notes.json` holds our own note for them.

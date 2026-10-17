@@ -27,6 +27,7 @@ sys.path.insert(0, str(ROOT))
 import watches  # noqa: E402
 import listing  # noqa: E402
 import collection  # noqa: E402
+import watch_data as watch_data_mod  # noqa: E402
 SRC = ROOT / "src"
 DIST = ROOT / "dist"
 
@@ -2147,9 +2148,65 @@ def governance_report():
     return fails == 0
 
 
+def watch_intake(path, write=False):
+    """python3 build.py --watch-intake FILE [--write]: turn pasted 'Key: value' lines into a normalised watch record and report on it."""
+    shop = watches.Watches(SRC, CONFIG)
+    text = Path(path).read_text(encoding="utf-8") if path != "-" else sys.stdin.read()
+    raw, unknown = watch_data_mod.parse_intake(text, shop.budgets)
+    if raw.get("brand"):
+        raw["brand"] = watch_data_mod.slug(raw["brand"])
+    p = watch_data_mod.normalise(raw, shop.budgets)
+    if p.get("brand") and p["brand"] not in shop.brands:
+        shop._register_brand(p)
+    rep = shop.intake_report(p)
+    required_missing = [f for f in ("id", "brand", "product_name", "gender") if not p.get(f)]
+    print("Watch intake:", p.get("product_name") or "(no product name)", f"[{p.get('id')}]")
+    print("\nStatus:", "REJECTED" if rep["errors"] or required_missing else "ACCEPTED" + (" with warnings" if rep["warnings"] else ""))
+    print("Missing required fields:", ", ".join(required_missing) or "none")
+    print("Missing optional fields:", ", ".join(rep["missing_optional"]) or "none")
+    for e in rep["errors"]:
+        print("ERROR:", e)
+    for w in rep["warnings"]:
+        print("Warning:", w)
+    for line in unknown:
+        print("Not understood (ignored):", line)
+    print("\nCategories assigned automatically:")
+    for k, v in rep["categories"]:
+        print(f"  {k}: {v}")
+    print("\nFilter groups this watch makes visible:", ", ".join(rep["filters_enabled"]) or "none (a group needs two different values)")
+    print("Potential SEO collections:", "; ".join(rep["collections"]) or "none yet (a collection needs at least 3 watches)")
+    ok = not rep["errors"] and not required_missing
+    if write and ok:
+        keep = watch_data_mod.canonical(p)
+        out = SRC / "watches" / "products" / f"{p['id']}.json"
+        out.write_text(json.dumps(keep, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+        print("\nWritten:", out.relative_to(ROOT))
+    elif write:
+        print("\nNothing written: fix the errors above first.")
+    return ok
+
+
+def watch_collections():
+    """python3 build.py --collections: filter combinations with enough watches, and whether each has an approved page."""
+    shop = watches.Watches(SRC, CONFIG)
+    rows = shop.collection_candidates()
+    print(f"{len(shop.products)} live watches. Collections with at least {shop.min_index} watches:\n")
+    for c in sorted(rows, key=lambda r: (-r["count"], r["name"])):
+        state = "APPROVED, indexable" if c["approved"] else ("needs approval + own copy" if c["url"] else "filter only (no page URL)")
+        print(f"  {c['name']:<40} {c['count']:>3} watches   {state}   {c['url'] or ''}")
+    if not rows:
+        print("  none yet")
+    return True
+
+
 if __name__ == "__main__":
     if "--check" in sys.argv:
         sys.exit(0 if check_products() else 1)
+    if "--watch-intake" in sys.argv:
+        i = sys.argv.index("--watch-intake")
+        sys.exit(0 if watch_intake(sys.argv[i + 1] if len(sys.argv) > i + 1 else "-", "--write" in sys.argv) else 1)
+    if "--collections" in sys.argv:
+        sys.exit(0 if watch_collections() else 1)
     if "--governance" in sys.argv:
         if "--simulate-signup" in sys.argv:
             CONFIG["affiliate_active"] = True

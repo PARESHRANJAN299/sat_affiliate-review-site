@@ -202,3 +202,19 @@
   .watch-chip-row { flex-wrap: wrap; overflow: visible; }
 }
 .watch-brand-head { margin-top: 18px; }
+
+/* ===== data-driven product page and editorial label ===== */
+.watch-label { margin: -2px 0 0; display: inline-block; align-self: flex-start; padding: 3px 10px; border-radius: 999px; background: #1f2124; color: #e6c98a; font-size: .66rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+.watch-product-page .rank { display: inline-block; margin-bottom: 8px; padding: 4px 12px; border-radius: 999px; background: #1f2124; color: #e6c98a; font-size: .72rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+.watch-section { margin: 28px 0 0; }
+.watch-section h2 { margin: 0 0 10px; font-size: 1.15rem; }
+.watch-section ul { margin: 0; padding-left: 1.2em; }
+.watch-section .spec-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px 18px; margin: 0; }
+.watch-section .spec-list div { padding: 8px 0; border-top: 1px solid var(--color-border); }
+.watch-section .spec-list dt { font-size: .7rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--color-text-muted); }
+.watch-section .spec-list dd { margin: 2px 0 0; }
+.watch-unknown, .watch-provenance { margin: 10px 0 0; font-size: .82rem; color: var(--color-text-muted); }
+.watch-cta-row { margin: 14px 0 6px; max-width: 360px; }
+.watch-cta-row .btn { width: 100%; }
+.watch-collection-copy { margin: 34px 0 0; max-width: 72ch; }
+.watch-collection-copy h3 { margin: 22px 0 6px; font-size: 1rem; }

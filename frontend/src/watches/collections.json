@@ -1,0 +1,4 @@
+{
+  "_note": "Approved SEO collection pages. A collection page (brand, style, gender plus price, ...) is indexed by Google only when its URL is listed here with a unique 'intro' of at least 100 words and the page has at least 3 watches. Optional: who_for, advice, faqs [{q, a}]. Run python3 build.py --collections to see which combinations have enough watches. The hub pages /watches/, /watches/men/ and /watches/women/ are indexed without approval.",
+  "approved": {}
+}

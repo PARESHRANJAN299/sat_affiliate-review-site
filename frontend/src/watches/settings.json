@@ -1,0 +1,8 @@
+{
+  "_note": "Display settings only. Brands, filters and prices come from the watch files. brand_order lists brand slugs to show first; featured_brands are shown before the rest (default: the featured tier in config.json); hidden_brands are never shown. planned_filters shows an option dimmed before any watch has it, for example {\"water\": [\"200-plus\"]}. brand_names overrides the name made from a new brand's slug.",
+  "brand_order": ["titan", "casio", "timex", "fossil", "fastrack", "sonata"],
+  "featured_brands": ["titan", "casio", "timex", "fossil"],
+  "hidden_brands": [],
+  "planned_filters": {},
+  "brand_names": {}
+}

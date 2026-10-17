@@ -14,6 +14,7 @@ Standard library only (Python 3.9+).
 import html
 import re
 import collection
+import watch_data
 import json
 import math
 import urllib.parse
@@ -58,6 +59,9 @@ class Watches:
         base = Path(src) / "watches"
         self.config = read_json(base / "config.json")
         self.merchants = read_json(base / "merchants.json")
+        self.settings = read_json(base / "settings.json") if (base / "settings.json").exists() else {}
+        self.brand_notes = read_json(base / "brand-notes.json") if (base / "brand-notes.json").exists() else {}
+        self.approved = (read_json(base / "collections.json") if (base / "collections.json").exists() else {}).get("approved", {})
         self.site = site_config
         self.errors = []
         self.warnings = []
@@ -76,7 +80,9 @@ class Watches:
         if self.samples:
             self.brands["sample"] = {"name": "Sample brand", "slug": "sample", "genders": ["men"], "line": "Classic"}
         self.products = []
-        for p in raw:
+        self.intake_notes = {}
+        for p in [watch_data.normalise(r, self.budgets) for r in raw]:
+            self._register_brand(p)
             self._validate(p)
             ok, why = self._ready(p)
             if ok:
@@ -96,6 +102,18 @@ class Watches:
 
     # ---------- validation ----------
 
+    def _register_brand(self, p):
+        """A product from a brand that is not in config.json creates the brand automatically (name from the slug unless settings give one)."""
+        slug_ = p.get("brand")
+        if not slug_ or slug_ in self.brands:
+            return
+        name = (self.settings.get("brand_names") or {}).get(slug_) or str(slug_).replace("-", " ").title()
+        entry = {"slug": slug_, "name": name, "tier": "value", "genders": ["men", "women"], "line": "Classic",
+                 "blurb": f"{name} watches listed on SAT."}
+        self.brands[slug_] = entry
+        self.config["brands"].append(entry)
+        self.warnings.append(f"brand {slug_!r} was added automatically as {name!r}")
+
     def _check_config(self):
         for key in ("genders", "budgets", "brands", "styles"):
             items = self.config.get(key)
@@ -110,20 +128,11 @@ class Watches:
 
     def _validate(self, p):
         pid = p.get("id", "?")
-        missing = [k for k in ("id", "brand", "model", "gender", "styles", "verdict") if k not in p]
-        if missing:
-            self.errors.append(f"watch {pid}: missing {', '.join(missing)}")
-            return
-        if p["brand"] not in self.brands:
+        errs, warns = watch_data.validate(p, self.brands, self.styles, self.genders, self.budgets)
+        self.errors.extend(f"watch {pid}: {e}" for e in errs)
+        self.warnings.extend(f"watch {pid}: {w}" for w in warns)
+        if p.get("brand") and p["brand"] not in self.brands:
             self.errors.append(f"watch {pid}: unknown brand {p['brand']!r}")
-        if p.get("budget") is not None and p["budget"] not in self.budgets:
-            self.errors.append(f"watch {pid}: unknown budget {p['budget']!r}")
-        for g in p["gender"]:
-            if g not in self.genders:
-                self.errors.append(f"watch {pid}: unknown gender {g!r}")
-        for s in p["styles"]:
-            if s not in self.styles:
-                self.errors.append(f"watch {pid}: unknown style {s!r}")
         for m in p.get("merchants", {}):
             if m not in self.merchants:
                 self.errors.append(f"watch {pid}: unknown merchant {m!r}")
@@ -136,9 +145,10 @@ class Watches:
     def _ready(p):
         if p.get("draft"):
             return False, "draft"
-        for key in ("paragraphs", "good", "not_good", "sources"):
-            if not p.get(key):
-                return False, f"missing {key}"
+        if not p.get("brand") or not p.get("product_name") or not p.get("gender"):
+            return False, "missing brand, product_name or gender"
+        if not p.get("verdict"):
+            p["verdict"] = p.get("best_for") or ("Specifications as listed: " + p["card_specs"] + "." if p.get("card_specs") else "Details as listed by the retailer.")
         return True, ""
 
     # ---------- shops and affiliate links ----------
@@ -237,10 +247,11 @@ class Watches:
         specs = p.get("card_specs") or " · ".join(str(value) for value in (p.get("dial_style"), p.get("strap")) if value)
         return (
             f'<article class="watch-card" data-id="{esc(p["id"])}" data-name="{esc(brand + " " + p["model"])}" data-brand="{esc(p["brand"])}" '
-            f'data-gender="{esc(" ".join(p["gender"]))}" data-style="{esc(" ".join(p["styles"]))}" data-budget="{esc(p.get("budget") or "unlisted")}" data-styles="{esc(" ".join(p["styles"]))}" '
+            f'data-gender="{esc(" ".join(p["gender"]))}" data-style="{esc(" ".join(p["styles"]))}" data-budget="{esc(" ".join(self.qualifies(p)) or "unlisted")}" data-styles="{esc(" ".join(p["styles"]))}" '
             + " ".join(f'data-{key}="{esc(" ".join(v for v in getter(self, p) if v))}"' for key, _, _, getter in self.FILTERS) + '>'
             + media + '<div class="watch-body">'
-            f'<p class="watch-brand">{esc(brand)}</p><h3 class="watch-model"><a href="{esc(href)}">{esc(p["model"])}</a></h3>'
+            f'<p class="watch-brand">{esc(brand)}</p>' + (f'<p class="watch-label">{esc(watch_data.EDITORIAL_LABELS.get(p["editorial_labels"][0], ""))}</p>' if p.get("editorial_labels") and p["editorial_labels"][0] in watch_data.EDITORIAL_LABELS else "") +
+            f'<h3 class="watch-model"><a href="{esc(href)}">{esc(p["model"])}</a></h3>'
             f'<p class="watch-card-specs">{esc(specs)}</p><p class="watch-verdict">{esc(p["verdict"])}</p>'
             f'<div class="watch-product-bottom"><a class="watch-detail-link" href="{esc(href)}">Product details &rarr;</a>'
             f'<div class="watch-actions">{self.check_price(p, include_more=False)}</div></div></div></article>')
@@ -448,13 +459,13 @@ class Watches:
     DIAL_SIZES = [("36-and-under", "36 mm and under", 0, 36), ("37-40", "37\u201340 mm", 37, 40), ("41-44", "41\u201344 mm", 41, 44), ("45-plus", "45 mm and above", 45, 10 ** 4)]
     WATER = [("splash", "Splash resistant", 0, 29), ("30-m", "30 m", 30, 49), ("50-m", "50 m", 50, 99), ("100-m", "100 m", 100, 199), ("200-plus", "200 m and above", 200, 10 ** 6)]
     FILTERS = [
-        ("occasion", "Occasion", [("office", "Office"), ("formal", "Formal"), ("casual", "Casual"), ("everyday", "Everyday"), ("party", "Party"), ("gift", "Gift")], lambda self, p: p.get("occasion", [])),
-        ("dial", "Dial size", [(a, b) for a, b, _, _ in DIAL_SIZES], lambda self, p: [self.bucket(self.DIAL_SIZES, p.get("case_size_mm"))]),
-        ("strapmat", "Strap material", [("leather", "Leather"), ("stainless-steel", "Stainless Steel"), ("mesh", "Mesh"), ("silicone-rubber", "Silicone / Rubber"), ("fabric-nylon", "Fabric / Nylon")], lambda self, p: [p.get("strap_material", "")]),
+        ("occasion", "Occasion", [("office", "Office"), ("formal", "Formal"), ("casual", "Casual"), ("everyday", "Everyday"), ("party", "Party"), ("gift", "Gift")], lambda self, p: p.get("occasions", [])),
+        ("dial", "Dial size", [(a, b) for a, b, _, _ in DIAL_SIZES], lambda self, p: [self.bucket(self.DIAL_SIZES, p.get("case_diameter_mm"))]),
+        ("strapmat", "Strap material", [("leather", "Leather"), ("stainless-steel", "Stainless Steel"), ("mesh", "Mesh"), ("silicone-rubber", "Silicone / Rubber"), ("fabric-nylon", "Fabric / Nylon")], lambda self, p: [p.get("band_material", "")]),
         ("movement", "Movement", [("quartz", "Quartz"), ("automatic", "Automatic"), ("mechanical", "Mechanical")], lambda self, p: [p.get("movement", "")]),
-        ("water", "Water resistance", [(a, b) for a, b, _, _ in WATER], lambda self, p: [self.bucket(self.WATER, self.water_metres(p))]),
-        ("dialcolour", "Dial colour", [(x, x.title()) for x in ("black", "white", "blue", "green", "silver", "gold", "brown")], lambda self, p: p.get("dial_colour", [])),
-        ("strapcolour", "Strap colour", [(x, x.title()) for x in ("black", "brown", "silver", "gold", "blue", "rose-gold")], lambda self, p: p.get("strap_colour", [])),
+        ("water", "Water resistance", [(a, b) for a, b, _, _ in WATER], lambda self, p: [self.bucket(self.WATER, p.get("water_resistance_metres"))]),
+        ("dialcolour", "Dial colour", [(x, x.replace("-", " ").title()) for x in ("black", "white", "blue", "green", "silver", "gold", "brown")], lambda self, p: p.get("dial_colour", [])),
+        ("strapcolour", "Strap colour", [(x, x.replace("-", " ").title()) for x in ("black", "brown", "silver", "gold", "blue", "rose-gold")], lambda self, p: p.get("band_colour", [])),
         ("shape", "Case shape", [("round", "Round"), ("square", "Square"), ("rectangular", "Rectangular")], lambda self, p: [p.get("case_shape", "")]),
         ("feature", "Features", [("date", "Date"), ("day-date", "Day-Date"), ("chronograph", "Chronograph"), ("luminous-hands", "Luminous hands"), ("second-hand", "Second hand"), ("minimal-dial", "Minimal dial")], lambda self, p: p.get("features", [])),
         ("case", "Case material", CASES, lambda self, p: [p.get("case_material", "")]),
@@ -464,52 +475,86 @@ class Watches:
     def bucket(table, value):
         return next((slug for slug, _, lo, hi in table if value is not None and lo <= value <= hi), "")
 
-    @staticmethod
-    def water_metres(p):
-        """Depth in metres from the stated water resistance ("50 m", "5 ATM", "10 ATM"); None when it is not stated."""
-        text = str(p.get("water_resistance", ""))
-        m = re.search(r"(\d+(?:\.\d+)?)\s*(m|metres|meters|atm|bar)\b", text, re.I)
-        if not m:
-            return None
-        n = float(m.group(1))
-        return n * 10 if m.group(2).lower() in ("atm", "bar") else n
+    def qualifies(self, p):
+        """Price bands a watch appears under: its own and every higher one (Under 2,000 also appears under 3,000, 5,000 ...)."""
+        return watch_data.price_qualifies(p, self.budgets)
+
+    def active_brands(self):
+        """Brands that have live watches, in the order set in settings.json (brand_order, then featured_brands, then most watches); hidden ones left out."""
+        counts = {}
+        for p in self.products:
+            counts[p["brand"]] = counts.get(p["brand"], 0) + 1
+        hidden = set(self.settings.get("hidden_brands", []))
+        order = self.settings.get("brand_order", [])
+        featured = self.settings.get("featured_brands") or [b["slug"] for b in self.config["brands"] if b.get("tier") == "featured"]
+        def rank(slug_):
+            return (order.index(slug_) if slug_ in order else len(order), 0 if slug_ in featured else 1, -counts[slug_], self.brands[slug_]["name"].lower())
+        return [(slug_, self.brands[slug_]["name"], counts[slug_]) for slug_ in sorted(counts, key=rank) if slug_ not in hidden and slug_ in self.brands]
+
+    HUBS = {"/watches/", "/watches/men/", "/watches/women/"}
+
+    def collection_noindex(self, url, shown):
+        """A hub page is indexable once it has a watch. Any other collection is indexable only when it has enough watches, is approved in
+        collections.json, and has its own introduction of at least 100 words. Everything else stays a normal filter result."""
+        if url in self.HUBS:
+            return not shown
+        entry = self.approved.get(url) or {}
+        return not (len(shown) >= self.min_index and len(str(entry.get("intro", "")).split()) >= 100)
+
+    def collection_copy(self, url):
+        entry = self.approved.get(url)
+        if not entry or len(str(entry.get("intro", "")).split()) < 100:
+            return ""
+        faqs = "".join(f'<details class="faq-item"><summary><h3>{esc(f["q"])}</h3><span class="faq-chev" aria-hidden="true"></span></summary><p>{esc(f["a"])}</p></details>'
+                       for f in entry.get("faqs", []))
+        parts = [f'<p>{esc(entry["intro"])}</p>']
+        if entry.get("who_for"):
+            parts.append(f'<h3>Who this page is for</h3><p>{esc(entry["who_for"])}</p>')
+        if entry.get("advice"):
+            parts.append(f'<h3>Buying advice</h3><p>{esc(entry["advice"])}</p>')
+        if faqs:
+            parts.append(f'<h3>Common questions</h3>{faqs}')
+        return '<section class="watch-collection-copy">' + "".join(parts) + '</section>'
 
     def catalog(self, url, title, intro, *, gender="", brand="", budget="", style="", crumbs=None):
         products = self.products
         def matches(p):
             return ((not gender or gender in p["gender"]) and (not brand or p["brand"] == brand)
-                    and (not budget or p.get("budget") == budget) and (not style or style in p["styles"]))
+                    and (not budget or budget in self.qualifies(p)) and (not style or style in p["styles"]))
         shown = [p for p in products if matches(p)]
         def n(pred):
             return sum(1 for p in products if pred(p))
+        planned = self.settings.get("planned_filters", {})
+        active = self.active_brands()
         groups = [
-            {"key": "brand", "title": "Brand", "checked": [brand] if brand else [], "show_empty": True,
-             "items": [(slug, value["name"], n(lambda p, s=slug: p["brand"] == s)) for slug, value in self.brands.items() if slug != "sample"]},
+            {"key": "brand", "title": "Brand", "checked": [brand] if brand else [], "items": [(slug_, name, cnt) for slug_, name, cnt in active]},
             {"key": "budget", "title": "Price", "checked": [budget] if budget else [],
-             "items": [(slug, value["label"], n(lambda p, s=slug: p.get("budget") == s)) for slug, value in self.budgets.items() if n(lambda p, s=slug: p.get("budget") == s)]
+             "items": [(slug_, value["label"], n(lambda p, s=slug_: s in self.qualifies(p))) for slug_, value in self.budgets.items() if n(lambda p, s=slug_: s in self.qualifies(p))]
                       + ([("unlisted", "Price at retailer", n(lambda p: not p.get("budget")))] if n(lambda p: not p.get("budget")) else [])},
         ]
         for key, group_title, options, getter in self.FILTERS:
-            items = [(slug, label, n(lambda p, s=slug: s in getter(self, p))) for slug, label in options]
-            items = [it for it in items if it[2]]
-            if items:
-                groups.append({"key": key, "title": group_title, "checked": [], "items": items})
+            items = [(slug_, label, n(lambda p, s=slug_: s in getter(self, p))) for slug_, label in options]
+            live = [it for it in items if it[2]]
+            wanted = set(planned.get(key, []))
+            items = [it for it in items if it[2] or it[0] in wanted]
+            if len(live) >= 2 or (live and len(items) > len(live)):
+                groups.append({"key": key, "title": group_title, "checked": [], "show_empty": True, "items": items})
+        # a group with only one live value is hidden: it would filter nothing
+        groups = [g for g in groups if len([it for it in g["items"] if it[2]]) >= 2 or g["key"] in ("brand", "budget") and len(g["items"]) >= 2]
         groups.append({"key": "style", "title": "Style", "checked": [style] if style else [],
-                       "items": [(slug, value["label"], n(lambda p, s=slug: s in p["styles"])) for slug, value in self.styles.items()]})
+                       "items": [(slug_, value["label"], n(lambda p, s=slug_: s in p["styles"])) for slug_, value in self.styles.items()]})
         style_links = '<a class="watch-style" href="/watches/" data-style-toggle="" aria-current="false"><span class="style-dot" aria-hidden="true">' + watch_art("style-art") + '</span><span>All styles</span></a>'
         for slug, value in self.styles.items():
             style_links += (f'<a class="watch-style" href="/watches/style/{slug}/" data-style-toggle="{esc(slug)}" aria-current="false">'
                             f'<span class="style-dot style-{esc(slug)}" aria-hidden="true">{watch_art("style-art")}</span><span>{esc(value["label"])}</span></a>')
-        brand_counts = {slug: n(lambda p, s=slug: p["brand"] == s) for slug in self.brands}
         brand_pills = "".join(
-            f'<button type="button" class="watch-chip{" is-empty" if not brand_counts[slug] else ""}" data-quick-chip="brand" data-value="{esc(slug)}" aria-pressed="false">{esc(value["name"])}'
-            + (f' <em>{brand_counts[slug]}</em>' if brand_counts[slug] else '') + '</button>'
-            for slug, value in self.brands.items() if slug != "sample")
+            f'<button type="button" class="watch-chip" data-quick-chip="brand" data-value="{esc(slug_)}" aria-pressed="false">{esc(name)} <em>{cnt}</em></button>'
+            for slug_, name, cnt in active) if len(active) >= 2 else ""
         quick = ""
         top = ('<div class="watch-discovery"><div class="watch-style-head"><h2>Shop by style</h2><a href="/watches/guide/">Buying guide &rarr;</a></div>'
                f'<nav class="watch-style-row" aria-label="Watch styles">{style_links}</nav>'
-               f'<div class="watch-brand-head"><h2>Shop by brand</h2></div><div class="watch-chip-row" role="group" aria-label="Shop by brand" data-brand-row>{brand_pills}</div>'
-               f'<div class="watch-quick-row" data-quick-controls hidden>{quick}'
+               + (f'<div class="watch-brand-head"><h2>Shop by brand</h2></div><div class="watch-chip-row" role="group" aria-label="Shop by brand" data-brand-row>{brand_pills}</div>' if brand_pills else "")
+               + f'<div class="watch-quick-row" data-quick-controls hidden>{quick}'
                '</div></div>')
         top = top.replace(f'data-style-toggle="{esc(style)}" aria-current="false"', f'data-style-toggle="{esc(style)}" aria-current="true"', 1)
         block = collection.render([self.card(p) for p in products], groups, uid="watch-collection", title="Explore watches", noun="watch", plural="watches",
@@ -517,11 +562,91 @@ class Watches:
                                   top_html=top, visible=[matches(p) for p in products], page_size=24)
         body = ('<section class="section watch-store"><div class="container watch-store-inner">{{breadcrumb}}'
                 f'<header class="watch-store-head"><div><p class="watch-kicker">The SAT watch edit</p><h1>{esc(title)}</h1><p>{esc(intro)}</p></div>'
-                '<a class="watch-guide-link" href="/watches/guide/">Find your fit &rarr;</a></header>' + block + '<noscript><nav class="watch-static-links" aria-label="Browse watches"><a href="/watches/men/">Men</a> · <a href="/watches/women/">Women</a> · ' + ' · '.join(f'<a href="/watches/brands/{esc(slug)}/">{esc(value["name"])}</a>' for slug, value in self.brands.items() if slug != 'sample') + '</nav></noscript></div></section>')
+                '<a class="watch-guide-link" href="/watches/guide/">Find your fit &rarr;</a></header>' + block + self.collection_copy(url) + '<noscript><nav class="watch-static-links" aria-label="Browse watches"><a href="/watches/men/">Men</a> · <a href="/watches/women/">Women</a> · ' + ' · '.join(f'<a href="/watches/brands/{esc(slug)}/">{esc(value["name"])}</a>' for slug, value in self.brands.items() if slug != 'sample') + '</nav></noscript></div></section>')
         meta = self._meta(url, title, intro, body, crumbs or [["Watches", "/watches/"]], shown, js=False)
+        meta["noindex"] = self.collection_noindex(url, shown)
         meta["css"] += ["collection", "watch-store"]
         meta["js"] = ["collection"]
         return meta
+
+    def filter_state(self, products):
+        """{group key: number of different live values}: a group is shown to shoppers when this is 2 or more."""
+        state = {"brand": len({p["brand"] for p in products}), "price": len({b for p in products for b in watch_data.price_qualifies(p, self.budgets)})}
+        for key, _, options, getter in self.FILTERS:
+            state[key] = len({v for p in products for v in getter(self, p) if v})
+        return state
+
+    def intake_report(self, p):
+        """Everything the owner needs to know before publishing one normalised watch record (does not change any file)."""
+        errs, warns = watch_data.validate(p, {**self.brands, p.get("brand", ""): {}}, self.styles, self.genders, self.budgets)
+        before = self.filter_state(self.products)
+        after_products = [q for q in self.products if q["id"] != p.get("id")] + [p]
+        after = self.filter_state(after_products)
+        labels = dict((k, t) for k, t, _, _ in self.FILTERS)
+        labels.update({"brand": "Brand", "price": "Price"})
+        cats = [("Gender", ", ".join(self.genders[g]["label"] for g in p["gender"] if g in self.genders)), ("Brand", self.brands.get(p["brand"], {}).get("name", p.get("brand", "")))]
+        cats.append(("Styles", ", ".join(self.styles[x]["label"] if x in self.styles else x for x in p["styles"]) or "none yet"))
+        for key, title, options, getter in self.FILTERS:
+            names = dict(options)
+            vals = [names.get(v, v) for v in getter(self, p) if v]
+            if vals:
+                cats.append((title, ", ".join(vals)))
+        cats.append(("Price", ", ".join(self.budgets[b]["label"] for b in watch_data.price_qualifies(p, self.budgets)) or "Price at retailer (no band given)"))
+        enabled = [labels[k] for k in after if after[k] >= 2 and before.get(k, 0) < 2]
+        missing_optional = [f.replace("_", " ") for f in watch_data.FACT_FIELDS + ["price_band"] if not watch_data.known(p.get(f))]
+        saved = self.products
+        self.products = after_products
+        try:
+            cands = self.collection_candidates(must=p)
+        finally:
+            self.products = saved
+        mine = sorted(cands, key=lambda c: (-c["count"], c["name"]))[:8]
+        return {"errors": errs, "warnings": warns, "categories": cats, "filters_enabled": enabled, "missing_optional": missing_optional,
+                "collections": [f'{c["name"]} ({c["count"]} watches, {"approved" if c["approved"] else "needs approval and its own copy"})' for c in mine]}
+
+    def collection_candidates(self, must=None):
+        """Filter combinations (up to two) that have enough watches to justify a page, and whether each is approved. Report only."""
+        dims = []
+        for g in self.genders:
+            dims.append(("gender", g, self.genders[g]["label"], lambda p, v=g: v in p["gender"]))
+        for slug_, name, _ in self.active_brands():
+            dims.append(("brand", slug_, name, lambda p, v=slug_: p["brand"] == v))
+        own = {p.get("budget") for p in self.products if p.get("budget")}
+        for b, info in self.budgets.items():
+            if b in own:  # only bands that a live watch actually belongs to; the filter still lists every higher band
+                dims.append(("budget", b, info["label"], lambda p, v=b: v in self.qualifies(p)))
+        for st, info in self.styles.items():
+            dims.append(("style", st, info["label"], lambda p, v=st: st in p["styles"] if v == st else False))
+        for key, _, options, getter in self.FILTERS:
+            if key in ("water", "occasion", "strapmat", "movement"):
+                for slug_, label in options:
+                    dims.append((key, slug_, label, lambda p, g=getter, v=slug_: v in g(self, p)))
+        out = []
+        for i, a in enumerate(dims):
+            for b in [None] + dims[i + 1:]:
+                if b is not None and a[0] == b[0]:
+                    continue
+                items = [p for p in self.products if a[3](p) and (b is None or b[3](p))]
+                if len(items) < self.min_index:
+                    continue
+                if must is not None and not (a[3](must) and (b is None or b[3](must))):
+                    continue
+                name = a[2] + ("" if b is None else " + " + b[2])
+                url = self.collection_url(a, b)
+                out.append({"name": name, "count": len(items), "url": url, "approved": bool(url and len(str((self.approved.get(url) or {}).get("intro", "")).split()) >= 100)})
+        return out
+
+    @staticmethod
+    def collection_url(a, b):
+        pair = {a[0]: a[1]}
+        if b is not None:
+            pair[b[0]] = b[1]
+        if len(pair) == 1:
+            k, v = next(iter(pair.items()))
+            return {"gender": f"/watches/{v}/", "brand": f"/watches/brands/{v}/", "style": f"/watches/style/{v}/"}.get(k)
+        if set(pair) == {"gender", "budget"}:
+            return f'/watches/{pair["gender"]}/{pair["budget"]}/'
+        return None
 
     def budget_page(self, gender, budget):
         g, b = self.genders[gender], self.budgets[budget]
@@ -556,15 +681,71 @@ class Watches:
     def landing(self):
         return self.catalog("/watches/", "Watches for every day.", "Classic style. Everyday usefulness. Find a watch that feels like you.")
 
+    def product_detail(self, p):
+        brand = self.brands[p["brand"]]["name"]
+        href = self.review_url(p)
+        def section(title, inner):
+            return f'<section class="watch-section"><h2>{esc(title)}</h2>{inner}</section>' if inner else ""
+        def ul(items):
+            return "<ul>" + "".join(f"<li>{esc(x)}</li>" for x in items) + "</ul>" if items else ""
+        specs, unknown = [], []
+        def spec(label, value, key=None):
+            if value:
+                specs.append((label, value))
+            elif key:
+                unknown.append(label.lower())
+        mm, th = p.get("case_diameter_mm"), p.get("case_thickness_mm")
+        spec("Case diameter", f"{mm:g} mm" if mm else "", "case diameter")
+        spec("Case thickness", f"{th:g} mm" if th else "")
+        mat = p.get("band_material", "")
+        spec("Strap", " ".join(x for x in ((p.get("band_colour") or [""])[0].replace("-", " ").title(), mat.replace("-", " ")) if x).strip() or p.get("strap", ""), "strap")
+        spec("Dial colour", ", ".join(c.replace("-", " ").title() for c in p.get("dial_colour", [])))
+        spec("Case shape", p.get("case_shape", "").title())
+        spec("Movement", p.get("movement", "").title(), "movement")
+        spec("Display", p.get("display_type", "").replace("-", " ").title())
+        metres, atm = p.get("water_resistance_metres"), p.get("water_resistance_atm")
+        spec("Water resistance", f"Rated {metres:g} m ({atm:g} ATM), water-resistant, not waterproof" if metres else "", "water resistance")
+        spec("Warranty", " ".join(x for x in (p.get("warranty_type", "").title(), p.get("warranty_duration", "")) if x), "warranty")
+        spec("Country of origin", p.get("country_of_origin", ""))
+        dl = "<dl class=\"spec-list\">" + "".join(f"<div><dt>{esc(k)}</dt><dd>{esc(v)}</dd></div>" for k, v in specs) + "</dl>" if specs else ""
+        miss = f'<p class="watch-unknown">Not stated: {esc(", ".join(unknown))}.</p>' if unknown else ""
+        prov = p.get("source_verified", "")
+        provenance = f'<p class="watch-provenance">Specifications: {esc(prov)}. We have not tested this watch.</p>' if prov else ""
+        qs = watch_data.questions(p, {"band_label": self.budgets[p["budget"]]["label"] if p.get("budget") in self.budgets else "",
+                                      "brand_notes": self.brand_notes, "other_brands": {q["brand"] for q in self.products}})
+        faq = "".join(f'<details class="faq-item"><summary><h3>{esc(q)}</h3><span class="faq-chev" aria-hidden="true"></span></summary><p>{esc(a)}</p></details>' for kind, q, a in qs if kind not in ("fit", "water"))
+        fit = next((a for k, q, a in qs if k == "fit"), "")
+        wr = next((a for k, q, a in qs if k == "water"), "")
+        alts = [q for q in self.products if q["id"] != p["id"] and set(q["gender"]) & set(p["gender"])
+                and (q["brand"] == p["brand"] or set(self.qualifies(q)) & set(self.qualifies(p)))][:3]
+        label = watch_data.EDITORIAL_LABELS.get((p.get("editorial_labels") or [""])[0], "")
+        why = p.get("editorial_notes") or (p["verdict"] if p.get("paragraphs") or p.get("best_for") else "")
+        return (
+            (f'<span class="rank">{esc(label)}</span>' if label else "") +
+            f'<div class="watch-cta-row">{self.check_price(p, small=False, include_more=False)}</div>{self.cta_note(p)}'
+            + section("Why consider it", f'<p>{esc(why)}</p>' if why else "")
+            + section("Best for", f'<p>{esc(p["best_for"])}</p>' if p.get("best_for") else "")
+            + section("Key specifications", dl + miss + provenance)
+            + section("What we like", ul(p.get("good", [])))
+            + section("What to know before buying", ul(p.get("not_good", [])))
+            + section("Fit and size", f"<p>{esc(fit)}</p>" if fit else "")
+            + section("Water resistance explained", f"<p>{esc(wr)}</p>" if wr else "")
+            + section("Who should buy it", ul(p.get("who_should_buy", [])))
+            + section("Who should skip it", ul(p.get("who_should_skip", [])))
+            + section("Alternatives", self.grid(alts) if alts else "")
+            + section("Questions shoppers ask", faq))
+
     def product_page(self, p):
         brand = self.brands[p["brand"]]["name"]
         url = self.review_url(p)
-        title = brand + " " + p["model"]
+        title = p["product_name"] if p["product_name"].lower().startswith(brand.lower()) else brand + " " + p["model"]
         body = ('<section class="section"><div class="container content-page watch-page watch-product-page">{{breadcrumb}}'
-                f'<h1>{esc(title)}</h1>' + self.review(p) +
+                f'<h1>{esc(title)}</h1>' + self.product_detail(p) +
                 '<p><a class="btn btn-outline" href="/watches/">Explore all watches &rarr;</a></p></div></section>')
         meta = self._meta(url, title, p["verdict"], body, [["Watches", "/watches/"], [brand, f'/watches/brands/{p["brand"]}/'], [p["model"], url]], [p], js=False)
-        meta["css"].append("watch-store")
+        # a page without any written review stays out of Google until it has one
+        meta["noindex"] = not (p.get("paragraphs") or p.get("editorial_notes"))
+        meta["css"] += ["watch-store"]
         return meta
 
     def guide_page(self):
