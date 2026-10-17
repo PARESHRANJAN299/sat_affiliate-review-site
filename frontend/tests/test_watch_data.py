@@ -73,9 +73,13 @@ class Site(unittest.TestCase):
         self.assertIn("tag=pareshsat-21", raw)
 
     def test_single_value_groups_are_not_offered(self):
-        state = self.shop.filter_state(self.shop.products)
+        quartz_only = [p for p in self.shop.products if p.get("movement") == "quartz"]
+        state = self.shop.filter_state(quartz_only)
         self.assertEqual(state["movement"], 1)  # only quartz is known, so no Movement filter is shown
         self.assertGreaterEqual(state["brand"], 2)
+        both = quartz_only + [p for p in self.shop.products if p.get("movement") == "automatic"]
+        if len(both) > len(quartz_only):
+            self.assertEqual(self.shop.filter_state(both)["movement"], 2)   # a second movement type makes the filter appear
 
     def test_collections_need_approval_and_copy(self):
         self.assertTrue(self.shop.collection_noindex("/watches/brands/casio/", self.shop.products[:3]))
