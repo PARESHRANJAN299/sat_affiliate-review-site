@@ -150,18 +150,35 @@
 @keyframes lx-fade { from { opacity: 0; } to { opacity: 1; } }
 
 /* ---------- one large card per row on phones (default) or two across ---------- */
-.watch-store[data-mobile-grid="two"] .collection .watch-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
 @media (max-width: 719px) {
-  .watch-store[data-mobile-grid="two"] .collection .watch-card .watch-tile { aspect-ratio: 1 / 1.08; }
-  .watch-store[data-mobile-grid="two"] .collection .watch-card .watch-body { padding: 12px 14px 16px; }
-  .watch-store[data-mobile-grid="two"] .collection .watch-model { margin-bottom: 8px; font-size: 1rem; }
-  .watch-store[data-mobile-grid="two"] .collection .watch-facts { margin-top: 0; }
+  .watch-store[data-mobile-grid="two"] .collection .watch-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .watch-store[data-mobile-grid="two"] .collection .watch-card, .watch-store[data-mobile-grid="two"] .collection .watch-card:has(.watch-media) { border-radius: 16px; box-shadow: 0 1px 2px rgba(60, 40, 10, .04), 0 14px 22px -18px rgba(60, 40, 10, .45); }
+  .watch-store[data-mobile-grid="two"] .collection .watch-card .watch-tile { aspect-ratio: 1 / 1; }
+  .watch-store[data-mobile-grid="two"] .collection .watch-card .watch-tile .dial-art { height: 88%; }
+  .watch-store[data-mobile-grid="two"] .collection .watch-card .watch-body { padding: 10px 11px 12px; }
+  .watch-store[data-mobile-grid="two"] .collection .watch-meta { flex-direction: column; align-items: flex-start; gap: 1px; margin: 0 0 6px; }
+  .watch-store[data-mobile-grid="two"] .collection .watch-brand { font-size: .58rem; letter-spacing: .16em; }
+  .watch-store[data-mobile-grid="two"] .collection .watch-band { font-size: .66rem; }
+  .watch-store[data-mobile-grid="two"] .collection .watch-model { margin: 0 0 6px; font-size: .9rem; line-height: 1.28; -webkit-line-clamp: 3; }
   .watch-store[data-mobile-grid="two"] .collection .watch-spec-rows { display: none; }
-  .watch-store[data-mobile-grid="two"] .watch-facts { display: -webkit-box; margin: 0 0 14px; font-size: .74rem; line-height: 1.45; color: var(--lx-muted); -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-  .watch-store[data-mobile-grid="two"] .collection .watch-actions .btn { min-height: 44px; padding: 0 10px; font-size: .84rem; border-radius: 12px; }
+  .watch-store[data-mobile-grid="two"] .watch-facts { display: -webkit-box; margin: 0 0 10px; padding-top: 8px; border-top: 1px solid var(--lx-line); font-size: .7rem; line-height: 1.4; color: var(--lx-muted); -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .watch-store[data-mobile-grid="two"] .collection .watch-actions { gap: 5px; }
+  .watch-store[data-mobile-grid="two"] .collection .watch-actions .btn { min-height: 38px; padding: 0 8px; border-radius: 10px; font-size: .8rem; letter-spacing: .01em; }
   .watch-store[data-mobile-grid="two"] .collection .watch-actions .btn .ic { display: none; }
-  .watch-store[data-mobile-grid="two"] .collection .watch-meta { flex-direction: column; gap: 2px; align-items: flex-start; }
-  .watch-store[data-mobile-grid="two"] .collection .watch-tip { grid-column: 1 / -1; }
+  .watch-store[data-mobile-grid="two"] .collection .watch-actions .paid-link { font-size: .58rem; }
+  .watch-store[data-mobile-grid="two"] .collection .watch-tip { grid-column: 1 / -1; padding: 18px 18px 18px 20px; }
+  .watch-store[data-mobile-grid="two"] .collection .watch-tip h3 { font-size: 1.05rem; }
+  .watch-store[data-mobile-grid="two"] .collection-main > .watch-affiliate-note { margin: 10px 0 12px; font-size: .68rem; }
+  /* the four bar buttons share the width: Filters, Budget, Brand, Sort */
+  .watch-store .collection .collection-controls { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 6px; overflow: visible; padding: 8px 16px; }
+  .lx-chip, .watch-store .collection .collection-filter-open, .watch-store .collection .collection-sort { justify-content: center; min-width: 0; min-height: 42px; padding: 0 6px; gap: 5px; font-size: .78rem; }
+  .watch-store .collection .lx-chip { font: 600 .78rem var(--font-sans); }
+  .lx-chip b { display: none; }
+  .lx-chip.is-set span::before { content: ""; display: inline-block; width: 6px; height: 6px; margin-right: 5px; border-radius: 50%; background: var(--lx-gold); vertical-align: middle; }
+  .watch-store .collection .collection-sort { position: relative; margin: 0; }
+  .watch-store .collection .collection-sort span { font-weight: 600; color: var(--lx-ink); }
+  .watch-store .collection .collection-sort select { position: absolute; inset: 0; width: 100%; height: 100%; min-height: 0; opacity: 0; }
+  .watch-store .collection .collection-sort::after { content: ""; width: 6px; height: 6px; margin: -3px 0 0 2px; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: rotate(45deg); opacity: .55; }
 }
 
 /* ---------- tablet and laptop ---------- */
