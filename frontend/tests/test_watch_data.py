@@ -288,6 +288,15 @@ class Buckets(unittest.TestCase):
         self.assertNotIn("<dt>Water resistance</dt>", card)
 
 
+class MetalStrap(unittest.TestCase):
+    def test_unspecified_metal_strap_is_still_a_metal_strap(self):
+        p = watch_data.normalise({"id": "m", "brand": "titan", "product_name": "M", "gender": "women", "band_material": "Metal"}, BUDGETS)
+        self.assertEqual(p["band_material"], "metal")
+        self.assertIn("metal-strap", p["styles"])
+        shop = watches.Watches(build.SRC, build.CONFIG)
+        self.assertIn("metal", watches.Watches.FILTERS[2][3](shop, p))        # strap material filter has its own bucket for it
+
+
 class Duplicates(unittest.TestCase):
     def test_same_id_asin_or_name_is_flagged(self):
         a = {"id": "titan-a-b000000001", "product_name": "Titan A", "amazon_url": "https://www.amazon.in/dp/B000000001?tag=x"}
