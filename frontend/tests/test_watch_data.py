@@ -306,6 +306,15 @@ class DialColours(unittest.TestCase):
         stored = {c for p in shop.products for c in p.get("dial_colour", [])}
         self.assertEqual(stored - offered, set())      # a colour on a watch must have a filter option, or the watch can never be found by it
 
+    def test_every_stored_value_has_a_filter_option(self):
+        """A value on a watch with no option in its filter group means the watch can never be found by it (as happened with champagne, oval and contemporary)."""
+        shop = watches.Watches(build.SRC, build.CONFIG)
+        for key, title, options, getter in shop.FILTERS:
+            offered = {value for value, _ in options}
+            stored = {v for p in shop.products for v in getter(shop, p) if v}
+            self.assertEqual(stored - offered, set(), f"{title}: stored values without a filter option")
+
+
 
 class Duplicates(unittest.TestCase):
     def test_same_id_asin_or_name_is_flagged(self):
