@@ -284,7 +284,9 @@ class Watches:
                 f'<stop offset="1" stop-color="{mix(strap, "#000000", .32)}"/></linearGradient>'
                 f'<linearGradient id="l{uid}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="{mix(strap, "#ffffff", .45)}"/><stop offset=".5" stop-color="{strap}"/>'
                 f'<stop offset="1" stop-color="{mix(strap, "#000000", .35)}"/></linearGradient>'
-                f'<linearGradient id="g{uid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".5"/><stop offset=".55" stop-color="#fff" stop-opacity=".06"/>'
+                f'<radialGradient id="v{uid}" cx=".5" cy=".5" r=".55"><stop offset=".62" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".34"/></radialGradient>'
+                f'<linearGradient id="k{uid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".9"/><stop offset=".5" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".5"/></linearGradient>'
+f'<linearGradient id="g{uid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".5"/><stop offset=".55" stop-color="#fff" stop-opacity=".06"/>'
                 '<stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>')
 
         if metal_strap:
@@ -336,11 +338,32 @@ class Watches:
                 f'<line x1="{cx}" y1="{cy}" x2="{cx + 15}" y2="{cy - 19}" stroke="{ink}" stroke-width="2.2"/><line x1="{cx}" y1="{cy}" x2="{cx + 15}" y2="{cy - 19}" stroke="#e8f5c8" stroke-width=".7" opacity=".9"/>'
                 f'<line x1="{cx - 4}" y1="{cy + 6}" x2="{cx + 7}" y2="{cy - 11}" stroke="#c9a45c" stroke-width=".8"/></g><circle cx="{cx}" cy="{cy}" r="2.6" fill="#c9a45c"/><circle cx="{cx}" cy="{cy}" r="1" fill="#6b5320"/>')
         glass = f'<ellipse cx="{cx - 11}" cy="{cy - 18}" rx="30" ry="15" transform="rotate(-36 {cx - 11} {cy - 18})" fill="url(#g{uid})" clip-path="url(#c{uid})"/>'
+        dark = mix(metal, "#000000", .55)
+        thickness = re.sub(r'fill="url\(#m\w+\)"', f'fill="{dark}"', outer)
+        bevel = re.sub(r'fill="rgba\(0,0,0,\.3\)"', 'fill="none" stroke="url(#k' + uid + ')" stroke-width="1.1"', bezel)
+        vignette = dial_el.replace(f"url(#d{uid})", f"url(#v{uid})")
+        crown = (f'<rect x="{cx + 40}" y="{cy - 5}" width="8" height="10" rx="2.2" fill="url(#m{uid})"/>'
+                 + "".join(f'<line x1="{cx + 42 + k * 1.8:.1f}" y1="{cy - 4.2}" x2="{cx + 42 + k * 1.8:.1f}" y2="{cy + 4.2}" stroke="rgba(0,0,0,.35)" stroke-width=".5"/>' for k in range(3)))
+        face_shadow = f'<g transform="translate(1.1 2.2)" opacity=".28" stroke="#000" stroke-linecap="round"><line x1="{cx}" y1="{cy}" x2="{cx - 9}" y2="{cy - 15}" stroke-width="3"/><line x1="{cx}" y1="{cy}" x2="{cx + 15}" y2="{cy - 19}" stroke-width="2.2"/></g>'
         body = (f'<g transform="translate({cx} {cy}) scale({scale:.3f}) translate({-cx} {-cy})">'
-                f'<rect x="{cx + 40}" y="{cy - 4.5}" width="7" height="9" rx="2" fill="url(#m{uid})"/>{pushers}{outer}{bezel}{dial_el}{face}{glass}'
-                f'<circle cx="{cx}" cy="{cy}" r="0" /></g>')
+                f'{crown}{pushers}<g transform="translate(0 4.5)">{thickness}</g>{outer}{bevel}{dial_el}{vignette}{face_shadow}{face}{glass}'
+                f'<ellipse cx="{cx + 14}" cy="{cy + 20}" rx="22" ry="9" transform="rotate(-30 {cx + 14} {cy + 20})" fill="url(#g{uid})" opacity=".35" clip-path="url(#c{uid})"/></g>')
         return (f'<svg class="dial-art" viewBox="0 20 140 150" aria-hidden="true" focusable="false"><defs>{defs}<clipPath id="c{uid}">{clip}</clipPath></defs>'
                 f'<g>{straps}</g><g>{lugs}</g>{body}</svg>')
+
+    def watch_theme(self, p):
+        """CSS variables for a watch: a light backdrop tinted by its dial (or strap) colour, a mid tone, and an accent from its case metal or dial.
+        Used for the card display and, on the product page, for the background, accents and button, so every watch gets its own look."""
+        mix = self._mix
+        dial_key = (p.get("dial_colour") or [""])[0]
+        strap_key = (p.get("band_colour") or [""])[0]
+        base = self.DIAL_HEX.get(dial_key) or self.STRAP_HEX.get(strap_key) or "#cdbfa0"
+        metal_strap = p.get("band_material") in ("stainless-steel", "metal")
+        metal = self.METAL_HEX.get(strap_key) if metal_strap else None
+        wb = mix(mix(base, "#d9c9a8", .35), "#ffffff", .88)
+        wc = mix(mix(base, "#d9c9a8", .4), "#ffffff", .62)
+        accent = mix(metal, "#000000", .3) if metal in ("#c9a45c", "#c98f7f") else mix(base, "#000000", .42 if sum(int(base[k:k + 2], 16) for k in (1, 3, 5)) > 300 else .0)
+        return f"--wb:{wb};--wc:{wc};--wa:{accent}"
 
     def band_range(self, p):
         """The price band a watch sits in, as a range of band edges ("Rs 2,000 - Rs 3,000"); band edges only, never a price."""
@@ -364,7 +387,7 @@ class Watches:
             media = (f'<a class="watch-media watch-tile" href="{esc(href)}" tabindex="-1" aria-hidden="true">{self.dial_art(p)}'
                      f'<span class="tile-brand">{esc(brand)}</span>' + (f'<span class="tile-band">{esc(self.band_range(p))}</span>' if band else "") + '</a>')
         return (
-            f'<article class="watch-card" data-id="{esc(p["id"])}" data-name="{esc(brand + " " + p["model"])}" data-brand="{esc(p["brand"])}" '
+            f'<article class="watch-card" style="{self.watch_theme(p)}" data-id="{esc(p["id"])}" data-name="{esc(brand + " " + p["model"])}" data-brand="{esc(p["brand"])}" '
             f'data-gender="{esc(" ".join(p["gender"]))}" data-style="{esc(" ".join(p["styles"]))}" data-budget="{esc(" ".join(self.qualifies(p)) or "unlisted")}" data-own="{esc(p.get("budget") or "")}" data-styles="{esc(" ".join(p["styles"]))}" '
             + " ".join(f'data-{key}="{esc(" ".join(v for v in getter(self, p) if v))}"' for key, _, _, getter in self.FILTERS) + '>'
             + media + '<div class="watch-body">'
@@ -878,7 +901,7 @@ class Watches:
         meta = self._meta(url, title, intro, body, crumbs or [["Watches", "/watches/"]], shown, js=False)
         meta["noindex"] = self.collection_noindex(url, shown)
         meta["css"] += ["collection", "watch-store", "price-slider"]
-        meta["js"] = ["collection"]
+        meta["js"] = ["collection", "watch-tilt"]
         return meta
 
     def filter_state(self, products):
@@ -1067,8 +1090,7 @@ class Watches:
         why = p.get("editorial_notes") or (p["verdict"] if p.get("paragraphs") or p.get("best_for") else "")
         return (
             (f'<span class="rank">{esc(label)}</span>' if label else "") +
-            f'<div class="watch-cta-row">{self.check_price(p, small=False, include_more=False)}</div>{self.cta_note(p)}'
-            + section("Why consider it", f'<p>{esc(why)}</p>' if why else "")
+            section("Why consider it", f'<p>{esc(why)}</p>' if why else "")
             + section("Best for", f'<p>{esc(p["best_for"])}</p>' if p.get("best_for") else "")
             + section("Key specifications", dl + miss + provenance)
             + section("What we like", ul(p.get("good", [])))
@@ -1078,20 +1100,36 @@ class Watches:
             + section("Who should buy it", ul(p.get("who_should_buy", [])))
             + section("Who should skip it", ul(p.get("who_should_skip", [])))
             + section("Alternatives", self.grid(alts) if alts else "")
-            + section("Questions shoppers ask", faq))
+            + section("Questions shoppers ask", faq)
+            + f'<div class="watch-cta-row watch-cta-end">{self.check_price(p, small=False, include_more=False)}</div>')
+
+    def product_hero(self, p, title):
+        """The top of a product page: the drawing on a light display, the brand, the name with its price band, the key facts and the Check price button."""
+        brand = self.brands[p["brand"]]["name"]
+        band = self.band_range(p)
+        label = watch_data.EDITORIAL_LABELS.get((p.get("editorial_labels") or [""])[0], "")
+        return ('<div class="watch-pdp">'
+                f'<div class="watch-pdp-photo">{self.dial_art(p)}<span class="tile-brand">{esc(brand)}</span>' + (f'<span class="tile-band">{esc(band)}</span>' if band else "") + '</div>'
+                '<div class="watch-pdp-info">'
+                f'<p class="watch-kicker">{esc(brand)}' + (f' \u00b7 {esc(label)}' if label else "") + f'</p><h1>{esc(title)}</h1>'
+                + self.spec_rows(p) +
+                f'<div class="watch-cta-row">{self.check_price(p, small=False, include_more=False)}</div>'
+                '<p class="watch-pdp-note">Specifications are as listed by the seller. Check the price and the colour on the Amazon page before you buy.</p>'
+                '</div></div>')
 
     def product_page(self, p):
         brand = self.brands[p["brand"]]["name"]
         url = self.review_url(p)
         title = p["product_name"] if p["product_name"].lower().startswith(brand.lower()) else brand + " " + p["model"]
-        body = ('<section class="section"><div class="container content-page watch-page watch-product-page">{{breadcrumb}}'
-                f'<h1>{esc(title)}</h1>' + self.product_detail(p) +
+        body = (f'<section class="section watch-pdp-wrap" style="{self.watch_theme(p)}"><div class="container content-page watch-page watch-product-page">{{{{breadcrumb}}}}'
+                + self.product_hero(p, title) + self.product_detail(p) +
                 '<p><a class="btn btn-outline" href="/watches/">Explore all watches &rarr;</a></p></div></section>')
         short = title if len(title) <= 52 else title[:52].rsplit(" ", 1)[0]  # the page <title> stays within the search-result length
         meta = self._meta(url, short, p["verdict"], body, [["Watches", "/watches/"], [brand, f'/watches/brands/{p["brand"]}/'], [p["model"], url]], [p], js=False)
         # a page without any written review stays out of Google until it has one
         meta["noindex"] = not (p.get("paragraphs") or p.get("editorial_notes"))
         meta["css"] += ["watch-store"]
+        meta["js"] = ["watch-tilt"]
         return meta
 
     def guide_page(self):

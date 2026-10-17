@@ -413,6 +413,38 @@ class UniqueIds(unittest.TestCase):
         self.assertEqual(len(ids), len(set(ids)))
 
 
+class WatchTheme(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.shop = watches.Watches(build.SRC, build.CONFIG)
+
+    def test_each_watch_gets_its_own_colours(self):
+        green = {"dial_colour": ["green"], "band_colour": ["gold"], "band_material": "stainless-steel"}
+        blue = {"dial_colour": ["blue"], "band_colour": ["silver"], "band_material": "stainless-steel"}
+        self.assertNotEqual(self.shop.watch_theme(green), self.shop.watch_theme(blue))
+        for theme in (self.shop.watch_theme(green), self.shop.watch_theme(blue), self.shop.watch_theme({})):
+            self.assertRegex(theme, r"--wb:#[0-9a-f]{6};--wc:#[0-9a-f]{6};--wa:#[0-9a-f]{6}")   # unknown colours still give a neutral theme
+
+    def test_card_and_product_page_carry_the_theme(self):
+        p = next(q for q in self.shop.products if q["id"] == "titan-analog-offwhite-b01clf3bfw")
+        self.assertIn("--wb:", self.shop.card(p))
+        page = self.shop.product_page(p)["_body"]
+        self.assertIn('class="section watch-pdp-wrap" style="--wb:', page)
+        self.assertIn("watch-pdp-photo", page)
+        self.assertIn("{{breadcrumb}}", page)
+
+    def test_tilt_script_is_on_the_pages_that_show_drawings(self):
+        self.assertIn("watch-tilt", self.shop.landing()["js"])
+        p = self.shop.products[0]
+        self.assertIn("watch-tilt", self.shop.product_page(p)["js"])
+
+    def test_drawing_has_depth_layers(self):
+        art = self.shop.dial_art({"id": "x", "dial_colour": ["blue"], "band_colour": ["silver"], "band_material": "stainless-steel", "features": ["chronograph"]})
+        self.assertIn('translate(0 4.5)', art)           # case thickness
+        self.assertIn("stroke-width=\"1.1\"", art)       # bevelled bezel edge
+        self.assertIn("opacity=\".28\"", art)            # hand shadows
+
+
 class Duplicates(unittest.TestCase):
     def test_same_id_asin_or_name_is_flagged(self):
         a = {"id": "titan-a-b000000001", "product_name": "Titan A", "amazon_url": "https://www.amazon.in/dp/B000000001?tag=x"}

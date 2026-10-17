@@ -432,3 +432,50 @@
 .watch-actions .paid-link { grid-column: 1; justify-self: start; }
 .watch-actions .watch-detail-link { grid-column: 2; justify-self: end; width: auto; margin: 0; text-align: right; }
 @media (max-width: 640px) { .watch-tile .tile-band { font-size: .56rem; white-space: nowrap; letter-spacing: 0; padding: 4px 3px; } }
+
+/* Brand as a small plaque at the foot of every display (card and product page), instead of a big watermark. */
+.watch-store .collection .watch-card .watch-tile .tile-brand, .watch-pdp-photo .tile-brand { position: absolute; left: 0; right: 0; top: auto; bottom: 9px; transform: none; text-align: center; writing-mode: horizontal-tb; font: 700 .62rem/1 var(--font-sans); letter-spacing: .5em; text-indent: .5em; text-transform: uppercase; color: #8a6a28; opacity: .8; overflow: visible; z-index: 2; pointer-events: none; }
+.watch-tile::after { bottom: 26px; }
+@media (max-width: 640px) { .watch-store .collection .watch-card .watch-tile .tile-brand { bottom: 38px; letter-spacing: .32em; text-indent: .32em; font-size: .56rem; left: 0; right: 0; transform: none; writing-mode: horizontal-tb; } .watch-tile::after { bottom: 56px; } }
+/* Product page hero */
+.watch-pdp { display: grid; gap: 20px; margin: 4px 0 28px; }
+.watch-pdp-photo { position: relative; display: flex; align-items: center; justify-content: center; height: 320px; border-radius: 20px; overflow: hidden; border: 1px solid rgba(176, 141, 87, .35);
+  background: radial-gradient(62% 58% at 50% 46%, #fffefb 0%, #f6efdf 58%, #eadfc6 100%); box-shadow: inset 0 2px 0 rgba(201, 164, 92, .7), 0 18px 34px -26px rgba(20, 16, 8, .55); }
+.watch-pdp-photo::after { content: ""; position: absolute; left: 50%; bottom: 30px; width: 36%; height: 14px; transform: translateX(-50%); background: radial-gradient(ellipse at center, rgba(70, 48, 14, .34), rgba(70, 48, 14, 0) 70%); filter: blur(3px); }
+.watch-pdp-photo .dial-art { height: 100%; position: relative; z-index: 1; }
+.watch-pdp-photo .tile-band { position: absolute; top: 14px; right: 14px; z-index: 2; padding: 4px 11px; border-radius: 999px; background: #1b1d22; border: 1px solid rgba(201, 164, 92, .75); color: #f1deb0; font-size: .7rem; font-weight: 700; }
+.watch-pdp-info { display: flex; flex-direction: column; justify-content: center; gap: 4px; min-width: 0; }
+.watch-pdp-info .watch-kicker { margin: 0; }
+.watch-pdp-info h1 { font-size: clamp(1.5rem, 3vw, 2.2rem); line-height: 1.2; margin: 0 0 6px; }
+.watch-pdp-info .watch-spec-rows { margin: 10px 0 14px; }
+.watch-pdp-info .watch-cta-row .btn { width: 100%; min-height: 50px; border-radius: 12px; background: linear-gradient(180deg, #2b2f38, #101216); border: 1px solid #c9a45c; color: #fff; font-weight: 700; }
+.watch-pdp-info .watch-cta-row .btn:hover { background: linear-gradient(180deg, #e0c27a, #b48b3c); color: #17130a; }
+.watch-pdp-note { margin: 6px 0 0; font-size: .76rem; color: var(--color-text-muted); }
+.watch-cta-end { margin-top: 28px; max-width: 420px; }
+.watch-cta-end .btn { width: 100%; min-height: 50px; border-radius: 12px; background: linear-gradient(180deg, #2b2f38, #101216); border: 1px solid #c9a45c; color: #fff; font-weight: 700; }
+@media (min-width: 900px) { .watch-pdp { grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: 36px; align-items: stretch; } .watch-pdp-photo { height: 460px; } }
+.watch-pdp-photo .dial-art { height: 90%; }
+.watch-pdp .watch-pdp-note { font-size: .76rem; line-height: 1.5; }
+
+/* 3D tilt, per-watch colours and the product-page theme. Each watch sets --wb (light backdrop), --wc (mid tone) and --wa (accent) from its own dial, strap and metal. */
+.dial-art { transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) scale(var(--sc, 1)); transition: transform .18s ease-out; transform-origin: 50% 55%; will-change: transform; }
+@media (hover: hover) { .watch-card:hover .dial-art { transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) scale(1.05); } }
+.watch-store .collection .watch-card .watch-tile, .watch-pdp-photo { background: radial-gradient(62% 58% at 50% 46%, var(--wb, #fffefb) 0%, var(--wc, #f3ead6) 64%, var(--wc, #eadfc6) 100%); box-shadow: inset 0 0 46px rgba(60, 40, 10, .09); }
+.watch-store .collection .watch-card .watch-brand { color: var(--wa, #8a6a28); }
+.watch-spec-rows div { border-left-color: var(--wa, rgba(201, 164, 92, .6)); }
+.watch-spec-rows dt { color: var(--wa, #8a7a55); opacity: .85; }
+.watch-pdp-wrap { background: linear-gradient(180deg, var(--wb, #fbf9f6) 0, #fcfaf6 620px); }
+.watch-pdp-wrap .watch-kicker { color: var(--wa, #8a6a28); }
+.watch-pdp-wrap .watch-kicker::before { background: var(--wa, #c9a45c); }
+.watch-pdp-wrap .watch-section h2 { position: relative; padding-bottom: 8px; }
+.watch-pdp-wrap .watch-section h2::after { content: ""; position: absolute; left: 0; bottom: 0; width: 34px; height: 2px; background: var(--wa, #c9a45c); }
+.watch-pdp-wrap .spec-list dt { color: var(--wa, #5a6070); }
+.watch-pdp-wrap .spec-list > div { border-top-color: var(--wa, #e7e1d7); }
+.watch-pdp-wrap .watch-pdp-info .btn, .watch-pdp-wrap .watch-cta-end .btn { border-color: var(--wa, #c9a45c); }
+.watch-pdp-wrap .watch-pdp-info .btn:hover, .watch-pdp-wrap .watch-cta-end .btn:hover { background: var(--wa, #b48b3c); color: #fff; border-color: var(--wa, #b48b3c); }
+.watch-pdp-wrap .watch-pdp-photo { border-color: var(--wa, rgba(176, 141, 87, .35)); }
+.watch-pdp-wrap .faq-item summary h3 { color: inherit; }
+@keyframes watch-sway { 0%, 100% { transform: perspective(900px) rotateY(-9deg) rotateX(2deg); } 50% { transform: perspective(900px) rotateY(9deg) rotateX(-2deg); } }
+@media (hover: none) and (prefers-reduced-motion: no-preference) { .watch-pdp-photo .dial-art { animation: watch-sway 8s ease-in-out infinite; } }
+@media (prefers-reduced-motion: reduce) { .dial-art { transition: none; transform: none; animation: none; } }
+.watch-pdp-info h1 { font-size: clamp(1.3rem, 2.3vw, 1.85rem); line-height: 1.22; }
