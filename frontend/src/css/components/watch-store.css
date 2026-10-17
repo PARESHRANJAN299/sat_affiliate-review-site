@@ -348,3 +348,41 @@
 }
 .dial-art { height: 96%; }
 @media (max-width: 640px) { .dial-art { height: 74%; } }
+
+/* Ad-style card: a large lit display for the watch, a two-line title, a 2 x 2 stat block, equal heights, one clear button. */
+.watch-store .collection .watch-card { border-radius: 18px; border: 1px solid rgba(176, 141, 87, .3); box-shadow: 0 1px 2px rgba(20, 16, 8, .05), 0 22px 40px -28px rgba(20, 16, 8, .6); transition: transform .25s ease, box-shadow .25s ease; }
+@media (hover: hover) { .watch-store .collection .watch-card:hover { transform: translateY(-4px); box-shadow: 0 2px 4px rgba(20, 16, 8, .06), 0 30px 46px -26px rgba(20, 16, 8, .65); } .watch-card:hover .dial-art { transform: scale(1.045); } }
+.watch-store .collection .watch-card .watch-tile { height: 270px; background: radial-gradient(70% 62% at 50% 42%, #353c4e 0%, #1a1f2b 55%, #0c0f15 100%); overflow: hidden; }
+.watch-tile::after { content: ""; position: absolute; left: 50%; bottom: 16px; width: 44%; height: 14px; transform: translateX(-50%); background: radial-gradient(ellipse at center, rgba(0, 0, 0, .6), rgba(0, 0, 0, 0) 70%); filter: blur(3px); }
+.dial-art { height: 92%; position: relative; z-index: 1; transition: transform .35s ease; filter: drop-shadow(0 10px 12px rgba(0, 0, 0, .45)); }
+.watch-tile .tile-band { z-index: 2; top: 14px; right: 14px; font-size: .66rem; letter-spacing: .04em; }
+.watch-store .collection .watch-card .watch-body { padding: 18px 18px 16px; gap: 6px; }
+.watch-store .collection .watch-card .watch-brand { font-size: .66rem; letter-spacing: .2em; color: #8a6a28; }
+.watch-store .collection .watch-card .watch-model { margin: 0; font: 650 1.02rem/1.35 var(--font-sans); display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden; min-height: 2.7em; }
+.watch-spec-rows { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 8px 0 12px; min-height: 108px; align-content: start; }
+.watch-spec-rows div { display: flex; flex-direction: column; gap: 2px; border: 0; padding: 8px 10px; border-radius: 10px; background: #faf7f0; min-width: 0; }
+.watch-spec-rows dt { font-size: .6rem; letter-spacing: .12em; text-transform: uppercase; color: #8a7a55; font-weight: 700; }
+.watch-spec-rows dd { margin: 0; font-size: .86rem; font-weight: 650; text-align: left; color: #1f2023; overflow-wrap: anywhere; }
+.watch-spec-rows div:first-child:nth-last-child(5) { grid-column: 1 / -1; }
+.watch-product-bottom { margin-top: auto; padding-top: 4px; display: grid; gap: 8px; }
+.watch-detail-link { order: 2; font-size: .78rem; text-align: center; color: #6b5a33; }
+.watch-actions { order: 1; }
+.watch-store .collection .watch-card .btn-primary { width: 100%; min-height: 46px; border-radius: 12px; font-weight: 700; letter-spacing: .01em; }
+@media (max-width: 640px) {
+  .watch-store .collection .watch-card { grid-template-columns: 122px minmax(0, 1fr); }
+  .watch-store .collection .watch-card .watch-tile { min-height: 250px; }
+  .dial-art { height: 70%; }
+  .watch-tile::after { width: 60%; bottom: 52px; }
+  .watch-store .collection .watch-card .watch-model { font-size: .95rem; }
+  .watch-spec-rows { gap: 6px; min-height: 0; }
+  .watch-spec-rows div { padding: 6px 8px; }
+  .watch-spec-rows dd { font-size: .8rem; }
+}
+@media (prefers-reduced-motion: reduce) { .dial-art, .watch-store .collection .watch-card { transition: none; } .watch-card:hover .dial-art { transform: none; } }
+.watch-spec-rows dt { letter-spacing: .08em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+@media (max-width: 640px) {
+  .watch-store .collection .watch-card .watch-tile { height: auto; align-self: stretch; min-height: 250px; }
+  .watch-tile .tile-band { top: auto; bottom: 12px; left: 8px; right: 8px; width: auto; height: auto; text-align: center; font-size: .6rem; padding: 3px 4px; }
+  .watch-tile::after { bottom: 46px; }
+}
+@media (max-width: 640px) { .watch-spec-rows dt { white-space: normal; text-overflow: clip; line-height: 1.2; letter-spacing: .07em; } .dial-art { height: 76%; } }
