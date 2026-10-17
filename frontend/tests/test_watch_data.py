@@ -266,6 +266,27 @@ class Buckets(unittest.TestCase):
         self.assertEqual(b(watches.Watches.DIAL_SIZES, None), "")
         self.assertEqual(b(watches.Watches.WATER, 29.6), "30-m")
 
+    def test_rounding_is_only_for_the_filter_bucket(self):
+        shop = watches.Watches(build.SRC, build.CONFIG)
+        base = next(p for p in shop.products if p["id"] == "titan-analog-offwhite-b01clf3bfw")
+        p = dict(base, case_diameter_mm=40.2, water_resistance_metres=29.6)
+        card = shop.card(p)
+        self.assertIn("<dt>Case size</dt><dd>40.2 mm</dd>", card)       # exact value shown
+        self.assertIn("<dt>Water resistance</dt><dd>29.6 m</dd>", card)
+        self.assertIn('data-dial="37-40"', card)                          # rounded value only picks the bucket
+        self.assertIn('data-water="30-m"', card)
+        self.assertEqual(p["case_diameter_mm"], 40.2)                     # stored data is never changed by filtering
+
+    def test_unknown_size_and_depth_get_no_bucket(self):
+        shop = watches.Watches(build.SRC, build.CONFIG)
+        base = next(p for p in shop.products if p["id"] == "titan-analog-offwhite-b01clf3bfw")
+        p = dict(base, case_diameter_mm=None, water_resistance_metres=None)
+        card = shop.card(p)
+        self.assertIn('data-dial=""', card)
+        self.assertIn('data-water=""', card)
+        self.assertNotIn("<dt>Case size</dt>", card)
+        self.assertNotIn("<dt>Water resistance</dt>", card)
+
 
 class Duplicates(unittest.TestCase):
     def test_same_id_asin_or_name_is_flagged(self):

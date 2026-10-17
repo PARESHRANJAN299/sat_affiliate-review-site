@@ -498,7 +498,9 @@ class Watches:
 
     @staticmethod
     def bucket(table, value):
-        """Size and depth are matched to the nearest whole unit (40.2 mm is 40, 44.6 mm is 45), so a decimal never falls between two buckets."""
+        """Size and depth are matched to the nearest whole unit (40.2 mm is 40, 44.6 mm is 45), so a decimal never falls between two buckets.
+        RULE: rounding is only for choosing the filter bucket. The stored value stays exact and is what cards and product pages display
+        (40.2 mm stays "40.2 mm"). The same holds for water resistance. An unknown value gets no bucket and is never guessed."""
         if value is None:
             return ""
         value = int(value + 0.5)
