@@ -7,7 +7,7 @@
   ],
   "amazon_url": "https://www.amazon.in/Titan-Mens-Infinity-Chrono-watch/dp/B09R1N7P5V?pd_rd_w=Ju5fz&content-id=amzn1.sym.7ccbe032-5929-4c88-ab39-4923842061df&pf_rd_p=7ccbe032-5929-4c88-ab39-4923842061df&pf_rd_r=BDWNME4WTPMGVW6MKGKV&pd_rd_wg=TpqRJ&pd_rd_r=2e4e87ff-9313-4564-a193-0992eec0ffe5&pd_rd_i=B09R1N624N&th=1&linkCode=ll2&tag=pareshsat-21&linkId=4559c86db1b118ce4e5058fc8a5f735e&ref_=as_li_ss_tl",
   "asin": "B09R1N7P5V",
-  "price_band": "under-3000",
+  "price_band": "under-6000",
   "band_material": "stainless-steel",
   "band_colour": [
     "brown"
@@ -16,14 +16,17 @@
     "black"
   ],
   "movement": "quartz",
+  "display_type": "analog",
   "water_resistance_atm": 5,
   "water_resistance_metres": 50,
   "warranty_duration": "2 years",
   "styles": [
+    "analog",
     "metal-strap"
   ],
   "features": [
-    "day-date"
+    "day-date",
+    "second-hand"
   ],
   "good": [
     "The listing describes a black dial with silver details, day, date and 24-hour sub-dials",
@@ -32,7 +35,7 @@
   ],
   "not_good": [
     "The listing gives 50 m water resistance, which suits hand washing and light splashes but not swimming or diving",
-    "Case size, display type, case material and warranty type are not stated in the information we have, so check the Amazon page before buying"
+    "Case size, case material and warranty type are not stated in the information we have, so check the Amazon page before buying"
   ],
   "source_verified": "owner-provided from the seller listing, not independently verified"
 }
