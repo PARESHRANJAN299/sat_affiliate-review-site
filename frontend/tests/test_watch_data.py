@@ -124,14 +124,13 @@ class Hub(unittest.TestCase):
         self.assertEqual(c["genders"], ["men", "women"])
 
     def test_hub_links_only_to_published_collections(self):
-        html, keys = self.shop.hub_html()
-        self.assertIn('href="/watches/titan/under-2000/"', html)
-        self.assertIn("Looking for watches by budget?", html)
-        self.assertNotIn("Fossil", html)             # no published collection for it
-        self.assertIn('href="/watches/titan/under-3000/"', html)
-        self.assertNotIn("Under \u20b95,000", html)  # no published collection for that band
-        self.assertLessEqual({"budget", "brand", "people", "guides"}, keys)
-        self.assertNotIn("style", keys)               # no published style collection yet
+        top, bottom = self.shop.hub_html()
+        self.assertIn('href="/watches/titan/under-2000/"', top)
+        self.assertIn('href="/watches/titan/under-3000/"', top)
+        self.assertNotIn("Fossil", top)               # no published collection for it
+        self.assertNotIn("Under \u20b95,000", top)    # no published collection for that band
+        self.assertIn('href="/watches/men/"', top)
+        self.assertIn('href="/watches/women/"', top)
 
     def test_unapproved_or_thin_collections_never_surface(self):
         shop = watches.Watches(build.SRC, build.CONFIG)
@@ -153,19 +152,26 @@ class HubExtras(unittest.TestCase):
     def setUpClass(cls):
         cls.shop = watches.Watches(build.SRC, build.CONFIG)
 
-    def test_intro_and_how_to_choose(self):
-        html, keys = self.shop.hub_html()
-        intro = html.split('<p class="hub-intro">')[1].split("</p>")[0]
+    def test_intro_and_how_to_choose_sit_below_the_watches(self):
+        top, bottom = self.shop.hub_html()
+        intro = bottom.split('<p class="hub-intro">')[1].split("</p>")[0]
         self.assertTrue(80 <= len(intro.split()) <= 120)
-        self.assertIn("choose", keys)
+        self.assertNotIn("hub-intro", top)             # the top of the page stays short
+        self.assertIn("<details", bottom)             # How to choose is collapsed
         for title in ("Budget", "Case size", "Strap", "Water resistance"):
-            self.assertIn(f"<h3>{title}</h3>", html)
+            self.assertIn(f"<h3>{title}</h3>", bottom)
+        self.assertIn('href="/watches/guide/"', bottom)
 
     def test_counts_are_generated(self):
         c = next(c for c in self.shop.published_collections() if c["url"] == "/watches/titan/under-2000/")
-        html, _ = self.shop.hub_html()
+        html = self.shop.hub_html()[0]
         self.assertIn(f'hub-count">{c["count"]}<', html)
         self.assertEqual(c["count"], sum(1 for p in self.shop.products if p["brand"] == "titan" and "under-2000" in self.shop.qualifies(p)))
+
+    def test_hub_page_order_is_strip_then_watches_then_help(self):
+        body = self.shop.landing()["_body"]
+        self.assertLess(body.index("hub-quick"), body.index("data-collection-grid"))
+        self.assertLess(body.index("data-collection-grid"), body.index("hub-after"))
 
     def test_cards_show_only_the_compact_facts(self):
         p = next(q for q in self.shop.products if q["id"] == "titan-analog-offwhite-b01clf3bfw")

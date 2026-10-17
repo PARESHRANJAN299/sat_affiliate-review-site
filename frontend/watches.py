@@ -654,66 +654,41 @@ class Watches:
         return out
 
     def hub_html(self):
-        """Discovery sections of /watches/ built from the published collections: real links to their own pages, never a filter state.
-        Returns (html, keys of the sections shown). Brand, budget and style links appear only for collections that are published."""
+        """The /watches/ discovery strip, built from the published collections: one compact row of collection links (brand and price band) and Men / Women, then
+        (returned separately, for below the watches) a collapsed How to choose, the buying guides and a short explanation. Every link goes to a real page."""
         pubs = [c for c in self.published_collections() if c["featured_on_watch_hub"]]
-        blocks, keys = [], set()
-        intro = ("Use this page to find a watch you can compare properly. Start with a budget, a brand or a style, or choose Men or Women, then narrow the list "
-                 "by strap material, case size, dial colour, movement or water resistance. Collection pages gather watches in one place, with the specifications "
-                 "exactly as the seller lists them. Anything a listing does not state is shown as unknown, never guessed. Prices change often, so check the "
-                 "current price on Amazon before you buy.")
-        blocks.append(f'<p class="hub-intro">{esc(intro)}</p>')
-
-        def block(key, heading, inner):
-            keys.add(key)
-            blocks.append(f'<section class="hub-block hub-sec-{key}" aria-labelledby="hub-{key}"><h2 id="hub-{key}">{esc(heading)}</h2>{inner}</section>')
-
-        rows = ""
-        for band, info in self.budgets.items():
-            links = [c for c in pubs if c.get("price_band") == band]
-            if links:
-                rows += (f'<div class="hub-row"><h3>{esc(info["label"])}</h3><ul class="hub-pills">'
-                         + "".join(f'<li><a class="hub-pill" href="{esc(c["url"])}">{esc(c["label"])} <span class="hub-count">{c["count"]}</span></a></li>' for c in links) + '</ul></div>')
-        if rows:
-            block("budget", "Looking for watches by budget?", rows)
-
-        by_brand = {}
-        for c in pubs:
-            if c.get("brand"):
-                by_brand.setdefault(c["brand"], []).append(c)
+        order = list(self.budgets)
+        pubs.sort(key=lambda c: (order.index(c["price_band"]) if c.get("price_band") in order else -1, c["label"]))
         pills = ""
-        for slug_, name, _ in self.active_brands():
-            cs = by_brand.get(slug_)
-            if cs:
-                target = next((c for c in cs if not c.get("price_band")), cs[0])
-                pills += f'<li><a class="hub-pill" href="{esc(target["url"])}">{esc(name)} <span class="hub-count">{target["count"]}</span></a></li>'
-        if pills:
-            block("brand", "Shop by Brand", f'<ul class="hub-pills">{pills}</ul>')
-
-        pills = "".join(f'<li><a class="hub-pill" href="{esc(c["url"])}">{esc(c["label"])}</a></li>' for c in pubs if c.get("style") and not c.get("brand"))
-        if pills:
-            block("style", "Shop by Style", f'<ul class="hub-pills">{pills}</ul>')
-
-        cards = ""
+        for c in pubs:
+            band = self.budgets[c["price_band"]]["label"] if c.get("price_band") else ""
+            text = f'{c["label"]} \u00b7 {band}' if band else c["label"]
+            pills += f'<li><a class="hub-pill" href="{esc(c["url"])}">{esc(text)} <span class="hub-count">{c["count"]}</span></a></li>'
+        people = ""
         for g, info in self.genders.items():
             count = sum(1 for p in self.products if g in p["gender"])
             if count:
-                cards += f'<li><a class="hub-person" href="/watches/{esc(g)}/"><strong>{esc(info["label"])}</strong><span>{count} {"watch" if count == 1 else "watches"}</span></a></li>'
-        if cards:
-            block("people", "Men or women?", f'<ul class="hub-people">{cards}</ul>')
+                people += f'<li><a class="hub-pill hub-pill-soft" href="/watches/{esc(g)}/">{esc(info["label"])} <span class="hub-count">{count}</span></a></li>'
+        groups = (f'<div class="hub-group"><span class="hub-tag">Collections</span><ul class="hub-pills">{pills}</ul></div>' if pills else "") + \
+                 (f'<div class="hub-group"><span class="hub-tag">Shop for</span><ul class="hub-pills">{people}</ul></div>' if people else "")
+        top = f'<nav class="hub-quick" aria-label="Quick find">{groups}</nav>' if groups else ""
 
         choose = [("Budget", "Decide your price band first. At lower budgets, expect simple quartz watches and compare build details rather than extras."),
                   ("Case size", "Match the case to your wrist: under 37 mm suits smaller wrists, 37 to 40 mm is a common everyday range, and 41 mm and above looks bolder."),
                   ("Strap", "Leather has a classic, dressier look. A metal strap is usually easier to clean and adjust."),
                   ("Water resistance", "30 m means splash resistant: fine for handwashing and rain, not for swimming. Check the listing for the exact rating.")]
         cards = "".join(f'<li><h3>{t}</h3><p>{d}</p></li>' for t, d in choose)
-        block("choose", "How to choose", f'<ul class="hub-choose-cards">{cards}</ul><p class="hub-more"><a href="/watches/guide/">Read the full buying guide &rarr;</a></p>')
-
-        guides = [("How to choose a watch", "/watches/guide/", "What to check before you buy, in plain words.")]
-        guides += [(g["title"], g["url"], g.get("note", "")) for g in self.config.get("hub_guides", [])]
-        items = "".join(f'<li><a class="hub-guide" href="{esc(u)}"><strong>{esc(t)}</strong>' + (f'<span>{esc(n)}</span>' if n else "") + '</a></li>' for t, u, n in guides)
-        block("guides", "Popular buying guides", f'<ul class="hub-guides">{items}</ul>')
-        return '<div class="watch-hub">' + "".join(blocks) + '</div>', keys
+        guides = [("How to choose a watch", "/watches/guide/")] + [(g["title"], g["url"]) for g in self.config.get("hub_guides", [])]
+        links = " \u00b7 ".join(f'<a href="{esc(u)}">{esc(t)}</a>' for t, u in guides)
+        intro = ("Use this page to find a watch you can compare properly. Start with a budget, a brand or a style, or choose Men or Women, then narrow the list "
+                 "by strap material, case size, dial colour, movement or water resistance. Collection pages gather watches in one place, with the specifications "
+                 "exactly as the seller lists them. Anything a listing does not state is shown as unknown, never guessed. Prices change often, so check the "
+                 "current price on Amazon before you buy.")
+        bottom = ('<section class="hub-after" aria-label="About these watches">'
+                  f'<details class="hub-details"><summary>How to choose a watch</summary><ul class="hub-choose-cards">{cards}</ul></details>'
+                  f'<p class="hub-guidelinks"><strong>Buying guides:</strong> {links}</p>'
+                  f'<p class="hub-intro">{esc(intro)}</p></section>')
+        return top, bottom
 
     # search phrase fragment -> (filter group, value); the first match wins, so "rose gold" is tested before "gold"
     KEYWORD_FILTERS = [("leather strap", "style", "leather-strap"), ("metal strap", "style", "metal-strap"), ("black dial", "dialcolour", "black"),
@@ -831,11 +806,7 @@ class Watches:
                + slider
                + f'<div class="watch-quick-row" data-quick-controls hidden>{quick}'
                '</div></div>')
-        hub_html, hub_keys = hub or ("", set())
-        if "brand" in hub_keys:  # the hub lists the brands that have their own page; this row only filters the list below
-            top = top.replace("<h2>Shop by brand</h2>", "<h2>Filter by brand</h2>")
-        if "style" in hub_keys:
-            top = top.replace("<h2>Shop by style</h2>", "<h2>Filter by style</h2>")
+        hub_top, hub_bottom = hub or ("", "")
         top = top.replace(f'data-style-toggle="{esc(style)}" aria-current="false"', f'data-style-toggle="{esc(style)}" aria-current="true"', 1)
         note = ('<p class="watch-affiliate-note">Amazon links on this page are affiliate links. As an Amazon Associate I earn from qualifying purchases. '
                 '<a href="/affiliate-disclosure/">How we earn</a></p>') if any(self.merchant_links(p) for p in shown) else ""
@@ -844,7 +815,7 @@ class Watches:
                                   top_html=top, visible=[matches(p) for p in products], page_size=24, grid_note=note)
         body = ('<section class="section watch-store"><div class="container watch-store-inner">{{breadcrumb}}'
                 f'<header class="watch-store-head"><div><p class="watch-kicker">The SAT watch edit</p><h1>{esc(title)}</h1><p>{esc(intro)}</p>' + (f'<p class="watch-reviewed">Last reviewed: <time datetime="{esc(self.updated(shown))}">{esc(self.human_date(self.updated(shown)))}</time></p>' if shown else "") + '</div>'
-                '<a class="watch-guide-link" href="/watches/guide/">Find your fit &rarr;</a></header>' + hub_html + block + self.collection_tables(table, shown) + self.collection_copy(url) + self.related_collections(url) + extra_html + '<noscript><nav class="watch-static-links" aria-label="Browse watches"><a href="/watches/men/">Men</a> · <a href="/watches/women/">Women</a> · ' + ' · '.join(f'<a href="/watches/brands/{esc(slug)}/">{esc(value["name"])}</a>' for slug, value in self.brands.items() if slug != 'sample') + '</nav></noscript></div></section>')
+                '<a class="watch-guide-link" href="/watches/guide/">Find your fit &rarr;</a></header>' + hub_top + block + hub_bottom + self.collection_tables(table, shown) + self.collection_copy(url) + self.related_collections(url) + extra_html + '<noscript><nav class="watch-static-links" aria-label="Browse watches"><a href="/watches/men/">Men</a> · <a href="/watches/women/">Women</a> · ' + ' · '.join(f'<a href="/watches/brands/{esc(slug)}/">{esc(value["name"])}</a>' for slug, value in self.brands.items() if slug != 'sample') + '</nav></noscript></div></section>')
         meta = self._meta(url, title, intro, body, crumbs or [["Watches", "/watches/"]], shown, js=False)
         meta["noindex"] = self.collection_noindex(url, shown)
         meta["css"] += ["collection", "watch-store", "price-slider"]
