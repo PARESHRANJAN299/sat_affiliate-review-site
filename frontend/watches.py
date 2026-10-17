@@ -245,10 +245,10 @@ class Watches:
                 '<span>See product photos at the retailer</span></div>')
 
     DIAL_HEX = {"black": "#1b1c1f", "white": "#f4f1ea", "blue": "#1f3a6e", "green": "#1f4d3a", "silver": "#c9ccd1", "gold": "#c9a45c", "champagne": "#e3d3a8",
-                "cream": "#efe6cf", "pink": "#e8b4bc", "grey": "#8b9097", "brown": "#5a3a24", "rose-gold": "#c98f7f"}
+                "cream": "#efe6cf", "pink": "#e8b4bc", "grey": "#8b9097", "brown": "#5a3a24", "rose-gold": "#c98f7f", "red": "#8c1f2c", "beige": "#e3d6bd"}
     STRAP_HEX = {"black": "#232325", "brown": "#5b3a25", "green": "#2f5a43", "silver": "#c3c7cc", "grey": "#868b92", "gold": "#c9a45c", "blue": "#243b6b", "rose-gold": "#c98f7f",
-                 "white": "#e9e5dc", "champagne": "#d9c79a"}
-    METAL_HEX = {"gold": "#c9a45c", "rose-gold": "#c98f7f", "silver": "#c7cad0"}
+                 "white": "#e9e5dc", "champagne": "#d9c79a", "red": "#8c1f2c", "beige": "#d8c8a8"}
+    METAL_HEX = {"gold": "#c9a45c", "rose-gold": "#c98f7f", "silver": "#c7cad0", "red": "#8c1f2c"}
 
     @staticmethod
     def _mix(hex_, other, t):
@@ -630,8 +630,8 @@ f'<linearGradient id="g{uid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-
         ("strapmat", "Strap material", [("leather", "Leather"), ("stainless-steel", "Stainless Steel"), ("brass", "Brass"), ("metal", "Metal (type not stated)"), ("mesh", "Mesh"), ("silicone-rubber", "Silicone / Rubber"), ("fabric-nylon", "Fabric / Nylon")], lambda self, p: [p.get("band_material", "")]),
         ("movement", "Movement", [("quartz", "Quartz"), ("automatic", "Automatic"), ("mechanical", "Mechanical")], lambda self, p: [p.get("movement", "")]),
         ("water", "Water resistance", [(a, b) for a, b, _, _ in WATER], lambda self, p: [self.bucket(self.WATER, p.get("water_resistance_metres"))]),
-        ("dialcolour", "Dial colour", [(x, x.replace("-", " ").title()) for x in ("black", "white", "blue", "green", "silver", "gold", "champagne", "cream", "pink", "grey", "brown")], lambda self, p: p.get("dial_colour", [])),
-        ("strapcolour", "Strap colour", [(x, x.replace("-", " ").title()) for x in ("black", "brown", "green", "silver", "grey", "gold", "blue", "rose-gold")], lambda self, p: p.get("band_colour", [])),
+        ("dialcolour", "Dial colour", [(x, x.replace("-", " ").title()) for x in ("black", "white", "blue", "green", "silver", "gold", "champagne", "cream", "beige", "pink", "grey", "brown", "red")], lambda self, p: p.get("dial_colour", [])),
+        ("strapcolour", "Strap colour", [(x, x.replace("-", " ").title()) for x in ("black", "brown", "green", "silver", "grey", "gold", "blue", "rose-gold", "red")], lambda self, p: p.get("band_colour", [])),
         ("shape", "Case shape", [("round", "Round"), ("oval", "Oval"), ("square", "Square"), ("rectangular", "Rectangular"), ("contemporary", "Contemporary")], lambda self, p: [p.get("case_shape", "")]),
         ("feature", "Features", [("date", "Date"), ("day-date", "Day-Date"), ("chronograph", "Chronograph"), ("luminous-hands", "Luminous hands"), ("second-hand", "Second hand"), ("world-time", "World time"), ("minimal-dial", "Minimal dial")], lambda self, p: p.get("features", [])),
         ("case", "Case material", CASES, lambda self, p: [p.get("case_material", "")]),
