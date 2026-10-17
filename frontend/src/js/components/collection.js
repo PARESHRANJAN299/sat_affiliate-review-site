@@ -85,6 +85,16 @@
       });
       styleButtons.forEach(function (button) {
         var values = selected.style || [];
+        var tile = button.dataset.styleToggle;
+        var chosen = !tile ? !values.length : values.indexOf(tile) !== -1;
+        // a style with no watch under the other filters is hidden: tapping it would only show an empty list
+        button.hidden = !!tile && !chosen && !cards.some(function (card) {
+          return (!gender || (card.dataset.gender || '').split(' ').indexOf(gender) !== -1) &&
+            (card.getAttribute('data-style') || '').split(' ').indexOf(tile) !== -1 &&
+            Object.keys(selected).every(function (group) {
+              return group === 'style' || selected[group].some(function (value) { return (card.getAttribute('data-' + group) || '').split(' ').indexOf(value) !== -1; });
+            });
+        });
         button.setAttribute('aria-current', (!button.dataset.styleToggle ? !values.length : values.indexOf(button.dataset.styleToggle) !== -1) ? 'true' : 'false');
       });
       if (heading) {
