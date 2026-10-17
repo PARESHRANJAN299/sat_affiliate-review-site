@@ -885,28 +885,24 @@ f'<linearGradient id="g{uid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-
         steps = self.price_steps()
         ladder = collection.price_slider(steps, dual=True, title="Budget")
         quick = self.keyword_chips(url, shown)
-        brand_row = ""
+        order = list(self.budgets)
+        pubs = sorted([c for c in self.published_collections() if c["featured_on_watch_hub"] and c.get("price_band") in order],
+                      key=lambda c: (order.index(c["price_band"]), c["label"])) if hub else []
+        curated = ('<p class="ladder-curated"><span>Curated</span>' + " ".join(
+            f'<a href="{esc(c["url"])}">{esc(c["label"])} {esc(self.budgets[c["price_band"]]["label"].lower())}</a>' for c in pubs) + '</p>') if pubs else ""
+        chips_html = '<div class="lx-chips">'
+        if len(steps) >= 2:
+            chips_html += '<button type="button" class="lx-chip" data-filter-open data-jump="budget" aria-haspopup="dialog"><span>Budget</span><b data-chip-val="budget"></b></button>'
         if len(active) >= 2:
-            brand_row = ('<section class="lx-sec lx-brands" aria-labelledby="lx-brands"><div class="lx-sec-head"><h2 id="lx-brands">Brands</h2></div>'
-                         '<div class="lx-brand-row" role="group" aria-label="Brand" data-brand-row>' + "".join(
-                             f'<button type="button" class="lx-brand" data-quick-chip="brand" data-value="{esc(slug_)}" aria-pressed="false"><span>{esc(name)}</span><em>{cnt}</em></button>'
-                             for slug_, name, cnt in active) + '</div></section>')
-        budget_row = ""
-        if hub:
-            order = list(self.budgets)
-            pubs = sorted([c for c in self.published_collections() if c["featured_on_watch_hub"] and c.get("price_band") in order],
-                          key=lambda c: (order.index(c["price_band"]), c["label"]))
-            if pubs:
-                budget_row = ('<section class="lx-sec lx-budgets" aria-labelledby="lx-budgets"><div class="lx-sec-head"><h2 id="lx-budgets">Shop by budget</h2></div><ul class="lx-budget-row">' + "".join(
-                    f'<li><a class="lx-budget" href="{esc(c["url"])}"><span class="lx-b-band">{esc(self.budgets[c["price_band"]]["label"])}</span>'
-                    f'<span class="lx-b-brand">{esc(c["label"])}</span><span class="lx-b-count">{c["count"]} watches</span></a></li>' for c in pubs) + '</ul></section>')
+            chips_html += '<button type="button" class="lx-chip" data-filter-open data-jump="brand" aria-haspopup="dialog"><span>Brand</span><b data-chip-val="brand"></b></button>'
+        chips_html += '</div>'
         quick_row = f'<div class="lx-quick" data-quick-controls hidden>{quick}</div>' if quick else ""
         headline, sub = (("Timeless Watches. Smart Choices.", "Discover classic and analog watches by budget, brand, style and fit.") if hub else (title, intro))
         reviewed = (f'<span class="lx-reviewed">Last reviewed: <time datetime="{esc(self.updated(shown))}">{esc(self.human_date(self.updated(shown)))}</time></span>' if shown else "")
-        hero = ('<header class="lx-hero"><p class="lx-kicker">The SAT watch edit</p>'
-                f'<h1 data-default="{esc(headline)}">{esc(headline)}</h1><p class="lx-sub">{esc(sub)}</p><!--segments-->'
-                '<div class="lx-foot"><a class="lx-fit" href="/watches/guide/">Find your fit &rarr;</a>' + reviewed + '</div></header>')
-        top = hero + '<div class="lx-discover">' + budget_row + brand_row + '</div>' + quick_row
+        hero = ('<header class="lx-hero"><div class="lx-hero-text"><p class="lx-kicker">The SAT watch edit</p>'
+                f'<h1 data-default="{esc(headline)}">{esc(headline)}</h1><p class="lx-sub">{esc(sub)}</p></div><!--segments--></header>')
+        footline = f'<p class="lx-foot">{reviewed} <a class="lx-fit" href="/watches/guide/">Find your fit &rarr;</a></p>'
+        top = hero + quick_row
         counts = {slug_: n(lambda p, s=slug_: s in p["styles"]) for slug_ in self.styles}
         style_cards = "".join(
             f'<li><a class="lx-style" href="/watches/style/{slug_}/" data-style-toggle="{esc(slug_)}" aria-current="{"true" if slug_ == style else "false"}">'
@@ -924,8 +920,8 @@ f'<linearGradient id="g{uid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-
         block = collection.render([self.card(p) for p in products], groups, uid="watch-collection", title="Explore watches", noun="watch", plural="watches",
                                   preset_gender=gender, genders=[("men", "Men"), ("women", "Women")],
                                   top_html=top, visible=[matches(p) for p in products], page_size=24, grid_note=note,
-                                  panel_top=ladder, after_html=after, tips_html=tips)
-        body = ('<section class="section watch-store" data-mobile-grid="one"><div class="container watch-store-inner">{{breadcrumb}}' + hub_top + block + hub_bottom + self.collection_tables(table, shown) + self.collection_copy(url) + self.related_collections(url) + extra_html + '<noscript><nav class="watch-static-links" aria-label="Browse watches"><a href="/watches/men/">Men</a> · <a href="/watches/women/">Women</a> · ' + ' · '.join(f'<a href="/watches/brands/{esc(slug)}/">{esc(value["name"])}</a>' for slug, value in self.brands.items() if slug != 'sample') + '</nav></noscript></div></section>')
+                                  panel_top=ladder + curated, after_html=after, tips_html=tips, controls_html=chips_html, main_toolbar=True)
+        body = ('<section class="section watch-store" data-mobile-grid="one"><div class="container watch-store-inner">{{breadcrumb}}' + hub_top + block + footline + hub_bottom + self.collection_tables(table, shown) + self.collection_copy(url) + self.related_collections(url) + extra_html + '<noscript><nav class="watch-static-links" aria-label="Browse watches"><a href="/watches/men/">Men</a> · <a href="/watches/women/">Women</a> · ' + ' · '.join(f'<a href="/watches/brands/{esc(slug)}/">{esc(value["name"])}</a>' for slug, value in self.brands.items() if slug != 'sample') + '</nav></noscript></div></section>')
         meta = self._meta(url, title, intro, body, crumbs or [["Watches", "/watches/"]], shown, js=False)
         meta["noindex"] = self.collection_noindex(url, shown)
         meta["css"] += ["collection", "watch-store", "price-slider", "watch-luxe"]

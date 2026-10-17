@@ -12,7 +12,7 @@
     var gender = root.dataset.presetGender || '';
     var segments = Array.from(root.querySelectorAll('[data-gender]'));
     var desktop = window.matchMedia('(min-width: 1000px)');
-    var opener = root.querySelector('[data-filter-open]');
+    var openers = Array.from(root.querySelectorAll('[data-filter-open]'));
     var plural = root.dataset.plural;
     var topFilters = root.hasAttribute('data-top-filters');
     var quick = Array.from(root.querySelectorAll('[data-quick-filter]'));
@@ -203,6 +203,13 @@
       if (query) removeButton('Search: ' + search.value.trim(), function () { search.value = ''; });
       var total = boxes.filter(function (box) { return box.checked; }).length + (gender ? 1 : 0) + (fromLimit() ? 1 : 0);
       root.querySelector('[data-filter-badge]').textContent = total ? '(' + total + ')' : '';
+      var chipBudget = root.querySelector('[data-chip-val="budget"]'), chipBrand = root.querySelector('[data-chip-val="brand"]');
+      var ladderEl = sliders.filter(function (x) { return x.classList.contains('price-ladder'); })[0];
+      if (chipBudget && ladderEl) { var t = ladderEl.querySelector('[data-price-label]').textContent; chipBudget.textContent = t === 'Any price' ? '' : t; chipBudget.parentElement.classList.toggle('is-set', t !== 'Any price'); }
+      if (chipBrand) {
+        var picked = boxes.filter(function (b) { return b.dataset.group === 'brand' && b.checked; }).map(function (b) { return b.parentElement.querySelector('span').textContent; });
+        chipBrand.textContent = picked.length > 1 ? picked.length + ' brands' : picked[0] || ''; chipBrand.parentElement.classList.toggle('is-set', picked.length > 0);
+      }
       active.hidden = active.children.length === 0;
       if (!active.hidden) {
         var clear = document.createElement('button'); clear.type = 'button'; clear.className = 'linklike'; clear.textContent = 'Clear all'; clear.addEventListener('click', clearAll); active.appendChild(clear);
@@ -249,9 +256,14 @@
     });
     root.querySelectorAll('[data-filter-clear]').forEach(function (button) { button.addEventListener('click', clearAll); });
     function closeSheet() { if (!inlinePanel() && panel.open) panel.close(); }
-    opener.addEventListener('click', function () {
-      if (panel.open || inlinePanel()) return;
-      panel.showModal(); document.documentElement.classList.add('collection-modal-open');
+    openers.forEach(function (opener) {
+      opener.addEventListener('click', function () {
+        if (panel.open || inlinePanel()) return;
+        panel.showModal(); document.documentElement.classList.add('collection-modal-open');
+        var jump = opener.dataset.jump;   // a Budget or Brand chip opens the sheet at that section
+        var target = jump === 'budget' ? panel.querySelector('.price-slider') : jump ? panel.querySelector('[data-fgroup="' + jump + '"]') : null;
+        panel.scrollTop = target ? Math.max(0, target.offsetTop - 84) : 0;
+      });
     });
     panel.querySelectorAll('[data-filter-close]').forEach(function (button) { button.addEventListener('click', closeSheet); });
     panel.addEventListener('click', function (event) {
