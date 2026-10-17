@@ -87,5 +87,22 @@ class Site(unittest.TestCase):
         self.shop.config["brands"] = [b for b in self.shop.config["brands"] if b["slug"] != "seiko"]
 
 
+
+class NeoIV(unittest.TestCase):
+    def test_titan_under_2000_collection_exists_and_is_gated(self):
+        shop = watches.Watches(build.SRC, build.CONFIG)
+        neo = next(p for p in shop.products if p["id"] == "titan-neo-iv-analog-black-b07mxgl85j")
+        self.assertEqual(shop.qualifies(neo)[0], "under-2000")
+        self.assertIn(("titan", "under-2000"), shop.brand_budget_pages if hasattr(shop, "brand_budget_pages") else shop.brand_budget_pairs())
+        meta = shop.brand_budget_page("titan", "under-2000")
+        self.assertEqual(meta["url"], "/watches/titan/under-2000/")
+        self.assertTrue(meta["noindex"])           # one watch and no approved copy yet
+        self.assertEqual((neo["water_resistance_metres"], neo["band_material"], neo["case_material"]), (50, "leather", "metal"))
+        self.assertEqual(neo["movement"], "")      # not stated: never guessed
+
+    def test_sentences_in_intake_are_split_on_bars(self):
+        raw, _ = watch_data.parse_intake("What we like: First point | Second point", BUDGETS)
+        self.assertEqual(raw["good"], ["First point", "Second point"])
+
 if __name__ == "__main__":
     unittest.main()

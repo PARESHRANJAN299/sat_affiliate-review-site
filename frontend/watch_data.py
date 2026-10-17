@@ -127,6 +127,7 @@ def normalise(raw, budgets):
     p["band_colour"] = colours(p.get("band_colour") or p.get("strap_colour"))
     p["dial_colour"] = colours(p.get("dial_colour"))
     p["case_shape"] = slug(p["case_shape"]) if known(p.get("case_shape")) else ""
+    p["case_material"] = slug(p["case_material"]) if known(p.get("case_material")) else ""
     p["movement"] = slug(str(p.get("movement", "")).split()[0]) if known(p.get("movement")) else ""
     p["display_type"] = slug(p["display_type"]) if known(p.get("display_type")) else ""
     atm, metres, derived = water(p)
@@ -283,7 +284,9 @@ INTAKE_KEYS = {
     "country of origin": "country_of_origin", "amazon url": "amazon_url", "amazon": "amazon_url", "url": "amazon_url", "link": "amazon_url",
     "price band": "price_band", "price": "price_band", "budget": "price_band", "image": "image_source", "styles": "styles", "style": "styles",
     "occasions": "occasions", "occasion": "occasions", "features": "features", "labels": "editorial_labels", "editorial labels": "editorial_labels",
-    "best for": "best_for", "notes": "editorial_notes", "source": "source_verified",
+    "best for": "best_for", "notes": "editorial_notes", "source": "source_verified", "asin": "asin",
+    "case material": "case_material", "what we like": "good", "likes": "good", "what to know": "not_good", "what to know before buying": "not_good",
+    "who should buy": "who_should_buy", "who should skip": "who_should_skip",
 }
 
 
@@ -314,10 +317,13 @@ def parse_intake(text, budgets):
     for k in ("styles", "occasions", "features", "editorial_labels"):
         if k in rec:
             rec[k] = as_list(rec[k])
+    for k in ("good", "not_good", "who_should_buy", "who_should_skip"):  # sentences: separate items with " | "
+        if k in rec:
+            rec[k] = [x.strip() for x in str(rec[k]).split("|") if x.strip()]
     return rec, unknown
 
 
-SCHEMA_ORDER = ["id", "product_name", "brand", "gender", "amazon_url", "image_source", "price_band"] + FACT_FIELDS + EDITORIAL_FIELDS + [
+SCHEMA_ORDER = ["id", "product_name", "brand", "gender", "amazon_url", "asin", "image_source", "price_band", "case_material"] + FACT_FIELDS + EDITORIAL_FIELDS + [
     "who_should_buy", "who_should_skip", "verdict", "paragraphs", "good", "not_good", "sources", "source_verified", "last_verified"]
 
 

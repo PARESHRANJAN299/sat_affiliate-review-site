@@ -516,7 +516,27 @@ class Watches:
             parts.append(f'<h3>Common questions</h3>{faqs}')
         return '<section class="watch-collection-copy">' + "".join(parts) + '</section>'
 
-    def catalog(self, url, title, intro, *, gender="", brand="", budget="", style="", crumbs=None):
+    def collection_table(self, products):
+        """Comparison table for a collection page: Model | Best for | Gender | Case size | Movement | Strap | Water resistance | CTA."""
+        if len(products) < 2:
+            return ""
+        def cell(label, value):
+            return f'<td role="cell" data-label="{esc(label)}">{esc(value) if value else "Not stated"}</td>'
+        rows = []
+        for p in products:
+            strap = " ".join(x for x in ((p.get("band_colour") or [""])[0].replace("-", " ").title(), p.get("band_material", "").replace("-", " ")) if x).strip()
+            mm, metres = p.get("case_diameter_mm"), p.get("water_resistance_metres")
+            rows.append(
+                f'<tr role="row"><th scope="row" role="rowheader"><a href="{esc(self.review_url(p))}">{esc(p["model"])}</a></th>'
+                + cell("Best for", p.get("best_for", "")) + cell("Gender", " / ".join(self.genders[g]["label"] for g in p["gender"] if g in self.genders))
+                + cell("Case size", f"{mm:g} mm" if mm else "") + cell("Movement", p.get("movement", "").title())
+                + cell("Strap", strap) + cell("Water resistance", f"{metres:g} m" if metres else "")
+                + f'<td role="cell" data-label="Shop">{self.check_price(p, include_more=False) or "Not available"}</td></tr>')
+        head = "".join(f'<th scope="col" role="columnheader">{h}</th>' for h in ("Model", "Best for", "Gender", "Case size", "Movement", "Strap", "Water resistance", "Shop"))
+        return ('<section class="watch-collection-table"><h2>Compare these watches</h2><div class="compare-table-wrap"><table class="compare-table" role="table">'
+                f'<caption class="visually-hidden">Comparison of the watches on this page</caption><thead><tr role="row">{head}</tr></thead><tbody>' + "".join(rows) + '</tbody></table></div></section>')
+
+    def catalog(self, url, title, intro, *, gender="", brand="", budget="", style="", crumbs=None, extra_html="", table=False):
         products = self.products
         def matches(p):
             return ((not gender or gender in p["gender"]) and (not brand or p["brand"] == brand)
@@ -562,7 +582,7 @@ class Watches:
                                   top_html=top, visible=[matches(p) for p in products], page_size=24)
         body = ('<section class="section watch-store"><div class="container watch-store-inner">{{breadcrumb}}'
                 f'<header class="watch-store-head"><div><p class="watch-kicker">The SAT watch edit</p><h1>{esc(title)}</h1><p>{esc(intro)}</p></div>'
-                '<a class="watch-guide-link" href="/watches/guide/">Find your fit &rarr;</a></header>' + block + self.collection_copy(url) + '<noscript><nav class="watch-static-links" aria-label="Browse watches"><a href="/watches/men/">Men</a> · <a href="/watches/women/">Women</a> · ' + ' · '.join(f'<a href="/watches/brands/{esc(slug)}/">{esc(value["name"])}</a>' for slug, value in self.brands.items() if slug != 'sample') + '</nav></noscript></div></section>')
+                '<a class="watch-guide-link" href="/watches/guide/">Find your fit &rarr;</a></header>' + block + (self.collection_table(shown) if table else "") + self.collection_copy(url) + extra_html + '<noscript><nav class="watch-static-links" aria-label="Browse watches"><a href="/watches/men/">Men</a> · <a href="/watches/women/">Women</a> · ' + ' · '.join(f'<a href="/watches/brands/{esc(slug)}/">{esc(value["name"])}</a>' for slug, value in self.brands.items() if slug != 'sample') + '</nav></noscript></div></section>')
         meta = self._meta(url, title, intro, body, crumbs or [["Watches", "/watches/"]], shown, js=False)
         meta["noindex"] = self.collection_noindex(url, shown)
         meta["css"] += ["collection", "watch-store"]
@@ -646,6 +666,8 @@ class Watches:
             return {"gender": f"/watches/{v}/", "brand": f"/watches/brands/{v}/", "style": f"/watches/style/{v}/"}.get(k)
         if set(pair) == {"gender", "budget"}:
             return f'/watches/{pair["gender"]}/{pair["budget"]}/'
+        if set(pair) == {"brand", "budget"}:
+            return f'/watches/{pair["brand"]}/{pair["budget"]}/'
         return None
 
     def budget_page(self, gender, budget):
@@ -655,11 +677,32 @@ class Watches:
         return self.catalog(url, title, "Compare styles and published details. Confirm the current price with the retailer.", gender=gender, budget=budget,
                             crumbs=[["Watches", "/watches/"], [g["label"], f"/watches/{gender}/"], [b["label"], url]])
 
+    def brand_budget_pairs(self):
+        """(brand, band) pairs where a live watch of that brand sits in that band: each gets a clean URL /watches/<brand>/<band>/."""
+        pairs = []
+        for b in self.config["brands"]:
+            for slug_, info in self.budgets.items():
+                if any(p["brand"] == b["slug"] and p.get("budget") == slug_ for p in self.products):
+                    pairs.append((b["slug"], slug_))
+        return pairs
+
+    def brand_budget_page(self, brand, budget):
+        br, bd = self.brands[brand], self.budgets[budget]
+        url = f"/watches/{brand}/{budget}/"
+        count = sum(1 for p in self.products if p["brand"] == brand and budget in self.qualifies(p))
+        ready = count >= self.min_index and url in self.approved
+        title = f'{"Best " if ready else ""}{br["name"]} Watches {bd["label"]}'
+        intro = f'{br["name"]} watches {bd["label"].lower()}, for men and women. Compare the published details and confirm the current price at the retailer.'
+        return self.catalog(url, title, intro, brand=brand, budget=budget, table=True,
+                            crumbs=[["Watches", "/watches/"], [br["name"], f"/watches/brands/{brand}/"], [bd["label"], url]])
+
     def brand_page(self, slug):
         br = self.brands[slug]
         url = f"/watches/brands/{slug}/"
+        pair_links = "".join(f'<li><a href="/watches/{slug}/{b}/">{esc(br["name"])} watches {esc(self.budgets[b]["label"].lower())}</a></li>' for br_, b in self.brand_budget_pairs() if br_ == slug)
+        extra = f'<nav class="watch-static-links" aria-label="{esc(br["name"])} by price"><h2>{esc(br["name"])} by price</h2><ul class="related-links">{pair_links}</ul></nav>' if pair_links else ""
         meta = self.catalog(url, br["name"] + " Watches", "Explore the collection by style and budget. Read the details before you choose.", brand=slug,
-                            crumbs=[["Watches", "/watches/"], [br["name"], url]])
+                            crumbs=[["Watches", "/watches/"], [br["name"], url]], extra_html=extra)
         # Keep old product and gender anchors reachable after introducing dedicated detail pages.
         anchors = ''.join(f'<span id="r-{esc(p["id"])}"></span>' for p in self.products if p["brand"] == slug)
         anchors += '<span id="men"></span><span id="women"></span>'
@@ -717,7 +760,8 @@ class Watches:
         fit = next((a for k, q, a in qs if k == "fit"), "")
         wr = next((a for k, q, a in qs if k == "water"), "")
         alts = [q for q in self.products if q["id"] != p["id"] and set(q["gender"]) & set(p["gender"])
-                and (q["brand"] == p["brand"] or set(self.qualifies(q)) & set(self.qualifies(p)))][:3]
+                and (q["brand"] == p["brand"] or set(self.qualifies(q)) & set(self.qualifies(p)))]
+        alts = sorted(alts, key=lambda q: (q["brand"] != p["brand"], q.get("budget") != p.get("budget")))[:3]
         label = watch_data.EDITORIAL_LABELS.get((p.get("editorial_labels") or [""])[0], "")
         why = p.get("editorial_notes") or (p["verdict"] if p.get("paragraphs") or p.get("best_for") else "")
         return (
@@ -793,6 +837,8 @@ class Watches:
                 out.append(self.budget_page(g, b))
         for b in self.config["brands"]:
             out.append(self.brand_page(b["slug"]))
+        for brand_, budget_ in self.brand_budget_pairs():
+            out.append(self.brand_budget_page(brand_, budget_))
         for s in self.styles:
             out.append(self.style_page(s))
         prev = self.preview()
