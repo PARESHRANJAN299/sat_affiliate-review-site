@@ -12,7 +12,7 @@ def key(value):
     return re.sub(r'[^a-z0-9]+', '-', str(value).lower()).strip('-')
 
 
-def render(cards, groups, *, uid, title, noun='product', plural='products', preset_gender='', genders=None, top_html='', visible=None, page_size=0):
+def render(cards, groups, *, uid, title, noun='product', plural='products', preset_gender='', genders=None, top_html='', visible=None, page_size=0, grid_note=''):
     """All cards remain accessible without JS; controls enhance the same server-rendered list."""
     visible = visible if visible is not None else [True] * len(cards)
     shown = sum(visible)
@@ -42,7 +42,7 @@ def render(cards, groups, *, uid, title, noun='product', plural='products', pres
         f'<dialog class="collection-filters" id="{esc(uid)}-filters" aria-labelledby="{esc(uid)}-filter-title" data-filter-panel>'
         f'<div class="cf-head"><strong id="{esc(uid)}-filter-title">Filter by</strong><button type="button" data-filter-close aria-label="Close filters">✕</button></div>' + ''.join(fields) +
         f'<div class="cf-foot"><button type="button" class="linklike" data-filter-clear>Clear all</button><button type="button" class="btn btn-primary btn-small" data-filter-close>Show {esc(plural)}</button></div></dialog>'
-        '<div class="collection-main"><div class="watch-grid" data-collection-grid>' + card_html + '</div>'
+        '<div class="collection-main">' + grid_note + '<div class="watch-grid" data-collection-grid>' + card_html + '</div>'
         f'<div class="collection-empty" data-empty {"hidden" if shown else ""}><h3>No matching {esc(plural)}</h3><p>Try another search or remove a filter.</p><button type="button" class="btn btn-outline" data-filter-clear>Clear filters</button></div>'
         '<nav class="collection-pagination" data-pagination aria-label="Product pages" hidden></nav></div></div></section>')
 

@@ -2198,6 +2198,7 @@ def watch_intake(path, write=False):
     print("Potential SEO collections:", "; ".join(rep["collections"]) or "none yet (a collection needs at least 3 watches)")
     ok = not rep["errors"] and not required_missing
     if write and ok:
+        p.setdefault("last_verified", datetime.date.today().isoformat())
         keep = watch_data_mod.canonical(p)
         out = SRC / "watches" / "products" / f"{p['id']}.json"
         out.write_text(json.dumps(keep, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")

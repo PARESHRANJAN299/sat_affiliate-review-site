@@ -142,6 +142,54 @@ class Hub(unittest.TestCase):
         self.assertNotIn("/watches/titan/under-2000/", shop.hub_html()[0])
 
 
+class HubExtras(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.shop = watches.Watches(build.SRC, build.CONFIG)
+
+    def test_intro_and_how_to_choose(self):
+        html, keys = self.shop.hub_html()
+        intro = html.split('<p class="hub-intro">')[1].split("</p>")[0]
+        self.assertTrue(80 <= len(intro.split()) <= 120)
+        self.assertIn("choose", keys)
+        for title in ("Budget", "Case size", "Strap", "Water resistance"):
+            self.assertIn(f"<h3>{title}</h3>", html)
+
+    def test_counts_are_generated(self):
+        c = next(c for c in self.shop.published_collections() if c["url"] == "/watches/titan/under-2000/")
+        html, _ = self.shop.hub_html()
+        self.assertIn(f'hub-count">{c["count"]}<', html)
+        self.assertEqual(c["count"], sum(1 for p in self.shop.products if p["brand"] == "titan" and "under-2000" in self.shop.qualifies(p)))
+
+    def test_cards_show_only_the_compact_facts(self):
+        p = next(q for q in self.shop.products if q["id"] == "titan-analog-offwhite-b01clf3bfw")
+        card = self.shop.card(p)
+        self.assertIn("<dt>Case size</dt>", card)
+        self.assertNotIn("<dt>Best for</dt>", card)       # editorial: only when approved
+        self.assertNotIn("Product details", card.split("watch-spec-rows")[0])
+        p2 = dict(p, best_for="Everyday wear")
+        self.assertIn("<dt>Best for</dt><dd>Everyday wear</dd>", self.shop.card(p2))
+
+    def test_collection_page_has_reviewed_date_and_affiliate_note(self):
+        meta = self.shop.brand_budget_page("titan", "under-2000")
+        self.assertIn("Last reviewed:", meta["_body"])
+        self.assertIn("As an Amazon Associate I earn from qualifying purchases", meta["_body"])
+        self.assertIn('href="/watches/guide/"', meta["_body"])      # internal link inside the buying advice
+
+    def test_links_in_copy_only_to_real_pages(self):
+        self.assertEqual(self.shop.linkify("See [guide](/watches/guide/) and [nope](/watches/seiko/under-1000/)"),
+                         'See <a href="/watches/guide/">guide</a> and nope')
+
+    def test_related_collections_appear_with_a_second_published_page(self):
+        shop = watches.Watches(build.SRC, build.CONFIG)
+        self.assertEqual(shop.related_collections("/watches/titan/under-2000/"), "")      # only one published
+        shop.approved = dict(shop.approved)
+        shop.approved["/watches/men/under-2000/"] = {"intro": " ".join(["word"] * 110)}
+        html = shop.related_collections("/watches/titan/under-2000/")
+        self.assertIn('href="/watches/men/under-2000/"', html)
+        self.assertNotIn('href="/watches/titan/under-2000/"', html)
+
+
 class Duplicates(unittest.TestCase):
     def test_same_id_asin_or_name_is_flagged(self):
         a = {"id": "titan-a-b000000001", "product_name": "Titan A", "amazon_url": "https://www.amazon.in/dp/B000000001?tag=x"}
