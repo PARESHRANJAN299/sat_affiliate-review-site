@@ -631,7 +631,7 @@ f'<linearGradient id="g{uid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-
         ("movement", "Movement", [("quartz", "Quartz"), ("automatic", "Automatic"), ("mechanical", "Mechanical")], lambda self, p: [p.get("movement", "")]),
         ("water", "Water resistance", [(a, b) for a, b, _, _ in WATER], lambda self, p: [self.bucket(self.WATER, p.get("water_resistance_metres"))]),
         ("dialcolour", "Dial colour", [(x, x.replace("-", " ").title()) for x in ("black", "white", "blue", "green", "silver", "gold", "champagne", "cream", "beige", "pink", "grey", "brown", "red")], lambda self, p: p.get("dial_colour", [])),
-        ("strapcolour", "Strap colour", [(x, x.replace("-", " ").title()) for x in ("black", "brown", "green", "silver", "grey", "gold", "blue", "rose-gold", "red")], lambda self, p: p.get("band_colour", [])),
+        ("strapcolour", "Strap colour", [(x, x.replace("-", " ").title()) for x in ("black", "brown", "green", "silver", "grey", "gold", "blue", "rose-gold", "red", "beige")], lambda self, p: p.get("band_colour", [])),
         ("shape", "Case shape", [("round", "Round"), ("oval", "Oval"), ("square", "Square"), ("rectangular", "Rectangular"), ("contemporary", "Contemporary")], lambda self, p: [p.get("case_shape", "")]),
         ("feature", "Features", [("date", "Date"), ("day-date", "Day-Date"), ("chronograph", "Chronograph"), ("luminous-hands", "Luminous hands"), ("second-hand", "Second hand"), ("world-time", "World time"), ("minimal-dial", "Minimal dial")], lambda self, p: p.get("features", [])),
         ("case", "Case material", CASES, lambda self, p: [p.get("case_material", "")]),

@@ -65,6 +65,12 @@
       "label": "Under ₹40,000",
       "max": 40000,
       "expect": "This is the premium end. Compare materials, movement and warranty, check the case size against your wrist, and buy from the brand or an authorised seller."
+    },
+    {
+      "slug": "under-50000",
+      "label": "Under ₹50,000",
+      "max": 50000,
+      "expect": "This is the top premium band. Compare materials, movement and warranty, check the case size against your wrist, and buy from the brand or an authorised seller."
     }
   ],
   "brands": [
