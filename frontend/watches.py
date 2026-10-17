@@ -760,25 +760,25 @@ f'<linearGradient id="g{uid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-
         for c in pubs:
             band = self.budgets[c["price_band"]]["label"] if c.get("price_band") else ""
             text = f'{c["label"]} \u00b7 {band}' if band else c["label"]
-            items.append(f'<a href="{esc(c["url"])}">{esc(text)}</a> ({c["count"]})')
+            items.append(f'<li><a href="{esc(c["url"])}">{esc(text)}</a> ({c["count"]})</li>')
         for g, info in self.genders.items():
             count = sum(1 for p in self.products if g in p["gender"])
             if count:
-                items.append(f'<a href="/watches/{esc(g)}/">{esc(info["label"])} watches</a> ({count})')
+                items.append(f'<li><a href="/watches/{esc(g)}/">{esc(info["label"])} watches</a> ({count})</li>')
         sep = " \u00b7 "
-        collections = f'<p class="hub-guidelinks"><strong>Collections:</strong> {sep.join(items)}</p>' if items else ""
+        collections = f'<div><h2>Collections</h2><ul class="lx-links">{"".join(items)}</ul></div>' if items else ""
 
         choose = self.CHOOSE
         cards = "".join(f'<li><h3>{t}</h3><p>{d}</p></li>' for t, d in choose)
         guides = [("How to choose a watch", "/watches/guide/")] + [(g["title"], g["url"]) for g in self.config.get("hub_guides", [])]
-        links = " \u00b7 ".join(f'<a href="{esc(u)}">{esc(t)}</a>' for t, u in guides)
+        links = "".join(f'<li><a href="{esc(u)}">{esc(t)}</a></li>' for t, u in guides)
         intro = ("Use this page to find a watch you can compare properly. Start with a budget, a brand or a style, or choose Men or Women, then narrow the list "
                  "by strap material, case size, dial colour, movement or water resistance. Collection pages gather watches in one place, with the specifications "
                  "exactly as the seller lists them. Anything a listing does not state is shown as unknown, never guessed. Prices change often, so check the "
                  "current price on Amazon before you buy.")
-        bottom = ('<section class="hub-after" aria-label="About these watches">' + collections +
+        bottom = ('<section class="hub-after" aria-label="About these watches"><div class="lx-guide">' + collections +
+                  f'<div><h2>Buying guides</h2><ul class="lx-links">{links}</ul></div></div>'
                   f'<details class="hub-details"><summary>How to choose a watch</summary><ul class="hub-choose-cards">{cards}</ul></details>'
-                  f'<p class="hub-guidelinks"><strong>Buying guides:</strong> {links}</p>'
                   f'<p class="hub-intro">{esc(intro)}</p></section>')
         return "", bottom
 
@@ -906,7 +906,7 @@ f'<linearGradient id="g{uid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-
         counts = {slug_: n(lambda p, s=slug_: s in p["styles"]) for slug_ in self.styles}
         style_cards = "".join(
             f'<li><a class="lx-style" href="/watches/style/{slug_}/" data-style-toggle="{esc(slug_)}" aria-current="{"true" if slug_ == style else "false"}">'
-            f'<span class="lx-s-name">{esc(value["label"])}</span><span class="lx-s-count">{counts[slug_]} watches</span></a></li>'
+            f'<span class="lx-s-name">{esc(value["label"])}</span><span class="lx-s-count">{counts[slug_]} {"watch" if counts[slug_] == 1 else "watches"}</span></a></li>'
             for slug_, value in self.styles.items() if counts[slug_])
         after = (f'<section class="lx-sec lx-styles" aria-labelledby="lx-styles"><div class="lx-sec-head"><h2 id="lx-styles">Shop by style</h2></div><ul class="lx-style-grid">{style_cards}</ul></section>'
                  if style_cards else "")

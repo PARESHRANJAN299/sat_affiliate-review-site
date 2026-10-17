@@ -260,3 +260,28 @@
   .watch-store .collection .watch-card.is-lead .watch-actions .btn { min-width: 240px; min-height: 52px; }
   .watch-store .collection .watch-card.is-lead .watch-facts { display: none; }
 }
+
+/* ---------- page foot: collections, guides, buying advice ---------- */
+.watch-store .hub-after { display: block; margin: 0; padding: 30px 0 0; }
+.lx-guide { display: grid; grid-template-columns: 1fr; gap: 26px; }
+.lx-guide h2 { margin: 0 0 8px; font: 600 1.1rem var(--font-display); color: var(--lx-ink); }
+.lx-links { margin: 0; padding: 0; list-style: none; }
+.lx-links li { padding: 11px 0; border-top: 1px solid var(--lx-line); font-size: .9rem; color: var(--lx-muted); }
+.lx-links li:last-child { border-bottom: 1px solid var(--lx-line); }
+.lx-links a { color: var(--lx-ink); font-weight: 600; text-decoration: none; }
+.lx-links a:hover { color: var(--lx-gold); text-decoration: underline; text-underline-offset: 3px; }
+.watch-store .hub-details { margin: 26px 0 0; padding: 0; border: 1px solid var(--lx-stone); border-radius: 18px; background: var(--lx-paper); }
+.watch-store .hub-details summary { padding: 16px 20px; font: 600 1.02rem var(--font-display); color: var(--lx-ink); cursor: pointer; }
+.watch-store .hub-details[open] summary { border-bottom: 1px solid var(--lx-line); margin: 0; }
+.watch-store .hub-details .hub-choose-cards { display: grid; grid-template-columns: 1fr; gap: 16px; margin: 0; padding: 18px 20px 20px; list-style: none; }
+.watch-store .hub-details .hub-choose-cards h3 { margin: 0 0 4px; font: 700 .64rem var(--font-sans); letter-spacing: .16em; text-transform: uppercase; color: var(--lx-gold); }
+.watch-store .hub-details .hub-choose-cards p { margin: 0; font-size: .9rem; line-height: 1.55; color: var(--lx-char); }
+.watch-store .hub-after .hub-intro { max-width: 70ch; margin: 24px 0 0; font-size: .8rem; line-height: 1.65; color: var(--lx-muted); }
+.watch-store .collection-pagination button { min-width: 42px; min-height: 42px; border: 1px solid var(--lx-stone); border-radius: 12px; background: var(--lx-paper); color: var(--lx-ink); font-weight: 600; }
+.watch-store .collection-pagination button[aria-current="page"] { background: var(--lx-ink); border-color: var(--lx-ink); color: var(--lx-ivory); }
+.watch-store .collection-pagination button:disabled { opacity: .4; }
+@media (min-width: 720px) {
+  .lx-guide { grid-template-columns: 1fr 1fr; gap: 56px; }
+  .watch-store .hub-details .hub-choose-cards { grid-template-columns: repeat(4, 1fr); gap: 24px; }
+}
+.watch-store .hub-details .hub-choose-cards li { padding: 0; border: 0; border-radius: 0; background: none; box-shadow: none; }
