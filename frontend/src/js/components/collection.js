@@ -23,7 +23,8 @@
     var page = 1;
     var heading = topFilters ? root.closest('.watch-store').querySelector('h1') : null;
     function inlinePanel() { return desktop.matches; }
-    if (topFilters) root.querySelector('[data-quick-controls]').hidden = false;
+    var quickControls = root.querySelector('[data-quick-controls]');
+    if (topFilters && quickControls) quickControls.hidden = false;
     var money = function (label) { return label.replace(/^Under\s*/i, ''); };
     sliders.forEach(function (slider) {
       var steps = JSON.parse(slider.dataset.steps);

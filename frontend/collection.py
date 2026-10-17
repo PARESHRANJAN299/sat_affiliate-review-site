@@ -59,15 +59,16 @@ def price_slider(steps, group="budget", title="Price", dual=False):
         f'<span data-price-bar style="height:{max(10, round(100 * count / most))}%"></span>' for *_, count in steps)
     ticks = '<span>Any</span>' + ''.join(f'<span>{esc(short)}</span>' for _, _, short, _ in steps)
     data = json.dumps([[value, label, count] for value, label, _, count in steps], ensure_ascii=False)
-    head = f'<div class="price-slider-head"><h2>{esc(title)}</h2><output data-price-label>Any price</output></div>'
+    head = f'<div class="price-slider-head"><h2 class="wd-label">{esc(title)}</h2>' + ('' if dual else '<output data-price-label>Any price</output>') + '</div>'
     if dual:
         n = len(steps)
         controls = ('<div class="price-ranges" role="group" aria-label="Quick price ranges" data-price-ranges></div>'
+                    '<details class="price-fine"><summary>Fine-tune range <output data-price-label>Any price</output></summary>'
                     f'<div class="price-bars" aria-hidden="true">{bars}</div>'
                     '<div class="price-track" data-price-track>'
                     f'<input type="range" class="price-lo" min="0" max="{n}" step="1" value="0" aria-label="Lowest price band">'
                     f'<input type="range" class="price-hi" min="0" max="{n}" step="1" value="{n}" aria-label="Highest price band"></div>'
-                    f'<div class="price-ticks" aria-hidden="true">{ticks}</div>')
+                    f'<div class="price-ticks" aria-hidden="true">{ticks}</div></details>')
     else:
         controls = (f'<div class="price-bars" aria-hidden="true">{bars}</div>'
                     f'<input type="range" min="0" max="{len(steps)}" step="1" value="0" aria-label="Maximum price band" aria-valuetext="Any price">'

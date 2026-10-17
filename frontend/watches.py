@@ -872,22 +872,22 @@ f'<linearGradient id="g{uid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-
         groups = [g for g in groups if len([it for it in g["items"] if it[2]]) >= 2 or g["key"] in ("brand", "budget") and len(g["items"]) >= 2]
         groups.append({"key": "style", "title": "Style", "checked": [style] if style else [],
                        "items": [(slug_, value["label"], n(lambda p, s=slug_: s in p["styles"])) for slug_, value in self.styles.items()]})
-        style_links = '<a class="watch-style" href="/watches/" data-style-toggle="" aria-current="false"><span class="style-dot" aria-hidden="true">' + watch_art("style-art") + '</span><span>All styles</span></a>'
-        for slug, value in self.styles.items():
-            style_links += (f'<a class="watch-style" href="/watches/style/{slug}/" data-style-toggle="{esc(slug)}" aria-current="false">'
-                            f'<span class="style-dot style-{esc(slug)}" aria-hidden="true">{watch_art("style-art")}</span><span>{esc(value["label"])}</span></a>')
+        style_links = "".join(f'<a class="watch-chip watch-style" href="/watches/style/{slug}/" data-style-toggle="{esc(slug)}" aria-current="false">{esc(value["label"])}</a>'
+                              for slug, value in self.styles.items())
         brand_pills = "".join(
             f'<button type="button" class="watch-chip" data-quick-chip="brand" data-value="{esc(slug_)}" aria-pressed="false">{esc(name)} <em>{cnt}</em></button>'
             for slug_, name, cnt in active) if len(active) >= 2 else ""
         steps = self.price_steps()
         slider = collection.price_slider(steps, dual=True)
         quick = self.keyword_chips(url, shown)
-        top = ('<div class="watch-discovery"><div class="watch-style-head"><h2>Shop by style</h2><a href="/watches/guide/">Buying guide &rarr;</a></div>'
-               f'<nav class="watch-style-row" aria-label="Watch styles">{style_links}</nav>'
-               + (f'<div class="watch-brand-head"><h2>Shop by brand</h2></div><div class="watch-chip-row" role="group" aria-label="Shop by brand" data-brand-row>{brand_pills}</div>' if brand_pills else "")
+        def row(label, inner, extra=""):
+            return f'<div class="wd-row"{extra}><h2 class="wd-label">{label}</h2>{inner}</div>'
+        top = ('<div class="watch-discovery">'
+               + (row("Brand", f'<div class="watch-chip-row" role="group" aria-label="Brand" data-brand-row>{brand_pills}</div>') if brand_pills else "")
+               + (row("Style", f'<nav class="watch-chip-row" aria-label="Watch styles">{style_links}</nav>') if style_links else "")
                + slider
-               + f'<div class="watch-quick-row" data-quick-controls hidden>{quick}'
-               '</div></div>')
+               + (row("Popular", f'<div class="wd-quick">{quick}</div>', " data-quick-controls hidden") if quick else "")
+               + '</div>')
         hub_top, hub_bottom = hub or ("", "")
         top = top.replace(f'data-style-toggle="{esc(style)}" aria-current="false"', f'data-style-toggle="{esc(style)}" aria-current="true"', 1)
         note = ('<p class="watch-affiliate-note">Amazon links on this page are affiliate links. As an Amazon Associate I earn from qualifying purchases. '
@@ -896,11 +896,11 @@ f'<linearGradient id="g{uid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-
                                   preset_gender=gender, genders=[("men", "Men"), ("women", "Women")],
                                   top_html=top, visible=[matches(p) for p in products], page_size=24, grid_note=note)
         body = ('<section class="section watch-store"><div class="container watch-store-inner">{{breadcrumb}}'
-                f'<header class="watch-store-head"><div><p class="watch-kicker">The SAT watch edit</p><h1>{esc(title)}</h1><p>{esc(intro)}</p>' + (f'<p class="watch-reviewed">Last reviewed: <time datetime="{esc(self.updated(shown))}">{esc(self.human_date(self.updated(shown)))}</time></p>' if shown else "") + '</div>'
+                f'<header class="watch-store-head"><div><h1>{esc(title)}</h1><p class="watch-store-sub">{esc(intro)}' + (f' <span class="watch-reviewed">Last reviewed: <time datetime="{esc(self.updated(shown))}">{esc(self.human_date(self.updated(shown)))}</time></span>' if shown else "") + '</p></div>'
                 '<a class="watch-guide-link" href="/watches/guide/">Find your fit &rarr;</a></header>' + hub_top + block + hub_bottom + self.collection_tables(table, shown) + self.collection_copy(url) + self.related_collections(url) + extra_html + '<noscript><nav class="watch-static-links" aria-label="Browse watches"><a href="/watches/men/">Men</a> · <a href="/watches/women/">Women</a> · ' + ' · '.join(f'<a href="/watches/brands/{esc(slug)}/">{esc(value["name"])}</a>' for slug, value in self.brands.items() if slug != 'sample') + '</nav></noscript></div></section>')
         meta = self._meta(url, title, intro, body, crumbs or [["Watches", "/watches/"]], shown, js=False)
         meta["noindex"] = self.collection_noindex(url, shown)
-        meta["css"] += ["collection", "watch-store", "price-slider"]
+        meta["css"] += ["collection", "watch-store", "price-slider", "watch-layout"]
         meta["js"] = ["collection", "watch-tilt"]
         return meta
 
