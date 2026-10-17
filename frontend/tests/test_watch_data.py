@@ -22,9 +22,12 @@ class Engine(unittest.TestCase):
         self.assertIn("analog", p["styles"])
         self.assertIn("metal-strap", p["styles"])
         self.assertEqual(p["occasions"], [])            # editorial: never inferred
-        self.assertEqual(p["budget"], None)             # price band was not provided
-        for field in ("case_shape", "country_of_origin", "warranty_duration", "price_band"):
+        self.assertEqual(p["budget"], "under-2000" if "under-2000" in BUDGETS else None)  # the owner confirmed the band
+        for field in ("case_shape", "country_of_origin", "warranty_duration"):
             self.assertIn(field, p["unknown_fields"])
+        bare = watch_data.normalise({"id": "x", "brand": "titan", "product_name": "X", "gender": "men"}, BUDGETS)
+        self.assertIsNone(bare["budget"])               # a band is never guessed
+        self.assertIn("price_band", bare["unknown_fields"])
 
     def test_price_bands_are_hierarchical(self):
         p = watch_data.normalise({"id": "x", "brand": "titan", "product_name": "X", "gender": "men", "price_band": "Under 2000"}, BUDGETS)
