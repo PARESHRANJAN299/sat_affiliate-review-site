@@ -21,6 +21,7 @@
   "water_resistance_atm": 5,
   "water_resistance_metres": 50,
   "warranty_type": "limited",
+  "country_of_origin": "India",
   "styles": [
     "leather-strap"
   ],
@@ -31,7 +32,7 @@
   ],
   "not_good": [
     "The listing text says it handles splashes, rain and brief immersion",
-    "Case thickness, warranty length and country of origin are not stated in the information we have"
+    "Case thickness and warranty length are not stated in the information we have"
   ],
   "source_verified": "owner-provided from the seller listing, not independently verified"
 }

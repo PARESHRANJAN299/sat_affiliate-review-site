@@ -66,7 +66,7 @@ class Site(unittest.TestCase):
         cls.shop = watches.Watches(build.SRC, build.CONFIG)
 
     def test_amazon_link_is_kept_exactly(self):
-        p = next(q for q in self.shop.products if q["id"].startswith("titan-"))
+        p = next(q for q in self.shop.products if q["id"] == "titan-analog-offwhite-b01clf3bfw")
         raw = TITAN["amazon_url"]
         self.assertEqual(self.shop.merchant_links(p)[0]["href"], raw)
         self.assertIn("tag=pareshsat-21", raw)
