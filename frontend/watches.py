@@ -465,7 +465,7 @@ class Watches:
         ("movement", "Movement", [("quartz", "Quartz"), ("automatic", "Automatic"), ("mechanical", "Mechanical")], lambda self, p: [p.get("movement", "")]),
         ("water", "Water resistance", [(a, b) for a, b, _, _ in WATER], lambda self, p: [self.bucket(self.WATER, p.get("water_resistance_metres"))]),
         ("dialcolour", "Dial colour", [(x, x.replace("-", " ").title()) for x in ("black", "white", "blue", "green", "silver", "gold", "brown")], lambda self, p: p.get("dial_colour", [])),
-        ("strapcolour", "Strap colour", [(x, x.replace("-", " ").title()) for x in ("black", "brown", "silver", "gold", "blue", "rose-gold")], lambda self, p: p.get("band_colour", [])),
+        ("strapcolour", "Strap colour", [(x, x.replace("-", " ").title()) for x in ("black", "brown", "green", "silver", "gold", "blue", "rose-gold")], lambda self, p: p.get("band_colour", [])),
         ("shape", "Case shape", [("round", "Round"), ("square", "Square"), ("rectangular", "Rectangular")], lambda self, p: [p.get("case_shape", "")]),
         ("feature", "Features", [("date", "Date"), ("day-date", "Day-Date"), ("chronograph", "Chronograph"), ("luminous-hands", "Luminous hands"), ("second-hand", "Second hand"), ("minimal-dial", "Minimal dial")], lambda self, p: p.get("features", [])),
         ("case", "Case material", CASES, lambda self, p: [p.get("case_material", "")]),
