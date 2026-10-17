@@ -627,14 +627,14 @@ f'<linearGradient id="g{uid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-
     FILTERS = [
         ("occasion", "Occasion", [("office", "Office"), ("formal", "Formal"), ("casual", "Casual"), ("everyday", "Everyday"), ("party", "Party"), ("gift", "Gift")], lambda self, p: p.get("occasions", [])),
         ("dial", "Case size", [(a, b) for a, b, _, _ in DIAL_SIZES], lambda self, p: [self.bucket(self.DIAL_SIZES, p.get("case_diameter_mm"))]),
-        ("strapmat", "Strap material", [("leather", "Leather"), ("stainless-steel", "Stainless Steel"), ("brass", "Brass"), ("ceramic", "Ceramic"), ("metal", "Metal (type not stated)"), ("mesh", "Mesh"), ("silicone-rubber", "Silicone / Rubber"), ("fabric-nylon", "Fabric / Nylon")], lambda self, p: [p.get("band_material", "")]),
+        ("strapmat", "Strap material", [("leather", "Leather"), ("stainless-steel", "Stainless Steel"), ("brass", "Brass"), ("ceramic", "Ceramic"), ("resin", "Resin"), ("metal", "Metal (type not stated)"), ("mesh", "Mesh"), ("silicone-rubber", "Silicone / Rubber"), ("fabric-nylon", "Fabric / Nylon")], lambda self, p: [p.get("band_material", "")]),
         ("movement", "Movement", [("quartz", "Quartz"), ("automatic", "Automatic"), ("mechanical", "Mechanical")], lambda self, p: [p.get("movement", "")]),
         ("water", "Water resistance", [(a, b) for a, b, _, _ in WATER], lambda self, p: [self.bucket(self.WATER, p.get("water_resistance_metres"))]),
         ("dialcolour", "Dial colour", [(x, x.replace("-", " ").title()) for x in ("black", "white", "blue", "green", "silver", "gold", "champagne", "cream", "beige", "pink", "grey", "brown", "red")], lambda self, p: p.get("dial_colour", [])),
         ("strapcolour", "Strap colour", [(x, x.replace("-", " ").title()) for x in ("black", "brown", "green", "silver", "grey", "gold", "blue", "rose-gold", "red", "beige")], lambda self, p: p.get("band_colour", [])),
         ("display", "Display", [("analog", "Analog"), ("digital", "Digital")], lambda self, p: [p.get("display_type", "")]),
-        ("shape", "Case shape", [("round", "Round"), ("oval", "Oval"), ("square", "Square"), ("rectangular", "Rectangular"), ("contemporary", "Contemporary")], lambda self, p: [p.get("case_shape", "")]),
-        ("feature", "Features", [("date", "Date"), ("day-date", "Day-Date"), ("chronograph", "Chronograph"), ("luminous-hands", "Luminous hands"), ("second-hand", "Second hand"), ("world-time", "World time"), ("minimal-dial", "Minimal dial"), ("alarm", "Alarm"), ("led-light", "LED light")], lambda self, p: p.get("features", [])),
+        ("shape", "Case shape", [("round", "Round"), ("oval", "Oval"), ("square", "Square"), ("rectangular", "Rectangular"), ("tonneau", "Tonneau"), ("contemporary", "Contemporary")], lambda self, p: [p.get("case_shape", "")]),
+        ("feature", "Features", [("date", "Date"), ("day-date", "Day-Date"), ("chronograph", "Chronograph"), ("luminous-hands", "Luminous hands"), ("second-hand", "Second hand"), ("world-time", "World time"), ("minimal-dial", "Minimal dial"), ("alarm", "Alarm"), ("led-light", "LED light"), ("stopwatch", "Stopwatch")], lambda self, p: p.get("features", [])),
         ("case", "Case material", CASES, lambda self, p: [p.get("case_material", "")]),
     ]
 
