@@ -404,3 +404,31 @@
 @media (prefers-reduced-motion: reduce) { .watch-store .collection .watch-card { animation: none; } }
 @media (max-width: 640px) { .watch-store .collection .watch-card .watch-tile .tile-brand { font-size: 1.15rem; letter-spacing: .18em; writing-mode: vertical-rl; transform: translateY(-50%) rotate(180deg); left: 12px; right: auto; top: 50%; text-indent: 0; text-align: left; } }
 .watch-spec-rows dt { white-space: normal; text-overflow: clip; line-height: 1.2; }
+
+/* Catalogue-style card (v3): a light studio-style display with the strap fading out, a compact stat block and one footer line. */
+.watch-store .collection .watch-card { border-radius: 16px; box-shadow: inset 0 2px 0 rgba(201, 164, 92, .7), 0 1px 2px rgba(20, 16, 8, .04), 0 14px 28px -22px rgba(20, 16, 8, .5); }
+.watch-store .collection .watch-card .watch-tile { height: 218px; background: radial-gradient(62% 58% at 50% 46%, #fffefb 0%, #f6efdf 58%, #eadfc6 100%); border-bottom: 1px solid rgba(176, 141, 87, .3); }
+.watch-tile::after { bottom: 20px; width: 40%; height: 12px; background: radial-gradient(ellipse at center, rgba(70, 48, 14, .34), rgba(70, 48, 14, 0) 70%); }
+.dial-art { height: 100%; filter: drop-shadow(0 8px 10px rgba(60, 40, 10, .28)); -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 13%, #000 87%, transparent 100%); mask-image: linear-gradient(to bottom, transparent 0, #000 13%, #000 87%, transparent 100%); }
+.watch-store .collection .watch-card .watch-tile .tile-brand { color: rgba(140, 105, 40, .13); }
+.watch-tile .tile-band { top: 12px; right: 12px; background: #1b1d22; border: 1px solid rgba(201, 164, 92, .75); color: #f1deb0; font-size: .64rem; }
+.watch-store .collection .watch-card .watch-body { padding: 14px 16px 14px; gap: 4px; }
+.watch-store .collection .watch-card .watch-model { font-size: 1.04rem; min-height: 2.7em; }
+.watch-spec-rows { gap: 6px; margin: 8px 0 12px; min-height: 0; }
+.watch-spec-rows div { padding: 6px 9px; }
+.watch-spec-rows dt { font-size: .56rem; letter-spacing: .1em; }
+.watch-spec-rows dd { font-size: .82rem; line-height: 1.25; }
+.watch-product-bottom { padding-top: 0; display: block; margin-top: auto; }
+.watch-actions { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 6px 8px; }
+.watch-actions .btn { grid-column: 1 / -1; min-height: 42px; }
+.watch-actions .paid-link { font-size: .68rem; color: #7a7466; }
+.watch-actions .watch-detail-link { order: 0; font-size: .74rem; font-weight: 600; text-align: right; color: #6b5a33; }
+@media (max-width: 640px) {
+  .watch-store .collection .watch-card .watch-tile { height: auto; min-height: 232px; }
+  .dial-art { height: 80%; }
+  .watch-tile .tile-band { top: auto; bottom: 10px; }
+  .watch-store .collection .watch-card .watch-tile .tile-brand { color: rgba(140, 105, 40, .16); }
+}
+.watch-actions .paid-link { grid-column: 1; justify-self: start; }
+.watch-actions .watch-detail-link { grid-column: 2; justify-self: end; width: auto; margin: 0; text-align: right; }
+@media (max-width: 640px) { .watch-tile .tile-band { font-size: .56rem; white-space: nowrap; letter-spacing: 0; padding: 4px 3px; } }

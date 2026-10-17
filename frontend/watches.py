@@ -339,7 +339,7 @@ class Watches:
         body = (f'<g transform="translate({cx} {cy}) scale({scale:.3f}) translate({-cx} {-cy})">'
                 f'<rect x="{cx + 40}" y="{cy - 4.5}" width="7" height="9" rx="2" fill="url(#m{uid})"/>{pushers}{outer}{bezel}{dial_el}{face}{glass}'
                 f'<circle cx="{cx}" cy="{cy}" r="0" /></g>')
-        return (f'<svg class="dial-art" viewBox="0 0 140 190" aria-hidden="true" focusable="false"><defs>{defs}<clipPath id="c{uid}">{clip}</clipPath></defs>'
+        return (f'<svg class="dial-art" viewBox="0 20 140 150" aria-hidden="true" focusable="false"><defs>{defs}<clipPath id="c{uid}">{clip}</clipPath></defs>'
                 f'<g>{straps}</g><g>{lugs}</g>{body}</svg>')
 
     def band_range(self, p):
@@ -372,8 +372,8 @@ class Watches:
             f'<h3 class="watch-model"><a href="{esc(href)}">{esc(p["model"])}</a></h3>'
             + self.spec_rows(p) +
             ''
-            f'<div class="watch-product-bottom"><a class="watch-detail-link" href="{esc(href)}">Product details &rarr;</a>'
-            f'<div class="watch-actions">{self.check_price(p, include_more=False)}</div></div></div></article>')
+            f'<div class="watch-product-bottom"><div class="watch-actions">{self.check_price(p, include_more=False)}'
+            f'<a class="watch-detail-link" href="{esc(href)}">Product details &rarr;</a></div></div></div></article>')
 
     def spec_rows(self, p):
         """Compact facts on a card: best for (only when approved), case size, movement, strap, water resistance. The rest stays on the product page."""
