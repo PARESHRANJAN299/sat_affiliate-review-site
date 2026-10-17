@@ -316,6 +316,36 @@ class DialColours(unittest.TestCase):
 
 
 
+class CompactIntake(unittest.TestCase):
+    TEXT = """Product: Titan Test Watch for Men
+Amazon Link: https://www.amazon.in/dp/B000TEST01?tag=pareshsat-21&linkId=abc
+ASIN: B000TEST01
+Gender: Men
+Price Band: Under \u20b93,000
+Case Size: 40.2 mm
+Strap: Leather
+Movement: Quartz
+Water Resistance: 30 m
+Other Specs: Dial colour Black, Display Analog, Strap colour Brown; Features date, Wibble 7"""
+
+    def test_compact_format_is_understood(self):
+        raw, unknown = watch_data.parse_intake(self.TEXT, BUDGETS, {"titan": "Titan"})
+        self.assertEqual(raw["brand"], "titan")                       # read from the product name when there is no Brand line
+        self.assertEqual(raw["amazon_url"], "https://www.amazon.in/dp/B000TEST01?tag=pareshsat-21&linkId=abc")   # kept exactly
+        self.assertEqual((raw["dial_colour"], raw["display_type"], raw["band_colour"]), ("Black", "Analog", "Brown"))
+        self.assertEqual(raw["features"], ["date"])
+        self.assertTrue(any("Wibble" in u for u in unknown))          # an unknown label is reported, never guessed
+        self.assertTrue(raw["id"].startswith("titan-") and raw["id"].endswith("b000test01"))
+        p = watch_data.normalise(raw, BUDGETS)
+        self.assertEqual(p["budget"], "under-3000")
+
+    def test_brand_line_wins_and_unknown_brand_is_not_invented(self):
+        raw, _ = watch_data.parse_intake("Product: Acme Watch\nBrand: Zed", BUDGETS, {"titan": "Titan"})
+        self.assertEqual(raw["brand"], "Zed")
+        raw, _ = watch_data.parse_intake("Product: Acme Watch", BUDGETS, {"titan": "Titan"})
+        self.assertNotIn("brand", raw)
+
+
 class Duplicates(unittest.TestCase):
     def test_same_id_asin_or_name_is_flagged(self):
         a = {"id": "titan-a-b000000001", "product_name": "Titan A", "amazon_url": "https://www.amazon.in/dp/B000000001?tag=x"}

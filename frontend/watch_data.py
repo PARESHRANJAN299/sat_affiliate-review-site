@@ -281,7 +281,7 @@ INTAKE_KEYS = {
     "movement": "movement", "display": "display_type", "display type": "display_type", "type": "display_type",
     "water resistance": "water_resistance", "water-resistance": "water_resistance", "water": "water_resistance",
     "warranty": "warranty_type", "warranty type": "warranty_type", "warranty duration": "warranty_duration", "country": "country_of_origin",
-    "country of origin": "country_of_origin", "amazon url": "amazon_url", "amazon": "amazon_url", "url": "amazon_url", "link": "amazon_url",
+    "country of origin": "country_of_origin", "amazon url": "amazon_url", "amazon link": "amazon_url", "amazon": "amazon_url", "url": "amazon_url", "link": "amazon_url",
     "price band": "price_band", "price": "price_band", "budget": "price_band", "image": "image_source", "styles": "styles", "style": "styles",
     "occasions": "occasions", "occasion": "occasions", "features": "features", "labels": "editorial_labels", "editorial labels": "editorial_labels",
     "best for": "best_for", "notes": "editorial_notes", "source": "source_verified", "asin": "asin",
@@ -290,14 +290,36 @@ INTAKE_KEYS = {
 }
 
 
-def parse_intake(text, budgets):
-    """Turn 'Key: value' lines into a raw record. Returns (record, unknown_lines)."""
+def parse_other_specs(value):
+    """'Other Specs: Dial colour Black, Display Analog' -> {'dial_colour': 'Black', 'display_type': 'Analog'}; segments that start with no known label come back as unknown."""
+    found, unknown = {}, []
+    for part in re.split(r"[;|\n]|,(?=\s*[A-Za-z ]+?\s+\S)", value):
+        part = part.strip(" .")
+        if not part:
+            continue
+        label = next((key for key in sorted(INTAKE_KEYS, key=len, reverse=True) if re.match(re.escape(key) + r"(?:\s*[:=-]\s*|\s+)\S", part, re.I)), None)
+        if label:
+            found.setdefault(INTAKE_KEYS[label], re.sub(r"^" + re.escape(label) + r"(?:\s*[:=-]\s*|\s+)", "", part, flags=re.I).strip())
+        else:
+            unknown.append(part)
+    return found, unknown
+
+
+def parse_intake(text, budgets, brands=None):
+    """Turn 'Key: value' lines into a raw record. Returns (record, unknown_lines). `brands` ({slug: name}) lets a missing Brand line be read from the
+    first word of the product name (Titan ...). 'Other Specs: ...' may carry several labelled specs in one line."""
     rec, unknown = {}, []
     for line in text.splitlines():
         line = line.strip().lstrip("-* ").strip()
         if not line or ":" not in line:
             continue
         key, _, value = line.partition(":")
+        if key.strip().lower() in ("other specs", "other spec", "other"):
+            extra, left = parse_other_specs(value)
+            for k, v in extra.items():
+                rec.setdefault(k, v)
+            unknown.extend(f"Other Specs: {part}" for part in left)
+            continue
         k = INTAKE_KEYS.get(key.strip().lower())
         if not k:
             unknown.append(line)
@@ -308,6 +330,11 @@ def parse_intake(text, budgets):
                 unknown.append(f"{line}  (a price was given; give a band such as 'Under 2000')")
                 continue
         rec[k] = value
+    if brands and rec.get("product_name") and not rec.get("brand"):
+        first = rec["product_name"].split()[0].lower()
+        rec["brand"] = next((slug_ for slug_, name in brands.items() if first in (slug_, str(name).lower())), "")
+        if not rec["brand"]:
+            del rec["brand"]
     if rec.get("product_name") and not rec.get("id"):
         words = [w for w in slug(re.sub(r"^" + re.escape(rec.get("brand", "")), "", rec["product_name"], flags=re.I)).split("-") if w and w not in ("watch", "mens", "womens", "dial", "for", "men", "women")]
         rec["id"] = (slug(rec.get("brand", "")) + "-" + "-".join(words))[:48].strip("-")

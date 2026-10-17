@@ -2174,7 +2174,8 @@ def watch_intake(path, write=False):
     """python3 build.py --watch-intake FILE [--write]: turn pasted 'Key: value' lines into a normalised watch record and report on it."""
     shop = watches.Watches(SRC, CONFIG)
     text = Path(path).read_text(encoding="utf-8") if path != "-" else sys.stdin.read()
-    raw, unknown = watch_data_mod.parse_intake(text, shop.budgets)
+    raw, unknown = watch_data_mod.parse_intake(text, shop.budgets, {slug_: info["name"] for slug_, info in shop.brands.items()})
+    raw.setdefault("source_verified", "owner-provided from the seller listing, not independently verified")   # the compact format has no Source line
     if raw.get("brand"):
         raw["brand"] = watch_data_mod.slug(raw["brand"])
     p = watch_data_mod.normalise(raw, shop.budgets)
