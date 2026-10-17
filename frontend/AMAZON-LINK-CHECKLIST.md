@@ -87,16 +87,9 @@ For every product below: open the Amazon.in search, find the exact model, confir
 
 ## Watches
 
-- [ ] **Casio LTP-1241D-4A** (women; budget band `under-3000`, confirm it on Amazon)  
-  Search: `Casio LTP-1241D-4A watch` ([open](https://www.amazon.in/s?k=Casio+LTP-1241D-4A+watch))
-- [ ] **Casio MTP-1302DD-5AV** (men; budget band `under-5000`, confirm it on Amazon)  
-  Search: `Casio MTP-1302DD-5AV watch` ([open](https://www.amazon.in/s?k=Casio+MTP-1302DD-5AV+watch))
-- [ ] **Casio MTP-1303D-1AV** (men; budget band `under-3000`, confirm it on Amazon)  
-  Search: `Casio MTP-1303D-1AV watch` ([open](https://www.amazon.in/s?k=Casio+MTP-1303D-1AV+watch))
-- [x] **Fossil Decker CH2885**: product link already added.
-- [ ] **Timex Easy Reader 38 mm TW2P75800** (men; budget band `under-10000`, confirm it on Amazon)  
-  Search: `Timex Easy Reader 38mm TW2P75800 watch` ([open](https://www.amazon.in/s?k=Timex+Easy+Reader+38mm+TW2P75800+watch))
-- [ ] **Timex Fria TWEL18301** (women; budget band `under-5000`, confirm it on Amazon)  
-  Search: `Timex Fria TWEL18301 watch` ([open](https://www.amazon.in/s?k=Timex+Fria+TWEL18301+watch))
-- [ ] **Timex Transcend TW2V52400UJ** (women; budget band `under-10000`, confirm it on Amazon)  
-  Search: `Timex Transcend TW2V52400UJ watch` ([open](https://www.amazon.in/s?k=Timex+Transcend+TW2V52400UJ+watch))
+Only watches whose Amazon link you sent are listed on the site, so there is nothing to confirm here. Send a link and the specs for each new watch and it is added (see src/watches/README.md).
+
+- [x] Fossil Decker CH2885: product link added.
+- [x] Titan Analog OffWhite Dial Men's Watch: product link added.
+- [x] Titan Neo IV Analog Black Dial Men's Watch: product link added.
+- [x] Titan Ladies Neo Economy Analog White Dial Women's Watch: product link added.
