@@ -131,19 +131,6 @@
 .watch-store .collection .cf-foot .linklike { padding: 0 4px; min-height: 48px; color: var(--lx-char); font-size: .86rem; }
 .watch-store .collection .cf-foot .btn { flex: 1; gap: 0; display: inline-flex; align-items: center; justify-content: center; min-height: 52px; border: 0; border-radius: 14px; background: var(--lx-ink); color: var(--lx-ivory); font: 600 .96rem var(--font-sans); letter-spacing: .02em; }
 
-/* budget ladder */
-.ladder { display: flex; gap: 6px; height: 112px; }
-.ladder-step { flex: 1 1 0; min-width: 0; display: grid; grid-template-rows: minmax(0, 1fr) auto; gap: 7px; padding: 0; border: 0; background: none; cursor: pointer; }
-.ladder-bar { align-self: end; height: var(--h); border-radius: 8px 8px 3px 3px; background: #e6dfcd; transition: background .25s ease, box-shadow .25s ease, transform .25s ease; }
-.ladder-lab { font: 600 .66rem var(--font-sans); color: #8d8777; text-align: center; transition: color .2s ease; }
-.ladder-step:hover .ladder-bar { background: #d8cfb8; }
-.ladder-step[aria-pressed="true"] .ladder-bar { background: linear-gradient(180deg, #34363b, #121315); box-shadow: inset 0 2px 0 var(--lx-gold); }
-.ladder-step[aria-pressed="true"] .ladder-lab { color: var(--lx-ink); }
-.ladder-step:focus-visible { outline: 3px solid var(--lx-gold); outline-offset: 2px; border-radius: 8px; }
-.ladder-foot { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin: 14px 0 4px; }
-.ladder-foot output { font: 600 1.02rem var(--font-display); color: var(--lx-ink); }
-.ladder-reset { border: 0; background: none; padding: 6px 0; color: var(--lx-gold); font: 600 .8rem var(--font-sans); cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
-.ladder-hint { margin: 0 0 6px; font-size: .72rem; color: #9a9484; }
 .watch-store .collection .collection-filters .price-slider[hidden] { display: none; }
 
 @keyframes lx-sheet { from { transform: translateY(40px); opacity: 0; } to { transform: none; opacity: 1; } }
@@ -204,8 +191,6 @@
   .watch-store .collection .cf-head { padding: 18px 20px 10px; border-bottom: 0; }
   .watch-store .collection .cf-head::before, .watch-store .collection .cf-head button, .watch-store .collection .cf-foot .btn { display: none; }
   .watch-store .collection .collection-layout .cf-head strong { font: 600 1.15rem var(--font-display); letter-spacing: 0; text-transform: none; color: var(--lx-ink); }
-  .ladder-lab { font-size: .6rem; }
-  .ladder { gap: 4px; }
   .watch-store .collection .fgroup { margin-top: 20px; padding: 0 20px; }
   .watch-store .collection .price-slider { padding: 12px 20px 0; }
   .watch-store .collection .fgroup:has(input[data-group="style"]), .watch-store .collection .fgroup:has(input[data-group="budget"]) { display: none; }
@@ -216,7 +201,6 @@
   .watch-store .collection .watch-card .watch-tile { aspect-ratio: 5 / 5.4; }
   .watch-store .collection .watch-card .watch-body { padding: 18px 22px 22px; }
   .watch-store .collection .watch-model { font-size: 1.2rem; }
-  .ladder { height: 96px; }
 }
 @media (max-width: 999px) {
   .watch-store .collection .collection-filters:not([open]) { display: none; }
@@ -224,13 +208,12 @@
 @media (min-width: 1400px) { .lx-hero { padding: 44px 56px; } }
 @media (prefers-reduced-motion: reduce) {
   .watch-store .collection .watch-card, .watch-store .collection .watch-tip, .watch-store .collection .collection-filters[open], .watch-store .collection .collection-filters::backdrop { animation: none; }
-  .watch-store .collection .watch-card, .lx-budget, .lx-style, .ladder-bar { transition: none; }
 }
 
-.watch-store .collection .ladder-curated { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; margin: 0; padding: 10px 22px 0; font-size: .78rem; }
-@media (min-width: 1000px) { .watch-store .collection .ladder-curated { padding: 8px 20px 0; } }
-.ladder-curated span { font: 700 .6rem var(--font-sans); letter-spacing: .16em; text-transform: uppercase; color: var(--lx-gold); }
-.ladder-curated a { color: var(--lx-char); text-underline-offset: 3px; }
+.watch-store .collection .pb-curated { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; margin: 0; padding: 10px 22px 0; font-size: .78rem; }
+@media (min-width: 1000px) { .watch-store .collection .pb-curated { padding: 8px 20px 0; } }
+.pb-curated span { font: 700 .6rem var(--font-sans); letter-spacing: .16em; text-transform: uppercase; color: var(--lx-gold); }
+.pb-curated a { color: var(--lx-char); text-underline-offset: 3px; }
 .watch-store .collection .fgroup, .watch-store .collection .price-slider { scroll-margin-top: 90px; }
 
 /* ---------- lead cards: the magazine rhythm ---------- */
@@ -286,10 +269,8 @@
 }
 .watch-store .hub-details .hub-choose-cards li { padding: 0; border: 0; border-radius: 0; background: none; box-shadow: none; }
 
-/* ===== desktop and ladder refinements ===== */
-.ladder { padding-bottom: 16px; }
-.ladder-step:nth-child(even) .ladder-lab { transform: translateY(14px); }   /* ten bands: stagger the labels so they never touch */
-.watch-store .collection .ladder-curated { flex-direction: column; align-items: flex-start; gap: 3px; }
+/* ===== desktop refinements ===== */
+.watch-store .collection .pb-curated { flex-direction: column; align-items: flex-start; gap: 3px; }
 @media (min-width: 1000px) {
   .watch-store { padding-top: 12px; }
   .lx-hero { padding: 22px 40px; margin-bottom: 22px; }
@@ -303,7 +284,6 @@
   .watch-store .collection .fopt { flex: none; min-height: 34px; padding: 0 11px; gap: 6px; border-radius: 10px; font-size: .8rem; }
   .watch-store .collection .fgroup { margin-top: 16px; }
   .watch-store .collection .fgroup legend { margin-bottom: 8px; font-size: .98rem; }
-  .ladder { height: 78px; }
   /* cards: shorter picture, and a lead card that leaves the next row in view */
   .watch-store .collection .watch-card .watch-tile { aspect-ratio: 5 / 4.5; }
   .watch-store .collection .watch-card.is-lead .watch-tile { min-height: 300px; }
@@ -338,13 +318,6 @@
 .watch-store .collection .fgroup:not(.is-collapsed) .fopts { margin-top: 10px; animation: lx-rise .3s ease both; }
 .watch-store .collection .fg-toggle:focus-visible { outline: 3px solid var(--lx-gold); outline-offset: 3px; border-radius: 6px; }
 /* budget: a large readout above richer bars */
-.watch-store .collection .price-ladder-wrap { display: flex; flex-direction: column; }
-.watch-store .collection .ladder-foot { order: -1; margin: 2px 0 12px; padding: 12px 14px; border: 1px solid var(--lx-stone); border-radius: 14px; background: #fffefb; align-items: center; }
-.watch-store .collection .ladder-foot output { font: 600 1.18rem var(--font-display); letter-spacing: -.005em; }
-.watch-store .collection .ladder-hint { order: 3; margin: 2px 0 0; }
-.ladder-bar { background: linear-gradient(180deg, #efe8d6, #e1d7bd); }
-.ladder-step:hover .ladder-bar { background: linear-gradient(180deg, #e9dfc4, #d4c7a2); transform: translateY(-2px); }
-.ladder-step[aria-pressed="true"] .ladder-bar { background: linear-gradient(180deg, #34363c, #121315); box-shadow: inset 0 2px 0 var(--lx-gold), 0 8px 14px -8px rgba(0, 0, 0, .55); }
 /* bottom bar: Clear all, with the live count on laptops */
 @media (min-width: 1000px) {
   .watch-store .collection .cf-foot { position: sticky; bottom: 0; display: flex; justify-content: space-between; align-items: center; padding: 10px 20px 14px; border-top: 1px solid #efe6d1; background: linear-gradient(180deg, rgba(251, 247, 236, .88), #fbf7ec); }
@@ -358,13 +331,10 @@
 .watch-store .collection .fgroup:not(.is-collapsed) .fopts { margin-top: 10px; padding-bottom: 14px; }
 .watch-store .collection .fgroup.is-collapsed { padding-bottom: 12px; }
 .watch-store .collection .fgroup:first-of-type { box-shadow: none; }
-.watch-store .collection .ladder-foot { flex-wrap: wrap; gap: 4px 10px; }
-.watch-store .collection .ladder-foot output { flex: 1 1 auto; white-space: nowrap; font-size: 1.04rem; }
-.watch-store .collection .ladder-reset { font-size: .74rem; white-space: nowrap; }
 .watch-store .collection .price-slider { padding-bottom: 8px; }
-.watch-store .collection .ladder-curated { padding-bottom: 10px; }
+.watch-store .collection .pb-curated { padding-bottom: 10px; }
 @media (min-width: 1000px) {
   .watch-store .collection .fgroup { margin: 14px 20px 0; padding: 0; }
   .watch-store .collection .price-slider { padding: 14px 20px 6px; }
-  .watch-store .collection .ladder-curated { padding: 8px 20px 12px; }
+  .watch-store .collection .pb-curated { padding: 8px 20px 12px; }
 }

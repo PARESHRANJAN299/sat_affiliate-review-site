@@ -55,32 +55,20 @@ def render(cards, groups, *, uid, title, noun='product', plural='products', pres
     return (opening + top_html + head + controls + active + '<div class="collection-layout">' + panel + '<div class="collection-main">' + grid_note + rest + '</div></div>' + after_html + '</section>')
 
 
-def price_slider(steps, group="budget", title="Price", dual=False):
-    """Stepped price-band slider (no prices are shown or stored). steps = [(value, label, short label, watches whose own band it is)], lowest band first.
-    dual=False: one handle, Any price then Up to each band (home page). dual=True: a From handle and a To handle plus one-tap ranges such as
-    "Rs 2,000 - Rs 3,000", which show only watches whose own band lies in that range. Hidden until the script enables it."""
+def price_slider(steps, group="budget", title="Budget"):
+    """Maximum-budget chip rail ("show watches under this amount", cumulative like the existing Under X bands). No prices are shown or stored.
+    steps = [(value, label, short label, watches whose own band it is)], lowest band first; they come from the category's price-band configuration,
+    so any category can pass its own bands. Hidden until the script enables it."""
     if len(steps) < 2:
         return ''
-    most = max(count for *_, count in steps) or 1
-    bars = '<span class="price-bar-gap"></span>' + ''.join(
-        f'<span data-price-bar style="height:{max(10, round(100 * count / most))}%"></span>' for *_, count in steps)
-    ticks = '<span>Any</span>' + ''.join(f'<span>{esc(short)}</span>' for _, _, short, _ in steps)
     data = json.dumps([[value, label, count] for value, label, _, count in steps], ensure_ascii=False)
-    head = f'<div class="price-slider-head"><h2 class="wd-label">{esc(title)}</h2>' + ('' if dual else '<output data-price-label>Any price</output>') + '</div>'
-    if dual:
-        n = len(steps)
-        cells = ''.join(
-            f'<button type="button" class="ladder-step" data-step="{i}" style="--h:{round(26 + 74 * (i + 1) / n)}%" aria-pressed="false"><span class="ladder-bar"></span><span class="ladder-lab">{esc(short)}</span></button>'
-            for i, (_, _, short, _) in enumerate(steps))
-        controls = ('<div class="price-ladder-wrap"><div class="ladder" role="group" aria-label="Budget bands, tap one band or two to widen">' + cells + '</div>'
-                    '<div class="ladder-foot"><output data-price-label>Any price</output><button type="button" class="ladder-reset" data-ladder-reset>Any price</button></div>'
-                    '<p class="ladder-hint">Tap a band. Tap a second band to widen the range.</p></div>')
-    else:
-        controls = (f'<div class="price-bars" aria-hidden="true">{bars}</div>'
-                    f'<input type="range" min="0" max="{len(steps)}" step="1" value="0" aria-label="Maximum price band" aria-valuetext="Any price">'
-                    f'<div class="price-ticks" aria-hidden="true">{ticks}</div>')
-    return (f'<div class="price-slider{" price-dual price-ladder" if dual else ""}" data-price-slider data-group="{esc(group)}" data-steps="{esc(data)}" hidden>'
-            + head + controls + '</div>')
+    chips = '<button type="button" class="pb-chip" data-step="-1" aria-pressed="true">Any</button>' + ''.join(
+        f'<button type="button" class="pb-chip" data-step="{i}" aria-pressed="false">{esc(short)}</button>' for i, (_, _, short, _) in enumerate(steps))
+    return (f'<div class="price-slider price-bands" data-price-slider data-group="{esc(group)}" data-steps="{esc(data)}" hidden>'
+            f'<div class="price-slider-head"><h2 class="wd-label">{esc(title)}</h2><p class="pb-sub">Choose your maximum {esc(title.lower())}</p></div>'
+            f'<div class="pb-rail" role="group" aria-label="Maximum {esc(title.lower())}">{chips}</div>'
+            '<p class="pb-help" aria-live="polite"><span data-price-help>Any price</span></p>'
+            '<output class="visually-hidden" data-price-label>Any price</output></div>')
 
 
 def groups(items, specs):

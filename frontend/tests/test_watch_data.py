@@ -256,10 +256,9 @@ class Slider(unittest.TestCase):
         body = shop.landing()["_body"]
         self.assertIn("data-price-slider", body)
         steps = shop.price_steps()
-        labels = [short for _, _, short, _ in steps]
-        for short in labels:
-            self.assertIn(f'<span class="ladder-lab">{short}</span></button>', body)
-        # a band with no watch under it is not offered as a step
+        for _, _, short, _ in steps:
+            self.assertIn(f'aria-pressed="false">{short}</button>', body)
+        # a band with no watch under it is not offered as a chip
         empty = [info["label"] for slug_, info in shop.budgets.items() if not any(slug_ in shop.qualifies(p) for p in shop.products)]
         shown = {label for _, label, _, _ in steps}
         for label in empty:
@@ -268,7 +267,8 @@ class Slider(unittest.TestCase):
     def test_slider_needs_two_steps_and_shows_no_prices(self):
         self.assertEqual(collection.price_slider([("under-2000", "Under \u20b92,000", "\u20b92k", 3)]), "")
         html = collection.price_slider([("a", "Under A", "A", 3), ("b", "Under B", "B", 1)])
-        self.assertIn('max="2"', html)
+        self.assertEqual(html.count('class="pb-chip"'), 3)          # Any + the two bands
+        self.assertIn("Choose your maximum budget", html)
         self.assertIn("hidden", html)
 
     def test_slider_is_on_collection_pages_too(self):
@@ -382,12 +382,11 @@ class PremiumCards(unittest.TestCase):
     def setUpClass(cls):
         cls.shop = watches.Watches(build.SRC, build.CONFIG)
 
-    def test_catalog_budget_ladder_has_one_step_per_band_with_watches(self):
+    def test_catalog_budget_chip_rail_has_any_plus_one_chip_per_band_with_watches(self):
         body = self.shop.landing()["_body"]
-        self.assertIn("price-ladder", body)
-        self.assertEqual(body.count('class="ladder-step"'), len(self.shop.price_steps()))
-        self.assertIn("data-ladder-reset", body)
-        self.assertNotIn('class="price-hi"', body)
+        self.assertIn("price-bands", body)
+        self.assertEqual(body.count('class="pb-chip"'), len(self.shop.price_steps()) + 1)
+        self.assertNotIn("ladder-step", body)
 
     def test_card_shows_the_band_range_and_marks_its_own_band(self):
         p = next(q for q in self.shop.products if q["id"] == "titan-analog-offwhite-b01clf3bfw")

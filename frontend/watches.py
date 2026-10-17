@@ -884,12 +884,12 @@ f'<linearGradient id="g{uid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-
         groups.append({"key": "style", "title": "Style", "checked": [style] if style else [],
                        "items": [(slug_, value["label"], n(lambda p, s=slug_: s in p["styles"])) for slug_, value in self.styles.items()]})
         steps = self.price_steps()
-        ladder = collection.price_slider(steps, dual=True, title="Budget")
+        budget_chips = collection.price_slider(steps, title="Budget")
         quick = self.keyword_chips(url, shown)
         order = list(self.budgets)
         pubs = sorted([c for c in self.published_collections() if c["featured_on_watch_hub"] and c.get("price_band") in order],
                       key=lambda c: (order.index(c["price_band"]), c["label"])) if hub else []
-        curated = ('<p class="ladder-curated"><span>Curated</span>' + " ".join(
+        curated = ('<p class="pb-curated"><span>Curated</span>' + " ".join(
             f'<a href="{esc(c["url"])}">{esc(c["label"])} {esc(self.budgets[c["price_band"]]["label"].lower())}</a>' for c in pubs) + '</p>') if pubs else ""
         chips_html = '<div class="lx-chips">'
         if len(steps) >= 2:
@@ -925,7 +925,7 @@ f'<linearGradient id="g{uid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-
         block = collection.render(card_html, groups, uid="watch-collection", title="Explore watches", noun="watch", plural="watches",
                                   preset_gender=gender, genders=[("men", "Men"), ("women", "Women")],
                                   top_html=top, visible=[matches(p) for p in products], page_size=24, grid_note=note,
-                                  panel_top=ladder + curated, after_html=after, tips_html=tips, controls_html=chips_html, main_toolbar=True)
+                                  panel_top=budget_chips + curated, after_html=after, tips_html=tips, controls_html=chips_html, main_toolbar=True)
         body = ('<section class="section watch-store" data-mobile-grid="two"><div class="container watch-store-inner">{{breadcrumb}}' + hub_top + block + footline + hub_bottom + self.collection_tables(table, shown) + self.collection_copy(url) + self.related_collections(url) + extra_html + '<noscript><nav class="watch-static-links" aria-label="Browse watches"><a href="/watches/men/">Men</a> · <a href="/watches/women/">Women</a> · ' + ' · '.join(f'<a href="/watches/brands/{esc(slug)}/">{esc(value["name"])}</a>' for slug, value in self.brands.items() if slug != 'sample') + '</nav></noscript></div></section>')
         meta = self._meta(url, title, intro, body, crumbs or [["Watches", "/watches/"]], shown, js=False)
         meta["noindex"] = self.collection_noindex(url, shown)
