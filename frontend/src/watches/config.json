@@ -123,7 +123,8 @@
       "name": "Fastrack",
       "tier": "value",
       "genders": [
-        "men"
+        "men",
+        "women"
       ],
       "line": "Analog",
       "blurb": "A youth-focused brand from Titan Company, with value-oriented analog watches."
