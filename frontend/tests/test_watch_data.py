@@ -363,6 +363,39 @@ class Colours(unittest.TestCase):
         self.assertEqual((p["band_colour"], p["dial_colour"]), (["grey"], ["grey"]))
 
 
+class PremiumCards(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.shop = watches.Watches(build.SRC, build.CONFIG)
+
+    def test_catalog_slider_has_from_and_to_handles(self):
+        body = self.shop.landing()["_body"]
+        self.assertIn('class="price-lo"', body)
+        self.assertIn('class="price-hi"', body)
+        self.assertIn("data-price-ranges", body)
+
+    def test_card_shows_the_band_range_and_marks_its_own_band(self):
+        p = next(q for q in self.shop.products if q["id"] == "titan-analog-offwhite-b01clf3bfw")
+        card = self.shop.card(p)
+        self.assertIn(f'data-own="{p["budget"]}"', card)
+        self.assertEqual(self.shop.band_range(dict(p, budget="under-3000")), "\u20b92,000\u2013\u20b93,000")
+        self.assertEqual(self.shop.band_range(dict(p, budget="under-2000")), "\u20b91,000\u2013\u20b92,000")
+        self.assertEqual(self.shop.band_range(dict(p, budget="")), "")
+
+    def test_dial_art_uses_listed_colours_and_stays_neutral_when_unknown(self):
+        known = self.shop.dial_art({"dial_colour": ["green"], "band_colour": ["brown"], "band_material": "leather", "features": ["chronograph", "date"]})
+        self.assertIn("#1f4d3a", known)                  # green dial
+        self.assertIn("#5b3a25", known)                  # brown strap
+        unknown = self.shop.dial_art({"dial_colour": [], "band_colour": [], "band_material": "", "features": []})
+        self.assertIn("#d8d1c2", unknown)                # neutral, not a guessed colour
+        self.assertIn('aria-hidden="true"', known)       # decorative: the page text carries the facts
+
+    def test_every_listed_colour_has_a_drawing_colour(self):
+        for key, _, options, getter in self.shop.FILTERS:
+            if key == "dialcolour":
+                self.assertEqual({v for v, _ in options} - set(self.shop.DIAL_HEX), set())
+
+
 class Duplicates(unittest.TestCase):
     def test_same_id_asin_or_name_is_flagged(self):
         a = {"id": "titan-a-b000000001", "product_name": "Titan A", "amazon_url": "https://www.amazon.in/dp/B000000001?tag=x"}

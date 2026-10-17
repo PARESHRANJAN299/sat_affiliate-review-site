@@ -12,3 +12,24 @@
 .home-price { margin-top: 14px; }
 .home-price .price-slider { border-top: 0; padding-top: 0; margin-top: 0; }
 .home-price .btn { margin-top: 12px; }
+
+/* Two-handle version: quick ranges, From and To handles, bars and ticks aligned to the handle positions. */
+.price-dual .price-ranges { display: flex; flex-wrap: wrap; gap: 8px; margin: 2px 0 14px; }
+.price-range { min-height: 38px; padding: 0 14px; border-radius: 999px; border: 1px solid rgba(201, 164, 92, .55); background: #fffdf8; color: #2b2c2d; font: 600 .82rem var(--font-sans); cursor: pointer; }
+.price-range:hover { background: #f8f5ef; }
+.price-range[aria-pressed="true"] { background: linear-gradient(180deg, #2b2f38, #15171a); border-color: #15171a; color: #fff; }
+.price-dual .price-bars { padding: 0 11px; }
+.price-dual .price-bars span { margin: 0 -6px; width: 12px; }
+.price-dual .price-ticks { padding: 0 11px; }
+.price-dual .price-ticks span { width: 0; display: flex; justify-content: center; white-space: nowrap; overflow: visible; }
+.price-track { position: relative; height: 34px; --from: 0; --to: 1; }
+.price-track::before { content: ""; position: absolute; left: 11px; right: 11px; top: 15px; height: 4px; border-radius: 4px; background: #e3dccb; }
+.price-track::after { content: ""; position: absolute; top: 15px; height: 4px; border-radius: 4px; background: linear-gradient(90deg, #b48b3c, #8a6a28);
+  left: calc(11px + (100% - 22px) * var(--from)); right: calc(11px + (100% - 22px) * (1 - var(--to))); }
+.price-dual .price-track input[type="range"] { position: absolute; inset: 0; width: 100%; height: 34px; margin: 0; background: none; pointer-events: none; -webkit-appearance: none; appearance: none; }
+.price-dual .price-track input[type="range"]::-webkit-slider-runnable-track { background: none; height: 34px; }
+.price-dual .price-track input[type="range"]::-moz-range-track { background: none; height: 34px; }
+.price-dual .price-track input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; pointer-events: auto; width: 22px; height: 22px; margin-top: 6px; border-radius: 50%; border: 3px solid #fff; background: linear-gradient(135deg, #d4a94f, #8a6a28); box-shadow: 0 2px 8px rgba(40, 28, 8, .45); cursor: grab; }
+.price-dual .price-track input[type="range"]::-moz-range-thumb { pointer-events: auto; width: 16px; height: 16px; border-radius: 50%; border: 3px solid #fff; background: linear-gradient(135deg, #d4a94f, #8a6a28); box-shadow: 0 2px 8px rgba(40, 28, 8, .45); cursor: grab; }
+.price-dual .price-track input[type="range"]:focus-visible::-webkit-slider-thumb { outline: 3px solid var(--focus, #1f6feb); outline-offset: 2px; }
+@media (max-width: 719px) { .price-dual .price-ranges { flex-wrap: nowrap; overflow-x: auto; margin-right: -4px; padding-bottom: 6px; scrollbar-width: none; } .price-dual .price-ranges::-webkit-scrollbar { display: none; } .price-range { flex: none; } }

@@ -243,6 +243,57 @@ class Watches:
                 f'<span>{esc(p.get("movement", "Analog watch"))}</span>'
                 '<span>See product photos at the retailer</span></div>')
 
+    DIAL_HEX = {"black": "#1b1c1f", "white": "#f4f1ea", "blue": "#1f3a6e", "green": "#1f4d3a", "silver": "#c9ccd1", "gold": "#c9a45c", "champagne": "#e3d3a8",
+                "cream": "#efe6cf", "pink": "#e8b4bc", "grey": "#8b9097", "brown": "#5a3a24", "rose-gold": "#c98f7f"}
+    STRAP_HEX = {"black": "#232325", "brown": "#5b3a25", "green": "#2f5a43", "silver": "#c3c7cc", "grey": "#868b92", "gold": "#c9a45c", "blue": "#243b6b", "rose-gold": "#c98f7f",
+                 "white": "#e9e5dc", "champagne": "#d9c79a"}
+    METAL_HEX = {"gold": "#c9a45c", "rose-gold": "#c98f7f", "silver": "#c7cad0"}
+
+    def dial_art(self, p):
+        """A small illustration drawn from the colours the listing gives (dial, strap, case metal) and its features; it is not a photograph, and unknown
+        colours are drawn in a neutral tone rather than guessed."""
+        dial_key = (p.get("dial_colour") or [""])[0]
+        strap_key = (p.get("band_colour") or [""])[0]
+        dial = self.DIAL_HEX.get(dial_key, "#d8d1c2")
+        strap = self.STRAP_HEX.get(strap_key, "#b4afa4")
+        metal_strap = p.get("band_material") in ("stainless-steel", "metal")
+        metal = self.METAL_HEX.get(strap_key, "#c7cad0") if metal_strap else "#c7cad0"
+        light = sum(int(dial[i:i + 2], 16) * w for i, w in ((1, .3), (3, .59), (5, .11))) > 140
+        ink = "#2a2b2d" if light else "#eadfc4"
+        marks = "".join(
+            f'<line x1="{60 + (25 if i % 3 else 23) * math.sin(math.radians(i * 30)):.1f}" y1="{80 - (25 if i % 3 else 23) * math.cos(math.radians(i * 30)):.1f}" '
+            f'x2="{60 + 28 * math.sin(math.radians(i * 30)):.1f}" y2="{80 - 28 * math.cos(math.radians(i * 30)):.1f}" stroke-width="{1.6 if i % 3 == 0 else .9}"/>' for i in range(12))
+        features = p.get("features", [])
+        subs = ''.join(f'<circle cx="{x}" cy="{y}" r="6"/>' for x, y in ((47, 80), (73, 80), (60, 93))) if "chronograph" in features else ""
+        window = '<rect x="78" y="77" width="9" height="6" rx="1" fill="#fbfaf7" stroke="#8a8f98" stroke-width=".6"/>' if ("date" in features or "day-date" in features) else ""
+        if metal_strap:
+            links = "".join(f'<line x1="40" y1="{y}" x2="80" y2="{y}"/>' for y in (10, 20, 30, 126, 136, 146))
+            straps = (f'<g fill="{strap}"><path d="M42 0H78L81 46H39Z"/><path d="M39 114H81L78 160H42Z"/></g>'
+                      f'<g stroke="rgba(0,0,0,.28)" stroke-width=".8">{links}</g>')
+        else:
+            straps = (f'<g fill="{strap}"><path d="M42 0H78L81 46H39Z"/><path d="M39 114H81L78 160H42Z"/></g>'
+                      '<g stroke="rgba(255,255,255,.35)" stroke-width=".8" stroke-dasharray="2 2"><path d="M46 2L48 44M74 2L72 44M48 116L46 158M72 116L74 158"/></g>')
+        return ('<svg class="dial-art" viewBox="0 0 120 160" aria-hidden="true" focusable="false">' + straps +
+                f'<rect x="95" y="76" width="5" height="8" rx="1.5" fill="{metal}"/>'
+                f'<circle cx="60" cy="80" r="37" fill="{metal}"/><circle cx="60" cy="80" r="33.5" fill="rgba(0,0,0,.22)"/>'
+                f'<circle cx="60" cy="80" r="31" fill="{dial}"/><circle cx="60" cy="80" r="31" fill="url(#sheen)" opacity=".0"/>'
+                f'<g stroke="{ink}">{marks}</g><g fill="none" stroke="{ink}" stroke-width=".7" opacity=".7">{subs}</g>{window}'
+                f'<g stroke="{ink}" stroke-linecap="round"><line x1="60" y1="80" x2="52" y2="66" stroke-width="2"/><line x1="60" y1="80" x2="73" y2="68" stroke-width="1.4"/></g>'
+                '<circle cx="60" cy="80" r="2" fill="#c9a45c"/>'
+                '<path d="M32 62A31 31 0 0 1 60 49" fill="none" stroke="#fff" stroke-opacity=".28" stroke-width="2" stroke-linecap="round"/></svg>')
+
+    def band_range(self, p):
+        """The price band a watch sits in, as a range of band edges ("Rs 2,000 - Rs 3,000"); band edges only, never a price."""
+        slug_ = p.get("budget")
+        if slug_ not in self.budgets:
+            return ""
+        keys = list(self.budgets)
+        top = self.budgets[slug_].get("max")
+        low = self.budgets[keys[keys.index(slug_) - 1]].get("max") if keys.index(slug_) else 0
+        if not top:
+            return self.budgets[slug_]["label"]
+        return f"Up to \u20b9{top:,}" if not low else f"\u20b9{low:,}\u2013\u20b9{top:,}"
+
     def card(self, p, local=False):
         brand = self.brands[p["brand"]]["name"]
         href = f'#r-{p["id"]}' if local else self.review_url(p)
@@ -250,11 +301,11 @@ class Watches:
         if p.get("image"):
             media = f'<a class="watch-media" href="{esc(href)}" tabindex="-1" aria-hidden="true">{self.media(p)}</a>'
         else:
-            media = (f'<a class="watch-media watch-tile" href="{esc(href)}" tabindex="-1" aria-hidden="true">{watch_art("tile-art")}'
-                     f'<span class="tile-brand">{esc(brand)}</span>' + (f'<span class="tile-band">{esc(band)}</span>' if band else "") + '</a>')
+            media = (f'<a class="watch-media watch-tile" href="{esc(href)}" tabindex="-1" aria-hidden="true">{self.dial_art(p)}'
+                     f'<span class="tile-brand">{esc(brand)}</span>' + (f'<span class="tile-band">{esc(self.band_range(p))}</span>' if band else "") + '</a>')
         return (
             f'<article class="watch-card" data-id="{esc(p["id"])}" data-name="{esc(brand + " " + p["model"])}" data-brand="{esc(p["brand"])}" '
-            f'data-gender="{esc(" ".join(p["gender"]))}" data-style="{esc(" ".join(p["styles"]))}" data-budget="{esc(" ".join(self.qualifies(p)) or "unlisted")}" data-styles="{esc(" ".join(p["styles"]))}" '
+            f'data-gender="{esc(" ".join(p["gender"]))}" data-style="{esc(" ".join(p["styles"]))}" data-budget="{esc(" ".join(self.qualifies(p)) or "unlisted")}" data-own="{esc(p.get("budget") or "")}" data-styles="{esc(" ".join(p["styles"]))}" '
             + " ".join(f'data-{key}="{esc(" ".join(v for v in getter(self, p) if v))}"' for key, _, _, getter in self.FILTERS) + '>'
             + media + '<div class="watch-body">'
             f'<p class="watch-brand">{esc(brand)}</p>' + (f'<p class="watch-label">{esc(watch_data.EDITORIAL_LABELS.get(p["editorial_labels"][0], ""))}</p>' if p.get("editorial_labels") and p["editorial_labels"][0] in watch_data.EDITORIAL_LABELS else "") +
@@ -772,7 +823,7 @@ class Watches:
             f'<button type="button" class="watch-chip" data-quick-chip="brand" data-value="{esc(slug_)}" aria-pressed="false">{esc(name)} <em>{cnt}</em></button>'
             for slug_, name, cnt in active) if len(active) >= 2 else ""
         steps = self.price_steps()
-        slider = collection.price_slider(steps)
+        slider = collection.price_slider(steps, dual=True)
         quick = self.keyword_chips(url, shown)
         top = ('<div class="watch-discovery"><div class="watch-style-head"><h2>Shop by style</h2><a href="/watches/guide/">Buying guide &rarr;</a></div>'
                f'<nav class="watch-style-row" aria-label="Watch styles">{style_links}</nav>'
