@@ -228,13 +228,15 @@ class Under3000(unittest.TestCase):
         shop = watches.Watches(build.SRC, build.CONFIG)
         shop.keywords = {"/watches/titan/under-2000/": {"men": ["Titan leather strap watches for men under \u20b92,000", "Titan formal watches for men under \u20b92,000",
                                                                   "Titan slim watches for men under \u20b92,000"], "women": ["Titan rose gold watches for women under \u20b92,000"]}}
-        shown = [p for p in shop.products if p["brand"] == "titan"]
+        shown = [p for p in shop.products if p["brand"] == "titan" and "rose-gold" not in p.get("band_colour", [])]
         html = shop.keyword_chips("/watches/titan/under-2000/", shown)
         self.assertIn('data-quick-chip="style" data-value="leather-strap" data-chip-gender="men"', html)
         self.assertIn(">Leather strap watches for men<", html)
         self.assertNotIn("formal", html.lower())      # needs an approved occasion tag first
         self.assertNotIn("slim", html.lower())        # no matching filter
-        self.assertNotIn("rose-gold", html)           # no Titan women's watch has a rose gold strap yet
+        self.assertNotIn("rose-gold", html)           # none of these watches has a rose gold strap, so no chip
+        with_rose = [p for p in shop.products if "rose-gold" in p.get("band_colour", []) and "women" in p["gender"]]
+        self.assertIn('data-value="rose-gold"', shop.keyword_chips("/watches/titan/under-2000/", with_rose))
 
 
 class Slider(unittest.TestCase):
@@ -295,6 +297,14 @@ class MetalStrap(unittest.TestCase):
         self.assertIn("metal-strap", p["styles"])
         shop = watches.Watches(build.SRC, build.CONFIG)
         self.assertIn("metal", watches.Watches.FILTERS[2][3](shop, p))        # strap material filter has its own bucket for it
+
+
+class DialColours(unittest.TestCase):
+    def test_every_stored_dial_colour_can_be_filtered(self):
+        shop = watches.Watches(build.SRC, build.CONFIG)
+        offered = {value for value, _ in next(opts for key, _, opts, _ in shop.FILTERS if key == "dialcolour")}
+        stored = {c for p in shop.products for c in p.get("dial_colour", [])}
+        self.assertEqual(stored - offered, set())      # a colour on a watch must have a filter option, or the watch can never be found by it
 
 
 class Duplicates(unittest.TestCase):
