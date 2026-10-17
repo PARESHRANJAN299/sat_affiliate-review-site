@@ -848,6 +848,9 @@ class Watches:
                 items = [p for p in self.products if a[3](p) and (b is None or b[3](p))]
                 if len(items) < self.min_index:
                     continue
+                band = next((d[1] for d in (a, b) if d is not None and d[0] == "budget"), None)
+                if band and sum(1 for p in items if p.get("budget") == band) < self.min_index:
+                    continue   # a price page needs enough watches inside its own band, not only watches from cheaper bands
                 if must is not None and not (a[3](must) and (b is None or b[3](must))):
                     continue
                 name = a[2] + ("" if b is None else " + " + b[2])
