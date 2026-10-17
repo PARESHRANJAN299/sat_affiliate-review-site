@@ -190,6 +190,45 @@ class HubExtras(unittest.TestCase):
         self.assertNotIn('href="/watches/titan/under-2000/"', html)
 
 
+class Under3000(unittest.TestCase):
+    def test_price_page_needs_watches_inside_its_own_band(self):
+        shop = watches.Watches(build.SRC, build.CONFIG)
+        shop.approved = dict(shop.approved)
+        shop.approved["/watches/men/under-3000/"] = {"intro": " ".join(["word"] * 120)}
+        meta = shop.budget_page("men", "under-3000")
+        self.assertGreaterEqual(len([p for p in shop.products if "men" in p["gender"] and "under-3000" in shop.qualifies(p)]), 3)
+        self.assertTrue(meta["noindex"])      # every watch qualifies only through the Under 2,000 band, so the page would repeat that one
+        self.assertNotIn("/watches/men/under-3000/", [c["url"] for c in shop.published_collections()])
+
+    def test_three_watches_in_the_band_open_the_page(self):
+        shop = watches.Watches(build.SRC, build.CONFIG)
+        base = next(p for p in shop.products if p["id"] == "titan-analog-offwhite-b01clf3bfw")
+        for i in range(3):
+            q = dict(base, id=f"titan-test-{i}", budget="under-3000", product_name=f"Titan Test {i}", model=f"Test {i}")
+            shop.products.append(q)
+        shop.approved = dict(shop.approved)
+        shop.approved["/watches/men/under-3000/"] = {"intro": " ".join(["word"] * 120)}
+        self.assertFalse(shop.budget_page("men", "under-3000")["noindex"])
+
+    def test_titan_price_page_has_a_section_per_shopper_path(self):
+        shop = watches.Watches(build.SRC, build.CONFIG)
+        body = shop.brand_budget_page("titan", "under-2000")["_body"]
+        self.assertIn("<h2>Best Titan Watches Under \u20b92,000 for Men</h2>", body)
+        self.assertIn("<h2>Best Titan Watches Under \u20b92,000 for Women</h2>", body)
+
+    def test_keyword_chips_follow_the_data(self):
+        shop = watches.Watches(build.SRC, build.CONFIG)
+        shop.keywords = {"/watches/titan/under-2000/": {"men": ["Titan leather strap watches for men under \u20b92,000", "Titan formal watches for men under \u20b92,000",
+                                                                  "Titan slim watches for men under \u20b92,000"], "women": ["Titan rose gold watches for women under \u20b92,000"]}}
+        shown = [p for p in shop.products if p["brand"] == "titan"]
+        html = shop.keyword_chips("/watches/titan/under-2000/", shown)
+        self.assertIn('data-quick-chip="style" data-value="leather-strap" data-chip-gender="men"', html)
+        self.assertIn(">Leather strap watches for men<", html)
+        self.assertNotIn("formal", html.lower())      # needs an approved occasion tag first
+        self.assertNotIn("slim", html.lower())        # no matching filter
+        self.assertNotIn("rose-gold", html)           # no Titan women's watch has a rose gold strap yet
+
+
 class Duplicates(unittest.TestCase):
     def test_same_id_asin_or_name_is_flagged(self):
         a = {"id": "titan-a-b000000001", "product_name": "Titan A", "amazon_url": "https://www.amazon.in/dp/B000000001?tag=x"}

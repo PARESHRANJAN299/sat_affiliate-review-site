@@ -1,0 +1,37 @@
+{
+  "_note": "Search phrases per collection page, from the owner. They are not printed as a keyword list (search engines treat that as stuffing). A phrase becomes a quick-filter chip on its page only when it maps to a filter AND at least one watch matches; phrases that need an editorial tag (formal, office, classic, minimalist, elegant, everyday) show up once those tags are approved and assigned. The page title and the Men / Women section headings are generated from the brand and price band.",
+  "pages": {
+    "/watches/titan/under-3000/": {
+      "men": [
+        "Titan watches for men under ₹3,000",
+        "Titan formal watches for men under ₹3,000",
+        "Titan office watches for men under ₹3,000",
+        "Titan classic analog watches for men under ₹3,000",
+        "Titan black dial watches for men under ₹3,000",
+        "Titan blue dial watches for men under ₹3,000",
+        "Titan leather strap watches for men under ₹3,000",
+        "Titan metal strap watches for men under ₹3,000",
+        "Titan minimalist watches for men under ₹3,000",
+        "Titan gold watches for men under ₹3,000",
+        "Titan quartz watches for men under ₹3,000",
+        "Titan everyday watches for men under ₹3,000",
+        "Titan slim watches for men under ₹3,000"
+      ],
+      "women": [
+        "Titan watches for women under ₹3,000",
+        "Titan office watches for women under ₹3,000",
+        "Titan formal watches for women under ₹3,000",
+        "Titan classic analog watches for women under ₹3,000",
+        "Titan rose gold watches for women under ₹3,000",
+        "Titan gold watches for women under ₹3,000",
+        "Titan metal strap watches for women under ₹3,000",
+        "Titan leather strap watches for women under ₹3,000",
+        "Titan minimalist watches for women under ₹3,000",
+        "Titan small dial watches for women under ₹3,000",
+        "Titan elegant watches for women under ₹3,000",
+        "Titan quartz watches for women under ₹3,000",
+        "Titan everyday watches for women under ₹3,000"
+      ]
+    }
+  }
+}

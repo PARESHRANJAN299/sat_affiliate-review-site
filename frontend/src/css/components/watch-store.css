@@ -272,3 +272,6 @@
   .hub-intro { font-size: .85rem; line-height: 1.5; }
 }
 @media (min-width: 1000px) { .hub-intro { grid-column: 1 / -1; } .hub-sec-choose { grid-column: 1 / -1; } }
+
+.watch-quick-group + .watch-quick-group { margin-top: 10px; }
+.watch-quick-group h3 { margin: 0 0 6px; font-size: .74rem; font-family: var(--font-sans); letter-spacing: .08em; text-transform: uppercase; color: #846631; }

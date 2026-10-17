@@ -61,6 +61,7 @@ class Watches:
         self.merchants = read_json(base / "merchants.json")
         self.settings = read_json(base / "settings.json") if (base / "settings.json").exists() else {}
         self.brand_notes = read_json(base / "brand-notes.json") if (base / "brand-notes.json").exists() else {}
+        self.keywords = read_json(base / "keywords.json").get("pages", {}) if (base / "keywords.json").exists() else {}
         self.approved = (read_json(base / "collections.json") if (base / "collections.json").exists() else {}).get("approved", {})
         self.site = site_config
         self.errors = []
@@ -523,7 +524,11 @@ class Watches:
         if url in self.HUBS:
             return not shown
         entry = self.approved.get(url) or {}
-        return not (len(shown) >= self.min_index and len(str(entry.get("intro", "")).split()) >= 100)
+        band = (self.parse_collection_url(url) or {}).get("price_band")
+        # a price page lists every watch under the band, but it earns its own URL only with enough watches that sit IN that band,
+        # so "Under 3,000" never goes live as a copy of "Under 2,000"
+        distinct = sum(1 for p in shown if p.get("budget") == band) if band else len(shown)
+        return not (len(shown) >= self.min_index and distinct >= self.min_index and len(str(entry.get("intro", "")).split()) >= 100)
 
     def linkify(self, text):
         """[text](/path/) becomes a link only when the path is a published collection, a hub or the buying guide; otherwise plain text."""
@@ -653,6 +658,44 @@ class Watches:
         block("guides", "Popular buying guides", f'<ul class="hub-guides">{items}</ul>')
         return '<div class="watch-hub">' + "".join(blocks) + '</div>', keys
 
+    # search phrase fragment -> (filter group, value); the first match wins, so "rose gold" is tested before "gold"
+    KEYWORD_FILTERS = [("leather strap", "style", "leather-strap"), ("metal strap", "style", "metal-strap"), ("black dial", "dialcolour", "black"),
+                       ("blue dial", "dialcolour", "blue"), ("rose gold", "strapcolour", "rose-gold"), ("gold", "strapcolour", "gold"),
+                       ("quartz", "movement", "quartz"), ("small dial", "dial", "36-and-under"), ("office", "occasion", "office"),
+                       ("formal", "occasion", "formal"), ("everyday", "occasion", "everyday"), ("classic", "style", "classic"),
+                       ("minimalist", "style", "minimal"), ("elegant", "style", "elegant")]
+
+    def keyword_chips(self, url, shown):
+        """Quick-filter chips for a page's search phrases (keywords.json). A chip exists only when its phrase maps to a filter and at least one
+        watch matches, so editorial phrases (formal, office, minimalist ...) stay hidden until those tags are approved and assigned."""
+        entry = self.keywords.get(url) or {}
+        getters = {key: getter for key, _, _, getter in self.FILTERS}
+        out = ""
+        for g, info in self.genders.items():
+            seen, chips = set(), ""
+            for phrase in entry.get(g, []):
+                spec = next(((grp, val) for kw, grp, val in self.KEYWORD_FILTERS if kw in phrase.lower()), None)
+                if not spec or spec in seen:
+                    continue
+                grp, val = spec
+                if not any(g in p["gender"] and val in (p["styles"] if grp == "style" else getters[grp](self, p)) for p in shown):
+                    continue
+                seen.add(spec)
+                label = re.sub(r"\s+under\s+\u20b9[\d,]+$", "", re.sub(r"^\w+\s+", "", phrase)) if phrase.split()[0].lower() in self.brands else phrase
+                chips += (f'<button type="button" class="watch-chip" data-quick-chip="{esc(grp)}" data-value="{esc(val)}" data-chip-gender="{esc(g)}" aria-pressed="false">'
+                          f'{esc(label[:1].upper() + label[1:])}</button>')
+            if chips:
+                out += f'<div class="watch-quick-group"><h3>Popular for {esc(info["adjective"])}</h3><div class="watch-chip-row">{chips}</div></div>'
+        return out
+
+    def collection_tables(self, table, shown):
+        """table=True gives one comparison table; a list of (heading, watches) gives one table per shopper section (for example Men and Women)."""
+        if not table:
+            return ""
+        if table is True:
+            return self.collection_table(shown)
+        return "".join(self.collection_table(ps, heading=h) for h, ps in table)
+
     def related_collections(self, url):
         """Other published collections, same brand or price band first. Empty (nothing shown) until a second collection is published."""
         me = next((c for c in self.published_collections() if c["url"] == url), None)
@@ -663,7 +706,7 @@ class Watches:
         pills = "".join(f'<li><a class="hub-pill" href="{esc(c["url"])}">{esc(c["title"])} <span class="hub-count">{c["count"]}</span></a></li>' for c in others[:8])
         return f'<nav class="watch-related" aria-labelledby="related-collections"><h2 id="related-collections">Related watch collections</h2><ul class="hub-pills">{pills}</ul></nav>'
 
-    def collection_table(self, products):
+    def collection_table(self, products, heading="Compare these watches"):
         """Comparison table for a collection page: Model | Best for | Gender | Case size | Movement | Strap | Water resistance | CTA."""
         if len(products) < 2:
             return ""
@@ -680,7 +723,7 @@ class Watches:
                 + cell("Strap", strap) + cell("Water resistance", f"{metres:g} m" if metres else "")
                 + f'<td role="cell" data-label="Shop">{self.check_price(p, include_more=False) or "Not available"}</td></tr>')
         head = "".join(f'<th scope="col" role="columnheader">{h}</th>' for h in ("Model", "Best for", "Gender", "Case size", "Movement", "Strap", "Water resistance", "Shop"))
-        return ('<section class="watch-collection-table"><h2>Compare these watches</h2><div class="compare-table-wrap"><table class="compare-table" role="table">'
+        return (f'<section class="watch-collection-table"><h2>{esc(heading)}</h2><div class="compare-table-wrap"><table class="compare-table" role="table">'
                 f'<caption class="visually-hidden">Comparison of the watches on this page</caption><thead><tr role="row">{head}</tr></thead><tbody>' + "".join(rows) + '</tbody></table></div></section>')
 
     def catalog(self, url, title, intro, *, gender="", brand="", budget="", style="", crumbs=None, extra_html="", table=False, hub=None):
@@ -717,7 +760,7 @@ class Watches:
         brand_pills = "".join(
             f'<button type="button" class="watch-chip" data-quick-chip="brand" data-value="{esc(slug_)}" aria-pressed="false">{esc(name)} <em>{cnt}</em></button>'
             for slug_, name, cnt in active) if len(active) >= 2 else ""
-        quick = ""
+        quick = self.keyword_chips(url, shown)
         top = ('<div class="watch-discovery"><div class="watch-style-head"><h2>Shop by style</h2><a href="/watches/guide/">Buying guide &rarr;</a></div>'
                f'<nav class="watch-style-row" aria-label="Watch styles">{style_links}</nav>'
                + (f'<div class="watch-brand-head"><h2>Shop by brand</h2></div><div class="watch-chip-row" role="group" aria-label="Shop by brand" data-brand-row>{brand_pills}</div>' if brand_pills else "")
@@ -736,7 +779,7 @@ class Watches:
                                   top_html=top, visible=[matches(p) for p in products], page_size=24, grid_note=note)
         body = ('<section class="section watch-store"><div class="container watch-store-inner">{{breadcrumb}}'
                 f'<header class="watch-store-head"><div><p class="watch-kicker">The SAT watch edit</p><h1>{esc(title)}</h1><p>{esc(intro)}</p>' + (f'<p class="watch-reviewed">Last reviewed: <time datetime="{esc(self.updated(shown))}">{esc(self.human_date(self.updated(shown)))}</time></p>' if shown else "") + '</div>'
-                '<a class="watch-guide-link" href="/watches/guide/">Find your fit &rarr;</a></header>' + hub_html + block + (self.collection_table(shown) if table else "") + self.collection_copy(url) + self.related_collections(url) + extra_html + '<noscript><nav class="watch-static-links" aria-label="Browse watches"><a href="/watches/men/">Men</a> · <a href="/watches/women/">Women</a> · ' + ' · '.join(f'<a href="/watches/brands/{esc(slug)}/">{esc(value["name"])}</a>' for slug, value in self.brands.items() if slug != 'sample') + '</nav></noscript></div></section>')
+                '<a class="watch-guide-link" href="/watches/guide/">Find your fit &rarr;</a></header>' + hub_html + block + self.collection_tables(table, shown) + self.collection_copy(url) + self.related_collections(url) + extra_html + '<noscript><nav class="watch-static-links" aria-label="Browse watches"><a href="/watches/men/">Men</a> · <a href="/watches/women/">Women</a> · ' + ' · '.join(f'<a href="/watches/brands/{esc(slug)}/">{esc(value["name"])}</a>' for slug, value in self.brands.items() if slug != 'sample') + '</nav></noscript></div></section>')
         meta = self._meta(url, title, intro, body, crumbs or [["Watches", "/watches/"]], shown, js=False)
         meta["noindex"] = self.collection_noindex(url, shown)
         meta["css"] += ["collection", "watch-store"]
@@ -846,10 +889,14 @@ class Watches:
         br, bd = self.brands[brand], self.budgets[budget]
         url = f"/watches/{brand}/{budget}/"
         count = sum(1 for p in self.products if p["brand"] == brand and budget in self.qualifies(p))
-        ready = count >= self.min_index and url in self.approved
-        title = f'{"Best " if ready else ""}{br["name"]} Watches {bd["label"]}'
+        shown = [p for p in self.products if p["brand"] == brand and budget in self.qualifies(p)]
+        ready = not self.collection_noindex(url, shown)
+        lead = "Best " if ready else ""
+        title = f'{lead}{br["name"]} Watches {bd["label"]}'
         intro = f'{br["name"]} watches {bd["label"].lower()}, for men and women. Compare the published details and confirm the current price at the retailer.'
-        return self.catalog(url, title, intro, brand=brand, budget=budget, table=True,
+        sections = [(f'{lead}{br["name"]} Watches {bd["label"]} for {info["adjective"].title()}', [p for p in shown if g in p["gender"]])
+                    for g, info in self.genders.items()]
+        return self.catalog(url, title, intro, brand=brand, budget=budget, table=[(h, ps) for h, ps in sections if ps],
                             crumbs=[["Watches", "/watches/"], [br["name"], f"/watches/brands/{brand}/"], [bd["label"], url]])
 
     def brand_page(self, slug):

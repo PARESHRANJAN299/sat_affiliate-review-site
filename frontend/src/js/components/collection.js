@@ -81,7 +81,7 @@
         select.value = values.length > 1 ? '__multiple' : (values[0] || '');
       });
       chips.forEach(function (chip) {
-        chip.setAttribute('aria-pressed', (selected[chip.dataset.quickChip] || []).indexOf(chip.dataset.value) !== -1 ? 'true' : 'false');
+        chip.setAttribute('aria-pressed', (selected[chip.dataset.quickChip] || []).indexOf(chip.dataset.value) !== -1 && (!chip.dataset.chipGender || chip.dataset.chipGender === gender) ? 'true' : 'false');
       });
       styleButtons.forEach(function (button) {
         var values = selected.style || [];
@@ -133,7 +133,12 @@
     chips.forEach(function (chip) {
       chip.addEventListener('click', function () {
         var box = boxes.filter(function (b) { return b.dataset.group === chip.dataset.quickChip && b.value === chip.dataset.value; })[0];
-        if (box) { box.checked = !box.checked; update(); }
+        if (!box) return;
+        if (chip.dataset.chipGender) {  // a phrase such as "leather strap watches for men" sets the shopper path and the filter together
+          var on = chip.getAttribute('aria-pressed') === 'true';
+          box.checked = !on; if (!on) gender = chip.dataset.chipGender;
+        } else { box.checked = !box.checked; }
+        update();
       });
     });
     styleButtons.forEach(function (button) {
