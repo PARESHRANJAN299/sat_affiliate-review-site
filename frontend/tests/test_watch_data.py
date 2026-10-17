@@ -131,7 +131,7 @@ class Hub(unittest.TestCase):
         shop = watches.Watches(build.SRC, build.CONFIG)
         shop.approved = dict(shop.approved)
         shop.approved["/watches/men/under-5000/"] = {"intro": "too short"}
-        shop.approved["/watches/titan/under-3000/"] = {"intro": " ".join(["word"] * 120)}   # no page exists for this pair
+        shop.approved["/watches/titan/under-1000/"] = {"intro": " ".join(["word"] * 120)}   # no Titan watch sits in this band, so no page exists
         urls = [c["url"] for c in shop.published_collections()]
         self.assertEqual(urls, ["/watches/titan/under-2000/"])
 
@@ -191,24 +191,28 @@ class HubExtras(unittest.TestCase):
 
 
 class Under3000(unittest.TestCase):
-    def test_price_page_needs_watches_inside_its_own_band(self):
+    @staticmethod
+    def shop_with(own_band_count):
+        """The live site with a fixed set of watches: 5 Titan men's watches in Under 2,000 plus some in Under 3,000."""
         shop = watches.Watches(build.SRC, build.CONFIG)
+        base = next(p for p in shop.products if p["id"] == "titan-analog-offwhite-b01clf3bfw")
+        shop.products = [dict(base, id=f"titan-low-{i}", budget="under-2000", product_name=f"Titan Low {i}", model=f"Low {i}") for i in range(5)]
+        shop.products += [dict(base, id=f"titan-mid-{i}", budget="under-3000", product_name=f"Titan Mid {i}", model=f"Mid {i}") for i in range(own_band_count)]
         shop.approved = dict(shop.approved)
         shop.approved["/watches/men/under-3000/"] = {"intro": " ".join(["word"] * 120)}
+        return shop
+
+    def test_price_page_needs_watches_inside_its_own_band(self):
+        shop = self.shop_with(2)
         meta = shop.budget_page("men", "under-3000")
-        self.assertGreaterEqual(len([p for p in shop.products if "men" in p["gender"] and "under-3000" in shop.qualifies(p)]), 3)
-        self.assertTrue(meta["noindex"])      # every watch qualifies only through the Under 2,000 band, so the page would repeat that one
+        self.assertEqual(len([p for p in shop.products if "under-3000" in shop.qualifies(p)]), 7)
+        self.assertTrue(meta["noindex"])      # only 2 watches sit in the band; the rest come from Under 2,000 and the page would repeat that one
         self.assertNotIn("/watches/men/under-3000/", [c["url"] for c in shop.published_collections()])
 
     def test_three_watches_in_the_band_open_the_page(self):
-        shop = watches.Watches(build.SRC, build.CONFIG)
-        base = next(p for p in shop.products if p["id"] == "titan-analog-offwhite-b01clf3bfw")
-        for i in range(3):
-            q = dict(base, id=f"titan-test-{i}", budget="under-3000", product_name=f"Titan Test {i}", model=f"Test {i}")
-            shop.products.append(q)
-        shop.approved = dict(shop.approved)
-        shop.approved["/watches/men/under-3000/"] = {"intro": " ".join(["word"] * 120)}
+        shop = self.shop_with(3)
         self.assertFalse(shop.budget_page("men", "under-3000")["noindex"])
+        self.assertIn("/watches/men/under-3000/", [c["url"] for c in shop.published_collections()])
 
     def test_titan_price_page_has_a_section_per_shopper_path(self):
         shop = watches.Watches(build.SRC, build.CONFIG)
