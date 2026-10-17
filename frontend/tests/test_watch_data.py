@@ -153,26 +153,39 @@ class HubExtras(unittest.TestCase):
     def setUpClass(cls):
         cls.shop = watches.Watches(build.SRC, build.CONFIG)
 
-    def test_intro_and_how_to_choose_sit_below_the_watches(self):
+    def test_explore_more_and_how_sat_helps_sit_below_the_watches(self):
+        import re
         top, bottom = self.shop.hub_html()
-        intro = bottom.split('<p class="hub-intro">')[1].split("</p>")[0]
-        self.assertTrue(80 <= len(intro.split()) <= 120)
         self.assertEqual(top, "")                      # the top of the page stays short
-        self.assertIn("<details", bottom)             # How to choose is collapsed
-        for title in ("Budget", "Case size", "Strap", "Water resistance"):
+        self.assertNotIn("<details", bottom)           # no accordion
+        self.assertIn("Explore more", bottom)
+        self.assertEqual(bottom.count('href="/watches/guide/"'), 1)      # one card, one link to the guide
+        how = bottom.split('id="lx-how"')[1]
+        words = len(re.sub(r"<[^>]+>", " ", how).split())
+        self.assertTrue(70 <= words <= 140, words)    # useful, crawlable text stays on the page
+        for title in ("Compare clearly", "No guessing", "Check before buying"):
             self.assertIn(f"<h3>{title}</h3>", bottom)
-        self.assertIn('href="/watches/guide/"', bottom)
+
+    def test_no_card_contains_nested_or_repeated_links(self):
+        import re
+        body = self.shop.landing()["_body"]
+        for block in re.findall(r'<a class="(?:lx-intent|lx-budget|lx-mcard lx-mlink)".*?</a>', body, flags=re.S):
+            self.assertEqual(block.count("<a "), 1, block[:80])           # one card = one anchor
+        for section in ("lx-intent-row", "lx-budget-row"):
+            hrefs = re.findall(r'<a class="lx-(?:intent|budget)" href="([^"]+)"', body.split(section)[1].split("</ul>")[0])
+            self.assertEqual(len(hrefs), len(set(h + str(i) for i, h in enumerate(hrefs))))
 
     def test_counts_are_generated(self):
         c = next(c for c in self.shop.published_collections() if c["url"] == "/watches/titan/under-2000/")
         html = self.shop.hub_html()[1]
-        self.assertIn(f'Under \u20b92,000</a> ({c["count"]})', html)
+        self.assertIn(f'<span>Titan under \u20b92,000</span><em>{c["count"]}<span class="visually-hidden"> watches</span></em>', html)
         self.assertEqual(c["count"], sum(1 for p in self.shop.products if p["brand"] == "titan" and "under-2000" in self.shop.qualifies(p)))
 
     def test_hub_page_order_is_watches_then_help(self):
         body = self.shop.landing()["_body"]
         self.assertNotIn('<nav class="hub-quick"', body)
         self.assertLess(body.index("data-collection-grid"), body.index('<section class="hub-after"'))
+        self.assertNotIn("hub-details", body)
 
     def test_cards_show_only_the_compact_facts(self):
         p = next(q for q in self.shop.products if q["id"] == "titan-analog-offwhite-b01clf3bfw")
@@ -404,12 +417,18 @@ class PremiumCards(unittest.TestCase):
                 {"title": "No filter", "text": "x", "approved": True, "filter": None},
                 {"title": "No match", "text": "x", "approved": True, "filter": {"group": "style", "value": "no-such-style"}},
                 {"title": "Shown", "text": "A line", "approved": True, "filter": {"group": "budget", "value": "under-3000"}}]
-            html = shop.intent_cards()
+            html = shop.intent_cards(fill=False)
+            self.assertEqual(html, "")                  # one real card is not enough for a rail
+            html = shop.intent_cards()                  # data-backed cards top the rail up
             self.assertIn("Shown", html)
             for name in ("Hidden", "No filter", "No match"):
                 self.assertNotIn(name, html)
+            self.assertLessEqual(html.count('class="lx-intent"'), 4)
+            self.assertGreaterEqual(html.count('class="lx-intent"'), 2)
             shop.settings["intent_cards"] = []
-            self.assertEqual(shop.intent_cards(), "")
+            self.assertEqual(shop.intent_cards(fill=False), "")
+            self.assertIn("watches with", shop.intent_cards())
+            self.assertNotIn("chronograph", shop.intent_cards().lower())      # editorial fields never feed a data-backed card
         finally:
             shop.settings["intent_cards"] = saved
 
