@@ -260,7 +260,13 @@
     }
     desktop.addEventListener('change', resize);
     // /watches/?price=under-3000 (the home page slider) opens the list with that price band chosen
-    var wanted = new URLSearchParams(window.location.search).get('price');
+    var query = new URLSearchParams(window.location.search);
+    var from = query.get('from');   // /watches/?price=under-3000&from=under-2000 opens the 2,000 to 3,000 range
+    if (from) sliders.forEach(function (slider) {
+      var at = JSON.parse(slider.dataset.steps).map(function (step) { return step[0]; }).indexOf(from);
+      if (at >= 0 && slider.querySelector('.price-hi')) slider._lo = at + 1;
+    });
+    var wanted = query.get('price');
     if (wanted) boxes.forEach(function (box) { if (box.dataset.group === 'budget' && box.value === wanted) box.checked = true; });
     resize(); update();
   });

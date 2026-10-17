@@ -1033,19 +1033,28 @@ def home_category_strip():
 
 
 def home_watches_block():
-    """Compact Watches block for the home page: a link into the /watches/ hub plus up to three published collections."""
+    """Compact Watches block for the home page: Men's and Women's watches and one-tap budget ranges that open /watches/ already set to that range."""
     shop = SHOP[0]
     if shop is None:
         return ""
-    pubs = [c for c in shop.published_collections() if c["featured_on_watch_hub"]][:3]
-    links = ('<li><a href="/watches/men/">Men\u2019s watches</a></li><li><a href="/watches/women/">Women\u2019s watches</a></li>'
-             + "".join(f'<li><a href="{esc(c["url"])}">{esc(c["title"])}</a></li>' for c in pubs))
+    steps = shop.price_steps()
+    keys = list(shop.budgets)
+    chips = ['<li><a href="/watches/men/">Men\u2019s watches</a></li>', '<li><a href="/watches/women/">Women\u2019s watches</a></li>']
+    for n, (slug, _label, _short, own) in enumerate(steps):
+        if not own:
+            continue
+        top = shop.budgets[slug].get("max")
+        low = shop.budgets[steps[n - 1][0]].get("max") if n else 0
+        if not top:
+            continue
+        text = f"Up to \u20b9{top:,}" if not low else f"\u20b9{low:,}\u2013\u20b9{top:,}"
+        href = f"/watches/?price={slug}" + (f"&amp;from={steps[n - 1][0]}" if n else "") + "#watch-collection"
+        chips.append(f'<li><a class="home-budget" href="{href}">{text}</a></li>')
     return ('<section class="home-watches" id="home-watches" aria-labelledby="home-watches-title">'
             '<div class="home-section-head"><h2 id="home-watches-title">Watches</h2>'
             '<a class="home-text-link" href="/watches/">Explore watches <svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></a></div>'
-            f'<p>Compare watches by budget, brand and style.</p><ul class="home-watch-links">{links}</ul>'
-            f'<div class="home-price" data-home-price>{collection.price_slider(shop.price_steps(), title="Pick a budget")}'
-            '<a class="btn btn-primary" data-price-go href="/watches/">Show watches</a></div></section>')
+            '<p>Pick a budget, or browse by Men and Women.</p>'
+            f'<ul class="home-watch-links">{"".join(chips)}</ul></section>')
 
 
 def about_cover_cards():

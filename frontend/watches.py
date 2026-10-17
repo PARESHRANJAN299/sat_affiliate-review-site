@@ -654,24 +654,23 @@ class Watches:
         return out
 
     def hub_html(self):
-        """The /watches/ discovery strip, built from the published collections: one compact row of collection links (brand and price band) and Men / Women, then
-        (returned separately, for below the watches) a collapsed How to choose, the buying guides and a short explanation. Every link goes to a real page."""
+        """The part of /watches/ that sits below the watches: links to the published collections (plain text links, real pages), a collapsed How to choose,
+        the buying guides and a short explanation. Nothing is repeated above the watches: brand, price and Men / Women already have their own controls there.
+        Returns (top, bottom); top is empty."""
         pubs = [c for c in self.published_collections() if c["featured_on_watch_hub"]]
         order = list(self.budgets)
         pubs.sort(key=lambda c: (order.index(c["price_band"]) if c.get("price_band") in order else -1, c["label"]))
-        pills = ""
+        items = []
         for c in pubs:
             band = self.budgets[c["price_band"]]["label"] if c.get("price_band") else ""
             text = f'{c["label"]} \u00b7 {band}' if band else c["label"]
-            pills += f'<li><a class="hub-pill" href="{esc(c["url"])}">{esc(text)} <span class="hub-count">{c["count"]}</span></a></li>'
-        people = ""
+            items.append(f'<a href="{esc(c["url"])}">{esc(text)}</a> ({c["count"]})')
         for g, info in self.genders.items():
             count = sum(1 for p in self.products if g in p["gender"])
             if count:
-                people += f'<li><a class="hub-pill hub-pill-soft" href="/watches/{esc(g)}/">{esc(info["label"])} <span class="hub-count">{count}</span></a></li>'
-        groups = (f'<div class="hub-group"><span class="hub-tag">Collections</span><ul class="hub-pills">{pills}</ul></div>' if pills else "") + \
-                 (f'<div class="hub-group"><span class="hub-tag">Shop for</span><ul class="hub-pills">{people}</ul></div>' if people else "")
-        top = f'<nav class="hub-quick" aria-label="Quick find">{groups}</nav>' if groups else ""
+                items.append(f'<a href="/watches/{esc(g)}/">{esc(info["label"])} watches</a> ({count})')
+        sep = " \u00b7 "
+        collections = f'<p class="hub-guidelinks"><strong>Collections:</strong> {sep.join(items)}</p>' if items else ""
 
         choose = [("Budget", "Decide your price band first. At lower budgets, expect simple quartz watches and compare build details rather than extras."),
                   ("Case size", "Match the case to your wrist: under 37 mm suits smaller wrists, 37 to 40 mm is a common everyday range, and 41 mm and above looks bolder."),
@@ -684,11 +683,11 @@ class Watches:
                  "by strap material, case size, dial colour, movement or water resistance. Collection pages gather watches in one place, with the specifications "
                  "exactly as the seller lists them. Anything a listing does not state is shown as unknown, never guessed. Prices change often, so check the "
                  "current price on Amazon before you buy.")
-        bottom = ('<section class="hub-after" aria-label="About these watches">'
+        bottom = ('<section class="hub-after" aria-label="About these watches">' + collections +
                   f'<details class="hub-details"><summary>How to choose a watch</summary><ul class="hub-choose-cards">{cards}</ul></details>'
                   f'<p class="hub-guidelinks"><strong>Buying guides:</strong> {links}</p>'
                   f'<p class="hub-intro">{esc(intro)}</p></section>')
-        return top, bottom
+        return "", bottom
 
     # search phrase fragment -> (filter group, value); the first match wins, so "rose gold" is tested before "gold"
     KEYWORD_FILTERS = [("leather strap", "style", "leather-strap"), ("metal strap", "style", "metal-strap"), ("black dial", "dialcolour", "black"),

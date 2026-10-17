@@ -130,3 +130,8 @@
 .home-watches p { margin: 0 0 12px; color: var(--color-text-muted); font-size: .92rem; }
 .home-watch-links { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 10px; }
 .home-watch-links a { display: inline-flex; align-items: center; min-height: 44px; padding: 0 18px; border-radius: 999px; border: 1px solid rgba(201, 164, 92, .6); background: #fffdf8; color: #2b2c2d; font-weight: 600; font-size: .9rem; text-decoration: none; }
+.home-watch-links { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; padding-bottom: 4px; }
+.home-watch-links::-webkit-scrollbar { display: none; }
+.home-watch-links li { flex: none; }
+.home-watch-links a { white-space: nowrap; }
+@media (min-width: 900px) { .home-watch-links { flex-wrap: wrap; overflow: visible; } }

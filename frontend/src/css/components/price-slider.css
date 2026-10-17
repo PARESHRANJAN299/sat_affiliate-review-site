@@ -9,9 +9,6 @@
 .price-bars span.is-in { background: #b48b3c; }
 .price-slider input[type="range"] { display: block; width: 100%; margin: 4px 0 0; height: 32px; accent-color: #8a6a28; }
 .price-ticks { display: flex; justify-content: space-between; padding: 0 2px; font-size: .68rem; color: var(--color-text-muted); }
-.home-price { margin-top: 14px; }
-.home-price .price-slider { border-top: 0; padding-top: 0; margin-top: 0; }
-.home-price .btn { margin-top: 12px; }
 
 /* Two-handle version: quick ranges, From and To handles, bars and ticks aligned to the handle positions. */
 .price-dual .price-ranges { display: flex; flex-wrap: wrap; gap: 8px; margin: 2px 0 14px; }
