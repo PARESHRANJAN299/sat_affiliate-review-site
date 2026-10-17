@@ -11,6 +11,7 @@ With no products, collection pages link to buying advice and remain noindex.
 A collection becomes indexable once it has at least `min_products_to_index` watches.
 Standard library only (Python 3.9+).
 """
+import hashlib
 import html
 import re
 import collection
@@ -192,7 +193,7 @@ class Watches:
 
     @staticmethod
     def verb(link):
-        return "View on" if link["direct"] else "Search on"
+        return "Check price on" if link["direct"] else "Search on"
 
     def check_price(self, p, small=True, include_more=True):
         links = self.merchant_links(p)
@@ -202,7 +203,7 @@ class Watches:
         first = links[0]
         primary = (f'<a class="btn btn-primary{size}" href="{esc(first["href"])}" target="_blank" rel="{self.rel()}" '
                    f'aria-label="{self.verb(first)} {esc(first["label"])} for {esc(p["model"])} (opens in a new tab)">'
-                   f'{self.verb(first)} {esc(first["label"])} '
+                   f'{"Check price" if first["direct"] else "Search " + esc(first["label"])} '
                    '<svg class="ic" aria-hidden="true"><use href="#i-external"/></svg></a>')
         more = ""
         if len(links) > 1 and include_more:
@@ -249,38 +250,97 @@ class Watches:
                  "white": "#e9e5dc", "champagne": "#d9c79a"}
     METAL_HEX = {"gold": "#c9a45c", "rose-gold": "#c98f7f", "silver": "#c7cad0"}
 
+    @staticmethod
+    def _mix(hex_, other, t):
+        a = [int(hex_[k:k + 2], 16) for k in (1, 3, 5)]
+        b = [int(other[k:k + 2], 16) for k in (1, 3, 5)]
+        return "#" + "".join(f"{round(x + (y - x) * t):02x}" for x, y in zip(a, b))
+
     def dial_art(self, p):
-        """A small illustration drawn from the colours the listing gives (dial, strap, case metal) and its features; it is not a photograph, and unknown
-        colours are drawn in a neutral tone rather than guessed."""
+        """A watch drawn from what the listing states: dial colour, strap colour and material (leather stitching or metal links), case metal, case shape and size,
+        chronograph sub-dials, date window. Colours that are not stated are drawn in a neutral tone, never guessed. It is an illustration, not a photograph."""
+        mix = self._mix
         dial_key = (p.get("dial_colour") or [""])[0]
         strap_key = (p.get("band_colour") or [""])[0]
         dial = self.DIAL_HEX.get(dial_key, "#d8d1c2")
         strap = self.STRAP_HEX.get(strap_key, "#b4afa4")
         metal_strap = p.get("band_material") in ("stainless-steel", "metal")
         metal = self.METAL_HEX.get(strap_key, "#c7cad0") if metal_strap else "#c7cad0"
-        light = sum(int(dial[i:i + 2], 16) * w for i, w in ((1, .3), (3, .59), (5, .11))) > 140
-        ink = "#2a2b2d" if light else "#eadfc4"
-        marks = "".join(
-            f'<line x1="{60 + (25 if i % 3 else 23) * math.sin(math.radians(i * 30)):.1f}" y1="{80 - (25 if i % 3 else 23) * math.cos(math.radians(i * 30)):.1f}" '
-            f'x2="{60 + 28 * math.sin(math.radians(i * 30)):.1f}" y2="{80 - 28 * math.cos(math.radians(i * 30)):.1f}" stroke-width="{1.6 if i % 3 == 0 else .9}"/>' for i in range(12))
+        light = sum(int(dial[k:k + 2], 16) * w for k, w in ((1, .3), (3, .59), (5, .11))) > 140
+        ink = "#26272b" if light else "#f1e6c9"
+        accent = metal if metal in ("#c9a45c", "#c98f7f") else ink
+        shape = p.get("case_shape") or "round"
+        mm = float(p.get("case_diameter_mm") or 40)
+        scale = max(.8, min(1.1, .8 + (mm - 20) / 30 * .3))
+        uid = hashlib.md5(f"{p.get('id', '')}{dial}{strap}{metal}{shape}{metal_strap}".encode()).hexdigest()[:8]   # unique per watch: ids must not repeat on a page
         features = p.get("features", [])
-        subs = ''.join(f'<circle cx="{x}" cy="{y}" r="6"/>' for x, y in ((47, 80), (73, 80), (60, 93))) if "chronograph" in features else ""
-        window = '<rect x="78" y="77" width="9" height="6" rx="1" fill="#fbfaf7" stroke="#8a8f98" stroke-width=".6"/>' if ("date" in features or "day-date" in features) else ""
+        cx, cy = 70, 95
+
+        defs = (f'<linearGradient id="m{uid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="{mix(metal, "#ffffff", .6)}"/><stop offset=".45" stop-color="{metal}"/>'
+                f'<stop offset="1" stop-color="{mix(metal, "#000000", .38)}"/></linearGradient>'
+                f'<radialGradient id="d{uid}" cx=".36" cy=".3" r=".95"><stop offset="0" stop-color="{mix(dial, "#ffffff", .2)}"/><stop offset=".65" stop-color="{dial}"/>'
+                f'<stop offset="1" stop-color="{mix(dial, "#000000", .28)}"/></radialGradient>'
+                f'<linearGradient id="s{uid}" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="{mix(strap, "#000000", .32)}"/><stop offset=".5" stop-color="{mix(strap, "#ffffff", .14)}"/>'
+                f'<stop offset="1" stop-color="{mix(strap, "#000000", .32)}"/></linearGradient>'
+                f'<linearGradient id="l{uid}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="{mix(strap, "#ffffff", .45)}"/><stop offset=".5" stop-color="{strap}"/>'
+                f'<stop offset="1" stop-color="{mix(strap, "#000000", .35)}"/></linearGradient>'
+                f'<linearGradient id="g{uid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".5"/><stop offset=".55" stop-color="#fff" stop-opacity=".06"/>'
+                '<stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>')
+
         if metal_strap:
-            links = "".join(f'<line x1="40" y1="{y}" x2="80" y2="{y}"/>' for y in (10, 20, 30, 126, 136, 146))
-            straps = (f'<g fill="{strap}"><path d="M42 0H78L81 46H39Z"/><path d="M39 114H81L78 160H42Z"/></g>'
-                      f'<g stroke="rgba(0,0,0,.28)" stroke-width=".8">{links}</g>')
+            top = "".join(f'<rect x="{51 - (0 if n else 0)}" y="{2 + n * 10}" width="38" height="8.4" rx="2.2" fill="url(#l{uid})"/>' for n in range(5))
+            bottom = "".join(f'<rect x="51" y="{140 + n * 10}" width="38" height="8.4" rx="2.2" fill="url(#l{uid})"/>' for n in range(5))
+            straps = top + bottom + f'<rect x="51" y="52" width="38" height="4" fill="{mix(strap, "#000000", .45)}"/><rect x="51" y="134" width="38" height="4" fill="{mix(strap, "#000000", .45)}"/>'
         else:
-            straps = (f'<g fill="{strap}"><path d="M42 0H78L81 46H39Z"/><path d="M39 114H81L78 160H42Z"/></g>'
-                      '<g stroke="rgba(255,255,255,.35)" stroke-width=".8" stroke-dasharray="2 2"><path d="M46 2L48 44M74 2L72 44M48 116L46 158M72 116L74 158"/></g>')
-        return ('<svg class="dial-art" viewBox="0 0 120 160" aria-hidden="true" focusable="false">' + straps +
-                f'<rect x="95" y="76" width="5" height="8" rx="1.5" fill="{metal}"/>'
-                f'<circle cx="60" cy="80" r="37" fill="{metal}"/><circle cx="60" cy="80" r="33.5" fill="rgba(0,0,0,.22)"/>'
-                f'<circle cx="60" cy="80" r="31" fill="{dial}"/><circle cx="60" cy="80" r="31" fill="url(#sheen)" opacity=".0"/>'
-                f'<g stroke="{ink}">{marks}</g><g fill="none" stroke="{ink}" stroke-width=".7" opacity=".7">{subs}</g>{window}'
-                f'<g stroke="{ink}" stroke-linecap="round"><line x1="60" y1="80" x2="52" y2="66" stroke-width="2"/><line x1="60" y1="80" x2="73" y2="68" stroke-width="1.4"/></g>'
-                '<circle cx="60" cy="80" r="2" fill="#c9a45c"/>'
-                '<path d="M32 62A31 31 0 0 1 60 49" fill="none" stroke="#fff" stroke-opacity=".28" stroke-width="2" stroke-linecap="round"/></svg>')
+            holes = "".join(f'<circle cx="70" cy="{y}" r="1.7" fill="{mix(strap, "#000000", .5)}"/>' for y in (158, 167, 176))
+            straps = (f'<path d="M50 0H90L94 58H46Z" fill="url(#s{uid})"/><path d="M46 132H94L90 190H50Z" fill="url(#s{uid})"/>'
+                      '<g fill="none" stroke="rgba(255,255,255,.4)" stroke-width=".9" stroke-dasharray="2.2 2"><path d="M54 3L51.5 56M86 3L88.5 56M51.5 134L54 187M88.5 134L86 187"/></g>'
+                      + holes)
+        lugs = "".join(f'<rect x="{x}" y="{y}" width="11" height="15" rx="4" fill="url(#m{uid})"/>' for x, y in ((47, 47), (82, 47), (47, 128), (82, 128)))
+
+        if shape in ("square", "contemporary"):
+            r = 30 if shape == "contemporary" else 12
+            outer = f'<rect x="{cx - 42}" y="{cy - 42}" width="84" height="84" rx="{r}" fill="url(#m{uid})"/>'
+            bezel = f'<rect x="{cx - 38.5}" y="{cy - 38.5}" width="77" height="77" rx="{max(r - 3, 4)}" fill="rgba(0,0,0,.3)"/>'
+            dial_shape = f'x="{cx - 35}" y="{cy - 35}" width="70" height="70" rx="{max(r - 6, 4)}"'
+            dial_el, clip = f'<rect {dial_shape} fill="url(#d{uid})"/>', f'<rect {dial_shape}/>'
+        elif shape == "rectangular":
+            outer = f'<rect x="{cx - 37}" y="{cy - 46}" width="74" height="92" rx="10" fill="url(#m{uid})"/>'
+            bezel = f'<rect x="{cx - 33.5}" y="{cy - 42.5}" width="67" height="85" rx="7" fill="rgba(0,0,0,.3)"/>'
+            dial_shape = f'x="{cx - 30}" y="{cy - 39}" width="60" height="78" rx="5"'
+            dial_el, clip = f'<rect {dial_shape} fill="url(#d{uid})"/>', f'<rect {dial_shape}/>'
+        elif shape == "oval":
+            outer = f'<ellipse cx="{cx}" cy="{cy}" rx="38" ry="47" fill="url(#m{uid})"/>'
+            bezel = f'<ellipse cx="{cx}" cy="{cy}" rx="34.5" ry="43.5" fill="rgba(0,0,0,.3)"/>'
+            dial_shape = f'cx="{cx}" cy="{cy}" rx="31" ry="40"'
+            dial_el, clip = f'<ellipse {dial_shape} fill="url(#d{uid})"/>', f'<ellipse {dial_shape}/>'
+        else:
+            outer = f'<circle cx="{cx}" cy="{cy}" r="42" fill="url(#m{uid})"/>'
+            bezel = f'<circle cx="{cx}" cy="{cy}" r="38.5" fill="rgba(0,0,0,.3)"/>'
+            dial_shape = f'cx="{cx}" cy="{cy}" r="35"'
+            dial_el, clip = f'<circle {dial_shape} fill="url(#d{uid})"/>', f'<circle {dial_shape}/>'
+
+        marks = "".join(
+            f'<line x1="{cx + (24 if i % 3 else 21.5) * math.sin(math.radians(i * 30)):.1f}" y1="{cy - (24 if i % 3 else 21.5) * math.cos(math.radians(i * 30)):.1f}" '
+            f'x2="{cx + 28.5 * math.sin(math.radians(i * 30)):.1f}" y2="{cy - 28.5 * math.cos(math.radians(i * 30)):.1f}" stroke-width="{2 if i % 3 == 0 else 1}"/>'
+            for i in range(12) if shape in ("round", "oval", "contemporary", "square") or i % 3 == 0)
+        subs = ""
+        if "chronograph" in features:
+            subs = "".join(f'<circle cx="{x}" cy="{y}" r="7" fill="rgba(0,0,0,.08)"/><circle cx="{x}" cy="{y}" r="7"/><path d="M{x} {y}l0 -4.5"/>' for x, y in ((57, 95), (83, 95), (70, 109)))
+        window = (f'<rect x="83" y="92" width="10" height="6" rx="1" fill="#fbfaf7" stroke="{mix(dial, "#000000", .4)}" stroke-width=".5"/>'
+                  if ("date" in features or "day-date" in features) else "")
+        pushers = (f'<rect x="{cx + 40}" y="{cy - 17}" width="6" height="6" rx="1.5" fill="url(#m{uid})"/><rect x="{cx + 40}" y="{cy + 11}" width="6" height="6" rx="1.5" fill="url(#m{uid})"/>'
+                   if "chronograph" in features else "")
+        face = (f'<g stroke="{accent}" stroke-linecap="round">{marks}</g><g fill="none" stroke="{ink}" stroke-width=".6" opacity=".75">{subs}</g>{window}'
+                f'<g stroke-linecap="round"><line x1="{cx}" y1="{cy}" x2="{cx - 9}" y2="{cy - 15}" stroke="{ink}" stroke-width="3"/><line x1="{cx}" y1="{cy}" x2="{cx - 9}" y2="{cy - 15}" stroke="#e8f5c8" stroke-width="1" opacity=".9"/>'
+                f'<line x1="{cx}" y1="{cy}" x2="{cx + 15}" y2="{cy - 19}" stroke="{ink}" stroke-width="2.2"/><line x1="{cx}" y1="{cy}" x2="{cx + 15}" y2="{cy - 19}" stroke="#e8f5c8" stroke-width=".7" opacity=".9"/>'
+                f'<line x1="{cx - 4}" y1="{cy + 6}" x2="{cx + 7}" y2="{cy - 11}" stroke="#c9a45c" stroke-width=".8"/></g><circle cx="{cx}" cy="{cy}" r="2.6" fill="#c9a45c"/><circle cx="{cx}" cy="{cy}" r="1" fill="#6b5320"/>')
+        glass = f'<ellipse cx="{cx - 11}" cy="{cy - 18}" rx="30" ry="15" transform="rotate(-36 {cx - 11} {cy - 18})" fill="url(#g{uid})" clip-path="url(#c{uid})"/>'
+        body = (f'<g transform="translate({cx} {cy}) scale({scale:.3f}) translate({-cx} {-cy})">'
+                f'<rect x="{cx + 40}" y="{cy - 4.5}" width="7" height="9" rx="2" fill="url(#m{uid})"/>{pushers}{outer}{bezel}{dial_el}{face}{glass}'
+                f'<circle cx="{cx}" cy="{cy}" r="0" /></g>')
+        return (f'<svg class="dial-art" viewBox="0 0 140 190" aria-hidden="true" focusable="false"><defs>{defs}<clipPath id="c{uid}">{clip}</clipPath></defs>'
+                f'<g>{straps}</g><g>{lugs}</g>{body}</svg>')
 
     def band_range(self, p):
         """The price band a watch sits in, as a range of band edges ("Rs 2,000 - Rs 3,000"); band edges only, never a price."""

@@ -346,3 +346,5 @@
   .price-dual .price-slider-head { margin-bottom: 4px; }
   .watch-style-head { margin-bottom: 2px; }
 }
+.dial-art { height: 96%; }
+@media (max-width: 640px) { .dial-art { height: 74%; } }

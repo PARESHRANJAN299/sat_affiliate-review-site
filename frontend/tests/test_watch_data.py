@@ -403,6 +403,16 @@ class PremiumCards(unittest.TestCase):
                 self.assertEqual({v for v, _ in options} - set(self.shop.DIAL_HEX), set())
 
 
+class UniqueIds(unittest.TestCase):
+    def test_two_cards_never_share_svg_ids(self):
+        import re
+        shop = watches.Watches(build.SRC, build.CONFIG)
+        ids = []
+        for p in shop.products[:12]:
+            ids += re.findall(r'\bid="([^"]+)"', shop.card(p))
+        self.assertEqual(len(ids), len(set(ids)))
+
+
 class Duplicates(unittest.TestCase):
     def test_same_id_asin_or_name_is_flagged(self):
         a = {"id": "titan-a-b000000001", "product_name": "Titan A", "amazon_url": "https://www.amazon.in/dp/B000000001?tag=x"}
