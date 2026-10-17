@@ -285,3 +285,31 @@
   .watch-store .hub-details .hub-choose-cards { grid-template-columns: repeat(4, 1fr); gap: 24px; }
 }
 .watch-store .hub-details .hub-choose-cards li { padding: 0; border: 0; border-radius: 0; background: none; box-shadow: none; }
+
+/* ===== desktop and ladder refinements ===== */
+.ladder { padding-bottom: 16px; }
+.ladder-step:nth-child(even) .ladder-lab { transform: translateY(14px); }   /* ten bands: stagger the labels so they never touch */
+.watch-store .collection .ladder-curated { flex-direction: column; align-items: flex-start; gap: 3px; }
+@media (min-width: 1000px) {
+  .watch-store { padding-top: 12px; }
+  .lx-hero { padding: 22px 40px; margin-bottom: 22px; }
+  .lx-hero h1 { font-size: clamp(1.9rem, 2.6vw, 2.35rem); }
+  .lx-sub { max-width: 60ch; margin-top: 2px; }
+  .lx-hero::before { width: 150px; height: 150px; right: -40px; top: -52px; }
+  .lx-hero::after { display: none; }
+  .watch-store .collection .collection-layout, .watch-store .collection.is-enhanced .collection-layout { gap: 28px; }
+  /* filter panel: compact selectable chips instead of tall rows */
+  .fopts { display: flex; flex-wrap: wrap; gap: 6px; }
+  .watch-store .collection .fopt { flex: none; min-height: 34px; padding: 0 11px; gap: 6px; border-radius: 10px; font-size: .8rem; }
+  .watch-store .collection .fgroup { margin-top: 16px; }
+  .watch-store .collection .fgroup legend { margin-bottom: 8px; font-size: .98rem; }
+  .ladder { height: 78px; }
+  /* cards: shorter picture, and a lead card that leaves the next row in view */
+  .watch-store .collection .watch-card .watch-tile { aspect-ratio: 5 / 4.5; }
+  .watch-store .collection .watch-card.is-lead .watch-tile { min-height: 300px; }
+  .watch-store .collection .watch-card.is-lead { grid-template-columns: minmax(0, .95fr) minmax(0, 1fr); }
+  .watch-store .collection .watch-card.is-lead .watch-body { padding: 24px 32px; }
+  .watch-store .collection .watch-card.is-lead .watch-model { font-size: 1.45rem; }
+  .watch-store .collection .watch-card.is-lead .watch-spec-rows { margin: 16px 0 18px; padding-top: 16px; gap: 14px 24px; }
+  .watch-store .collection .watch-card.is-lead .watch-actions .btn { min-height: 48px; }
+}
