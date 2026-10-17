@@ -102,3 +102,5 @@ Every link goes to the collection's own URL, never to a JavaScript filter state.
 **Search phrases (`keywords.json`).** Per collection page, per shopper path. They are never printed as a list. A phrase becomes a "Popular for men / women" quick-filter chip only when it maps to a filter (strap, dial colour, movement, dial size, gold) and a watch matches. Editorial phrases (formal, office, classic, minimalist, elegant, everyday) map to the occasion and style filters, so they appear only once those tags are approved and assigned to watches.
 
 **Price pages.** A price page lists every watch under the band but is indexable only with 3 or more watches whose own band is that band, plus an approved introduction.
+
+**Home page slider.** The home page's Watches block has the same price-band slider ("Pick a budget"). "Show watches" opens `/watches/?price=<band>#watch-collection`, and the Watches page reads `?price=` to start with that band chosen (a normal filter state, no new page). Without JavaScript only the "Explore watches" link shows.

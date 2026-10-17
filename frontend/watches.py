@@ -688,6 +688,11 @@ class Watches:
                 out += f'<div class="watch-quick-group"><h3>Popular for {esc(info["adjective"])}</h3><div class="watch-chip-row">{chips}</div></div>'
         return out
 
+    def price_steps(self):
+        """Price-band slider steps: every band that has at least one watch under it (lowest first), with the number of watches whose own band it is."""
+        return [(slug_, info["label"], "\u20b9" + (f'{info["max"] // 1000}k' if info.get("max") else ""), sum(1 for p in self.products if p.get("budget") == slug_))
+                for slug_, info in self.budgets.items() if any(slug_ in self.qualifies(p) for p in self.products)]
+
     def collection_tables(self, table, shown):
         """table=True gives one comparison table; a list of (heading, watches) gives one table per shopper section (for example Men and Women)."""
         if not table:
@@ -760,8 +765,7 @@ class Watches:
         brand_pills = "".join(
             f'<button type="button" class="watch-chip" data-quick-chip="brand" data-value="{esc(slug_)}" aria-pressed="false">{esc(name)} <em>{cnt}</em></button>'
             for slug_, name, cnt in active) if len(active) >= 2 else ""
-        steps = [(slug_, label, "\u20b9" + (f'{self.budgets[slug_]["max"] // 1000}k' if self.budgets[slug_].get("max") else ""), n(lambda p, s=slug_: p.get("budget") == s))
-                 for slug_, label, count in next((g["items"] for g in groups if g["key"] == "budget"), []) if slug_ in self.budgets]
+        steps = self.price_steps()
         slider = collection.price_slider(steps)
         quick = self.keyword_chips(url, shown)
         top = ('<div class="watch-discovery"><div class="watch-style-head"><h2>Shop by style</h2><a href="/watches/guide/">Buying guide &rarr;</a></div>'
@@ -786,7 +790,7 @@ class Watches:
                 '<a class="watch-guide-link" href="/watches/guide/">Find your fit &rarr;</a></header>' + hub_html + block + self.collection_tables(table, shown) + self.collection_copy(url) + self.related_collections(url) + extra_html + '<noscript><nav class="watch-static-links" aria-label="Browse watches"><a href="/watches/men/">Men</a> · <a href="/watches/women/">Women</a> · ' + ' · '.join(f'<a href="/watches/brands/{esc(slug)}/">{esc(value["name"])}</a>' for slug, value in self.brands.items() if slug != 'sample') + '</nav></noscript></div></section>')
         meta = self._meta(url, title, intro, body, crumbs or [["Watches", "/watches/"]], shown, js=False)
         meta["noindex"] = self.collection_noindex(url, shown)
-        meta["css"] += ["collection", "watch-store"]
+        meta["css"] += ["collection", "watch-store", "price-slider"]
         meta["js"] = ["collection"]
         return meta
 

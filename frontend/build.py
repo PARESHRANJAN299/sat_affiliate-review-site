@@ -1043,7 +1043,9 @@ def home_watches_block():
     return ('<section class="home-watches" id="home-watches" aria-labelledby="home-watches-title">'
             '<div class="home-section-head"><h2 id="home-watches-title">Watches</h2>'
             '<a class="home-text-link" href="/watches/">Explore watches <svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></a></div>'
-            f'<p>Compare watches by budget, brand and style.</p><ul class="home-watch-links">{links}</ul></section>')
+            f'<p>Compare watches by budget, brand and style.</p><ul class="home-watch-links">{links}</ul>'
+            f'<div class="home-price" data-home-price>{collection.price_slider(shop.price_steps(), title="Pick a budget")}'
+            '<a class="btn btn-primary" data-price-go href="/watches/">Show watches</a></div></section>')
 
 
 def about_cover_cards():

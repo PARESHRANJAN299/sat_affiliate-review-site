@@ -198,6 +198,9 @@
       if (inlinePanel()) panel.setAttribute('open', '');
     }
     desktop.addEventListener('change', resize);
+    // /watches/?price=under-3000 (the home page slider) opens the list with that price band chosen
+    var wanted = new URLSearchParams(window.location.search).get('price');
+    if (wanted) boxes.forEach(function (box) { if (box.dataset.group === 'budget' && box.value === wanted) box.checked = true; });
     resize(); update();
   });
 })();
