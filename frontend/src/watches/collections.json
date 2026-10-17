@@ -12,6 +12,38 @@
       "featured_on_watch_hub": true,
       "who_for": "Anyone choosing a Titan watch with a little more room in the budget, who wants to compare strap, dial colour and water resistance side by side before opening the Amazon page.",
       "advice": "Look at the case size first, then the strap material and the water-resistance rating. Where a detail is shown as not stated, check the Amazon page before you order, and remember that a 30 m rating is not meant for swimming. If you want to stay under a lower budget, see [Titan watches under ₹2,000](/watches/titan/under-2000/), or read [how to choose a watch](/watches/guide/)."
+    },
+    "/watches/sonata/under-1000/": {
+      "intro": "Looking for a simple, affordable watch without moving away from an established Indian brand? This collection brings together Sonata watches available in the Under ₹1,000 range, covering practical everyday styles for different preferences. Compare case size, strap material, movement, water resistance and other available specifications before choosing. SAT keeps the information focused on what is actually stated for each watch, so you can shortlist the options that best fit your style, wrist and everyday needs. Choose Men or Women at the top to see the watches listed for each, and check the current price, size and colour on the Amazon page before you buy, because listings change.",
+      "featured_on_watch_hub": true,
+      "who_for": "Anyone who wants a first or spare watch from a known brand at a very small budget, and would rather compare strap, case size and water resistance side by side than guess from a photo.",
+      "advice": "Start with case size: the watches here range from 35 mm to 52.15 mm, so check it against your wrist. Then look at the strap: leather, polyurethane and stainless steel all appear in this collection, each as the seller lists it. Five of the six are analog; one is a digital watch with an alarm, stopwatch and light. All six list 30 m water resistance, which suits splashes and daily wear and is not meant for swimming. Where a detail such as dial colour is shown as not stated, check the Amazon page before you order. Not sure what suits you? Read [how to choose a watch](/watches/guide/), or browse [Sonata watches](/watches/brands/sonata/), [men's watches](/watches/men/) and [women's watches](/watches/women/).",
+      "faqs": [
+        {
+          "q": "Are these Sonata watches water resistant?",
+          "a": "All six list a 30 m water-resistance rating. That suits handwashing, rain and splashes, but it is not a rating for swimming or diving. Check the Amazon page and Sonata's care notes before wearing a watch in water."
+        },
+        {
+          "q": "What strap materials can I choose from?",
+          "a": "Leather on two watches, polyurethane on three and stainless steel on one, as the listings state them."
+        },
+        {
+          "q": "What case sizes are covered?",
+          "a": "From 35 mm to 52.15 mm. Cases of 35 to 39.7 mm are on the smaller side, while the 47.78 to 52.15 mm cases are noticeably larger. Use the case-size filter to narrow the list."
+        },
+        {
+          "q": "Is there a digital Sonata watch here?",
+          "a": "Yes, one: the SF Hexa Digital, listed as unisex, with an alarm, a stopwatch and a light. The other five are analog."
+        },
+        {
+          "q": "Are these watches for men or women?",
+          "a": "Each listing states who it is for: two for men, three for women, and one listed as unisex, which appears under both Men and Women."
+        },
+        {
+          "q": "Why does SAT show a price band and not a price?",
+          "a": "Prices change often. SAT shows the Under ₹1,000 band, so check the current price on Amazon before you buy."
+        }
+      ]
     }
   }
 }

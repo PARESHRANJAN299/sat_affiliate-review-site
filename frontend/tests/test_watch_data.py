@@ -139,7 +139,7 @@ class Hub(unittest.TestCase):
         shop.approved["/watches/men/under-5000/"] = {"intro": "too short"}
         shop.approved["/watches/titan/under-1000/"] = {"intro": " ".join(["word"] * 120)}   # no Titan watch sits in this band, so no page exists
         urls = [c["url"] for c in shop.published_collections()]
-        self.assertEqual(urls, ["/watches/titan/under-2000/", "/watches/titan/under-3000/"])
+        self.assertEqual(urls, ["/watches/titan/under-2000/", "/watches/titan/under-3000/", "/watches/sonata/under-1000/"])
 
     def test_hidden_from_hub_when_not_featured(self):
         shop = watches.Watches(build.SRC, build.CONFIG)
