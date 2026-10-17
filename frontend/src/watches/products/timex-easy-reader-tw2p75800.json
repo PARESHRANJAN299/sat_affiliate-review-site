@@ -52,5 +52,10 @@
   ],
   "editors_pick": false,
   "rating": null,
-  "case_material": "brass"
+  "case_material": "brass",
+  "strap_material": "leather",
+  "movement": "quartz",
+  "strap_colour": [
+    "brown"
+  ]
 }

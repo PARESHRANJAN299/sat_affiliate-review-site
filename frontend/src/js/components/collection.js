@@ -133,7 +133,7 @@
         boxes.filter(function (box) { return box.dataset.group === 'style'; }).forEach(function (box) { box.checked = !selected && box.value === button.dataset.styleToggle; }); update();
       });
     });
-    segments.forEach(function (button) { button.addEventListener('click', function () { gender = button.dataset.gender; update(); }); });
+    segments.forEach(function (button) { button.addEventListener('click', function () { gender = gender === button.dataset.gender ? '' : button.dataset.gender; update(); }); });
     sort.addEventListener('change', function () {
       var ordered = cards.slice().sort(function (a, b) {
         if (sort.value === 'featured') return Number(a.dataset.order) - Number(b.dataset.order);

@@ -56,11 +56,32 @@ JavaScript paginates matching watches in batches of 24; filters and sorting rese
 
 Repeated disclosure banners are removed by `compact_affiliate_notices()` in the builder. Retailer buttons carry a short “Paid link” label; the full disclosure and Amazon Associate statement remain in the footer and disclosure page.
 
-## Filter fields (optional, add only what the maker's page states)
+## Filter fields and how to add a filter
 
-The filter panel on `/watches/` builds itself from the watch files. Besides brand, budget and style it can use:
-* `purpose`: a list from `casual`, `formal`, `swimming`, `hiking`, `running` (only if the listing names the occasion or use).
-* `case_material`: one of `alloy-steel`, `brass`, `metal`, `plastic`, `polycarbonate`, `resin`, `stainless-steel` (only if the page states it).
-* Water resistance depth comes from the existing `water_resistance` text ("50 m", "5 ATM" is read as 50 m). The groups are Up to 29 m, 30 to 40 m, 41 to 51 m and 52 m and above.
+The page order for shoppers is: Shop by style, Shop by brand, Men | Women, Filters (a bottom sheet on phones, a sticky panel on the right on laptops), removable filter chips, then the watches.
 
-A watch without a field simply does not appear when that filter is ticked. Filter options with no watch yet are hidden, except brands, which stay visible and dimmed so visitors can see which brands are coming.
+The filter panel builds itself from the watch files. Every field is optional, and a value is filled in **only where the maker's page states it**. A watch without a value is not matched when that filter is ticked, and a group with no values is not shown.
+
+| Filter | Watch-file field | Values |
+|---|---|---|
+| Brand | `brand` | slug from `config.json` brands |
+| Price | `budget` | slug from `config.json` budgets (the band of the maker's listed price; never type a price) |
+| Style | `styles` (list) | slugs from `config.json` styles |
+| Occasion | `occasion` (list) | `office`, `formal`, `casual`, `everyday`, `party`, `gift` |
+| Dial size | `case_size_mm` | grouped by the page: 36 and under, 37-40, 41-44, 45+ |
+| Strap material | `strap_material` | `leather`, `stainless-steel`, `mesh`, `silicone-rubber`, `fabric-nylon` |
+| Movement | `movement` | `quartz`, `automatic`, `mechanical` |
+| Water resistance | `water_resistance` text | read from "50 m" or "5 ATM" (1 ATM = 10 m): Splash resistant (under 30 m), 30 m, 50 m, 100 m, 200 m and above. Say "water-resistant", never "waterproof" |
+| Dial colour | `dial_colour` (list) | black, white, blue, green, silver, gold, brown |
+| Strap colour | `strap_colour` (list) | black, brown, silver, gold, blue, rose-gold |
+| Case shape | `case_shape` | round, square, rectangular |
+| Features | `features` (list) | date, day-date, chronograph, luminous-hands, second-hand, minimal-dial |
+| Case material | `case_material` | alloy-steel, brass, metal, plastic, polycarbonate, resin, stainless-steel |
+
+**To add a new filter:** add one row to `Watches.FILTERS` in `watches.py` (key, title, options, and a function that returns the values of a watch), then add the field to the watch files. The cards, the panel, the counts, the chips and the browser script pick it up with no other change. A watch can have many styles and occasions, so no watch file is ever duplicated for a filtered view.
+
+Filter options that no watch has yet are hidden, except brands, which stay visible and dimmed. The safeguards in `build.py --check` (no typed prices, ratings or "tested" claims, valid https links) apply to every watch file as before.
+
+## Landing pages
+
+Each budget, gender, brand and style has its own page (for example `/watches/men/under-3000/`, `/watches/brands/casio/`, `/watches/style/formal/`). A page stays hidden from Google until it lists at least `min_products_to_index` watches (3). Filters only add temporary `?` states and never replace these URLs.

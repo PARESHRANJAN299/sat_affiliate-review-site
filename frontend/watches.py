@@ -238,7 +238,7 @@ class Watches:
         return (
             f'<article class="watch-card" data-id="{esc(p["id"])}" data-name="{esc(brand + " " + p["model"])}" data-brand="{esc(p["brand"])}" '
             f'data-gender="{esc(" ".join(p["gender"]))}" data-style="{esc(" ".join(p["styles"]))}" data-budget="{esc(p.get("budget") or "unlisted")}" data-styles="{esc(" ".join(p["styles"]))}" '
-            f'data-purpose="{esc(" ".join(p.get("purpose", [])))}" data-water="{esc(self.water_bucket(p))}" data-case="{esc(p.get("case_material", ""))}">'
+            + " ".join(f'data-{key}="{esc(" ".join(v for v in getter(self, p) if v))}"' for key, _, _, getter in self.FILTERS) + '>'
             + media + '<div class="watch-body">'
             f'<p class="watch-brand">{esc(brand)}</p><h3 class="watch-model"><a href="{esc(href)}">{esc(p["model"])}</a></h3>'
             f'<p class="watch-card-specs">{esc(specs)}</p><p class="watch-verdict">{esc(p["verdict"])}</p>'
@@ -441,10 +441,28 @@ class Watches:
         links.append(("Watch buying guide", "/watches/guide/"))
         return links
 
-    PURPOSES = [("casual", "Casual Wear"), ("formal", "Formal Wear"), ("swimming", "Swimming"), ("hiking", "Hiking"), ("running", "Running")]
-    WATER = [("up-to-29", "Up to 29 m", 0, 29), ("30-40", "30 to 40 m", 30, 40), ("41-51", "41 to 51 m", 41, 51), ("52-plus", "52 m and above", 52, 10 ** 6)]
+    # One table defines every filter group in the panel. To add a filter, add a row here and an optional field to the watch files.
+    # "get" returns the option slugs a watch has; a group is shown only when at least one watch has a value.
     CASES = [("alloy-steel", "Alloy Steel"), ("brass", "Brass"), ("metal", "Metal"), ("plastic", "Plastic"), ("polycarbonate", "Polycarbonate"),
              ("resin", "Resin"), ("stainless-steel", "Stainless Steel")]
+    DIAL_SIZES = [("36-and-under", "36 mm and under", 0, 36), ("37-40", "37\u201340 mm", 37, 40), ("41-44", "41\u201344 mm", 41, 44), ("45-plus", "45 mm and above", 45, 10 ** 4)]
+    WATER = [("splash", "Splash resistant", 0, 29), ("30-m", "30 m", 30, 49), ("50-m", "50 m", 50, 99), ("100-m", "100 m", 100, 199), ("200-plus", "200 m and above", 200, 10 ** 6)]
+    FILTERS = [
+        ("occasion", "Occasion", [("office", "Office"), ("formal", "Formal"), ("casual", "Casual"), ("everyday", "Everyday"), ("party", "Party"), ("gift", "Gift")], lambda self, p: p.get("occasion", [])),
+        ("dial", "Dial size", [(a, b) for a, b, _, _ in DIAL_SIZES], lambda self, p: [self.bucket(self.DIAL_SIZES, p.get("case_size_mm"))]),
+        ("strapmat", "Strap material", [("leather", "Leather"), ("stainless-steel", "Stainless Steel"), ("mesh", "Mesh"), ("silicone-rubber", "Silicone / Rubber"), ("fabric-nylon", "Fabric / Nylon")], lambda self, p: [p.get("strap_material", "")]),
+        ("movement", "Movement", [("quartz", "Quartz"), ("automatic", "Automatic"), ("mechanical", "Mechanical")], lambda self, p: [p.get("movement", "")]),
+        ("water", "Water resistance", [(a, b) for a, b, _, _ in WATER], lambda self, p: [self.bucket(self.WATER, self.water_metres(p))]),
+        ("dialcolour", "Dial colour", [(x, x.title()) for x in ("black", "white", "blue", "green", "silver", "gold", "brown")], lambda self, p: p.get("dial_colour", [])),
+        ("strapcolour", "Strap colour", [(x, x.title()) for x in ("black", "brown", "silver", "gold", "blue", "rose-gold")], lambda self, p: p.get("strap_colour", [])),
+        ("shape", "Case shape", [("round", "Round"), ("square", "Square"), ("rectangular", "Rectangular")], lambda self, p: [p.get("case_shape", "")]),
+        ("feature", "Features", [("date", "Date"), ("day-date", "Day-Date"), ("chronograph", "Chronograph"), ("luminous-hands", "Luminous hands"), ("second-hand", "Second hand"), ("minimal-dial", "Minimal dial")], lambda self, p: p.get("features", [])),
+        ("case", "Case material", CASES, lambda self, p: [p.get("case_material", "")]),
+    ]
+
+    @staticmethod
+    def bucket(table, value):
+        return next((slug for slug, _, lo, hi in table if value is not None and lo <= value <= hi), "")
 
     @staticmethod
     def water_metres(p):
@@ -455,10 +473,6 @@ class Watches:
             return None
         n = float(m.group(1))
         return n * 10 if m.group(2).lower() in ("atm", "bar") else n
-
-    def water_bucket(self, p):
-        n = self.water_metres(p)
-        return next((slug for slug, _, lo, hi in self.WATER if n is not None and lo <= n <= hi), "")
 
     def catalog(self, url, title, intro, *, gender="", brand="", budget="", style="", crumbs=None):
         products = self.products
@@ -474,27 +488,32 @@ class Watches:
             {"key": "budget", "title": "Price", "checked": [budget] if budget else [],
              "items": [(slug, value["label"], n(lambda p, s=slug: p.get("budget") == s)) for slug, value in self.budgets.items() if n(lambda p, s=slug: p.get("budget") == s)]
                       + ([("unlisted", "Price at retailer", n(lambda p: not p.get("budget")))] if n(lambda p: not p.get("budget")) else [])},
-            {"key": "purpose", "title": "Purpose", "checked": [],
-             "items": [(slug, label, n(lambda p, s=slug: s in p.get("purpose", []))) for slug, label in self.PURPOSES if n(lambda p, s=slug: s in p.get("purpose", []))]},
-            {"key": "water", "title": "Water resistance depth", "checked": [],
-             "items": [(slug, label, n(lambda p, s=slug: self.water_bucket(p) == s)) for slug, label, lo, hi in self.WATER if n(lambda p, s=slug: self.water_bucket(p) == s)]},
-            {"key": "case", "title": "Case material", "checked": [],
-             "items": [(slug, label, n(lambda p, s=slug: p.get("case_material") == s)) for slug, label in self.CASES if n(lambda p, s=slug: p.get("case_material") == s)]},
-            {"key": "style", "title": "Style", "checked": [style] if style else [],
-             "items": [(slug, value["label"], n(lambda p, s=slug: s in p["styles"])) for slug, value in self.styles.items()]},
         ]
+        for key, title, options, getter in self.FILTERS:
+            items = [(slug, label, n(lambda p, s=slug: s in getter(self, p))) for slug, label in options]
+            items = [it for it in items if it[2]]
+            if items:
+                groups.append({"key": key, "title": title, "checked": [], "items": items})
+        groups.append({"key": "style", "title": "Style", "checked": [style] if style else [],
+                       "items": [(slug, value["label"], n(lambda p, s=slug: s in p["styles"])) for slug, value in self.styles.items()]})
         style_links = '<a class="watch-style" href="/watches/" data-style-toggle="" aria-current="false"><span class="style-dot" aria-hidden="true">' + watch_art("style-art") + '</span><span>All styles</span></a>'
         for slug, value in self.styles.items():
             style_links += (f'<a class="watch-style" href="/watches/style/{slug}/" data-style-toggle="{esc(slug)}" aria-current="false">'
                             f'<span class="style-dot style-{esc(slug)}" aria-hidden="true">{watch_art("style-art")}</span><span>{esc(value["label"])}</span></a>')
+        brand_counts = {slug: n(lambda p, s=slug: p["brand"] == s) for slug in self.brands}
+        brand_pills = "".join(
+            f'<button type="button" class="watch-chip{" is-empty" if not brand_counts[slug] else ""}" data-quick-chip="brand" data-value="{esc(slug)}" aria-pressed="false">{esc(value["name"])}'
+            + (f' <em>{brand_counts[slug]}</em>' if brand_counts[slug] else '') + '</button>'
+            for slug, value in self.brands.items() if slug != "sample")
         quick = ""
         top = ('<div class="watch-discovery"><div class="watch-style-head"><h2>Shop by style</h2><a href="/watches/guide/">Buying guide &rarr;</a></div>'
                f'<nav class="watch-style-row" aria-label="Watch styles">{style_links}</nav>'
+               f'<div class="watch-brand-head"><h2>Shop by brand</h2></div><div class="watch-chip-row" role="group" aria-label="Shop by brand" data-brand-row>{brand_pills}</div>'
                f'<div class="watch-quick-row" data-quick-controls hidden>{quick}'
-               '<button type="button" class="btn btn-outline btn-small collection-filter-open" data-filter-open aria-haspopup="dialog" aria-controls="watch-collection-filters">Filters <span data-filter-badge></span></button></div></div>')
+               '</div></div>')
         top = top.replace(f'data-style-toggle="{esc(style)}" aria-current="false"', f'data-style-toggle="{esc(style)}" aria-current="true"', 1)
         block = collection.render([self.card(p) for p in products], groups, uid="watch-collection", title="Explore watches", noun="watch", plural="watches",
-                                  preset_gender=gender, genders=[("", "All watches"), ("men", "Men"), ("women", "Women")],
+                                  preset_gender=gender, genders=[("men", "Men"), ("women", "Women")],
                                   top_html=top, visible=[matches(p) for p in products], page_size=24)
         body = ('<section class="section watch-store"><div class="container watch-store-inner">{{breadcrumb}}'
                 f'<header class="watch-store-head"><div><p class="watch-kicker">The SAT watch edit</p><h1>{esc(title)}</h1><p>{esc(intro)}</p></div>'

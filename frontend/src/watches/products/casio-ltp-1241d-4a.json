@@ -51,8 +51,12 @@
   "editors_pick": false,
   "rating": null,
   "case_material": "stainless-steel",
-  "purpose": [
-    "casual",
-    "formal"
+  "strap_material": "stainless-steel",
+  "occasion": [
+    "formal",
+    "casual"
+  ],
+  "features": [
+    "date"
   ]
 }

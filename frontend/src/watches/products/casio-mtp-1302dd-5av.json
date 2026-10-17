@@ -52,8 +52,20 @@
   "editors_pick": false,
   "rating": null,
   "case_material": "stainless-steel",
-  "purpose": [
+  "strap_material": "stainless-steel",
+  "occasion": [
+    "formal",
     "casual",
-    "formal"
+    "party"
+  ],
+  "features": [
+    "date",
+    "second-hand"
+  ],
+  "strap_colour": [
+    "silver"
+  ],
+  "dial_colour": [
+    "brown"
   ]
 }

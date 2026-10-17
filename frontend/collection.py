@@ -36,7 +36,7 @@ def render(cards, groups, *, uid, title, noun='product', plural='products', pres
         f'<p data-collection-count role="status">{shown} {esc(noun if shown == 1 else plural)}</p></div></header>'
         '<div class="collection-controls" data-controls hidden>' + segments +
         f'<label class="collection-search"><span class="visually-hidden">Search {esc(plural)}</span><input type="search" data-search placeholder="Search {esc(plural)}" autocomplete="off"></label>'
-        + ('' if top_html else f'<button type="button" class="btn btn-outline btn-small collection-filter-open" data-filter-open aria-haspopup="dialog" aria-controls="{esc(uid)}-filters">Filters <span data-filter-badge></span></button>') +
+        + f'<button type="button" class="btn btn-outline btn-small collection-filter-open" data-filter-open aria-haspopup="dialog" aria-controls="{esc(uid)}-filters">Filters <span data-filter-badge></span></button>' +
         '<label class="collection-sort">Sort <select data-sort><option value="featured">Featured</option><option value="name">Name A–Z</option><option value="name-desc">Name Z–A</option></select></label></div>'
         '<div class="collection-active" data-active hidden></div><div class="collection-layout">'
         f'<dialog class="collection-filters" id="{esc(uid)}-filters" aria-labelledby="{esc(uid)}-filter-title" data-filter-panel>'

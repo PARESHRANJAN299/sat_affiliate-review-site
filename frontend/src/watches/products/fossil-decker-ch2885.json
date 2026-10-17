@@ -12,7 +12,7 @@
     "analog",
     "leather-strap"
   ],
-  "movement": "Quartz chronograph",
+  "movement": "quartz",
   "dial_style": "Black chronograph dial",
   "strap": "Brown leather",
   "case_size_mm": 44,
@@ -50,5 +50,15 @@
   "updated": "2026-10-17",
   "checked": "2026-10-17",
   "rating": null,
-  "case_material": "stainless-steel"
+  "case_material": "stainless-steel",
+  "strap_material": "leather",
+  "features": [
+    "chronograph"
+  ],
+  "strap_colour": [
+    "brown"
+  ],
+  "dial_colour": [
+    "black"
+  ]
 }
