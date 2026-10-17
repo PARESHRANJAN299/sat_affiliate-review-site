@@ -13,7 +13,7 @@ def key(value):
     return re.sub(r'[^a-z0-9]+', '-', str(value).lower()).strip('-')
 
 
-def render(cards, groups, *, uid, title, noun='product', plural='products', preset_gender='', genders=None, top_html='', visible=None, page_size=0, grid_note=''):
+def render(cards, groups, *, uid, title, noun='product', plural='products', preset_gender='', genders=None, top_html='', visible=None, page_size=0, grid_note='', panel_top='', after_html='', tips_html=''):
     """All cards remain accessible without JS; controls enhance the same server-rendered list."""
     visible = visible if visible is not None else [True] * len(cards)
     shown = sum(visible)
@@ -25,12 +25,16 @@ def render(cards, groups, *, uid, title, noun='product', plural='products', pres
             f'{" checked" if value in group.get("checked", []) else ""}{" disabled" if not count else ""}><span>{esc(label)}</span><small>{count}</small></label>'
             for value, label, count in group['items'] if count or group.get('show_empty'))
         if boxes:
-            fields.append(f'<fieldset class="fgroup"><legend>{esc(group["title"])}</legend>{boxes}</fieldset>')
+            fields.append(f'<fieldset class="fgroup" data-fgroup="{esc(group["key"])}"><legend>{esc(group["title"])}</legend><div class="fopts">{boxes}</div></fieldset>')
     segments = ''
     if genders:
         segments = '<div class="collection-segments" role="group" aria-label="Watch collection">' + ''.join(
             f'<button type="button" data-gender="{esc(value)}" aria-pressed="false">{esc(label)}</button>'
             for value, label in genders) + '</div>'
+    in_hero = '<!--segments-->' in top_html
+    top_html = top_html.replace('<!--segments-->', segments)
+    if in_hero:
+        segments = ''
     return (
         f'<section class="collection" id="{esc(uid)}" data-collection data-noun="{esc(noun)}" data-plural="{esc(plural)}" data-preset-gender="{esc(preset_gender)}" data-page-size="{page_size}" {"data-top-filters" if top_html else ""} aria-labelledby="{esc(uid)}-title">'
         + top_html + f'<header class="collection-head"><div><h2 id="{esc(uid)}-title">{esc(title)}</h2>'
@@ -41,11 +45,11 @@ def render(cards, groups, *, uid, title, noun='product', plural='products', pres
         '<label class="collection-sort">Sort <select data-sort><option value="featured">Featured</option><option value="name">Name A–Z</option><option value="name-desc">Name Z–A</option></select></label></div>'
         '<div class="collection-active" data-active hidden></div><div class="collection-layout">'
         f'<dialog class="collection-filters" id="{esc(uid)}-filters" aria-labelledby="{esc(uid)}-filter-title" data-filter-panel>'
-        f'<div class="cf-head"><strong id="{esc(uid)}-filter-title">Filter by</strong><button type="button" data-filter-close aria-label="Close filters">✕</button></div>' + ''.join(fields) +
-        f'<div class="cf-foot"><button type="button" class="linklike" data-filter-clear>Clear all</button><button type="button" class="btn btn-primary btn-small" data-filter-close>Show {esc(plural)}</button></div></dialog>'
-        '<div class="collection-main">' + grid_note + '<div class="watch-grid" data-collection-grid>' + card_html + '</div>'
+        f'<div class="cf-head"><strong id="{esc(uid)}-filter-title">Filters</strong><button type="button" data-filter-close aria-label="Close filters">✕</button></div>' + panel_top + ''.join(fields) +
+        f'<div class="cf-foot"><button type="button" class="linklike" data-filter-clear>Clear all</button><button type="button" class="btn btn-primary btn-small" data-filter-close data-apply-label>Show {shown} {esc(plural if shown != 1 else noun)}</button></div></dialog>'
+        '<div class="collection-main">' + grid_note + '<div class="watch-grid" data-collection-grid>' + card_html + tips_html + '</div>'
         f'<div class="collection-empty" data-empty {"hidden" if shown else ""}><h3>No matching {esc(plural)}</h3><p>Try another search or remove a filter.</p><button type="button" class="btn btn-outline" data-filter-clear>Clear filters</button></div>'
-        '<nav class="collection-pagination" data-pagination aria-label="Product pages" hidden></nav></div></div></section>')
+        '<nav class="collection-pagination" data-pagination aria-label="Product pages" hidden></nav></div></div>' + after_html + '</section>')
 
 
 def price_slider(steps, group="budget", title="Price", dual=False):
@@ -62,18 +66,17 @@ def price_slider(steps, group="budget", title="Price", dual=False):
     head = f'<div class="price-slider-head"><h2 class="wd-label">{esc(title)}</h2>' + ('' if dual else '<output data-price-label>Any price</output>') + '</div>'
     if dual:
         n = len(steps)
-        controls = ('<div class="price-ranges" role="group" aria-label="Quick price ranges" data-price-ranges></div>'
-                    '<details class="price-fine"><summary>Fine-tune range <output data-price-label>Any price</output></summary>'
-                    f'<div class="price-bars" aria-hidden="true">{bars}</div>'
-                    '<div class="price-track" data-price-track>'
-                    f'<input type="range" class="price-lo" min="0" max="{n}" step="1" value="0" aria-label="Lowest price band">'
-                    f'<input type="range" class="price-hi" min="0" max="{n}" step="1" value="{n}" aria-label="Highest price band"></div>'
-                    f'<div class="price-ticks" aria-hidden="true">{ticks}</div></details>')
+        cells = ''.join(
+            f'<button type="button" class="ladder-step" data-step="{i}" style="--h:{round(26 + 74 * (i + 1) / n)}%" aria-pressed="false"><span class="ladder-bar"></span><span class="ladder-lab">{esc(short)}</span></button>'
+            for i, (_, _, short, _) in enumerate(steps))
+        controls = ('<div class="price-ladder-wrap"><div class="ladder" role="group" aria-label="Budget bands, tap one band or two to widen">' + cells + '</div>'
+                    '<div class="ladder-foot"><output data-price-label>Any price</output><button type="button" class="ladder-reset" data-ladder-reset>Any price</button></div>'
+                    '<p class="ladder-hint">Tap a band. Tap a second band to widen the range.</p></div>')
     else:
         controls = (f'<div class="price-bars" aria-hidden="true">{bars}</div>'
                     f'<input type="range" min="0" max="{len(steps)}" step="1" value="0" aria-label="Maximum price band" aria-valuetext="Any price">'
                     f'<div class="price-ticks" aria-hidden="true">{ticks}</div>')
-    return (f'<div class="price-slider{" price-dual" if dual else ""}" data-price-slider data-group="{esc(group)}" data-steps="{esc(data)}" hidden>'
+    return (f'<div class="price-slider{" price-dual price-ladder" if dual else ""}" data-price-slider data-group="{esc(group)}" data-steps="{esc(data)}" hidden>'
             + head + controls + '</div>')
 
 

@@ -2,7 +2,8 @@
   'use strict';
   document.querySelectorAll('[data-collection]').forEach(function (root) {
     var grid = root.querySelector('[data-collection-grid]');
-    var cards = Array.from(grid.children);
+    var tips = Array.from(grid.querySelectorAll('[data-tip]'));
+    var cards = Array.from(grid.children).filter(function (el) { return !el.hasAttribute('data-tip'); });
     var panel = root.querySelector('[data-filter-panel]');
     var boxes = Array.from(panel.querySelectorAll('input'));
     var search = root.querySelector('[data-search]');
@@ -22,6 +23,7 @@
     var pageSize = Number(root.dataset.pageSize) || 0;
     var page = 1;
     var heading = topFilters ? root.closest('.watch-store').querySelector('h1') : null;
+    var headingDefault = heading ? (heading.dataset.default || heading.textContent) : '';
     function inlinePanel() { return desktop.matches; }
     var quickControls = root.querySelector('[data-quick-controls]');
     if (topFilters && quickControls) quickControls.hidden = false;
@@ -30,8 +32,8 @@
       var steps = JSON.parse(slider.dataset.steps);
       var group = slider.dataset.group;
       slider.hidden = false;
-      var hi = slider.querySelector('.price-hi');
-      if (!hi) {  // single handle: Any price, then Up to each band
+      var ladder = slider.classList.contains('price-ladder');
+      if (!ladder) {  // single handle: Any price, then Up to each band
         slider.querySelector('input').addEventListener('input', function (event) {
           var at = Number(event.target.value);
           boxes.filter(function (box) { return box.dataset.group === group; }).forEach(function (box) { box.checked = at > 0 && box.value === steps[at - 1][0]; });
@@ -40,10 +42,10 @@
         return;
       }
       var priceBox = boxes.filter(function (box) { return box.dataset.group === group; })[0];
-      if (priceBox && priceBox.closest('fieldset')) priceBox.closest('fieldset').hidden = true;   // the slider replaces the Price checkboxes
-      // two handles: From and To. To picks the "under" band (the Price checkbox); From hides watches whose own band is at or below it.
-      var lo = slider.querySelector('.price-lo');
-      var n = steps.length;
+      if (priceBox && priceBox.closest('fieldset')) priceBox.closest('fieldset').hidden = true;   // the ladder replaces the Price checkboxes
+      // Budget ladder: tap one band to show watches whose own band it is, tap a second band to widen the range. The To end is the "under" band
+      // (the Price checkbox); the From end hides watches whose own band is at or below it.
+      var n = steps.length, anchor = null;
       slider._lo = 0;
       function apply(newLo, newHi) {
         newLo = Math.max(0, Math.min(newLo, n - 1)); newHi = Math.max(newLo + 1, Math.min(newHi, n));
@@ -51,29 +53,22 @@
         boxes.filter(function (box) { return box.dataset.group === group; }).forEach(function (box) { box.checked = newHi < n && box.value === steps[newHi - 1][0]; });
         update();
       }
-      function currentHi() {
-        var picked = boxes.filter(function (box) { return box.dataset.group === group && box.checked && box.value !== 'unlisted'; }).map(function (box) { return steps.map(function (s) { return s[0]; }).indexOf(box.value) + 1; });
-        return picked.length ? Math.max.apply(null, picked) : n;
-      }
-      lo.addEventListener('input', function () { apply(Number(lo.value), Math.max(currentHi(), Number(lo.value) + 1)); });
-      hi.addEventListener('input', function () { apply(Math.min(slider._lo, Number(hi.value) - 1), Number(hi.value)); });
-      var holder = slider.querySelector('[data-price-ranges]');
-      var presets = [[0, n, 'Any price']];
-      steps.forEach(function (step, index) { if (step[2] > 0) presets.push([index, index + 1, index === 0 ? 'Up to ' + money(step[1]) : money(steps[index - 1][1]) + '\u2013' + money(step[1])]); });
-      presets.forEach(function (preset) {
-        var chip = document.createElement('button');
-        chip.type = 'button'; chip.className = 'price-range'; chip.textContent = preset[2]; chip.dataset.lo = preset[0]; chip.dataset.hi = preset[1];
-        chip.addEventListener('click', function () { apply(preset[0], preset[1]); });
-        holder.appendChild(chip);
+      slider.querySelectorAll('.ladder-step').forEach(function (button) {
+        button.addEventListener('click', function () {
+          var i = Number(button.dataset.step);
+          if (anchor === null) { anchor = i; apply(i, i + 1); }
+          else { var from = Math.min(anchor, i), to = Math.max(anchor, i); anchor = null; apply(from, to + 1); }
+        });
       });
+      slider.querySelector('[data-ladder-reset]').addEventListener('click', function () { anchor = null; apply(0, n); });
     });
     function ownIndex(card) {  // position of the watch's own price band among the slider steps (0 = no band given)
-      var slider = sliders.filter(function (s) { return s.querySelector('.price-hi'); })[0];
+      var slider = sliders.filter(function (s) { return s.classList.contains('price-ladder'); })[0];
       if (!slider) return 0;
       if (!slider._own) slider._own = JSON.parse(slider.dataset.steps).map(function (s) { return s[0]; });
       return slider._own.indexOf(card.dataset.own || '__none__') + 1;
     }
-    function fromLimit() { var s = sliders.filter(function (x) { return x.querySelector('.price-hi'); })[0]; return s ? s._lo || 0 : 0; }
+    function fromLimit() { var s = sliders.filter(function (x) { return x.classList.contains('price-ladder'); })[0]; return s ? s._lo || 0 : 0; }
     cards.forEach(function (card, index) { card.dataset.order = index; card._searchText = card.textContent.toLocaleLowerCase(); });
     root.querySelector('[data-controls]').hidden = false;
     root.classList.add('is-enhanced');
@@ -83,6 +78,13 @@
       button.textContent = label + ' ×'; button.setAttribute('aria-label', 'Remove ' + label + ' filter');
       button.addEventListener('click', function () { callback(); update(); });
       active.appendChild(button);
+    }
+    function placeTips(visible) {   // an editorial tip after every sixth watch shown, never at the very end
+      tips.forEach(function (tip, index) {
+        var after = visible[(index + 1) * 6 - 1];
+        tip.hidden = !after || visible.length < (index + 1) * 6 + 2;
+        if (after) after.insertAdjacentElement('afterend', tip);
+      });
     }
     function update(resetPage) {
       if (resetPage !== false) page = 1;
@@ -111,6 +113,9 @@
       var count = root.querySelector('[data-collection-count]');
       count.textContent = (pageSize && matched.length > pageSize ? (start + 1) + '–' + end + ' of ' : '') + matched.length + ' ' + (matched.length === 1 ? root.dataset.noun : plural);
       root.querySelector('[data-empty]').hidden = matched.length !== 0;
+      var applyLabel = root.querySelector('[data-apply-label]');
+      if (applyLabel) applyLabel.textContent = 'Show ' + matched.length + ' ' + (matched.length === 1 ? root.dataset.noun : plural);
+      placeTips(matched.slice(start, end));
       if (pager) {
         pager.replaceChildren(); pager.hidden = totalPages <= 1;
         function pageButton(label, number, disabled, current) {
@@ -138,8 +143,8 @@
       sliders.forEach(function (slider) {
         var steps = JSON.parse(slider.dataset.steps);
         var picked = selected[slider.dataset.group] || [];
-        var hiInput = slider.querySelector('.price-hi');
-        if (!hiInput) {
+        var ladder = slider.classList.contains('price-ladder');
+        if (!ladder) {
           var at = picked.length === 1 ? steps.map(function (step) { return step[0]; }).indexOf(picked[0]) + 1 : 0;
           var text = at ? steps[at - 1][1] : picked.length > 1 ? 'Several price bands' : picked[0] === 'unlisted' ? 'Price at retailer' : 'Any price';
           var input = slider.querySelector('input');
@@ -153,15 +158,15 @@
         var hiAt = idxs.length ? Math.max.apply(null, idxs) : n;
         if (loAt >= hiAt) loAt = Math.max(0, hiAt - 1);
         slider._lo = loAt;
-        slider.querySelector('.price-lo').value = loAt; hiInput.value = hiAt;
-        var text = loAt === 0 && hiAt === n ? 'Any price' : loAt === 0 ? 'Up to ' + money(steps[hiAt - 1][1]) : hiAt === n ? money(steps[loAt - 1][1]) + ' and above' : money(steps[loAt - 1][1]) + ' \u2013 ' + money(steps[hiAt - 1][1]);
+        var any = loAt === 0 && hiAt === n;
+        var text = any ? 'Any price' : loAt === 0 ? 'Up to ' + money(steps[hiAt - 1][1]) : hiAt === n ? money(steps[loAt - 1][1]) + ' and above' : money(steps[loAt - 1][1]) + ' – ' + money(steps[hiAt - 1][1]);
         slider.querySelector('[data-price-label]').textContent = text;
-        slider.querySelector('.price-lo').setAttribute('aria-valuetext', loAt ? 'from ' + money(steps[loAt - 1][1]) : 'no minimum');
-        hiInput.setAttribute('aria-valuetext', hiAt < n ? 'up to ' + money(steps[hiAt - 1][1]) : 'no maximum');
-        slider.querySelector('[data-price-track]').style.setProperty('--from', String(loAt / n));
-        slider.querySelector('[data-price-track]').style.setProperty('--to', String(hiAt / n));
-        Array.from(slider.querySelectorAll('[data-price-bar]')).forEach(function (bar, index) { bar.classList.toggle('is-in', index + 1 > loAt && index + 1 <= hiAt && !(loAt === 0 && hiAt === n)); });
-        Array.from(slider.querySelectorAll('.price-range')).forEach(function (chip) { chip.setAttribute('aria-pressed', Number(chip.dataset.lo) === loAt && Number(chip.dataset.hi) === hiAt ? 'true' : 'false'); });
+        Array.from(slider.querySelectorAll('.ladder-step')).forEach(function (button, index) {
+          var on = !any && index + 1 > loAt && index + 1 <= hiAt;
+          button.setAttribute('aria-pressed', on ? 'true' : 'false');
+          button.setAttribute('aria-label', (index === 0 ? 'Up to ' + money(steps[0][1]) : money(steps[index - 1][1]) + ' to ' + money(steps[index][1])) + ' (' + steps[index][2] + ' watches)');
+        });
+        slider.querySelector('[data-ladder-reset]').hidden = any;
       });
       styleButtons.forEach(function (button) {
         var values = selected.style || [];
@@ -178,13 +183,15 @@
         button.setAttribute('aria-current', (!button.dataset.styleToggle ? !values.length : values.indexOf(button.dataset.styleToggle) !== -1) ? 'true' : 'false');
       });
       if (heading) {
+        var priceSlider = sliders.filter(function (x) { return x.classList.contains('price-ladder'); })[0];
+        var priceText = priceSlider ? priceSlider.querySelector('[data-price-label]').textContent : '';
         var brands = boxes.filter(function (box) {return box.dataset.group === 'brand' && box.checked;});
         var styles = boxes.filter(function (box) {return box.dataset.group === 'style' && box.checked;});
         var budgets = boxes.filter(function (box) {return box.dataset.group === 'budget' && box.checked;});
         function label(box) {return box.parentElement.querySelector('span').textContent;}
-        heading.textContent = !gender && !brands.length && !styles.length && !budgets.length ? 'Watches for every day.' :
+        heading.textContent = !gender && !brands.length && !styles.length && !budgets.length ? headingDefault :
           (brands.length === 1 ? label(brands[0]) + ' ' : '') + (gender === 'men' ? "Men's " : gender === 'women' ? "Women's " : '') +
-          (styles.length === 1 ? label(styles[0]) + ' ' : '') + 'Watches' + (budgets.length === 1 && budgets[0].value !== 'unlisted' ? ' ' + label(budgets[0]) : '');
+          (styles.length === 1 ? label(styles[0]) + ' ' : '') + 'Watches' + (priceText && priceText !== 'Any price' ? ' ' + priceText : '');
       }
       active.replaceChildren();
       boxes.filter(function (box) { return box.checked; }).forEach(function (box) {
@@ -192,7 +199,7 @@
       });
       if (gender) removeButton(gender === 'men' ? "Men's" : "Women's", function () { gender = ''; });
       var fromAt = fromLimit();
-      if (fromAt) { var fs = sliders.filter(function (x) { return x.querySelector('.price-hi'); })[0]; removeButton('From ' + money(JSON.parse(fs.dataset.steps)[fromAt - 1][1]), function () { fs._lo = 0; }); }
+      if (fromAt) { var fs = sliders.filter(function (x) { return x.classList.contains('price-ladder'); })[0]; removeButton('From ' + money(JSON.parse(fs.dataset.steps)[fromAt - 1][1]), function () { fs._lo = 0; }); }
       if (query) removeButton('Search: ' + search.value.trim(), function () { search.value = ''; });
       var total = boxes.filter(function (box) { return box.checked; }).length + (gender ? 1 : 0) + (fromLimit() ? 1 : 0);
       root.querySelector('[data-filter-badge]').textContent = total ? '(' + total + ')' : '';
@@ -228,6 +235,7 @@
         event.preventDefault();
         var selected = button.getAttribute('aria-current') === 'true';
         boxes.filter(function (box) { return box.dataset.group === 'style'; }).forEach(function (box) { box.checked = !selected && box.value === button.dataset.styleToggle; }); update();
+        var anchorEl = root.querySelector('[data-collection-count]'); if (anchorEl && button.classList.contains('lx-style')) anchorEl.scrollIntoView({ block: 'center', behavior: 'smooth' });
       });
     });
     segments.forEach(function (button) { button.addEventListener('click', function () { gender = gender === button.dataset.gender ? '' : button.dataset.gender; update(); }); });
@@ -265,7 +273,7 @@
     var from = query.get('from');   // /watches/?price=under-3000&from=under-2000 opens the 2,000 to 3,000 range
     if (from) sliders.forEach(function (slider) {
       var at = JSON.parse(slider.dataset.steps).map(function (step) { return step[0]; }).indexOf(from);
-      if (at >= 0 && slider.querySelector('.price-hi')) slider._lo = at + 1;
+      if (at >= 0 && slider.classList.contains('price-ladder')) slider._lo = at + 1;
     });
     var wanted = query.get('price');
     if (wanted) boxes.forEach(function (box) { if (box.dataset.group === 'budget' && box.value === wanted) box.checked = true; });

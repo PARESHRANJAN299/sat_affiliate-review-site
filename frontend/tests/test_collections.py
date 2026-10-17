@@ -76,8 +76,8 @@ class CollectionTests(unittest.TestCase):
         for gender in ("men", "women"):
             page = shop.gender_page(gender)
             self.assertEqual(set(Cards(page["_body"]).visible), {p["id"] for p in shop.products if gender in p["gender"]})
-            self.assertLess(page["_body"].index('aria-label="Watch styles"'), page["_body"].index("collection-controls"))
-            self.assertLess(page["_body"].index("watch-discovery"), page["_body"].index("collection-controls"))
+            self.assertLess(page["_body"].index('class="lx-hero"'), page["_body"].index("collection-controls"))
+            self.assertLess(page["_body"].index("data-collection-grid"), page["_body"].index('class="lx-sec lx-styles"'))   # style cards sit below the watches
             self.assertIn('data-page-size="24"', page["_body"])
             self.assertNotIn("affiliate-box", page["_body"])
             self.assertNotIn("Model reference", page["_body"])

@@ -255,7 +255,8 @@ class Slider(unittest.TestCase):
         shop = watches.Watches(build.SRC, build.CONFIG)
         body = shop.landing()["_body"]
         self.assertIn("data-price-slider", body)
-        self.assertIn("<span>\u20b92k</span><span>\u20b93k</span><span>\u20b95k</span>", body)
+        self.assertIn('<span class="ladder-lab">\u20b92k</span></button>', body)
+        self.assertIn('<span class="ladder-lab">\u20b93k</span></button>', body)
         self.assertNotIn("\u20b91k", body)           # no watch sits in Under 1,000 yet, so that step is not offered
 
     def test_slider_needs_two_steps_and_shows_no_prices(self):
@@ -375,11 +376,12 @@ class PremiumCards(unittest.TestCase):
     def setUpClass(cls):
         cls.shop = watches.Watches(build.SRC, build.CONFIG)
 
-    def test_catalog_slider_has_from_and_to_handles(self):
+    def test_catalog_budget_ladder_has_one_step_per_band_with_watches(self):
         body = self.shop.landing()["_body"]
-        self.assertIn('class="price-lo"', body)
-        self.assertIn('class="price-hi"', body)
-        self.assertIn("data-price-ranges", body)
+        self.assertIn("price-ladder", body)
+        self.assertEqual(body.count('class="ladder-step"'), len(self.shop.price_steps()))
+        self.assertIn("data-ladder-reset", body)
+        self.assertNotIn('class="price-hi"', body)
 
     def test_card_shows_the_band_range_and_marks_its_own_band(self):
         p = next(q for q in self.shop.products if q["id"] == "titan-analog-offwhite-b01clf3bfw")
