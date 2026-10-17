@@ -489,11 +489,11 @@ class Watches:
              "items": [(slug, value["label"], n(lambda p, s=slug: p.get("budget") == s)) for slug, value in self.budgets.items() if n(lambda p, s=slug: p.get("budget") == s)]
                       + ([("unlisted", "Price at retailer", n(lambda p: not p.get("budget")))] if n(lambda p: not p.get("budget")) else [])},
         ]
-        for key, title, options, getter in self.FILTERS:
+        for key, group_title, options, getter in self.FILTERS:
             items = [(slug, label, n(lambda p, s=slug: s in getter(self, p))) for slug, label in options]
             items = [it for it in items if it[2]]
             if items:
-                groups.append({"key": key, "title": title, "checked": [], "items": items})
+                groups.append({"key": key, "title": group_title, "checked": [], "items": items})
         groups.append({"key": "style", "title": "Style", "checked": [style] if style else [],
                        "items": [(slug, value["label"], n(lambda p, s=slug: s in p["styles"])) for slug, value in self.styles.items()]})
         style_links = '<a class="watch-style" href="/watches/" data-style-toggle="" aria-current="false"><span class="style-dot" aria-hidden="true">' + watch_art("style-art") + '</span><span>All styles</span></a>'
