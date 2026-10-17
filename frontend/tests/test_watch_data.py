@@ -256,6 +256,17 @@ class Slider(unittest.TestCase):
         self.assertIn("data-price-slider", shop.brand_budget_page("titan", "under-3000")["_body"])
 
 
+class Buckets(unittest.TestCase):
+    def test_decimal_sizes_never_fall_between_buckets(self):
+        b = watches.Watches.bucket
+        self.assertEqual(b(watches.Watches.DIAL_SIZES, 40.2), "37-40")
+        self.assertEqual(b(watches.Watches.DIAL_SIZES, 40.6), "41-44")
+        self.assertEqual(b(watches.Watches.DIAL_SIZES, 45.6), "45-plus")
+        self.assertEqual(b(watches.Watches.DIAL_SIZES, 36.4), "36-and-under")
+        self.assertEqual(b(watches.Watches.DIAL_SIZES, None), "")
+        self.assertEqual(b(watches.Watches.WATER, 29.6), "30-m")
+
+
 class Duplicates(unittest.TestCase):
     def test_same_id_asin_or_name_is_flagged(self):
         a = {"id": "titan-a-b000000001", "product_name": "Titan A", "amazon_url": "https://www.amazon.in/dp/B000000001?tag=x"}

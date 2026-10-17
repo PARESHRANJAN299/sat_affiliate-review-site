@@ -498,7 +498,11 @@ class Watches:
 
     @staticmethod
     def bucket(table, value):
-        return next((slug for slug, _, lo, hi in table if value is not None and lo <= value <= hi), "")
+        """Size and depth are matched to the nearest whole unit (40.2 mm is 40, 44.6 mm is 45), so a decimal never falls between two buckets."""
+        if value is None:
+            return ""
+        value = int(value + 0.5)
+        return next((slug for slug, _, lo, hi in table if lo <= value <= hi), "")
 
     def qualifies(self, p):
         """Price bands a watch appears under: its own and every higher one (Under 2,000 also appears under 3,000, 5,000 ...)."""
