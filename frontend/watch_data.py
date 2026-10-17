@@ -147,7 +147,7 @@ def normalise(raw, budgets):
         p["styles"].append("analog")
     if p["band_material"] == "leather" and "leather-strap" not in p["styles"]:
         p["styles"].append("leather-strap")
-    if p["band_material"] in ("stainless-steel", "metal") and "metal-strap" not in p["styles"]:   # "metal" = a metal strap whose type the listing does not state
+    if p["band_material"] in ("stainless-steel", "brass", "metal") and "metal-strap" not in p["styles"]:   # "metal" = a metal strap whose type the listing does not state
         p["styles"].append("metal-strap")
     # legacy display fields used by the existing cards
     if not p.get("strap") and p["band_material"]:
