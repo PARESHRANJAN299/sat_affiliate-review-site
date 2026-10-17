@@ -1,8 +1,53 @@
 {
-  "_note": "Display settings only. Brands, filters and prices come from the watch files. brand_order lists brand slugs to show first; featured_brands are shown before the rest (default: the featured tier in config.json); hidden_brands are never shown. planned_filters shows an option dimmed before any watch has it, for example {\"water\": [\"200-plus\"]}. brand_names overrides the name made from a new brand's slug.",
-  "brand_order": ["titan", "casio", "timex", "fossil", "fastrack", "sonata"],
-  "featured_brands": ["titan", "casio", "timex", "fossil"],
+  "_note": "Display settings only. Brands, filters and prices come from the watch files. brand_order lists brand slugs to show first; featured_brands are shown before the rest (default: the featured tier in config.json); hidden_brands are never shown. planned_filters shows an option dimmed before any watch has it, for example {\"water\": [\"200-plus\"]}. brand_names overrides the name made from a new brand's slug. intent_cards: the four discovery cards. A card is shown only when approved is true, it has a filter ({group, value}) and at least one watch matches; the owner approves the label and the filter together. budget_captions: an optional editorial line per price band (otherwise the watch count is shown).",
+  "brand_order": [
+    "titan",
+    "casio",
+    "timex",
+    "fossil",
+    "fastrack",
+    "sonata"
+  ],
+  "featured_brands": [
+    "titan",
+    "casio",
+    "timex",
+    "fossil"
+  ],
   "hidden_brands": [],
   "planned_filters": {},
-  "brand_names": {}
+  "brand_names": {},
+  "intent_cards": [
+    {
+      "title": "A watch for work",
+      "text": "Clean, understated and easy to wear.",
+      "approved": false,
+      "filter": null
+    },
+    {
+      "title": "Under ₹3,000",
+      "text": "Great everyday choices.",
+      "approved": true,
+      "filter": {
+        "group": "budget",
+        "value": "under-3000"
+      }
+    },
+    {
+      "title": "A first proper watch",
+      "text": "Simple choices to start with.",
+      "approved": false,
+      "filter": null
+    },
+    {
+      "title": "Something elegant",
+      "text": "For occasions and formal wear.",
+      "approved": false,
+      "filter": null
+    }
+  ],
+  "budget_captions": {
+    "under-2000": "Everyday value",
+    "under-3000": "More choice, still sensible"
+  }
 }

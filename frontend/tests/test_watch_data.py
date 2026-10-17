@@ -257,8 +257,8 @@ class Slider(unittest.TestCase):
         self.assertIn("data-price-slider", body)
         steps = shop.price_steps()
         for _, _, short, _ in steps:
-            self.assertIn(f'aria-pressed="false">{short}</button>', body)
-        # a band with no watch under it is not offered as a chip
+            self.assertIn(f'<i class="sr-dot"></i><span>{short}</span></button>', body)
+        # a band with no watch under it is not offered as a step
         empty = [info["label"] for slug_, info in shop.budgets.items() if not any(slug_ in shop.qualifies(p) for p in shop.products)]
         shown = {label for _, label, _, _ in steps}
         for label in empty:
@@ -267,8 +267,8 @@ class Slider(unittest.TestCase):
     def test_slider_needs_two_steps_and_shows_no_prices(self):
         self.assertEqual(collection.price_slider([("under-2000", "Under \u20b92,000", "\u20b92k", 3)]), "")
         html = collection.price_slider([("a", "Under A", "A", 3), ("b", "Under B", "B", 1)])
-        self.assertEqual(html.count('class="pb-chip"'), 3)          # Any + the two bands
-        self.assertIn("Choose your maximum budget", html)
+        self.assertEqual(html.count('class="sr-step"'), 3)          # Any + the two bands
+        self.assertIn('aria-label="Maximum budget"', html)
         self.assertIn("hidden", html)
 
     def test_slider_is_on_collection_pages_too(self):
@@ -382,11 +382,42 @@ class PremiumCards(unittest.TestCase):
     def setUpClass(cls):
         cls.shop = watches.Watches(build.SRC, build.CONFIG)
 
-    def test_catalog_budget_chip_rail_has_any_plus_one_chip_per_band_with_watches(self):
+    def test_catalog_budget_rail_has_any_plus_one_step_per_band_with_watches(self):
         body = self.shop.landing()["_body"]
         self.assertIn("price-bands", body)
-        self.assertEqual(body.count('class="pb-chip"'), len(self.shop.price_steps()) + 1)
+        self.assertEqual(body.count('class="sr-step"'), len(self.shop.price_steps()) + 1)
         self.assertNotIn("ladder-step", body)
+        self.assertNotIn("pb-chip", body)
+
+    def test_gender_plate_counts_come_from_the_catalogue(self):
+        body = self.shop.landing()["_body"]
+        for g in ("men", "women"):
+            n = sum(1 for p in self.shop.products if g in p["gender"])
+            self.assertIn(f'<small class="gp-c">{n} watches</small>', body)
+
+    def test_intent_cards_need_approval_and_a_matching_watch(self):
+        shop = self.shop
+        saved = shop.settings.get("intent_cards")
+        try:
+            shop.settings["intent_cards"] = [
+                {"title": "Hidden", "text": "x", "approved": False, "filter": {"group": "budget", "value": "under-3000"}},
+                {"title": "No filter", "text": "x", "approved": True, "filter": None},
+                {"title": "No match", "text": "x", "approved": True, "filter": {"group": "style", "value": "no-such-style"}},
+                {"title": "Shown", "text": "A line", "approved": True, "filter": {"group": "budget", "value": "under-3000"}}]
+            html = shop.intent_cards()
+            self.assertIn("Shown", html)
+            for name in ("Hidden", "No filter", "No match"):
+                self.assertNotIn(name, html)
+            shop.settings["intent_cards"] = []
+            self.assertEqual(shop.intent_cards(), "")
+        finally:
+            shop.settings["intent_cards"] = saved
+
+    def test_budget_cards_come_only_from_published_collections(self):
+        body = self.shop.landing()["_body"]
+        pubs = [c for c in self.shop.published_collections() if c["featured_on_watch_hub"] and c.get("price_band")]
+        self.assertEqual(body.count('class="lx-budget"'), len(pubs))
+        self.assertEqual(self.shop.budget_cards([]), "")
 
     def test_card_shows_the_band_range_and_marks_its_own_band(self):
         p = next(q for q in self.shop.products if q["id"] == "titan-analog-offwhite-b01clf3bfw")

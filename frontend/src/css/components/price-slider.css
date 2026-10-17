@@ -1,14 +1,25 @@
-/* Budget: maximum-budget chip rail (swipes and snaps on phones, wraps in the laptop filter panel). Bands only, no prices. */
-.price-bands .price-slider-head { display: block; margin: 0; }
-.pb-sub { margin: 2px 0 12px; font-size: .78rem; color: #6d695f; }
-.pb-rail { display: flex; gap: 8px; margin: 0 -22px; padding: 3px 44px 10px 22px; overflow-x: auto; scroll-snap-type: x proximity; scroll-padding: 0 22px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
-.pb-rail::-webkit-scrollbar { display: none; }
-.pb-chip { flex: none; scroll-snap-align: start; min-height: 44px; padding: 0 18px; border: 1px solid #ded6c3; border-radius: 12px; background: #fffefb; color: #2b2c2f; font: 600 .9rem var(--font-sans); white-space: nowrap; cursor: pointer;
-  transition: transform .18s ease, background .18s ease, color .18s ease, border-color .18s ease, box-shadow .18s ease; }
-@media (hover: hover) { .pb-chip:hover:not(:disabled):not([aria-pressed="true"]) { border-color: #a88646; background: #fbf6e8; } }
-.pb-chip[aria-pressed="true"] { transform: translateY(-1px); border-color: #121315; background: linear-gradient(180deg, #2b2d33, #131416); color: #fbf6ea; box-shadow: inset 0 -2px 0 #a88646, 0 8px 14px -10px rgba(0, 0, 0, .7); }
-.pb-chip:disabled { opacity: .42; border-style: dashed; cursor: not-allowed; }
-.pb-chip:focus-visible { outline: 3px solid #a88646; outline-offset: 2px; }
-.pb-help { min-height: 1.3em; margin: 6px 0 0; font-size: .8rem; color: #6d695f; }
-@media (min-width: 1000px) { .pb-rail { flex-wrap: wrap; overflow: visible; margin: 0; padding: 2px 0 6px; } .pb-chip { min-height: 38px; padding: 0 13px; font-size: .82rem; } }
-@media (prefers-reduced-motion: reduce) { .pb-chip { transition: none; } .pb-chip[aria-pressed="true"] { transform: none; } }
+/* Budget: stepped rail. Each step is a point on a thin rail; the chosen step gets a gold marker, the rail up to it turns gold, and a tooltip names the band. Bands only, no prices. */
+.price-bands .sr-wrap { position: relative; padding: 38px 0 4px; }
+.sr-tip { position: absolute; top: 2px; left: calc((var(--sel, 0) + .5) / var(--n) * 100%); transform: translateX(-50%); padding: 6px 11px; border-radius: 9px; background: #131416; color: #fbf6ea; font: 600 .74rem var(--font-sans); white-space: nowrap; opacity: 0; pointer-events: none; transition: left .24s ease, opacity .2s ease; }
+.sr-tip::after { content: ""; position: absolute; left: 50%; bottom: -5px; width: 10px; height: 10px; margin-left: -5px; background: #131416; transform: rotate(45deg); border-radius: 2px; }
+.has-sel .sr-tip { opacity: 1; }
+.sr-rail { display: flex; }
+.sr-step { position: relative; flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; align-items: center; gap: 9px; padding: 0 0 2px; border: 0; background: none; cursor: pointer; }
+.sr-step::before, .sr-step::after { content: ""; position: absolute; top: 11px; height: 2px; background: #e1d7bd; transition: background .2s ease; }
+.sr-step::before { left: 0; right: 50%; }
+.sr-step::after { left: 50%; right: 0; }
+.sr-step:first-child::before, .sr-step:last-child::after { display: none; }
+.sr-step.is-reached::before, .sr-step:has(+ .is-reached)::after { background: #a88646; }
+.sr-dot { position: relative; z-index: 1; width: 14px; height: 14px; margin-top: 4px; border: 2px solid #cdbf9d; border-radius: 50%; background: #fffefb; transition: transform .2s ease, border-color .2s ease, background .2s ease, box-shadow .2s ease; }
+.sr-step.is-reached .sr-dot { border-color: #a88646; }
+.sr-step[aria-pressed="true"] .sr-dot { transform: scale(1.35); border-color: #131416; background: radial-gradient(circle, #fff 0 2px, #a88646 3px); box-shadow: 0 0 0 3px rgba(168, 134, 70, .28); }
+.sr-step span { font: 600 .6rem var(--font-sans); color: #8d8777; white-space: nowrap; }
+.sr-step[aria-pressed="true"] span { color: #131416; font-weight: 700; }
+@media (hover: hover) { .sr-step:hover:not(:disabled) .sr-dot { border-color: #a88646; } }
+.sr-step:disabled { cursor: not-allowed; }
+.sr-step:disabled .sr-dot { border-style: dashed; opacity: .45; }
+.sr-step:disabled span { opacity: .45; }
+.sr-step:focus-visible { outline: 3px solid #a88646; outline-offset: 1px; border-radius: 8px; }
+.sr-now { padding: 2px 0; border: 0; background: none; color: #a88646; font: 600 .8rem var(--font-sans); cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+.sr-now:disabled { color: #6d695f; text-decoration: none; cursor: default; }
+@media (prefers-reduced-motion: reduce) { .sr-tip, .sr-dot, .sr-step::before, .sr-step::after { transition: none; } }
