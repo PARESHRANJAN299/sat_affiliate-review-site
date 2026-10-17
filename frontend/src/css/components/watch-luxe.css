@@ -313,3 +313,58 @@
   .watch-store .collection .watch-card.is-lead .watch-spec-rows { margin: 16px 0 18px; padding-top: 16px; gap: 14px 24px; }
   .watch-store .collection .watch-card.is-lead .watch-actions .btn { min-height: 48px; }
 }
+
+/* ===== filters: premium treatment ===== */
+.watch-store .collection .collection-filters { background: linear-gradient(180deg, #fffdf8 0%, #fbf7ec 100%); scrollbar-width: thin; scrollbar-color: #d6c79f transparent; }
+.watch-store .collection .collection-filters::-webkit-scrollbar { width: 6px; }
+.watch-store .collection .collection-filters::-webkit-scrollbar-thumb { background: #d6c79f; border-radius: 6px; }
+.watch-store .collection .cf-head strong { letter-spacing: -.01em; }
+/* options: calm at rest, ink with a gold edge when chosen */
+.watch-store .collection .fopt { border-color: var(--lx-stone); background: #fffefb; color: var(--lx-char); }
+.watch-store .collection .fopt small { color: #a29c8d; }
+@media (hover: hover) { .watch-store .collection .fopt:hover:not(.is-empty) { border-color: var(--lx-gold); background: #fbf6e8; } }
+.watch-store .collection .fopt:has(input:checked) { background: linear-gradient(180deg, #2b2d33, #131416); border-color: #131416; box-shadow: inset 0 -2px 0 var(--lx-gold); color: #fbf6ea; font-weight: 600; }
+.watch-store .collection .fopt:has(input:checked) small { color: var(--lx-gold-soft); }
+/* group headers: serif title, count of choices, chevron */
+.watch-store .collection .fgroup { margin-top: 0; padding-top: 16px; padding-bottom: 16px; border-top: 1px solid #efe6d1; }
+.watch-store .collection .fg-toggle { display: flex; align-items: center; gap: 8px; width: 100%; padding: 2px 0; border: 0; background: none; color: var(--lx-ink); font: 600 1.02rem var(--font-display); text-align: left; cursor: pointer; }
+.watch-store .collection .fg-toggle span { flex: 1; }
+.watch-store .collection .fg-n { min-width: 20px; height: 20px; padding: 0 6px; border-radius: 10px; background: var(--lx-gold); color: #fff; font: 700 .68rem/20px var(--font-sans); text-align: center; }
+.watch-store .collection .fg-n:empty { display: none; }
+.watch-store .collection .fg-chev { width: 7px; height: 7px; margin: -3px 2px 0 0; border-right: 1.5px solid var(--lx-char); border-bottom: 1.5px solid var(--lx-char); transform: rotate(45deg); opacity: .6; transition: transform .25s ease; }
+.watch-store .collection .fgroup.is-collapsed .fg-chev { transform: rotate(-45deg); margin-top: 0; }
+.watch-store .collection .fgroup.is-collapsed .fopts { display: none; }
+.watch-store .collection .fgroup.is-collapsed { padding-bottom: 12px; }
+.watch-store .collection .fgroup:not(.is-collapsed) .fopts { margin-top: 10px; animation: lx-rise .3s ease both; }
+.watch-store .collection .fg-toggle:focus-visible { outline: 3px solid var(--lx-gold); outline-offset: 3px; border-radius: 6px; }
+/* budget: a large readout above richer bars */
+.watch-store .collection .price-ladder-wrap { display: flex; flex-direction: column; }
+.watch-store .collection .ladder-foot { order: -1; margin: 2px 0 12px; padding: 12px 14px; border: 1px solid var(--lx-stone); border-radius: 14px; background: #fffefb; align-items: center; }
+.watch-store .collection .ladder-foot output { font: 600 1.18rem var(--font-display); letter-spacing: -.005em; }
+.watch-store .collection .ladder-hint { order: 3; margin: 2px 0 0; }
+.ladder-bar { background: linear-gradient(180deg, #efe8d6, #e1d7bd); }
+.ladder-step:hover .ladder-bar { background: linear-gradient(180deg, #e9dfc4, #d4c7a2); transform: translateY(-2px); }
+.ladder-step[aria-pressed="true"] .ladder-bar { background: linear-gradient(180deg, #34363c, #121315); box-shadow: inset 0 2px 0 var(--lx-gold), 0 8px 14px -8px rgba(0, 0, 0, .55); }
+/* bottom bar: Clear all, with the live count on laptops */
+@media (min-width: 1000px) {
+  .watch-store .collection .cf-foot { position: sticky; bottom: 0; display: flex; justify-content: space-between; align-items: center; padding: 10px 20px 14px; border-top: 1px solid #efe6d1; background: linear-gradient(180deg, rgba(251, 247, 236, .88), #fbf7ec); }
+  .watch-store .collection .cf-foot .linklike { min-height: 36px; color: var(--lx-gold); font: 600 .82rem var(--font-sans); text-decoration: underline; text-underline-offset: 3px; }
+  .watch-store .collection .cf-foot .btn { display: inline-flex; flex: none; min-height: 36px; padding: 0; background: none; color: var(--lx-muted); font: 500 .78rem var(--font-sans); letter-spacing: 0; pointer-events: none; }
+  .watch-store .collection .collection-layout .collection-filters, .watch-store .collection .collection-layout .collection-filters[open] { border-top: 2px solid var(--lx-gold); }
+}
+/* filters: fixes after review (fieldset borders run through the legend, so dividers are drawn as shadows) */
+.watch-store .collection .fgroup { margin: 18px 22px 0; padding: 0; border: 0; box-shadow: 0 -1px 0 #efe6d1; }
+.watch-store .collection .fgroup legend { padding: 12px 0 0; margin: 0; }
+.watch-store .collection .fgroup:not(.is-collapsed) .fopts { margin-top: 10px; padding-bottom: 14px; }
+.watch-store .collection .fgroup.is-collapsed { padding-bottom: 12px; }
+.watch-store .collection .fgroup:first-of-type { box-shadow: none; }
+.watch-store .collection .ladder-foot { flex-wrap: wrap; gap: 4px 10px; }
+.watch-store .collection .ladder-foot output { flex: 1 1 auto; white-space: nowrap; font-size: 1.04rem; }
+.watch-store .collection .ladder-reset { font-size: .74rem; white-space: nowrap; }
+.watch-store .collection .price-slider { padding-bottom: 8px; }
+.watch-store .collection .ladder-curated { padding-bottom: 10px; }
+@media (min-width: 1000px) {
+  .watch-store .collection .fgroup { margin: 14px 20px 0; padding: 0; }
+  .watch-store .collection .price-slider { padding: 14px 20px 6px; }
+  .watch-store .collection .ladder-curated { padding: 8px 20px 12px; }
+}

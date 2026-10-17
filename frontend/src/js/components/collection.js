@@ -210,6 +210,7 @@
       if (query) removeButton('Search: ' + search.value.trim(), function () { search.value = ''; });
       var total = boxes.filter(function (box) { return box.checked; }).length + (gender ? 1 : 0) + (fromLimit() ? 1 : 0);
       root.querySelector('[data-filter-badge]').textContent = total ? '(' + total + ')' : '';
+      if (typeof countGroups === 'function') countGroups();
       var chipBudget = root.querySelector('[data-chip-val="budget"]'), chipBrand = root.querySelector('[data-chip-val="brand"]');
       var ladderEl = sliders.filter(function (x) { return x.classList.contains('price-ladder'); })[0];
       if (chipBudget && ladderEl) { var t = ladderEl.querySelector('[data-price-label]').textContent; chipBudget.textContent = t === 'Any price' ? '' : t; chipBudget.parentElement.classList.toggle('is-set', t !== 'Any price'); }
@@ -225,6 +226,32 @@
     }
     function clearAll() {
       boxes.forEach(function (box) { box.checked = false; }); gender = ''; search.value = ''; update();
+    }
+    // Filter groups collapse like a boutique menu. On laptops only the first three start open; the phone sheet starts fully open.
+    var groups = Array.from(panel.querySelectorAll('.fgroup'));
+    groups.forEach(function (group, index) {
+      var legend = group.querySelector('legend');
+      if (!legend) return;
+      var title = legend.textContent;
+      var button = document.createElement('button');
+      button.type = 'button'; button.className = 'fg-toggle';
+      button.innerHTML = '<span></span><b class="fg-n" aria-hidden="true"></b><i class="fg-chev" aria-hidden="true"></i>';
+      button.firstChild.textContent = title;
+      legend.textContent = ''; legend.appendChild(button);
+      var collapsed = desktop.matches && index >= 3;
+      group.classList.toggle('is-collapsed', collapsed);
+      button.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
+      button.addEventListener('click', function () {
+        var shut = group.classList.toggle('is-collapsed');
+        button.setAttribute('aria-expanded', shut ? 'false' : 'true');
+      });
+    });
+    function countGroups() {
+      groups.forEach(function (group) {
+        var n = group.querySelectorAll('input:checked').length, badge = group.querySelector('.fg-n');
+        if (badge) badge.textContent = n ? String(n) : '';
+        group.classList.toggle('has-sel', n > 0);
+      });
     }
     boxes.forEach(function (box) { box.addEventListener('change', update); });
     search.addEventListener('input', update);
