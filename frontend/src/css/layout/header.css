@@ -152,6 +152,8 @@ nav.main-nav a[aria-current="page"] { color: #fff; border-radius: 0; box-shadow:
     animation-delay: calc(var(--i) * .14s), calc(1.2s + var(--i) * .18s);
   }
   .logo::after { animation: logo-bar .8s cubic-bezier(.2, .8, .2, 1) .5s both; }
+  /* the logo intro plays once per browser tab session; later pages show the finished logo at once */
+  html.seen .logo-mark span, html.seen .logo::after { animation: none; }
 }
 
 @keyframes logo-in {

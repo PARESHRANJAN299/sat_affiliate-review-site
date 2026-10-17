@@ -75,6 +75,7 @@
     });
   }, { rootMargin: '0px 0px -8% 0px', threshold: 0.1 });
   Array.prototype.forEach.call(items, function (el) {
+    if (el.getBoundingClientRect().top < window.innerHeight * 0.95) return;
     var siblings = el.parentNode ? Array.prototype.indexOf.call(el.parentNode.children, el) : 0;
     el.classList.add('reveal-up');
     el.style.transitionDelay = Math.min(siblings, 5) * 70 + 'ms';
