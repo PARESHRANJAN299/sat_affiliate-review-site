@@ -6,7 +6,7 @@
   "gender": [
     "men"
   ],
-  "budget": null,
+  "budget": "under-10000",
   "styles": [
     "classic",
     "analog",
@@ -61,5 +61,8 @@
   "dial_colour": [
     "black"
   ],
-  "last_verified": "2026-10-17"
+  "last_verified": "2026-10-17",
+  "warranty_type": "limited",
+  "warranty_duration": "1 year",
+  "country_of_origin": "China"
 }

@@ -37,7 +37,7 @@ class CollectionTests(unittest.TestCase):
                     self.assertIn('sponsored', link.get('rel', ''))
                     matches.append(link)
         self.assertGreater(len(matches), 0)
-        self.assertIsNone(product['budget'])
+        self.assertEqual(product['budget'], 'under-10000')   # a band, never a typed price (set by SAT from the owner's listing text)
 
     def test_collection_is_useful_without_javascript_and_escapes_text(self):
         item = {'name': '<Model>', 'description': 'Details & research', 'url': '/guide/', 'filters': {'brand': 'A & B'}}
