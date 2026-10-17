@@ -59,6 +59,12 @@
       "label": "Under ₹20,000",
       "max": 20000,
       "expect": "Compare the movement, case finishing and warranty carefully, and buy from the brand or an authorised seller."
+    },
+    {
+      "slug": "under-40000",
+      "label": "Under ₹40,000",
+      "max": 40000,
+      "expect": "This is the premium end. Compare materials, movement and warranty, check the case size against your wrist, and buy from the brand or an authorised seller."
     }
   ],
   "brands": [
@@ -147,6 +153,16 @@
       ],
       "line": "Classic",
       "blurb": "Carlington watches are listed here as models are added."
+    },
+    {
+      "slug": "michael-kors",
+      "name": "Michael Kors",
+      "tier": "premium",
+      "genders": [
+        "women"
+      ],
+      "line": "Fashion",
+      "blurb": "An American fashion brand. Its watches are listed here as models are added."
     }
   ],
   "styles": [
