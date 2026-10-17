@@ -2163,6 +2163,7 @@ def watch_intake(path, write=False):
     print("Watch intake:", p.get("product_name") or "(no product name)", f"[{p.get('id')}]")
     print("\nStatus:", "REJECTED" if rep["errors"] or required_missing else "ACCEPTED" + (" with warnings" if rep["warnings"] else ""))
     print("Missing required fields:", ", ".join(required_missing) or "none")
+    print("Duplicate check:", "; ".join(rep["duplicates"]) or "no existing watch has the same id, ASIN or product name")
     print("Missing optional fields:", ", ".join(rep["missing_optional"]) or "none")
     for e in rep["errors"]:
         print("ERROR:", e)

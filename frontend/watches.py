@@ -89,6 +89,13 @@ class Watches:
                 self.products.append(p)
             else:
                 self.warnings.append(f"watch {p.get('id', '?')}: not shown ({why})")
+        seen = {}
+        for p in self.products:
+            for reason in watch_data.duplicates(p, [q for q in self.products if q is not p and q["id"] < p["id"]]):
+                self.errors.append(f"watch {p['id']}: duplicate ({reason})")
+        ids = [p["id"] for p in self.products]
+        for dup in {i for i in ids if ids.count(i) > 1}:
+            self.errors.append(f"watch id {dup!r} is used by more than one file")
         self.products.sort(key=lambda p: (p.get("rank", 999), p["id"]))
         if self.affiliate_active:
             amazon = self.merchants.get("amazon")
@@ -621,7 +628,9 @@ class Watches:
         finally:
             self.products = saved
         mine = sorted(cands, key=lambda c: (-c["count"], c["name"]))[:8]
-        return {"errors": errs, "warnings": warns, "categories": cats, "filters_enabled": enabled, "missing_optional": missing_optional,
+        dup = watch_data.duplicates(p, self.products)
+        errs = errs + [f"duplicate: {r}" for r in dup]
+        return {"errors": errs, "duplicates": dup, "warnings": warns, "categories": cats, "filters_enabled": enabled, "missing_optional": missing_optional,
                 "collections": [f'{c["name"]} ({c["count"]} watches, {"approved" if c["approved"] else "needs approval and its own copy"})' for c in mine]}
 
     def collection_candidates(self, must=None):
@@ -786,7 +795,8 @@ class Watches:
         body = ('<section class="section"><div class="container content-page watch-page watch-product-page">{{breadcrumb}}'
                 f'<h1>{esc(title)}</h1>' + self.product_detail(p) +
                 '<p><a class="btn btn-outline" href="/watches/">Explore all watches &rarr;</a></p></div></section>')
-        meta = self._meta(url, title, p["verdict"], body, [["Watches", "/watches/"], [brand, f'/watches/brands/{p["brand"]}/'], [p["model"], url]], [p], js=False)
+        short = title if len(title) <= 52 else title[:52].rsplit(" ", 1)[0]  # the page <title> stays within the search-result length
+        meta = self._meta(url, short, p["verdict"], body, [["Watches", "/watches/"], [brand, f'/watches/brands/{p["brand"]}/'], [p["model"], url]], [p], js=False)
         # a page without any written review stays out of Google until it has one
         meta["noindex"] = not (p.get("paragraphs") or p.get("editorial_notes"))
         meta["css"] += ["watch-store"]

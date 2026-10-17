@@ -342,3 +342,25 @@ def canonical(p):
             v = int(v)
         out[k] = v
     return out
+
+
+def asin_of(p):
+    """The product's ASIN: the asin field, else the /dp/ code in its Amazon link."""
+    if known(p.get("asin")):
+        return str(p["asin"]).strip().upper()
+    m = re.search(r"/dp/([A-Za-z0-9]{10})", str(p.get("amazon_url", "")))
+    return m.group(1).upper() if m else ""
+
+
+def duplicates(p, others):
+    """Reasons why p looks like a watch that is already listed (same id, ASIN or product name)."""
+    out = []
+    a, name = asin_of(p), slug(p.get("product_name", ""))
+    for q in others:
+        if p.get("id") and q.get("id") == p["id"]:
+            out.append(f"same id as {q['id']}")
+        if a and asin_of(q) == a:
+            out.append(f"same ASIN {a} as {q['id']}")
+        if name and slug(q.get("product_name", "")) == name:
+            out.append(f"same product name as {q['id']}")
+    return out

@@ -104,5 +104,19 @@ class NeoIV(unittest.TestCase):
         raw, _ = watch_data.parse_intake("What we like: First point | Second point", BUDGETS)
         self.assertEqual(raw["good"], ["First point", "Second point"])
 
+
+class Duplicates(unittest.TestCase):
+    def test_same_id_asin_or_name_is_flagged(self):
+        a = {"id": "titan-a-b000000001", "product_name": "Titan A", "amazon_url": "https://www.amazon.in/dp/B000000001?tag=x"}
+        self.assertEqual(watch_data.duplicates({"id": "other", "product_name": "Other", "asin": "B000000001"}, [a]), ["same ASIN B000000001 as titan-a-b000000001"])
+        self.assertTrue(watch_data.duplicates({"id": "titan-a-b000000001", "product_name": "Zed"}, [a]))
+        self.assertTrue(watch_data.duplicates({"id": "x", "product_name": "titan a"}, [a]))
+        self.assertEqual(watch_data.duplicates({"id": "y", "product_name": "New", "asin": "B000000002"}, [a]), [])
+
+    def test_live_catalogue_has_no_duplicates(self):
+        shop = watches.Watches(build.SRC, build.CONFIG)
+        asins = [watch_data.asin_of(p) for p in shop.products if watch_data.asin_of(p)]
+        self.assertEqual(len(asins), len(set(asins)))
+
 if __name__ == "__main__":
     unittest.main()
