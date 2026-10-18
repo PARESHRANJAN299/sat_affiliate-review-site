@@ -1083,3 +1083,12 @@ class MenuHideMore(unittest.TestCase):
         self.assertNotIn("3,000", extra.group(1))
         self.assertIn("under-1000", extra.group(1))
         self.assertTrue((ROOT / "dist" / "watches" / "titan" / "under-3000" / "index.html").exists())
+
+
+class HubCardsStayInsideTheirRow(unittest.TestCase):
+    """The hidden screen-reader notes on hub cards are position: absolute. Each card must be their containing block, otherwise on a phone
+    they land far to the right of the scrolling row, the page becomes ~1,000px wide and the fixed filter sheet is drawn shifted and cut off."""
+
+    def test_cards_are_positioned_so_hidden_notes_cannot_widen_the_page(self):
+        css = (ROOT / "src" / "css" / "components" / "watch-luxe.css").read_text(encoding="utf-8")
+        self.assertIn(".lx-budget-row li, .lx-brand-row li, .lx-budget-row li > .card, .lx-brand-row li > .card { position: relative; }", css)

@@ -278,6 +278,8 @@
 /* ===== card system: the internal layout of every card. The look (border, shadow, hover, selected) comes from .card in header.css ===== */
 .lx-budget-row li, .lx-brand-row li, .cur-grid li, .pc-list li { display: flex; min-width: 0; }
 .lx-budget-row li > .card, .lx-brand-row li > .card, .cur-grid li > .card, .pc-list li > .card { flex: 1; }
+/* anchor the hidden screen-reader notes (position: absolute) inside their own card, so they can never widen the page */
+.lx-budget-row li, .lx-brand-row li, .lx-budget-row li > .card, .lx-brand-row li > .card { position: relative; }
 .card-title { font: 600 1.14rem/1.25 var(--font-display); letter-spacing: -.005em; color: inherit; }
 .card-count { font: 700 .66rem var(--font-sans); letter-spacing: .12em; text-transform: uppercase; color: var(--lx-gold-ink); }
 .card-sub { font-size: .86rem; line-height: 1.5; color: var(--lx-muted); }
