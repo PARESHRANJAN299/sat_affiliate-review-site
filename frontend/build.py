@@ -1321,7 +1321,7 @@ def mega_data(pages):
                 elif re.fullmatch(r"/watches/(?:[a-z0-9-]+/)?under-\d+/", url) or url == "/watches/premium/":
                     entry["price"].append((p["title"].replace("Best ", ""), url))
                 elif url.startswith("/watches/brands/"):
-                    entry["brand"].append((p["title"].replace("Best ", "").replace(" in India", ""), url))
+                    continue   # brand overview pages stay in the Shop for chips (brandlive); More collections lists price and style collections
                 elif url.startswith("/watches/style/"):
                     entry["feature"].append((p["title"].replace(" in India", ""), url))
         MEGA[c["slug"]] = entry
@@ -1435,6 +1435,25 @@ def json_ld(blocks):
     return "\n".join(out) + "\n"
 
 
+OG_IMAGES = {   # share images (site-owned artwork) for the watches and category pages; articles and every other page keep the plain summary card
+    "/watches/": "/images/og/watches.jpg", "/sports-fitness/": "/images/og/sports-fitness.jpg", "/beauty-personal-care/": "/images/og/beauty-personal-care.jpg",
+    "/home-kitchen/": "/images/og/home-kitchen.jpg", "/clothing-accessories/": "/images/og/clothing-accessories.jpg"}
+OG_SIZE = (1200, 630)
+
+
+def og_image_for(meta):
+    """The share image of an in-scope page (watches pages and category pages), else ''. Article pages are out of scope."""
+    if meta.get("article") or meta.get("schema") == "article":
+        return ""
+    url = meta["url"]
+    if url == "/products/":
+        return "/images/og/products.jpg"
+    for prefix, image in OG_IMAGES.items():
+        if url.startswith(prefix):
+            return image
+    return ""
+
+
 def structured_data(meta, canonical, title):
     site = CONFIG["site_url"].rstrip("/")
     blocks = []
@@ -1449,6 +1468,12 @@ def structured_data(meta, canonical, title):
             items.append({"@type": "ListItem", "position": i, "name": name, "item": site + url})
         blocks.append({"@context": "https://schema.org", "@type": "BreadcrumbList",
                        "itemListElement": items})
+    if og_image_for(meta):   # watches and category pages: who publishes the page, and the list it shows (no prices, offers or ratings)
+        blocks.append({"@context": "https://schema.org", "@type": "Organization", "name": CONFIG["site_name"], "url": site + "/", "logo": site + "/apple-touch-icon.png"})
+    if meta.get("ld_items") and not meta.get("noindex"):
+        blocks.append({"@context": "https://schema.org", "@type": "CollectionPage", "name": meta["title"], "url": canonical,
+                       "mainEntity": {"@type": "ItemList", "numberOfItems": len(meta["ld_items"]),
+                                      "itemListElement": [{"@type": "ListItem", "position": i, "name": name, "url": site + path} for i, (name, path) in enumerate(meta["ld_items"], start=1)]}})
     if meta.get("schema") == "article":
         blocks.append({
             "@context": "https://schema.org", "@type": "Article",
@@ -1775,6 +1800,9 @@ def build_page(meta, base, header_t, footer_t, year, articles):
                              if CONFIG.get("google_site_verification") else ""),
         "robots_tag": '<meta name="robots" content="noindex, follow">\n' if meta.get("noindex") else "",
         "og_type": meta.get("og_type", "website"),
+        "og_image_tags": (f'<meta property="og:image" content="{site_url}{og_image_for(meta)}">\n<meta property="og:image:width" content="{OG_SIZE[0]}">\n<meta property="og:image:height" content="{OG_SIZE[1]}">\n'
+                          f'<meta property="og:image:alt" content="{esc(meta["title"])} on {esc(CONFIG["site_name"])}">\n<meta name="twitter:image" content="{site_url}{og_image_for(meta)}">\n') if og_image_for(meta) and not meta.get("noindex") else "",
+        "twitter_card": "summary_large_image" if og_image_for(meta) and not meta.get("noindex") else "summary",
         "css_tag": css_tag, "speculation_tag": speculation_tag(), "js_src": js_src, "bottom_nav": bottom_nav_html(meta["url"]),
         "body_class": ("theme-" + meta["theme"]) if meta.get("theme") else "",
         "jsonld": json_ld(structured_data(meta, canonical, title)),

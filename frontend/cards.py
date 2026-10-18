@@ -40,9 +40,9 @@ def hero_link(aff):
 
 def budget_card(t, art="", aff=None):
     """A shopper price tier (see Watches.budget_discovery): eyebrow, amount, live count, participating brands, art. One link per card. With the owner's Amazon
-    link set, the card opens it in a new tab and does nothing on the page itself (no scrolling, no filter); a tier whose own SEO page is published still opens
-    that page. The accessible name is the visible text plus the full heading, and says when the card opens Amazon."""
-    redirect = bool(aff) and not t.get("has_page")
+    link set, the card opens it in a new tab and does nothing on the page itself (no scrolling, no filter), even when the tier's own SEO page is published
+    (that page stays linked from the menu, More collections, the filter sheet, related links and the sitemap). The accessible name is the visible text plus the full heading, and says when the card opens Amazon."""
+    redirect = bool(aff)
     href, attrs = (aff["url"], " " + AFFILIATE_ATTRS) if redirect else (t["href"], "")
     note = f'<span class="visually-hidden"> (opens an Amazon search for {esc(aff.get("search") or "watches")}, paid link)</span>' if redirect else ""
     return (f'<a class="card card-primary lx-budget tier-{t["tier"]}" href="{esc(href)}"{attrs}><span class="b-under">{esc(t["eyebrow"])}</span>'

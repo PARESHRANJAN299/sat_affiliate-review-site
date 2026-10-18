@@ -110,7 +110,7 @@ class TitleTests(unittest.TestCase):
     def test_watch_pages_keep_their_own_title(self):
         shop = watches.Watches(build.SRC, build.CONFIG)
         pages = {m["url"]: m for m in shop.pages()}
-        self.assertEqual(pages["/watches/"]["title"], "Watches for every day.")
+        self.assertEqual(pages["/watches/"]["title"], "Watches in India: Compare by Budget, Brand and Style")
         self.assertIn("Casio", pages["/watches/brands/casio/"]["title"])
         self.assertIn("Formal", pages["/watches/style/formal/"]["title"])
         for url, meta in pages.items():

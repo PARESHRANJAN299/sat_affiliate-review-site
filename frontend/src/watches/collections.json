@@ -1,5 +1,5 @@
 {
-  "_note": "Approved SEO collection pages. A collection page (brand, style, gender plus price, ...) is indexed by Google only when its URL is listed here with a unique 'intro' of at least 100 words and the page has at least 3 watches. Optional: who_for, advice, faqs [{q, a}]. Run python3 build.py --collections to see which combinations have enough watches. The hub pages /watches/, /watches/men/ and /watches/women/ are indexed without approval. Optional: summary, one short sentence shown on the collection's card in Popular watch collections (otherwise a neutral count line is used). Optional naming and order fields: display_title (the name on every card and link; default is the seo_title), seo_title (the page title and H1; default 'Best <Brand> Watches Under \u20b9N'), short_label (compact chips only), featured (true puts it first), priority (a number, lower first, default 100), featured_on_watch_hub (false hides the cards, never the page), meta_description (the page's search-result description; otherwise one is written from the page's own count and brands). A broad price page (/watches/under-5000/) or /watches/premium/ is also listed here with its own intro; display_title, seo_title, short_label and summary on it override the generated tier card text.",
+  "_note": "Approved SEO collection pages. A collection page (brand, style, gender plus price, ...) is indexed by Google only when its URL is listed here with a unique 'intro' of at least 100 words and the page has at least 3 watches. Optional: who_for, advice, faqs [{q, a}]. Run python3 build.py --collections to see which combinations have enough watches. The hub pages /watches/, /watches/men/ and /watches/women/ are indexed without approval. Optional: summary, one short sentence shown on the collection's card in Popular watch collections (otherwise a neutral count line is used). Optional naming and order fields: display_title (the name on every card and link; default is the seo_title), seo_title (the page title and H1; default 'Best <Brand> Watches Under ₹N'), short_label (compact chips only), featured (true puts it first), priority (a number, lower first, default 100), featured_on_watch_hub (false hides the cards, never the page), meta_description (the page's search-result description; otherwise one is written from the page's own count and brands). A broad price page (/watches/under-5000/) or /watches/premium/ is also listed here with its own intro; display_title, seo_title, short_label and summary on it override the generated tier card text. Optional men_women (rendered as 'Men and women'), brand_breakdown (broad price pages only, rendered as 'Brands in this price range') and title_tag (the search-result title only; the visible H1 is unchanged).",
   "approved": {
     "/watches/titan/under-2000/": {
       "intro": "Titan is one of India's best-known watch brands, and this page gathers the Titan watches we have listed in the under ₹2,000 band, for both men and women. Choose Men or Women at the top, then use the filters to narrow by strap material, dial size, dial colour, movement or water resistance. Each watch page lists the specifications as given in the seller's listing, and anything not stated is marked unknown rather than guessed. Check the current price, size and colour on the Amazon page before you buy, because listings change. Many of the watches here use quartz movements, and many carry a 30 m water-resistance rating, which suits splashes and daily wear but not swimming.",
@@ -47,6 +47,411 @@
         }
       ],
       "summary": "Affordable everyday watches for budget-conscious shoppers."
+    },
+    "/watches/brands/casio/": {
+      "intro": "Four watches, four price bands: that is the whole Casio range in the SAT catalogue, with exactly one listing in each of under ₹2,000, under ₹3,000, under ₹5,000 and under ₹15,000. Two are listed for men only and two as unisex, so those two appear under Men and Women alike; none is women's-only. Case size is stated on all four listings, from 32 mm to 43 mm. Straps are stainless steel on two watches, with one leather and one resin. All four are quartz, and three have a digital display while one is analog. This is a small range, not a long catalogue, and the page lets you set the four models side by side by case size, strap, display and listed functions before you open an Amazon listing. SAT earns an affiliate commission on purchases made through its links.",
+      "who_for": "The three digital Casio watches here step up in both size and price band: a 32 mm stainless steel listing under ₹2,000, a 38.9 mm resin-strap listing under ₹3,000 and a 43 mm stainless-steel-strap listing under ₹5,000. The fourth, a 40 mm leather-strap analog in the under ₹15,000 band, stands apart from that ladder. The page suits a shopper tracing it step by step. It is a comparison of listed specifications, not a review of the watches.",
+      "advice": "Start with display, since the Edifice is the only analog Casio here, then use case size and strap to separate the three digital listings. Water resistance is listed as 100 m on two watches and 50 m on one, and it is not stated for the A-158WA, so confirm that one on Amazon; two of the listings advise checking Casio's guidance before swimming. For wider context, read [how to choose a watch](/watches/guide/), browse [watches under ₹5,000](/watches/under-5000/), since three of these four are in bands up to that level, or compare another small range such as [Sonata](/watches/brands/sonata/). With only four listings, you can open every Amazon page and compare the details line by line.",
+      "faqs": [
+        {
+          "q": "Which Casio watch sits in the highest price band here, and what does it list?",
+          "a": "The Edifice EFB-730L-7AVUDF, a men's listing in the under ₹15,000 band. It states a 40 mm stainless steel case, a cream dial, a brown leather strap, quartz analog movement, chronograph and world time functions, and 100 m water resistance. It is the only analog Casio here and the only one with a leather strap."
+        },
+        {
+          "q": "What functions beyond the time do the digital Casio listings state?",
+          "a": "The Vintage LW-204-1BDF lists an alarm, a stopwatch and an LED light, while the Youth-Digital AE-1200WHD-1AVDF lists an alarm and an LED light. For the Vintage A-158WA-1Q no functions are stated, so check its Amazon page. The analog Edifice lists a chronograph and world time instead."
+        },
+        {
+          "q": "How small does a Casio case get here, and who is that watch listed for?",
+          "a": "The smallest is the Vintage A-158WA-1Q at 32 mm, listed as unisex so it appears under Men and Women. It is a digital quartz watch with a silver stainless steel strap in the under ₹2,000 band, and its water resistance is not stated. The other cases measure 38.9, 40 and 43 mm."
+        },
+        {
+          "q": "Is any dial colour repeated across the four Casio watches?",
+          "a": "Yes, black appears twice: on the Vintage LW-204-1BDF and the Youth-Digital AE-1200WHD-1AVDF. The other two dials are cream on the Edifice and grey on the A-158WA, so the four listings show three dial colours in all."
+        }
+      ],
+      "summary": "All four Casio watches in the catalogue, compared by case size, strap, display and price band.",
+      "meta_description": "Casio watches in India: all four listings compared by case size, strap, display and price band, with men's and unisex-listed models side by side.",
+      "featured_on_watch_hub": false,
+      "title_tag": "Casio Watches in India: Compare by Size and Strap"
+    },
+    "/watches/brands/fastrack/": {
+      "intro": "Three of the nine Fastrack watches in the SAT catalogue are listed for both men and women, so they appear under Men and Women alike; the other six are men's-only listings and none is women's-only. The price bands are under ₹1,000 (3 watches), under ₹2,000 (4) and under ₹5,000 (2). All nine are quartz with an analog display. Case size is stated on 7 of the 9 listings, from 40 mm to 55.8 mm, and water resistance is listed as 30 m on 4 watches and 50 m on 5. This is a small range, not a long catalogue, and the page lets you set the models side by side by case size, strap, water resistance and listed features before you open an Amazon listing. SAT earns an affiliate commission on purchases made through its links.",
+      "who_for": "The two under ₹5,000 watches, the All Nighters and the Fastfit, are both men's quartz analog listings with a day-date calendar, a second hand and 50 m water resistance. This page suits a shopper comparing that pair directly: the All Nighters lists a brown leather strap and no case size, while the Fastfit states a 44.5 mm brass case but shows two strap materials. It is a comparison of listed specifications, not a review of the watches.",
+      "advice": "Decide first whether you need a men's-only or a unisex-listed watch, since the unisex listings are the three under ₹1,000. Then check water resistance: 4 watches are listed at 30 m and 5 at 50 m, so check Fastrack's guidance before swimming in any of them. Where a listing shows two values for one detail, treat that detail as unconfirmed. For wider context, read [how to choose a watch](/watches/guide/), or browse [women's watches](/watches/women/) and [watches under ₹5,000](/watches/under-5000/) across brands. Treat any field marked not stated as unknown rather than assumed, and look it up on the Amazon page before you order.",
+      "faqs": [
+        {
+          "q": "Which Fastrack watches here are listed as unisex, and what do they share?",
+          "a": "Three: the Quartz Analog Strap NS38037PP07 and two Tees models, 68011PP08 and NG38003PP08W. All three are in the under ₹1,000 band with 30 m water resistance, and they appear under Men and Women. Case sizes are 40, 50 and 55.8 mm, with plastic, silicone rubber and plastic straps."
+        },
+        {
+          "q": "Are all the Fastrack cases round, or do the listings show other shapes?",
+          "a": "Eight of the nine listings state a round case. The other is the 40 mm Quartz Analog Strap watch, NS38037PP07, whose case shape is listed as contemporary, with a plastic case. It is also one of the three unisex listings."
+        },
+        {
+          "q": "Why do some Fastrack listings show two values for one detail?",
+          "a": "Five of the nine listings carry a note that the Amazon page gives conflicting information: three on dial colour, two on strap material, and one of those two also on warranty. SAT leaves the matching field as not stated, so confirm that detail on the Amazon page before buying."
+        },
+        {
+          "q": "What warranty periods do the Fastrack listings state?",
+          "a": "Six listings state a warranty period: 1 year on 3, 6 months on 2 and 12 months on 1. Three give none, and one of those, the Fastfit, shows 12 months and 2 years in different places. Treat the period as something to confirm on the Amazon page."
+        }
+      ],
+      "summary": "All 9 Fastrack watches in the catalogue: 6 men's and 3 unisex, across three price bands.",
+      "meta_description": "Compare all 9 Fastrack watches in India by case size, strap, water resistance and listed features, with men's and unisex listings side by side.",
+      "featured_on_watch_hub": false,
+      "title_tag": "Fastrack Watches in India: Size, Strap and Budget"
+    },
+    "/watches/brands/fossil/": {
+      "intro": "All twelve Fossil watches here state a case size, from 34 mm to 45 mm, so size is a detail you can compare on every listing. Seven are listed for men and five for women, and none is listed as unisex. The under ₹10,000 band holds seven of the twelve; the rest are one in under ₹6,000, two in under ₹15,000 and two in under ₹20,000. Ten are quartz and two are automatic, and the two automatics are the only listings in the under ₹20,000 band. Straps are leather on seven watches, stainless steel on four and brass on one. Twelve is a short list, so you can read every entry instead of filtering it. Here you can line the twelve up by case size, strap, movement and features such as chronograph or date, then follow each one through to its Amazon listing. SAT earns an affiliate commission on purchases made through its links.",
+      "who_for": "Small against large: the shortest case here is the 34 mm Gwen ES4879, a women's quartz with a gold dial, a brass strap, a date and a stated 50 m rating. The largest are the 45 mm cases of the men's FS4795, a quartz with a stainless steel strap, and the ME3027, an automatic on brown leather; neither states water resistance. This page suits a shopper weighing those two ends of the size range.",
+      "advice": "Start with movement: only the two Grant models, ME3054 and ME3027, are automatic, and the other ten are quartz. Then use strap, which is leather on seven watches, stainless steel on four and brass on one, and case size, which every listing states. Water resistance is stated on six of the twelve, so look up the other six on Amazon, and remember a 30 m rating is not for swimming. For wider context see [men's watches](/watches/men/), [watches under ₹10,000](/watches/under-10000/) or another brand such as [Titan](/watches/brands/titan/). Model codes to look up first: ME3054 and ME3027 for the automatics, and CH2882 and CH2885, the two listed at 100 m.",
+      "faqs": [
+        {
+          "q": "Which Fossil watches list a chronograph or a date function?",
+          "a": "Three listings state a chronograph: CH2891, CH2882 and CH2885, all men's 44 mm quartz watches on leather straps. A date is stated on three: CH2882, which also lists the chronograph, and the women's ES3352 and ES4879. The other seven listings state neither feature."
+        },
+        {
+          "q": "How do the two automatic Fossil watches differ from the ten quartz ones?",
+          "a": "Both automatics are men's Grant models, ME3054 (43 mm, blue dial) and ME3027 (45 mm, skeleton dial), with leather straps, in the under ₹20,000 band, and neither states water resistance. The ten quartz watches split five men's and five women's, across three lower bands, with leather, steel and brass straps."
+        },
+        {
+          "q": "Which model names do the Fossil listings use, and how many watches share each?",
+          "a": "Decker names four listings: CH2885I, CH2882 and CH2885 for men, and ES3352 for women. Grant names the two automatics. Gwen, Modern Courier, Perfect Boyfriend and Riley appear once each, all women's. FS4795 and CH2891 carry only descriptive names. CH2885 and CH2885I are separate listings."
+        },
+        {
+          "q": "Which Fossil listings state a country of origin, and what do they say?",
+          "a": "Six of the twelve state China: FS4795, CH2882, CH2885, ES3352, ES4879 and ES3466. The other six state no country of origin, including both automatics, ME3054 and ME3027, so treat that detail as unknown for them rather than assumed."
+        }
+      ],
+      "summary": "Twelve Fossil watches, seven men's and five women's, with case sizes from 34 mm to 45 mm.",
+      "meta_description": "Compare all 12 Fossil watches in India: 7 men's and 5 women's models, 34 to 45 mm cases, quartz and automatic, with leather, steel and brass straps.",
+      "featured_on_watch_hub": false,
+      "title_tag": "Fossil Watches in India: Compare by Size and Strap"
+    },
+    "/watches/brands/michael-kors/": {
+      "intro": "Michael Kors is a women's-only range here: all five watches in the SAT catalogue are listed for women, with no men's or unisex listings. The price bands are under ₹10,000 (1 watch), under ₹40,000 (2) and under ₹50,000 (1), while one listing has no band stated. Case size is stated on four of the five, from 33 mm to 42 mm. Straps are stainless steel on three watches and ceramic on two. Four are quartz and one is automatic, all five have an analog display, and water resistance is listed on every watch, from 30 m to 100 m. This is a small range, not a long catalogue, and the page lets you set the models side by side by case size, strap, movement and water resistance before you open an Amazon listing. SAT earns an affiliate commission on purchases made through its links.",
+      "who_for": "The three Lexington models, MK4969 Blue, MK4970 Nude and MK4971 Gold, are quartz chronograph analogs with limited warranty listings and 20 mm bands, so this page suits a shopper choosing within that family. Two have 38 mm ceramic straps listed at 100 m; the Gold has a 42 mm stainless steel band listed at 50 m. The page also sets them against the MK5605 and the Mini Slim Runway. It is a comparison of listed specifications, not a review of the watches.",
+      "advice": "Start with movement and strap: the MK5605 is the only automatic, and straps are stainless steel on three watches and ceramic on two. Then use case size to narrow the rest, since it is stated for four of the five but not for the MK5605. Water resistance is listed as 30 m on one watch, 50 m on two and 100 m on two, and the Mini Slim Runway listing says it is not suitable for diving or snorkelling. For wider context, read [how to choose a watch](/watches/guide/), browse [women's watches](/watches/women/) or compare a brand such as [Fossil](/watches/brands/fossil/). Whichever you shortlist, note the model code, such as MK4971, so you can match it to the Amazon listing.",
+      "faqs": [
+        {
+          "q": "What size are the Michael Kors watches with ceramic straps?",
+          "a": "Two Michael Kors watches here have ceramic straps: the Lexington Blue MK4969 and the Lexington Nude MK4970. Both list a 38 mm case, a 20 mm band, quartz movement with a chronograph and analog display, 100 m water resistance and a limited warranty, and both sit in the under ₹40,000 band."
+        },
+        {
+          "q": "What does the Michael Kors MK5605 listing state, and what is missing?",
+          "a": "The MK5605 is the only automatic listing here. It states a champagne dial, a round case, a gold stainless steel bracelet, a chronograph and 30 m water resistance. Case size, case thickness, warranty, country of origin and price band are not stated, so confirm them on the Amazon page."
+        },
+        {
+          "q": "How wide are the straps on the Michael Kors listings here?",
+          "a": "Strap width is stated on four of the five listings: 20 mm on the three Lexington models and 16 mm on the Mini Slim Runway MK3512. The MK5605 listing does not state a strap width, so it is not stated here."
+        },
+        {
+          "q": "Which glass or crystal is named in the Michael Kors listings?",
+          "a": "Four of the five listings name a scratch-resistant mineral crystal: the three Lexington models and the Mini Slim Runway MK3512. The MK5605 listing does not mention the crystal, so its glass material is not stated here."
+        }
+      ],
+      "summary": "All five Michael Kors watches here are women's listings, four quartz and one automatic.",
+      "meta_description": "Michael Kors watches in India: compare all five women's listings by case size, strap, movement and water resistance before you open Amazon.",
+      "featured_on_watch_hub": false,
+      "title_tag": "Michael Kors Watches in India: Size, Strap, Budget"
+    },
+    "/watches/brands/sonata/": {
+      "intro": "Every one of Sonata's six watches in the SAT catalogue sits in the under ₹1,000 band, so this is a single-tier range rather than a spread across budgets. Two are listed for men only, three for women only and one as unisex, which means it appears under Men and Women alike. Case size is stated on all six listings, from 35 mm to 52.15 mm. Straps are polyurethane on three watches, leather on two and stainless steel on one. All six are quartz and list 30 m water resistance; five have an analog display and one is digital. This is a small range, not a long catalogue, and the page lets you set the models side by side by case size, strap, display and listed features before you open an Amazon listing. SAT earns an affiliate commission on purchases made through its links.",
+      "who_for": "Say you want a case of 40 mm or smaller. This page shows the three Sonata listings stated at that size: a 35 mm women's leather watch, a 38 mm men's leather watch and a 39.7 mm women's stainless steel watch. You can set their straps, dials and listed features side by side. It is a comparison of listed specifications, not a review of the watches.",
+      "advice": "Start with the strap and case size, since all six listings state both: three straps are polyurethane, two leather and one stainless steel, and cases run from 35 mm to 52.15 mm. Three cases are above 47 mm, so check the size against your wrist before ordering. All six list 30 m water resistance; the Workwear listing says it is not suitable for swimming or bathing, and the others advise checking Sonata's guidance first. For wider context, read [how to choose a watch](/watches/guide/), browse [watches under ₹5,000](/watches/under-5000/) or compare another brand such as [Fastrack](/watches/brands/fastrack/). Open the Amazon listing last, once you have narrowed the six by size and strap, and compare its details with the ones summarised here.",
+      "faqs": [
+        {
+          "q": "Is there a digital Sonata watch here, and which functions does it list?",
+          "a": "Yes. The SF Hexa Digital NT77123PP01 is the only digital Sonata listing; the other five are analog. It lists time, date, stopwatch and alarm functions with a light, in a 48.8 mm oval case with a black polyurethane strap, 30 m water resistance and a limited 6-month warranty. It is listed as unisex."
+        },
+        {
+          "q": "Cases above 45 mm: which Sonata watches have them?",
+          "a": "Three do: the women's Polyurethane Silver Dial 87049PP11W at 47.78 mm, the unisex-listed SF Hexa Digital at 48.8 mm and the men's Quartz Analog PU Strap NS77085PP09W at 52.15 mm. The other three are 35 mm, 38 mm and 39.7 mm. Case size is stated on all six listings."
+        },
+        {
+          "q": "Which Sonata listing has a stainless steel strap, and what else does it state?",
+          "a": "Only the women's Workwear NT8151SM05. It lists a silver stainless steel strap with a flip clasp, a 39.7 mm round case, a white dial, quartz analog movement with a second hand, and 30 m water resistance. The listing says it is not suitable for swimming or bathing. Case material is not stated."
+        },
+        {
+          "q": "Do all the analog Sonata watches here list a second hand?",
+          "a": "Yes. All five analog listings list a second hand: the men's and women's Essentials, the men's and women's polyurethane-strap watches and the women's Workwear. The sixth watch, the SF Hexa, is digital and lists a stopwatch, an alarm and a light instead of a second hand."
+        }
+      ],
+      "summary": "Sonata has six watches here, all in one price band, with polyurethane, leather and steel straps.",
+      "meta_description": "Compare all six Sonata watches in India by case size, strap, display and water resistance, across men's, women's and unisex-listed models.",
+      "featured_on_watch_hub": false,
+      "title_tag": "Sonata Watches in India: Compare by Size and Strap"
+    },
+    "/watches/brands/timex/": {
+      "intro": "Timex is a short list here: seven watches, with the women's listings outnumbering the men's four to three and none listed as unisex. The price bands are under ₹2,000 (3 watches), under ₹3,000 (1), under ₹5,000 (2) and under ₹6,000 (1). All seven are quartz with an analog display, and case size is stated on every listing, from 28 mm to 46 mm. The four women's watches are 36.5 mm or smaller, while the three men's watches run from 37 mm to 46 mm. This is a small range, not a long catalogue. The page lets you set the models side by side by case size, strap, water resistance and price band, then open the Amazon listing to confirm the current details. SAT earns an affiliate commission on purchases made through its links.",
+      "who_for": "This page suits a shopper who starts from one watch: the men's round-dial, black-dial stainless steel bracelet model, a 44 mm quartz analog listing in the under ₹5,000 band. It is the only Timex listing here stated at 100 m water resistance, and it lists a one-year manufacturer warranty. The page sets it against the other six by case size, strap and band so you can see what changes. It is a comparison of listed specifications, not a review of the watches.",
+      "advice": "Start with case size, since all seven listings state it: the women's watches run from 28 mm to 36.5 mm and the men's from 37 mm to 46 mm. Then compare water resistance, which is 30 m on three watches, 50 m on two and 100 m on one, with one not stated; for swimming, check Timex guidance first. Straps are stainless steel on four watches, leather on two and brass on one. For wider context, read [how to choose a watch](/watches/guide/), browse [women's watches](/watches/women/) or look at another brand such as [Titan](/watches/brands/titan/). Case thickness is not stated on any of the seven, so confirm it on the Amazon page if the watch's height matters to you.",
+      "faqs": [
+        {
+          "q": "Is case thickness stated on any of the Timex listings here?",
+          "a": "No. Case thickness is not stated on any of the seven Timex listings, although case diameter is stated on all seven, from 28 mm to 46 mm. If thickness matters to you, check the dimensions on the Amazon page before ordering."
+        },
+        {
+          "q": "How many dial colours do the Timex listings show?",
+          "a": "Six of the seven Timex listings state a dial colour, and they show five different ones: black on two watches, and blue, rose gold, silver and brown on one each. The T40051 Expedition Metal Field listing does not state a dial colour."
+        },
+        {
+          "q": "What do the Timex watches in the under ₹2,000 band have in common?",
+          "a": "The three watches in that band are all women's listings, quartz with an analog display and a one-year warranty, with case sizes of 28 mm, 32 mm and 36.5 mm. Two list 30 m water resistance; the 32 mm square-dial TWEL20604 does not state water resistance."
+        },
+        {
+          "q": "Which three men's Timex watches are listed here, and how do they differ?",
+          "a": "The men's watches are a 44 mm stainless steel model on a bracelet listed at 100 m in the under ₹5,000 band, a 46 mm brass-case blue leather model listed at 50 m in under ₹6,000, and the 37 mm T40051 Expedition Metal Field on brown leather, listed at 50 m, in under ₹5,000. All three are quartz analog."
+        }
+      ],
+      "summary": "Seven Timex watches, four women's and three men's, all quartz analog, with case sizes from 28 mm to 46 mm.",
+      "meta_description": "Timex watches in India: compare all seven listed models, four women's and three men's, by case size, strap, water resistance and price band.",
+      "featured_on_watch_hub": false,
+      "title_tag": "Timex Watches in India: Compare by Size and Strap"
+    },
+    "/watches/brands/titan/": {
+      "intro": "Browsing Titan here means working through 68 watches, so this page is organised to help you narrow them down. Of the 68, 48 are listed for men and 20 for women, and none is listed as unisex. The price bands run from under ₹2,000 (21 watches) and under ₹3,000 (26) up through under ₹5,000 (2), under ₹6,000 (1), under ₹10,000 (6), under ₹15,000 (8) and under ₹20,000 (1); three listings state no band. Straps are leather on 33 watches, stainless steel on 23 and metal on 7, with one fabric or nylon strap and four not stated. Case size is stated on only 32 of the 68 listings, from 21.2 mm to 51 mm. The page lets you set the models side by side by strap, case size, movement and water resistance before you open an Amazon listing. SAT earns an affiliate commission on purchases made through its links.",
+      "who_for": "Do you choose a watch by its dial first? Dial colour is stated on 51 of the 68 Titan listings, and one of those lists two colours, white and silver. Black appears on 13, silver on 9, white on 8 (the white and silver listing counts in both), green on 6 and champagne on 5, with five other colours on the remaining 11 listings. This page suits a shopper who starts from the dial and then checks strap and size. It is a comparison of listed specifications, not a review of the watches.",
+      "advice": "With 68 listings, narrow them in steps. Choose men's or women's first, and use [men's watches](/watches/men/) or [women's watches](/watches/women/) to see the same split across brands. Then pick a strap, since leather, stainless steel and metal are the main options here. Next use case size, but only 32 of the 68 listings state it, so for the other 36 confirm the size on the Amazon page. Water resistance is not stated on 9 listings, so check the figure for the specific model on Amazon. For a much shorter range to set against this one, try [Casio](/watches/brands/casio/). Narrow to a handful first, and only then open the Amazon pages to confirm the details you care about.",
+      "faqs": [
+        {
+          "q": "How is water resistance spread across the Titan listings?",
+          "a": "Water resistance is stated on 59 of the 68 Titan listings: 50 m on 33 watches, 30 m on 23 and 100 m on 3, while 9 state no depth. The three 100 m watches are all men's chronographs. Figures differ by model, so check the depth for the specific model on Amazon."
+        },
+        {
+          "q": "Which strap materials appear most often on the Titan watches?",
+          "a": "Leather and stainless steel lead on the men's side, with 26 and 18 of the 48 men's watches and one fabric or nylon strap. The women's listings split between 7 metal, 7 leather and 5 stainless steel straps. Metal is a separate label from stainless steel in the listings, and 4 watches state no strap material."
+        },
+        {
+          "q": "Is quartz the only movement Titan lists here?",
+          "a": "No. Quartz is listed on 60 of the 68 Titan watches and automatic on 2, while six state no movement. Both automatic watches are men's listings with stainless steel straps and 50 m water resistance: the Golden Heart Skeletal, with no price band stated, and the Mechanical Slimline, in the under ₹20,000 band."
+        },
+        {
+          "q": "What does the women's side of the Titan range look like?",
+          "a": "Twenty watches are listed for women. Ten sit in the under ₹2,000 band and seven in under ₹3,000, with one each under ₹5,000, under ₹10,000 and under ₹15,000. Case size is stated on 11 of the 20, from 21.2 mm to 37.95 mm, and 16 are quartz while the other four state no movement."
+        }
+      ],
+      "summary": "Titan's 68 watches here: 48 men's, 20 women's, compared by strap, case size, movement and price band.",
+      "meta_description": "Compare 68 Titan watches for men and women in India by strap, case size, movement and water resistance, with price bands and Amazon links.",
+      "featured_on_watch_hub": false,
+      "title_tag": "Titan Watches in India: Compare by Strap and Size"
+    },
+    "/watches/fastrack/under-2000/": {
+      "intro": "The Fastrack Commando NT3084NP01 is the one watch on this page whose strap material cannot be stated: its title calls the strap plastic, while its bullet points call it silicone, so SAT does not record one. This page covers every Fastrack watch in the catalogue listed under ₹2,000, seven in all. Bands are cumulative, so an Under N page also shows cheaper watches: three of the seven (the Quartz Analog NS38037PP07 and the two Tees models) come from the Under ₹1,000 page, and four sit strictly inside this band. All seven are analog quartz watches, so case size, strap and gender label do most of the separating. SAT earns a commission if you buy through its Amazon links.",
+      "who_for": "Skip this page if you want a women's-only listing or a case below 40 mm: no Fastrack here is women's-only, and the smallest stated case is 40 mm. It suits a shopper who has already settled on Fastrack and an analog quartz movement, and wants to set strap, size and a 30 m or 50 m water-resistance figure side by side across seven listings.",
+      "advice": "Choose the strap before the size, because strap is where these seven spread out most: four materials appear, plus one listing that cannot be pinned down. Then hold the stated sizes against your wrist, remembering that only one is below 47 mm and one states none. Open the Amazon page for the Commando NT3084NP01 and the Stunners X Special Edition, the two listings with gaps, and check the strap on one and the case size on the other. Our [how to choose a watch](/watches/guide/) guide explains each spec line. If seven is too few, the [Fastrack brand page](/watches/brands/fastrack/) lists the brand's other watches too.",
+      "faqs": [
+        {
+          "q": "How are the straps fastened on these seven Fastrack watches?",
+          "a": "Every listing mentions a buckle. Three are described as tang buckles (the NS38037PP07, the NG38003PP08W and the Trendies NL38040PP01), one as an adjustable metal buckle (the Commando NT3084NP01), and three simply as a buckle."
+        },
+        {
+          "q": "Is there a Fastrack under 45 mm among these seven?",
+          "a": "Yes, one: the Quartz Analog NS38037PP07 at 40 mm, a unisex-listed watch with a blue plastic strap. The next smallest stated size is 47 mm on the Trendies NL38040PP01. The Stunners X Special Edition gives no case size, so it cannot be placed."
+        },
+        {
+          "q": "Which of these watches give a dial colour without contradiction?",
+          "a": "Four do: white on the Casual Analog NL3121SM01, brown on the Commando NT3084NP01, beige on the Stunners X Special Edition and black on the Trendies NL38040PP01. The three watches carried over from Under ₹1,000 give conflicting dial colours across their listing text, so none is recorded."
+        },
+        {
+          "q": "Do any unisex-listed watches here carry a 50 m rating?",
+          "a": "No. The three watches listed at 50 m (the NL3121SM01, the NT3084NP01 and the NL38040PP01) are all men's-only. The three unisex-listed watches are listed at 30 m, as is the men's-only Stunners X Special Edition, so four watches list 30 m and three list 50 m."
+        }
+      ],
+      "summary": "Seven Fastrack analog quartz watches, four men's-only and three unisex-listed, compared side by side.",
+      "meta_description": "Seven Fastrack analog quartz watches in the Under ₹2,000 band: four men's-only, three unisex-listed, with 40 to 55.8 mm cases and four strap materials.",
+      "featured_on_watch_hub": false,
+      "men_women": "No Fastrack watch here is women's-only. Four are men's-only listings: the Casual Analog NL3121SM01, the Commando NT3084NP01, the Stunners X Special Edition and the Trendies NL38040PP01. The other three are unisex-listed, so they appear under both Men and Women: the Quartz Analog NS38037PP07 and the Tees models 68011PP08 and NG38003PP08W. Those three share a profile, with plastic or silicone-rubber straps and stated cases of 40, 50 and 55.8 mm. The only stainless steel and leather straps belong to men's-only watches."
+    },
+    "/watches/fossil/under-10000/": {
+      "intro": "Water resistance splits the eight Fossil watches on this page into four even pairs: two list 30 m, two list 50 m, two list 100 m and two state no figure at all. This page covers every Fossil watch in the catalogue listed under ₹10,000, and nothing from other brands. Bands are cumulative, so an Under N page also shows cheaper watches: seven of the eight sit strictly inside this band, and one, the Decker CH2882, comes from the Under ₹6,000 tier. All eight are quartz, and the labels divide evenly, four men's-only and four women's-only. Strap, case size, warranty wording and country of origin are where the listings separate. SAT earns a commission if you buy through its Amazon links.",
+      "who_for": "Think of this page as a size ladder. The Gwen ES4879 sits on the bottom rung at 34 mm, the Modern Courier BQ3281 follows at 36 mm, the ES3352 and the CH2885I share 38 mm, and four watches (CH2891, CH2882, CH2885 and Riley ES3466) top out at 44 mm. If you already know the case size you want, go straight to that rung and compare strap and water resistance from there.",
+      "advice": "Read the listings in this order: strap, water resistance, then the paperwork. Two watches state no water-resistance figure (CH2891 and ES3352), one states no warranty type (CH2891) and three give no country of origin (CH2891, CH2885I and BQ3281), so confirm those on the Amazon page. Our [how to choose a watch](/watches/guide/) guide explains what each spec line means, and the [Fossil brand page](/watches/brands/fossil/) shows every Fossil in the catalogue, not only these eight. Finally, measure the case of a watch you already wear against the 34 to 44 mm range here, and let that decide which end of the list to read first.",
+      "faqs": [
+        {
+          "q": "How complete is the Riley ES3466 listing compared with the others?",
+          "a": "The Riley ES3466 gives the fullest set of details here: case size, case material, round shape, strap, quartz movement, analog display, 30 m water resistance, a 2 year manufacturer warranty, China as origin and a white and beige dial. The Decker ES3352 gives the least, with no case material, display type, water resistance, warranty length or dial colour stated."
+        },
+        {
+          "q": "Is the Decker ES3352 listed as analog or digital?",
+          "a": "Neither is confirmed. The listing text shows the display as digital, yet it also describes a 3-hand date display, so SAT records no display type. Across the page, five watches state analog and three (CH2891, CH2885 and ES3352) record none, so check the Amazon page before ordering."
+        },
+        {
+          "q": "Which men's Fossil watches list 100 m, and what else do they share?",
+          "a": "The Decker CH2885 and CH2882, both men's-only. Each is a 44 mm quartz chronograph on a brown leather strap with 100 m (10 ATM) water resistance, a 1 year limited warranty and China as origin. The CH2885 states a black dial and stainless steel case; the CH2882 lists a date but leaves dial colour and case material unstated."
+        },
+        {
+          "q": "Where do the other Fossil watches in the catalogue appear?",
+          "a": "Four more Fossil watches sit in higher bands: the FS4795 and the Perfect Boyfriend ES4093 come from the Under ₹15,000 tier, and the Grant ME3054 and ME3027 from the Under ₹20,000 band. The Under ₹20,000 page lists all twelve Fossil watches in the catalogue."
+        }
+      ],
+      "summary": "Eight Fossil quartz watches, four men's-only and four women's-only, with 34 to 44 mm cases.",
+      "meta_description": "Eight Fossil watches listed under ₹10,000: four men's-only, four women's-only, all quartz, with 34 to 44 mm cases and leather, steel or brass straps.",
+      "featured_on_watch_hub": false,
+      "men_women": "Each label holds four watches and none is unisex-listed, so four appear under Men and four under Women. The men's-only four, in size order: CH2885I at 38 mm, then CH2891, CH2882 and CH2885 at 44 mm, all on brown leather. The women's-only four, in the same order: Gwen ES4879 at 34 mm on brass, Modern Courier BQ3281 at 36 mm on stainless steel, ES3352 at 38 mm on stainless steel and Riley ES3466 at 44 mm on leather. Two women's watches share a case size with the men's list, but only the Riley also shares a strap material."
+    },
+    "/watches/under-1000/": {
+      "intro": "Nothing on this page has a case between 40 mm and 47.78 mm. Four watches measure 40 mm or less (35, 38, 39.7 and 40 mm) and five measure 47.78 mm or more, up to 55.8 mm, so the choice is a smaller case or a larger one, with no middle size. Every catalogue watch listed under ₹1,000 is here, whatever the brand. As the lowest band it carries nothing over from cheaper tiers: all nine sit strictly inside it, six from Sonata and three from Fastrack. Quartz movement and 30 m water resistance are listed on every one, so those two lines will not help you choose; strap material, gender label and display type will. SAT earns a commission if you buy through its Amazon links.",
+      "who_for": "The Fastrack Tees 68011PP08 and NG38003PP08W are the two Tees models on this page. The 68011PP08 has a 50 mm case on a grey silicone-rubber strap; the NG38003PP08W has a 55.8 mm plastic case on a red plastic strap. Both are listed as unisex, quartz and 30 m water-resistant, with India as the country of origin. Choosing between them comes down to 5.8 mm of case size and a strap of silicone rubber or plastic.",
+      "advice": "Pick a case-size group and a strap material first, then read what is left. Dial colour is the detail to treat with care: the Sonata NS77085PP09W and the SF Hexa give none, and all three Fastrack listings name different colours in different parts of their text, so confirm it on the Amazon page. Water resistance will not separate these nine, since all list 30 m, and the Sonata NT8151SM05 listing says it is not suitable for swimming or bathing. [How to choose a watch](/watches/guide/) shows how to read the size and water-resistance lines. If nothing here suits, [Watches under ₹2,000](/watches/under-2000/) is the next tier up.",
+      "faqs": [
+        {
+          "q": "How many of these watches list a round case?",
+          "a": "Seven of the nine list a round case. The exceptions are the Fastrack NS38037PP07 (40 mm), listed with a contemporary-shaped case, and the Sonata SF Hexa NT77123PP01 (48.8 mm), listed with an oval one."
+        },
+        {
+          "q": "Can I find a warranty period on all nine listings?",
+          "a": "No. Eight give a period: 6 months on the Fastrack NS38037PP07 and NG38003PP08W and the Sonata SF Hexa; one year or 12 months on the Fastrack 68011PP08 and the Sonata 87049PP11W, NS77085PP09W and NT8151SM05; 24 months on the Sonata NM77082SL01W. The Sonata NT87030PL04W states none."
+        },
+        {
+          "q": "Is mineral glass named on any of these listings?",
+          "a": "Yes, on two: the Sonata NM77082SL01W (38 mm, brass case, silver dial) and the Fastrack NS38037PP07 (40 mm, plastic case). Both are among the four smaller cases. The other seven listings do not name a glass type."
+        },
+        {
+          "q": "Which Sonata listings state a dial colour?",
+          "a": "Four of the six do: silver on the NM77082SL01W and 87049PP11W, black on the NT87030PL04W and white on the NT8151SM05. The Sonata NS77085PP09W and the SF Hexa NT77123PP01 give no dial colour."
+        }
+      ],
+      "meta_description": "Nine Sonata and Fastrack watches, all quartz with 30 m water resistance, on leather, polyurethane, plastic, silicone-rubber or steel straps.",
+      "featured_on_watch_hub": false,
+      "men_women": "The brand split decides the labels. All three Fastracks are unisex-listed, so they appear under both Men and Women, while Sonata uses all three labels: three women's-only, two men's-only and one unisex-listed. The men's-only pair is the Sonata Essentials NM77082SL01W, a 38 mm analog on black leather, and the Sonata Quartz Analog NS77085PP09W, a 52.15 mm analog on grey polyurethane. The Sonata SF Hexa NT77123PP01 is the only watch that is not a Fastrack and still appears under both labels.",
+      "brand_breakdown": "Sonata has six of the nine watches, with case sizes from 35 to 52.15 mm. Its straps are polyurethane on three, leather on two and stainless steel on one, and the SF Hexa NT77123PP01 is the only digital watch on the page, listing an alarm, a stopwatch and a light. Fastrack has three, all unisex-listed and all analog, at 40, 50 and 55.8 mm, on two plastic straps and one silicone-rubber strap. Sonata is the only brand here with a leather or stainless steel strap."
+    },
+    "/watches/under-10000/": {
+      "intro": "Seven of the 90 watches on this page list a chronograph, and five of those seven are new to this band: two Fossil models (CH2891 and CH2885) and three Titan Octane models. This page covers every watch in the catalogue listed under ₹10,000, from any brand. Bands are cumulative, so an Under N page also shows cheaper watches: the 76 from the cheaper tier pages are included, and 14 sit strictly inside this band (Fossil 7, Titan 6, Michael Kors 1). Together the page holds seven brands: Titan 56, Fastrack 9, Fossil 8, Timex 7, Sonata 6, Casio 3 and Michael Kors 1. Fossil and Michael Kors are the two brands missing from the Under ₹5,000 page. SAT earns a commission if you buy through its Amazon links.",
+      "who_for": "Shoppers who want a case size before they click will find this band uneven. All seven new Fossil listings and the Michael Kors Mini Slim Runway MK3512 state one, from 33 mm up to 44 mm on three Fossils, while none of the six new Titans does, the three Octane models included. Size is a quick filter for the first group and a question for the Amazon page in the second.",
+      "advice": "Line up the 14 new watches on three details: strap, stated case size and water resistance. Six Titans state no case size, and two Fossils (the CH2891 and the ES3352) give no water-resistance figure, so those gaps need the Amazon page. Our [how to choose a watch](/watches/guide/) guide explains each spec line, and [Fossil watches under ₹10,000](/watches/fossil/under-10000/) shows that brand on its own. Where two shortlisted watches tie, the one whose listing leaves fewer details unstated is easier to verify before you order.",
+      "faqs": [
+        {
+          "q": "Does Michael Kors have more than one watch on this page?",
+          "a": "No. The Michael Kors Mini Slim Runway MK3512 is its only watch among the 90, listed as women's-only. It states a 33 mm round stainless steel case with a stainless steel strap, quartz movement and 50 m water resistance. The listing does not state a country of origin."
+        },
+        {
+          "q": "In what ways do the three Titan Octane models differ?",
+          "a": "Mainly dial, strap and water resistance. The NM90077KM03 has a black dial and no strap material stated, the NM90087KM01 a silver dial with a stainless steel strap, and the forest green model a green dial, a black leather strap and a date, with 100 m where the others list 50 m. All three are men's-only and none states a case size."
+        },
+        {
+          "q": "If I read the cheaper pages first, which watches here are new?",
+          "a": "Fourteen are new: seven Fossil, six Titan and one Michael Kors. The other 76 come from cheaper bands: Titan 50, Fastrack 9, Timex 7, Sonata 6, Casio 3 and Fossil 1. Counting all of them gives 90 watches across seven brands."
+        },
+        {
+          "q": "Do men's-only and women's-only watches here ever share a stated size?",
+          "a": "Yes, among the 14 new watches. The men's-only Fossil CH2885I and the women's-only Fossil Decker ES3352 are both 38 mm, and the women's-only Fossil Riley ES3466 matches the men's-only CH2891 and CH2885 at 44 mm. The six Titans state no size, so they cannot be compared."
+        }
+      ],
+      "meta_description": "A guide to 90 watches from seven brands listed under ₹10,000 in India, with 14 new at this limit: Fossil 7, Titan 6 and Michael Kors 1.",
+      "featured_on_watch_hub": false,
+      "men_women": "Across the whole page, 53 watches are men's-only, 31 are women's-only and 6 are unisex-listed, so 59 appear under Men and 37 under Women. All 14 watches strictly in this band are single-gender: eight men's-only (Fossil 3, Titan 5) and six women's-only (Fossil 4, Titan 1, Michael Kors 1). The six unisex-listed watches (Fastrack 3, Casio 2, Sonata 1) all come from cheaper bands, so no new watch carries both labels.",
+      "brand_breakdown": "Titan (56) has the most watches here, and its six new ones all list 50 m or 100 m. Fastrack (9) is all analog, with five at 50 m and four at 30 m. Fossil (8) states a case size on every watch, from 34 to 44 mm. Timex (7) names India as the origin on six. Sonata (6) lists 30 m on all six, and none is new here. Casio (3) is all digital, all from China. Michael Kors (1) is the 33 mm Mini Slim Runway MK3512."
+    },
+    "/watches/under-2000/": {
+      "intro": "Nine watches on this page list 50 m water resistance, and every one of them is a men's-only listing: six Titans and three Fastracks. Among the rest, 24 list 30 m and five give no figure. This page covers every watch in the catalogue listed under ₹2,000, from any brand. Bands are cumulative, so an Under N page also shows cheaper watches: the 9 from the Under ₹1,000 page (Sonata 6, Fastrack 3) are included, and 29 sit strictly inside this band (Titan 21, Fastrack 4, Timex 3, Casio 1). That makes 38 watches from five brands in all. Gender label, strap, case size and warranty wording are where they separate. SAT earns a commission if you buy through its Amazon links.",
+      "who_for": "Imagine you have already settled on a stainless steel strap. Ten watches here have one, and eight of them state a case under 40 mm: the Casio at 32 mm, the Sonata at 39.7, two Timex at 32 and 36.5, and four Titans at 30, 38, 38 and 39. The other two are the 52 mm Fastrack NL3121SM01 and a Titan Karishma with no case size stated.",
+      "advice": "Settle on a case size before anything else, then check what the listing does not tell you. Sizes run from 25 to 55.8 mm, but eight watches state none, five state no water resistance and three Titan listings state no movement, so confirm those details on the Amazon page before ordering. Our [how to choose a watch](/watches/guide/) guide explains what each spec line means. If you would rather look at one maker, [Titan watches under ₹2,000](/watches/titan/under-2000/) narrows the list to its watches.",
+      "faqs": [
+        {
+          "q": "Do any watches here have a polyurethane, plastic or silicone-rubber strap?",
+          "a": "Yes, seven. Sonata has three on polyurethane (47.78, 48.8 and 52.15 mm), and Fastrack has two on plastic (40 and 55.8 mm) and two on silicone-rubber (50 and 47 mm). Six of the seven come from the cheaper band; only the Fastrack Trendies NL38040PP01 is strictly in this one."
+        },
+        {
+          "q": "Do all 38 watches state a quartz movement?",
+          "a": "No. Thirty-five state quartz and none lists any other movement, but three Titan listings leave it blank: the Karishma Analog Champagne Dial Women's, the Ladies Neo Economy Analog White Dial Women's and the Neo IV Analog Black Dial Men's."
+        },
+        {
+          "q": "Do any listing titles mention a day and date display?",
+          "a": "Two do, both Titans. The Lagan Chic is a women's-only 33 mm watch on a leather strap listed at 30 m. The Workwear is a men's-only 39 mm watch on a stainless steel strap with no water resistance stated."
+        },
+        {
+          "q": "What case materials do the listings name?",
+          "a": "Twenty of the 38 name one: brass on 8, stainless steel on 6, plastic on 4 and metal on 2. The other 18 do not state a case material, so check the Amazon page if the case matters to you."
+        }
+      ],
+      "meta_description": "Browse 38 watches under ₹2,000 in India from Titan, Fastrack, Sonata, Timex and Casio, with case size, strap, gender label and water resistance.",
+      "featured_on_watch_hub": false,
+      "men_women": "One watch in the strictly-in-band group carries both labels: the Casio Vintage A-158WA-1Q, a 32 mm digital with a stainless steel strap, listed under Men and under Women. Every other watch strictly in this band is single-gender. Counting the cheaper watches carried over, the page holds 17 men's-only, 16 women's-only and 5 unisex-listed watches (the Casio, three Fastracks and the Sonata SF Hexa), so 22 appear under Men and 21 under Women. Of the 29 strictly in band, 15 are men's-only and 13 women's-only.",
+      "brand_breakdown": "Titan: 21 watches, 14 of which state a case size, from 25 to 48 mm. Fastrack: 7 (4 strictly in band, 3 carried over), with stated sizes from 40 to 55.8 mm. Sonata: 6, all carried over from the cheaper band, three of them on polyurethane straps. Timex: 3, all women's-only, at 28, 32 and 36.5 mm, each naming India as the origin. Casio: 1, a digital, and the only watch on the page that names China as the origin."
+    },
+    "/watches/under-20000/": {
+      "intro": "Only three of the 104 watches on this page list an automatic movement: the Fossil Grant ME3054, the Fossil Grant ME3027 and the Titan Mechanical Slimline NT90159YM01, all men's-only listings. The other 101 split into 95 that state quartz and six that state no movement. This page covers every watch in the catalogue listed under ₹20,000, from any brand. Bands are cumulative, so an Under N page also shows cheaper watches: the 90 from the Under ₹10,000 page are included, along with 11 from the Under ₹15,000 tier (Titan 8, Fossil 2, Casio 1), so only three sit strictly inside this band (Fossil 2, Titan 1). That makes 104 watches from seven brands in all. Strap, case size and water resistance are where they differ. SAT earns a commission if you buy through its Amazon links.",
+      "who_for": "Three kinds of reader tend to land on this page. One has already read the Under ₹10,000 page and only wants what has been added since: three watches strictly in this band, plus 11 from the Under ₹15,000 tier. Another has chosen a brand and wants a short list, which suits Michael Kors (one watch), Casio (four) or Sonata (six). The third is comparing across all seven brands and needs the full 104, where Titan alone has 65.",
+      "advice": "A list of 104 is long, so cut it before you read it. Pick one brand, one gender label and one strap material, then check what each shortlisted listing leaves out: 35 watches state no case size and 17 state no water resistance. Our [how to choose a watch](/watches/guide/) guide explains what each spec line means, and [Watches under ₹10,000](/watches/under-10000/) is the smaller page if you only want the 90 watches it lists. Before you order, copy the model code and check it against the Amazon title, because near-identical codes can be different watches: the Fossil Decker CH2885 lists 100 m, while the CH2885I lists 30 m.",
+      "faqs": [
+        {
+          "q": "Among the seven brands, which have no watch in this band?",
+          "a": "Five of them. Only Titan (one watch) and Fossil (two) sit strictly inside Under ₹20,000. Sonata's six all sit in the Under ₹1,000 tier, Fastrack's nine go no higher than Under ₹5,000, Timex's seven no higher than Under ₹6,000, Casio's four reach Under ₹15,000 and Michael Kors's one is Under ₹10,000."
+        },
+        {
+          "q": "Is the missing case size spread across every brand?",
+          "a": "No. Of the 104 watches, 69 state a case size and 35 do not. Every Fossil (12), Timex (7), Sonata (6), Casio (4) and Michael Kors (1) listing states one. The 35 gaps are 33 Titan listings out of 65 and two Fastrack listings out of nine."
+        },
+        {
+          "q": "Does Casio list anything other than digital watches here?",
+          "a": "Yes, one. The Casio Edifice EFB-730L-7AVUDF is a 40 mm analog on a brown leather strap, with chronograph and world-time features listed. The other three are digital: the Vintage A-158WA-1Q at 32 mm, the Vintage LW-204-1BDF at 38.9 mm and the Youth-Digital AE-1200WHD-1AVDF at 43 mm. All four name China as the country of origin."
+        },
+        {
+          "q": "What is stated, and what is missing, on the Titan Mechanical Slimline?",
+          "a": "The NT90159YM01 listing states an automatic movement, 50 m water resistance, a green dial, a gold-tone stainless steel strap and a 24-month warranty. It states no case size, no case material and no country of origin, and its warranty type is blank. It is the only Titan on this page with an automatic movement."
+        }
+      ],
+      "meta_description": "Browse 104 watches from seven brands, from Titan and Fossil to Casio. Compare case size, strap and water resistance; SAT earns a commission on Amazon links.",
+      "featured_on_watch_hub": false,
+      "men_women": "Calendar features split sharply by label. Of the 65 men's-only watches, 24 list a date or a day-date (14 day-date, 10 date). Of the 33 women's-only watches, five do (two day-date, three date), among them the Titan Karishma on a rose gold metal strap and the Fossil Gwen ES4879. None of the six unisex-listed watches lists either, and those six appear under both Men and Women. The three watches strictly in this band are all men's-only, so they add nothing to the women's side.",
+      "brand_breakdown": "Titan has 65 watches and states a case size on 32 of them, from 21.2 to 51 mm. Fossil has 12, and six of those state no water resistance. Fastrack has nine, three of them unisex-listed. Timex has seven, with India named as the country of origin on six. Sonata has six, all listing 30 m. Casio has four, all naming China. Michael Kors has one, a 33 mm watch with a stainless steel strap."
+    },
+    "/watches/under-3000/": {
+      "intro": "Titans account for 26 of the 28 watches that sit strictly inside this band; the other two are a single Casio and a single Timex. This page covers every watch in the catalogue listed under ₹3,000, from any brand. Bands are cumulative, so an Under N page also shows cheaper watches: the 38 from the Under ₹2,000 page (Titan 21, Fastrack 7, Sonata 6, Timex 3, Casio 1) are included, which makes 66 watches from five brands in all. Of those 66, 60 state a quartz movement and six leave it blank, while 54 are listed as analog, three as digital and nine give no display type. Strap, case size, gender label and water resistance are where they differ. SAT earns a commission if you buy through its Amazon links.",
+      "who_for": "Are all the watches here Titan analogs on leather? No. The Casio Vintage LW-204-1BDF is a 38.9 mm digital with a black resin strap, an alarm, a stopwatch and an LED light, and the Titan Neo Splash NS1805WP01 has the only fabric strap among all 66 watches. Both first appear on this page, so neither shows up on a cheaper tier page.",
+      "advice": "Decide which spec matters most to you, then check whether each listing actually states it. Across the 66 watches, 44 give a case size, 56 give a water-resistance figure and 60 name a quartz movement, so a shortlist built on any of those still needs a look at the Amazon page. Remember that a 30 m figure does not mean a watch is meant for swimming. Our [how to choose a watch](/watches/guide/) guide explains what each spec line means. Once you have a strap material and size in mind, narrow by label with [men's watches](/watches/men/) or [women's watches](/watches/women/).",
+      "faqs": [
+        {
+          "q": "Why is Titan the largest brand on this page?",
+          "a": "The catalogue holds more Titan listings in this range than any other brand: 47 of the 66 watches, 26 of them first appearing in this band. Fastrack has 7, Sonata 6, Timex 4 and Casio 2. The mix reflects what the catalogue contains, not a ranking of brands."
+        },
+        {
+          "q": "How does strap material differ between the men's-only and women's-only listings here?",
+          "a": "Among the watches new to this band, none of the eight women's-only listings names leather: four say metal, three stainless steel and one gives no strap material. Of the 19 men's-only listings, 13 name leather, four stainless steel, one fabric and one gives none."
+        },
+        {
+          "q": "How common is a listed second hand among these watches?",
+          "a": "A second hand appears as a listed feature on 15 of the 66: Titan 7, Sonata 5 and Fastrack 3. The other 51 do not mention one, which is not the same as confirming there is none, so check the Amazon page if it matters to you."
+        },
+        {
+          "q": "How wide is the span of stated case sizes across the 66 watches?",
+          "a": "Forty-four of the 66 state a case size. The smallest is 21.2 mm, the Titan Ladies Karishma with a gold stainless steel strap, and the largest is 55.8 mm, the Fastrack Tees NG38003PP08W. The other 22 give no size, so confirm it on the Amazon page."
+        }
+      ],
+      "meta_description": "Compare 66 watches from Titan, Fastrack, Sonata, Timex and Casio on case size, strap, water resistance and gender label. 28 sit strictly in this band.",
+      "featured_on_watch_hub": false,
+      "men_women": "Compare the stated case sizes of the watches that are new to this band, by label. Five of the eight women's-only watches state a size, from 21.2 mm to 36 mm (the Timex TWEL13105). Eight of the 19 men's-only watches state one, from 38 mm to 49 mm, so the two ranges do not overlap. The one unisex-listed newcomer, the Casio Vintage LW-204-1BDF at 38.9 mm, falls inside the men's range. Across all 66 watches, 42 appear under Men and 30 under Women.",
+      "brand_breakdown": "Titan (47, of which 26 are new to this band) is the largest range, with stated case sizes from 21.2 to 49 mm. Fastrack (7) holds the only chronograph feature in the set, on the Stunners X Special Edition. Sonata (6) uses polyurethane on three of its straps. Timex (4) is all women's-only listings, three on stainless steel and one on brass. Casio (2) is both digital and both unisex-listed: the LW-204-1BDF lists 50 m, while the A-158WA-1Q gives no water-resistance figure."
+    },
+    "/watches/under-5000/": {
+      "intro": "The Casio Youth-Digital AE-1200WHD-1AVDF and a Timex men's watch with a black dial and stainless steel bracelet are the only two of the 73 watches here that list 100 m water resistance, and both are new to this band. This page covers every watch in the catalogue listed under ₹5,000, from any brand. Bands are cumulative, so an Under N page also shows cheaper watches: the 66 from the Under ₹3,000 page (Titan 47, Fastrack 7, Sonata 6, Timex 4, Casio 2) are included, and only seven sit strictly inside this band (Casio 1, Fastrack 2, Timex 2, Titan 2). That makes 73 watches from five brands in all. If you have already read the cheaper tier pages, those seven are the only watches you have not yet seen. SAT earns a commission if you buy through its Amazon links.",
+      "who_for": "Take the Timex Men's T40051 Expedition Metal Field as a single case study. It lists a 37 mm metal case, a brown leather strap, quartz movement and 50 m water resistance, with China as the country of origin. The other men's-only watches new to this band that state a size run from 43 to 44.5 mm, so the Timex is the smallest newcomer that states a case size.",
+      "advice": "Treat the seven newcomers as a short list you can check one by one. All seven state a quartz movement and a water-resistance figure, but the Fastrack All Nighters NT3165NL01 and the Titan Raga Delight NT2608QM02 state no case size, and the Fastrack Fastfit 3224NL01 names no strap material. Confirm those on the Amazon page before ordering, and remember that a water-resistance figure on a listing is not a promise that the watch suits swimming. For the older 66 watches, our [how to choose a watch](/watches/guide/) guide explains what each spec line means.",
+      "faqs": [
+        {
+          "q": "Has every brand added watches to this price band?",
+          "a": "No. Four of the five brands did: Casio, Fastrack, Timex and Titan have 1, 2, 2 and 2 watches strictly in this band. Sonata has six watches on the page, but all six also appear on the Under ₹1,000 page, so none are new here."
+        },
+        {
+          "q": "Where do unisex-listed watches appear on the site?",
+          "a": "Six watches on this page are listed as unisex: two Casio, three Fastrack and one Sonata. A unisex listing appears under both Men and Women, so those six are counted in both lists. None of the seven watches new to this band is unisex-listed."
+        },
+        {
+          "q": "Are alarms and stopwatches listed only on Casio watches?",
+          "a": "No. Three watches list an alarm: two Casios (LW-204-1BDF and AE-1200WHD-1AVDF) and the Sonata SF Hexa. A stopwatch is listed on the LW-204-1BDF and the SF Hexa, while the AE-1200WHD-1AVDF names none. The only chronograph is the Fastrack Stunners X."
+        },
+        {
+          "q": "How should I treat a listing with no water-resistance figure?",
+          "a": "Ten of the 73 watches give no figure: eight Titans, one Timex and one Casio (the Vintage A-158WA-1Q). Read that as not stated, not as zero or any particular figure, and check the Amazon page before assuming anything. All seven watches new to this band do state a figure."
+        }
+      ],
+      "meta_description": "Browse 73 watches from Titan, Fastrack, Sonata, Timex and Casio, including seven that first appear in this band, with specs taken from each listing.",
+      "featured_on_watch_hub": false,
+      "men_women": "Two men's-only newcomers share a 43 mm case: the Casio Youth-Digital AE-1200WHD-1AVDF and the Titan Workwear NT1733KL03. The Casio is a digital on a stainless steel strap with an alarm and LED light listed; the Titan is an analog on brown leather with a day-date feature. Little else matches. Six of the seven watches new to this band are men's-only. The seventh, the Titan Raga Delight NT2608QM02, is the only women's-only newcomer, on a metal strap with no case size stated.",
+      "brand_breakdown": "Titan: 49 watches; India is stated as the origin on 15 and nothing is stated on the other 34. Fastrack: 9 watches, including the only chronograph listed (the Stunners X). Sonata: 6 watches, none new to this band, all at 30 m. Timex: 6 watches, four of them on stainless steel straps. Casio: 3 watches, all digital and all with China as the origin."
     }
   }
 }

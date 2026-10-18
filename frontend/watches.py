@@ -746,6 +746,46 @@ f'<linearGradient id="g{uid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-
         out.append(esc(text[last:]))
         return "".join(out)
 
+    def _top_labels(self, shown, key, limit):
+        """The most common values of one filter group among these watches, as lower-case labels (for example leather, stainless steel)."""
+        spec = next(((opts, getter) for k, _, opts, getter in self.FILTERS if k == key), None)
+        if not spec:
+            return []
+        labels, getter = dict(spec[0]), spec[1]
+        counts = {}
+        for p in shown:
+            for v in getter(self, p):
+                if v:
+                    counts[v] = counts.get(v, 0) + 1
+        top = sorted(counts, key=lambda v: (-counts[v], v))[:limit]
+        return [str(labels.get(v, v.replace("-", " "))).split(" (")[0].lower() for v in top]
+
+    @staticmethod
+    def _join(items):
+        return items[0] if len(items) == 1 else ", ".join(items[:-1]) + " and " + items[-1]
+
+    def auto_description(self, shown, lead):
+        """A specific meta description (about 120-158 characters) written from the page's own watches: count, case-size range, strap materials and movements as
+        the listings state them. No prices, no ratings. Used when a page has no approved meta_description."""
+        sizes = [p["case_diameter_mm"] for p in shown if p.get("case_diameter_mm")]
+        clauses = []
+        if sizes:
+            lo, hi = min(sizes), max(sizes)
+            fmt = lambda v: f"{v:g}"
+            clauses.append(f"case sizes {fmt(lo)}\u2013{fmt(hi)} mm" if lo != hi else f"{fmt(lo)} mm cases")
+        straps = self._top_labels(shown, "strapmat", 3)
+        if straps:
+            clauses.append(self._join(straps) + (" straps" if len(straps) > 1 else " strap"))
+        moves = self._top_labels(shown, "movement", 2)
+        if moves:
+            clauses.append(self._join(moves) + (" movements" if len(moves) > 1 else " movement"))
+        while clauses:
+            text = f"{lead}: " + ", ".join(clauses) + ", as listed."
+            if len(text) <= 158:
+                return text
+            clauses.pop()
+        return f"{lead}. Compare case size, strap, movement and water resistance as listed."
+
     def collection_copy(self, url):
         entry = self.approved.get(url)
         if not entry or len(str(entry.get("intro", "")).split()) < 100:
@@ -755,6 +795,10 @@ f'<linearGradient id="g{uid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-
         parts = [f'<p>{self.linkify(entry["intro"])}</p>']
         if entry.get("who_for"):
             parts.append(f'<h3>Who this page is for</h3><p>{self.linkify(entry["who_for"])}</p>')
+        if entry.get("men_women"):
+            parts.append(f'<h3>Men and women</h3><p>{self.linkify(entry["men_women"])}</p>')
+        if entry.get("brand_breakdown"):
+            parts.append(f'<h3>Brands in this price range</h3><p>{self.linkify(entry["brand_breakdown"])}</p>')
         if entry.get("advice"):
             parts.append(f'<h3>Buying advice</h3><p>{self.linkify(entry["advice"])}</p>')
         if faqs:
@@ -1305,6 +1349,22 @@ f'<linearGradient id="g{uid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-
         custom = str((self.approved.get(url) or {}).get("meta_description") or "").strip()
         if custom:   # an approved meta_description in collections.json always wins
             meta["description"] = custom
+        elif not hub and not premium and shown and (gender or brand or style):   # brand, gender, style and brand + price pages: a description from the page's own watches
+            names = {p["brand"] for p in shown}
+            lead = f"Compare {len(shown)} "
+            if brand:
+                lead += f'{self.brands[brand]["name"]} watches' + (f' {self.budgets[budget]["label"].lower()}' if budget else "")
+            elif gender:
+                lead += f'{self.genders[gender]["label"].lower()} watches' + (f' {self.budgets[budget]["label"].lower()}' if budget else "") + f" from {len(names)} brands"
+            else:
+                lead += f'{self.styles[style]["label"].lower()} watches from {len(names)} brands'
+            meta["description"] = self.auto_description(shown, lead)
+        title_tag = str((self.approved.get(url) or {}).get("title_tag") or "").strip()
+        if title_tag:   # an approved search-result title (the visible H1 is unchanged)
+            meta["title"] = title_tag
+        elif gender and not (brand or style or budget or premium) and not hub:
+            meta["title"] = f'{self.genders[gender]["label"]} Watches in India: Compare by Budget and Brand'
+        meta["ld_items"] = [(f'{self.brands[p["brand"]]["name"]} {p["model"]}', self.review_url(p)) for p in shown[:30]]
         meta["css"] += ["collection", "watch-store", "price-slider", "watch-luxe", "watch-sheet"]
         meta["js"] = ["collection", "watch-tilt"]
         return meta
@@ -1474,7 +1534,10 @@ f'<linearGradient id="g{uid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-
                             crumbs=[["Watches", "/watches/"], [g["label"], url]])
 
     def landing(self):
-        return self.catalog("/watches/", "Watches for every day.", "Classic style. Everyday usefulness. Find a watch that feels like you.", hub=self.hub_html())
+        hub_desc = (f"Compare {len(self.products)} watches from {len(self.active_brands())} brands for men and women by budget, case size, strap, movement and water "
+                    "resistance, as the listings state them.")
+        meta = self.catalog("/watches/", "Watches in India: Compare by Budget, Brand and Style", hub_desc, hub=self.hub_html())
+        return meta
 
     def product_detail(self, p):
         brand = self.brands[p["brand"]]["name"]

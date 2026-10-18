@@ -15,6 +15,17 @@ BUDGETS = {"under-2000": {"max": 2000, "label": "Under 2,000"}, "under-3000": {"
 TITAN = json.loads((ROOT / "src/watches/products/titan-analog-offwhite-b01clf3bfw.json").read_text(encoding="utf-8"))
 
 
+ORIGINAL_APPROVED = ("/watches/titan/under-2000/", "/watches/titan/under-3000/", "/watches/sonata/under-1000/")
+
+
+def make_shop():
+    """A Watches object that has only the three collections approved before the broad budget pages and brand pages were published. Older tests assert
+    behaviours of that state (a tier links to the filter until its page exists, and so on); the real approved set is covered by tests/test_seo_pages.py."""
+    shop = watches.Watches(build.SRC, build.CONFIG)
+    shop.approved = {u: e for u, e in shop.approved.items() if u in ORIGINAL_APPROVED}
+    return shop
+
+
 class Engine(unittest.TestCase):
     def test_titan_is_normalised_without_guessing(self):
         p = watch_data.normalise(TITAN, BUDGETS)
@@ -64,7 +75,7 @@ class Engine(unittest.TestCase):
 class Site(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.shop = watches.Watches(build.SRC, build.CONFIG)
+        cls.shop = make_shop()
 
     def test_amazon_link_is_kept_exactly(self):
         p = next(q for q in self.shop.products if q["id"] == "titan-analog-offwhite-b01clf3bfw")
@@ -98,7 +109,7 @@ class Site(unittest.TestCase):
 
 class NeoIV(unittest.TestCase):
     def test_titan_under_2000_collection_is_published(self):
-        shop = watches.Watches(build.SRC, build.CONFIG)
+        shop = make_shop()
         neo = next(p for p in shop.products if p["id"] == "titan-neo-iv-analog-black-b07mxgl85j")
         self.assertEqual(shop.qualifies(neo)[0], "under-2000")
         self.assertIn(("titan", "under-2000"), shop.brand_budget_pages if hasattr(shop, "brand_budget_pages") else shop.brand_budget_pairs())
@@ -116,7 +127,7 @@ class NeoIV(unittest.TestCase):
 class Hub(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.shop = watches.Watches(build.SRC, build.CONFIG)
+        cls.shop = make_shop()
 
     def test_published_collection_carries_metadata(self):
         c = next(c for c in self.shop.published_collections() if c["url"] == "/watches/titan/under-2000/")
@@ -134,7 +145,7 @@ class Hub(unittest.TestCase):
             self.assertNotIn(f'href="/watches/{slug_}/"', bottom)   # the journey card shows only the strongest published collections
 
     def test_unapproved_or_thin_collections_never_surface(self):
-        shop = watches.Watches(build.SRC, build.CONFIG)
+        shop = make_shop()
         shop.approved = dict(shop.approved)
         shop.approved["/watches/men/under-5000/"] = {"intro": "too short"}
         shop.approved["/watches/titan/under-1000/"] = {"intro": " ".join(["word"] * 120)}   # no Titan watch sits in this band, so no page exists
@@ -142,7 +153,7 @@ class Hub(unittest.TestCase):
         self.assertEqual(urls, ["/watches/titan/under-2000/", "/watches/titan/under-3000/", "/watches/sonata/under-1000/"])
 
     def test_hidden_from_hub_when_not_featured(self):
-        shop = watches.Watches(build.SRC, build.CONFIG)
+        shop = make_shop()
         shop.approved = {u: dict(e) for u, e in shop.approved.items()}
         shop.approved["/watches/titan/under-2000/"]["featured_on_watch_hub"] = False
         self.assertNotIn("/watches/titan/under-2000/", shop.hub_html()[1])
@@ -151,7 +162,7 @@ class Hub(unittest.TestCase):
 class HubExtras(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.shop = watches.Watches(build.SRC, build.CONFIG)
+        cls.shop = make_shop()
 
     def test_explore_more_and_how_sat_helps_sit_below_the_watches(self):
         import re
@@ -207,7 +218,7 @@ class HubExtras(unittest.TestCase):
                          'See <a href="/watches/guide/">guide</a> and nope')
 
     def test_related_collections_appear_with_a_second_published_page(self):
-        shop = watches.Watches(build.SRC, build.CONFIG)
+        shop = make_shop()
         only = {"/watches/titan/under-2000/": shop.approved["/watches/titan/under-2000/"]}
         shop.approved = only
         self.assertEqual(shop.related_collections("/watches/titan/under-2000/"), "")      # only one published: nothing to relate
@@ -222,7 +233,7 @@ class Under3000(unittest.TestCase):
     @staticmethod
     def shop_with(own_band_count):
         """The live site with a fixed set of watches: 5 Titan men's watches in Under 2,000 plus some in Under 3,000."""
-        shop = watches.Watches(build.SRC, build.CONFIG)
+        shop = make_shop()
         base = next(p for p in shop.products if p["id"] == "titan-analog-offwhite-b01clf3bfw")
         shop.products = [dict(base, id=f"titan-low-{i}", budget="under-2000", product_name=f"Titan Low {i}", model=f"Low {i}") for i in range(5)]
         shop.products += [dict(base, id=f"titan-mid-{i}", budget="under-3000", product_name=f"Titan Mid {i}", model=f"Mid {i}") for i in range(own_band_count)]
@@ -243,13 +254,13 @@ class Under3000(unittest.TestCase):
         self.assertIn("/watches/men/under-3000/", [c["url"] for c in shop.published_collections()])
 
     def test_titan_price_page_has_a_section_per_shopper_path(self):
-        shop = watches.Watches(build.SRC, build.CONFIG)
+        shop = make_shop()
         body = shop.brand_budget_page("titan", "under-2000")["_body"]
         self.assertIn("<h2>Best Titan Watches Under \u20b92,000 for Men</h2>", body)
         self.assertIn("<h2>Best Titan Watches Under \u20b92,000 for Women</h2>", body)
 
     def test_keyword_chips_follow_the_data(self):
-        shop = watches.Watches(build.SRC, build.CONFIG)
+        shop = make_shop()
         shop.keywords = {"/watches/titan/under-2000/": {"men": ["Titan leather strap watches for men under \u20b92,000", "Titan formal watches for men under \u20b92,000",
                                                                   "Titan slim watches for men under \u20b92,000"], "women": ["Titan rose gold watches for women under \u20b92,000"]}}
         shown = [p for p in shop.products if p["brand"] == "titan" and "rose-gold" not in p.get("band_colour", [])]
@@ -265,7 +276,7 @@ class Under3000(unittest.TestCase):
 
 class Slider(unittest.TestCase):
     def test_slider_steps_are_the_bands_that_have_watches(self):
-        shop = watches.Watches(build.SRC, build.CONFIG)
+        shop = make_shop()
         body = shop.landing()["_body"]
         self.assertIn("data-price-slider", body)
         steps = shop.price_steps()
@@ -285,7 +296,7 @@ class Slider(unittest.TestCase):
         self.assertIn("hidden", html)
 
     def test_slider_is_on_collection_pages_too(self):
-        shop = watches.Watches(build.SRC, build.CONFIG)
+        shop = make_shop()
         self.assertIn("data-price-slider", shop.brand_budget_page("titan", "under-3000")["_body"])
 
 
@@ -300,7 +311,7 @@ class Buckets(unittest.TestCase):
         self.assertEqual(b(watches.Watches.WATER, 29.6), "30-m")
 
     def test_rounding_is_only_for_the_filter_bucket(self):
-        shop = watches.Watches(build.SRC, build.CONFIG)
+        shop = make_shop()
         base = next(p for p in shop.products if p["id"] == "titan-analog-offwhite-b01clf3bfw")
         p = dict(base, case_diameter_mm=40.2, water_resistance_metres=29.6)
         card = shop.card(p)
@@ -311,7 +322,7 @@ class Buckets(unittest.TestCase):
         self.assertEqual(p["case_diameter_mm"], 40.2)                     # stored data is never changed by filtering
 
     def test_unknown_size_and_depth_get_no_bucket(self):
-        shop = watches.Watches(build.SRC, build.CONFIG)
+        shop = make_shop()
         base = next(p for p in shop.products if p["id"] == "titan-analog-offwhite-b01clf3bfw")
         p = dict(base, case_diameter_mm=None, water_resistance_metres=None)
         card = shop.card(p)
@@ -326,20 +337,20 @@ class MetalStrap(unittest.TestCase):
         p = watch_data.normalise({"id": "m", "brand": "titan", "product_name": "M", "gender": "women", "band_material": "Metal"}, BUDGETS)
         self.assertEqual(p["band_material"], "metal")
         self.assertIn("metal-strap", p["styles"])
-        shop = watches.Watches(build.SRC, build.CONFIG)
+        shop = make_shop()
         self.assertIn("metal", watches.Watches.FILTERS[2][3](shop, p))        # strap material filter has its own bucket for it
 
 
 class DialColours(unittest.TestCase):
     def test_every_stored_dial_colour_can_be_filtered(self):
-        shop = watches.Watches(build.SRC, build.CONFIG)
+        shop = make_shop()
         offered = {value for value, _ in next(opts for key, _, opts, _ in shop.FILTERS if key == "dialcolour")}
         stored = {c for p in shop.products for c in p.get("dial_colour", [])}
         self.assertEqual(stored - offered, set())      # a colour on a watch must have a filter option, or the watch can never be found by it
 
     def test_every_stored_value_has_a_filter_option(self):
         """A value on a watch with no option in its filter group means the watch can never be found by it (as happened with champagne, oval and contemporary)."""
-        shop = watches.Watches(build.SRC, build.CONFIG)
+        shop = make_shop()
         for key, title, options, getter in shop.FILTERS:
             offered = {value for value, _ in options}
             stored = {v for p in shop.products for v in getter(shop, p) if v}
@@ -393,7 +404,7 @@ class Colours(unittest.TestCase):
 class PremiumCards(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.shop = watches.Watches(build.SRC, build.CONFIG)
+        cls.shop = make_shop()
 
     def test_catalog_budget_rail_has_any_plus_one_step_per_band_with_watches(self):
         body = self.shop.landing()["_body"]
@@ -448,7 +459,7 @@ class CardSystem(unittest.TestCase):
     """One canonical collection record feeds every card, so titles, counts and order cannot disagree between the menu, hub, popular block and links."""
     @classmethod
     def setUpClass(cls):
-        cls.shop = watches.Watches(build.SRC, build.CONFIG)
+        cls.shop = make_shop()
 
     def test_every_collection_has_canonical_titles(self):
         for c in self.shop.published_collections():
@@ -537,7 +548,7 @@ class BudgetDiscovery(unittest.TestCase):
     """Shopper price tiers come from the whole live catalogue; approved SEO pages are a separate system that only decides where a tier links."""
     @classmethod
     def setUpClass(cls):
-        cls.shop = watches.Watches(build.SRC, build.CONFIG)
+        cls.shop = make_shop()
 
     def test_tiers_are_counted_from_every_live_watch(self):
         shop = self.shop
@@ -642,7 +653,7 @@ class ReviewFixes(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.shop = watches.Watches(build.SRC, build.CONFIG)
+        cls.shop = make_shop()
 
     def approved(self, **entries):
         shop = self.shop
@@ -665,8 +676,9 @@ class ReviewFixes(unittest.TestCase):
             build.SHOP[0] = old
         listed = {u for _, u in m["price"] + m["brand"] + m["feature"]}
         card_urls = {c["href"] for c in m["cards"][:5]}
-        for u in ("/watches/under-1000/", "/watches/brands/titan/", "/watches/style/leather-strap/"):
+        for u in ("/watches/under-1000/", "/watches/style/leather-strap/"):
             self.assertIn(u, listed | card_urls, u)                        # no approved destination type disappears ...
+        self.assertNotIn("/watches/brands/titan/", listed)                 # ... brand overview pages stay in the Shop for chips, not in More collections
         for u in ("/watches/titan/under-3000/", "/watches/men/under-3000/"):
             self.assertNotIn(u, listed, u)                                 # ... except bands the owner hides (settings menu_hide_more: under-3000)
         self.assertIn("/watches/under-3000/", card_urls)                   # a published tier is a card ...
@@ -801,7 +813,7 @@ class HubAffiliateCards(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.shop = watches.Watches(build.SRC, build.CONFIG)
+        cls.shop = make_shop()
 
     def cards(self, body):
         import re
@@ -872,16 +884,18 @@ class HubAffiliateCards(unittest.TestCase):
         for block in re.findall(r'<a class="card card-primary lx-budget.*?</a>', body, flags=re.S):
             self.assertEqual(block.count("<a "), 1)                                          # one link per card, none inside another
 
-    def test_a_tier_with_its_own_published_page_still_opens_that_page(self):
+    def test_a_published_tier_page_does_not_take_over_its_hub_card(self):
+        """The owner asked for the Shop by budget cards to open Amazon searches; publishing a tier's SEO page must not turn the card into an on-site link
+        (the page stays linked from the menu, the filter sheet, More collections, related links and the sitemap)."""
         shop = self.shop
         saved = dict(shop.approved)
         self.addCleanup(lambda: (shop.approved.clear(), shop.approved.update(saved)))
         shop.approved["/watches/under-10000/"] = {"intro": self.LONG}
         cards = self.cards(shop.landing()["_body"])
-        own = [rest for href, rest in cards if href == "/watches/under-10000/"]
-        self.assertEqual(len(own), 1)
-        self.assertNotIn("target=", own[0])                                                    # an on-site link opens in the same tab
-        self.assertEqual(sum(1 for href, rest in cards if href.startswith("https://www.amazon.in/s?")), len(shop.budget_discovery()) - 1)
+        self.assertEqual([h for h, r in cards if h == "/watches/under-10000/"], [])
+        self.assertEqual(sum(1 for href, rest in cards if href.startswith("https://www.amazon.in/s?")), len(shop.budget_discovery()))
+        for href, rest in cards:
+            self.assertIn('target="_blank"', rest)
 
     def test_plain_on_site_links_without_affiliate_mode_or_url(self):
         shop = self.shop
@@ -921,7 +935,7 @@ class HubBrandSearches(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.shop = watches.Watches(build.SRC, build.CONFIG)
+        cls.shop = make_shop()
 
     def tiles(self, body):
         import re
@@ -992,7 +1006,7 @@ class HubBrandSearches(unittest.TestCase):
 class IntentSectionRemoved(unittest.TestCase):
     """The 'What are you looking for?' section was removed from /watches/ on the owner's request."""
     def test_the_section_and_its_hooks_are_gone(self):
-        shop = watches.Watches(build.SRC, build.CONFIG)
+        shop = make_shop()
         body = shop.landing()["_body"]
         for gone in ("What are you looking for", "lx-intents", "lx-intent", "data-intent", "lx-i-ico"):
             self.assertNotIn(gone, body)
@@ -1007,7 +1021,7 @@ class IntentSectionRemoved(unittest.TestCase):
 
     def test_the_hub_goes_from_the_quick_filters_straight_to_shop_by_budget(self):
         import re
-        body = watches.Watches(build.SRC, build.CONFIG).landing()["_body"]
+        body = make_shop().landing()["_body"]
         sections = re.findall(r'<section class="lx-sec (lx-[a-z]+)"', body)
         self.assertEqual(sections[:2], ["lx-budgets", "lx-brands"])                           # the first section after the hero and quick filters is Shop by budget
 
@@ -1015,7 +1029,7 @@ class IntentSectionRemoved(unittest.TestCase):
 class UniqueIds(unittest.TestCase):
     def test_two_cards_never_share_svg_ids(self):
         import re
-        shop = watches.Watches(build.SRC, build.CONFIG)
+        shop = make_shop()
         ids = []
         for p in shop.products[:12]:
             ids += re.findall(r'\bid="([^"]+)"', shop.card(p))
@@ -1025,7 +1039,7 @@ class UniqueIds(unittest.TestCase):
 class WatchTheme(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.shop = watches.Watches(build.SRC, build.CONFIG)
+        cls.shop = make_shop()
 
     def test_each_watch_gets_its_own_colours(self):
         green = {"dial_colour": ["green"], "band_colour": ["gold"], "band_material": "stainless-steel"}
@@ -1063,7 +1077,7 @@ class Duplicates(unittest.TestCase):
         self.assertEqual(watch_data.duplicates({"id": "y", "product_name": "New", "asin": "B000000002"}, [a]), [])
 
     def test_live_catalogue_has_no_duplicates(self):
-        shop = watches.Watches(build.SRC, build.CONFIG)
+        shop = make_shop()
         asins = [watch_data.asin_of(p) for p in shop.products if watch_data.asin_of(p)]
         self.assertEqual(len(asins), len(set(asins)))
 
