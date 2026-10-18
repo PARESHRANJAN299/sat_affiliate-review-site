@@ -32,7 +32,6 @@
 .fashion-hero-art { margin: 0; min-height: 100%; background: linear-gradient(150deg, #ecd9bd, #cf9f73); }
 .fashion-hero-art::before { content: ""; position: absolute; left: 50%; bottom: 0; width: 74%; height: 90%; transform: translateX(-50%); border-radius: 999px 999px 0 0; background: #f6ead7; opacity: .5; }
 .fashion-hero-art .fashion-art { top: auto; bottom: 0; width: auto; height: 104%; }
-.fashion-hero-art figcaption { position: absolute; z-index: 2; right: 14px; bottom: 12px; padding: 4px 9px; font-size: 10px; letter-spacing: .04em; color: #3b352a; background: #fff9edd9; }
 
 /* Discover Your Style: asymmetric editorial mosaic (swipe cards on small screens). */
 .fashion-discover { padding-top: clamp(48px, 7vw, 96px); scroll-margin-top: 80px; }
@@ -195,7 +194,6 @@
   .fashion-hero { position: relative; display: block; height: min(88svh, 780px); min-height: 520px; margin: 0 calc(-1 * var(--fpad)); border: 0; background: #cf9f73; }
   .fashion-hero-art { position: absolute; inset: 0; min-height: 0; }
   .fashion-hero-art .fashion-art { height: 86%; }
-  .fashion-hero-art figcaption { right: 10px; top: 10px; bottom: auto; }
   .fashion-hero-copy { position: absolute; z-index: 2; inset: auto 0 0; padding: 120px var(--fpad) 28px; background: linear-gradient(0deg, #1a130dd9 0%, #1a130d99 55%, transparent 100%); color: #fff; }
   .fashion-hero-copy .sat-fashion-eyebrow { color: #f1e3c3; }
   .fashion-hero h1 { font-size: clamp(2.3rem, 11vw, 3.1rem); margin-bottom: 14px; }

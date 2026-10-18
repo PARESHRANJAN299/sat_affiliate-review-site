@@ -288,7 +288,7 @@ def page(src, icon):
     body = ('<div class="container fashion-page"><header class="fashion-hero"><div class="fashion-hero-copy"><p class="sat-fashion-eyebrow">THE SAT FASHION EDIT <span aria-hidden="true"></span></p>'
             '<h1>Curated style,<br><em>thoughtfully selected.</em></h1><p class="fashion-hero-lede">Explore fashion picks across Women’s Kurtas, Westernwear, Indianwear, Footwear, Active &amp; Sports and Bags.</p>'
             '<a class="sat-fashion-cta" href="#fashion-categories">Explore the Fashion Edit <span aria-hidden="true">→</span></a></div>'
-            f'<figure class="fashion-hero-art">{art_picture("womens-kurtas", "(min-width: 900px) 50vw, 100vw", alt=True, priority=True)}<figcaption>SAT editorial image · not a retailer product photograph</figcaption></figure></header>'
+            f'<figure class="fashion-hero-art">{art_picture("womens-kurtas", "(min-width: 900px) 50vw, 100vw", alt=True, priority=True)}</figure></header>'
             '<section class="fashion-discover" id="fashion-categories" aria-labelledby="fashion-discover-title"><h2 id="fashion-discover-title">Discover Your Style</h2>'
             '<nav class="fashion-categories" aria-label="Fashion collections">' + ''.join(tiles) + '</nav></section>'
             + ''.join(sections) + brands_html + banner + trust + '</div>')
