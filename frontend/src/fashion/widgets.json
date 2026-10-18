@@ -125,6 +125,72 @@
       "height": 360,
       "active": true,
       "featured": false
+    },
+    {
+      "id": "nykaa-28759053",
+      "product_id": "28759053",
+      "category": "womens-kurtas",
+      "source": "nykaa-fashion",
+      "widget_url": "https://affiliate.nykaa.com/v2/get_product_widget?ad_id=6ad496481bd6310c571ebbc8&add_resources=True&affiliate_id=PARESHRA-445235&product_id=28759053&store=nykaa_fashion&text_color=000000&theme_variation=TEXT_AND_IMAGE&theme=affiliate&aff_link_type=affiliate%3Anap_dashboard%3Aproduct&hlp=hlpa",
+      "width": 280,
+      "height": 360,
+      "active": true,
+      "featured": false
+    },
+    {
+      "id": "nykaa-10795221",
+      "product_id": "10795221",
+      "category": "womens-kurtas",
+      "source": "nykaa-fashion",
+      "widget_url": "https://affiliate.nykaa.com/v2/get_product_widget?ad_id=6ad4969ed820e81af4f6b40a&add_resources=True&affiliate_id=PARESHRA-445235&product_id=10795221&store=nykaa_fashion&text_color=000000&theme_variation=TEXT_AND_IMAGE&theme=affiliate&aff_link_type=affiliate%3Anap_dashboard%3Aproduct&hlp=hlpa",
+      "width": 280,
+      "height": 360,
+      "active": true,
+      "featured": false
+    },
+    {
+      "id": "nykaa-28727909",
+      "product_id": "28727909",
+      "category": "womens-kurtas",
+      "source": "nykaa-fashion",
+      "widget_url": "https://affiliate.nykaa.com/v2/get_product_widget?ad_id=6ad496b95593a5b8d678fb89&add_resources=True&affiliate_id=PARESHRA-445235&product_id=28727909&store=nykaa_fashion&text_color=000000&theme_variation=TEXT_AND_IMAGE&theme=affiliate&aff_link_type=affiliate%3Anap_dashboard%3Aproduct&hlp=hlpa",
+      "width": 280,
+      "height": 360,
+      "active": true,
+      "featured": false
+    },
+    {
+      "id": "nykaa-24125695",
+      "product_id": "24125695",
+      "category": "womens-kurtas",
+      "source": "nykaa-fashion",
+      "widget_url": "https://affiliate.nykaa.com/v2/get_product_widget?ad_id=6ad496c7e50f425437d9a1c2&add_resources=True&affiliate_id=PARESHRA-445235&product_id=24125695&store=nykaa_fashion&text_color=000000&theme_variation=TEXT_AND_IMAGE&theme=affiliate&aff_link_type=affiliate%3Anap_dashboard%3Aproduct&hlp=hlpa",
+      "width": 280,
+      "height": 360,
+      "active": true,
+      "featured": false
+    },
+    {
+      "id": "nykaa-21203276",
+      "product_id": "21203276",
+      "category": "womens-kurtas",
+      "source": "nykaa-fashion",
+      "widget_url": "https://affiliate.nykaa.com/v2/get_product_widget?ad_id=6ad496f81bde18e19f3d284c&add_resources=True&affiliate_id=PARESHRA-445235&product_id=21203276&store=nykaa_fashion&text_color=000000&theme_variation=TEXT_AND_IMAGE&theme=affiliate&aff_link_type=affiliate%3Anap_dashboard%3Aproduct&hlp=hlpa",
+      "width": 280,
+      "height": 360,
+      "active": true,
+      "featured": false
+    },
+    {
+      "id": "nykaa-28572054",
+      "product_id": "28572054",
+      "category": "womens-kurtas",
+      "source": "nykaa-fashion",
+      "widget_url": "https://affiliate.nykaa.com/v2/get_product_widget?ad_id=6ad4971a67cca929453d3820&add_resources=True&affiliate_id=PARESHRA-445235&product_id=28572054&store=nykaa_fashion&text_color=000000&theme_variation=TEXT_AND_IMAGE&theme=affiliate&aff_link_type=affiliate%3Anap_dashboard%3Aproduct&hlp=hlpa",
+      "width": 280,
+      "height": 360,
+      "active": true,
+      "featured": false
     }
   ],
   "category_pages": [
