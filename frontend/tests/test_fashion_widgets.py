@@ -295,9 +295,9 @@ class WidgetPageTests(unittest.TestCase):
         self.assertIn('Women’s Westernwear', page['_body'])
         self.assertIn('data-url="https://sat.net.in/fashion/westernwear/#pick-5550001"', page['_body'])
 
-    def test_production_category_settings_cover_kurtas_westernwear_and_footwear(self):
+    def test_production_category_settings_cover_every_collection(self):
         configs = fashion.category_page_config(ROOT / 'src')
-        self.assertEqual(sorted(configs), ['footwear', 'westernwear', 'womens-kurtas'])
+        self.assertEqual(sorted(configs), sorted(slug for slug, *_ in fashion.SECTIONS))  # every collection has its category page settings
         self.assertEqual(configs['westernwear']['explore_label'], 'Explore Westernwear')
         self.assertEqual(fashion.validate_category_pages(fashion.read_widgets(ROOT / 'src'))[1], [])
 
@@ -339,6 +339,29 @@ class WidgetPageTests(unittest.TestCase):
         self.assertNotIn('data-audience-tab="women" aria-current', body)
         pages, _ = self.toggle_page([self.western('111'), self.western('333', audience='men')])
         self.assertIn('data-audience-tab="women" aria-current="true"', pages[1]['_body'])
+
+    def test_every_remaining_category_is_set_up_like_the_others(self):
+        expected = {'indianwear': ('THE INDIAN EDIT', 'Explore Indianwear', 'indianwear'), 'active-sports': ('THE ACTIVE EDIT', 'Explore Active &amp; Sports', 'active-sports'),
+                    'bags': ('THE BAG EDIT', 'Explore Bags', 'bags'), 'footwear': ('THE FOOTWEAR EDIT', 'Explore Footwear', 'footwear')}
+        for slug, (label, button, _) in expected.items():
+            with self.subTest(slug=slug):
+                directory = tempfile.TemporaryDirectory()
+                self.addCleanup(directory.cleanup)
+                src = Path(directory.name)
+                (src / 'fashion').mkdir()
+                (src / 'fashion/catalog.json').write_text(json.dumps({'approved_image_hosts': [], 'approved_affiliate_hosts': [], 'products': []}))
+                data = fashion.read_widgets(ROOT / 'src')
+                data['widgets'] = [{**self.record('555', FIRST_URL.replace('28560370', '555')), 'category': slug, 'audience': 'men'}]
+                (src / 'fashion/widgets.json').write_text(json.dumps(data))
+                pages, problems = fashion.pages(src, lambda *args: '', 'https://sat.net.in')
+                self.assertEqual((problems, [p['url'] for p in pages]), ([], ['/fashion/', f'/fashion/{slug}/']))
+                section = pages[0]['_body'].split(f'id="{slug}"')[1].split('</section>')[0]
+                self.assertIn(label, section)
+                self.assertIn(button, section)
+                self.assertIn(f'fashion-widget-banner fashion-tint-{slug}', section)
+                self.assertIn(f'href="/fashion/{slug}/"', section)
+                self.assertIn('data-audience-tab="men" aria-current="true">Men <span>1</span>', pages[1]['_body'])
+                self.assertTrue(pages[1]['noindex'])
 
     def test_footwear_is_set_up_for_men_like_the_other_categories(self):
         config = fashion.category_page_config(ROOT / 'src')['footwear']

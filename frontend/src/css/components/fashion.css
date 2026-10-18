@@ -159,6 +159,18 @@
 /* Retailer-powered collections: a SAT editorial banner, then a left-to-right rail of official Nykaa product widgets. Only the wrapper is styled; the iframe content is Nykaa's. */
 .fashion-widget-banner { margin: 0 0 20px; width: 100%; aspect-ratio: 21 / 8; }
 .fashion-widget-banner .fashion-art { left: 0; width: 100%; height: 100%; transform: none; object-fit: cover; object-position: 72% 12%; }
+/* Single-figure banners (Indianwear, Active & Sports, Bags): the whole picture, centred on the tinted ground. */
+.fashion-widget-banner.fashion-tint-indianwear .fashion-art, .fashion-widget-banner.fashion-tint-active-sports .fashion-art, .fashion-widget-banner.fashion-tint-bags .fashion-art { left: 50%; width: auto; height: 100%; transform: translateX(-50%); object-fit: contain; }
+/* The bag illustration fades into the banner's tinted ground (no visible edge). */
+.fashion-widget-banner.fashion-tint-bags .fashion-art { -webkit-mask-image: linear-gradient(90deg, transparent, #000 22%, #000 78%, transparent); mask-image: linear-gradient(90deg, transparent, #000 22%, #000 78%, transparent); }
+/* Dark Active & Sports band: keep the label, note, arrows and button readable. */
+.fashion-section-energetic .sat-fashion-eyebrow { color: #e3cf9c; }
+.fashion-section-energetic .fashion-widget-note { color: #cfc8b8; }
+.fashion-section-energetic .nykaa-controls button:disabled { background: transparent; border-color: #4a4e4a; color: #f7f3ea; }
+.fashion-section-energetic .nykaa-explore-link { background: #f7f3ea; border-color: #f7f3ea; color: var(--f-ink); }
+.fashion-section-energetic .nykaa-explore-link:hover { background: #fff; color: var(--f-ink); }
+/* Bags is centred, but its widget area reads left to right. */
+.fashion-section-luxe .nykaa-group { text-align: left; }
 /* Footwear banner: crop to the sneakers. */
 .fashion-widget-banner.fashion-tint-footwear .fashion-art { object-position: 50% 96%; }
 /* Westernwear banner: its two models side by side on the tinted ground. */
