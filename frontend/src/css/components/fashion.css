@@ -115,9 +115,6 @@
 /* Dark Active & Sports band: keep the label, note, arrows and button readable. */
 .fashion-section-energetic .sat-fashion-eyebrow { color: #e3cf9c; }
 .fashion-section-energetic .fashion-widget-note { color: #cfc8b8; }
-.fashion-section-energetic .nykaa-controls button:disabled { background: transparent; border-color: #4a4e4a; color: #f7f3ea; }
-.fashion-section-energetic .nykaa-explore-link { background: #f7f3ea; border-color: #f7f3ea; color: var(--f-ink); }
-.fashion-section-energetic .nykaa-explore-link:hover { background: #fff; color: var(--f-ink); }
 /* Bags is centred, but its widget area reads left to right. */
 .fashion-section-luxe .nykaa-group { text-align: left; }
 /* Footwear banner: crop to the sneakers. */
@@ -125,33 +122,12 @@
 /* Westernwear banner: its two models side by side on the tinted ground. */
 .fashion-widget-banner.fashion-tint-westernwear .fashion-art { left: 42%; width: 28%; height: auto; transform: translateX(-50%); object-fit: fill; }
 .fashion-widget-banner.fashion-tint-westernwear .fashion-art + .fashion-art { left: 60%; }
-.fashion-widget-bar { display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; margin-bottom: 16px; }
-.fashion-widget-note { margin: 0; max-width: 62ch; font-size: 12px; line-height: 1.7; color: var(--f-muted); }
+.fashion-widget-note { margin: 0 0 18px; max-width: 62ch; font-size: 12px; line-height: 1.7; color: var(--f-muted); }
 .nykaa-group + .nykaa-group { margin-top: clamp(32px, 5vw, 56px); }
-.nykaa-collection-head { align-items: center; margin-bottom: 8px; }
-.nykaa-collection-head h3 { margin: 0; font: 400 clamp(1.4rem, 2.6vw, 2rem)/1.2 var(--font-display); letter-spacing: -.02em; }
-.nykaa-suggestions { margin: 0 0 16px; max-width: 90ch; font-size: 12px; line-height: 1.9; color: var(--f-muted); }
-.nykaa-suggestions span:first-child { margin-right: 6px; font-weight: 600; color: #55534b; }
-.nykaa-suggestions .nykaa-sep { margin: 0 8px; color: #b9ad94; }
-.nykaa-controls { display: flex; gap: 10px; flex: none; }
-.nykaa-controls[hidden] { display: none; }
-.nykaa-controls button { display: grid; place-items: center; width: 44px; height: 44px; border: 1px solid var(--f-line); border-radius: 50%; background: #fffdf8; color: var(--f-ink); font-size: 18px; line-height: 1; cursor: pointer; transition: background .2s, color .2s; }
-.nykaa-controls button:hover:not(:disabled) { background: var(--f-ink); color: #fff; }
-.nykaa-controls button:disabled { opacity: .35; cursor: default; }
-.nykaa-rail { display: flex; gap: 16px; overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; padding: 4px 2px 18px; scrollbar-width: thin; scrollbar-color: var(--f-gold) transparent; }
-.nykaa-rail:focus-visible { outline: 3px solid var(--f-gold-ink); outline-offset: 4px; }
 .nykaa-product-shell { flex: 0 0 296px; display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 8px 7px 12px; scroll-snap-align: start; scroll-margin-top: 110px; background: #fffdf8; border: 1px solid rgba(150, 120, 70, .16); border-radius: 18px; }
 .nykaa-product-shell:target { border-color: var(--f-gold); box-shadow: 0 0 0 2px #a98a4f55; }
 .nykaa-product-shell iframe { display: block; border: 0; max-width: 100%; }
-.nykaa-explore { display: flex; justify-content: center; margin-top: 8px; }
-.nykaa-explore-link { display: inline-flex; align-items: center; justify-content: center; gap: 18px; min-height: 52px; padding: 14px 32px; background: var(--f-ink); border: 1px solid var(--f-ink); border-radius: 999px; color: #fff; font-size: 14px; font-weight: 600; letter-spacing: .03em; text-decoration: none; transition: background .2s; }
-.nykaa-explore-link:hover { background: #3a3832; color: #fff; text-decoration: none; }
-.nykaa-explore-link:focus-visible { outline: 3px solid var(--f-gold-ink); outline-offset: 4px; }
 /* /fashion/<category>/: every widget as search-style results. */
-.fashion-category-page { padding-bottom: clamp(40px, 6vw, 72px); }
-.fashion-category-head { padding: clamp(8px, 2vw, 24px) 0 clamp(20px, 3vw, 36px); }
-.fashion-category-head h1 { margin: 0 0 12px; font: 400 clamp(2.2rem, 5vw, 4rem)/1.05 var(--font-display); letter-spacing: -.035em; }
-.fashion-category-head > p:not(.sat-fashion-eyebrow):not(.fashion-widget-note) { margin: 0 0 14px; max-width: 62ch; font-size: 16px; color: var(--f-muted); }
 /* Women / Men toggle at the top of a category page. */
 .nykaa-audience { display: inline-flex; gap: 4px; padding: 4px; margin: 6px 0 32px; border: 1px solid var(--f-line); border-radius: 999px; background: #fffdf8; }
 .nykaa-audience a { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 46px; padding: 0 30px; border-radius: 999px; color: var(--f-ink); font-size: 14px; font-weight: 600; letter-spacing: .05em; text-decoration: none; transition: background .2s, color .2s; }
@@ -171,7 +147,6 @@
 .nykaa-results-title { margin: 0 0 16px; font: 400 clamp(1.5rem, 3vw, 2.2rem)/1.2 var(--font-display); letter-spacing: -.02em; }
 .nykaa-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(296px, 1fr)); gap: 16px; justify-items: center; }
 .nykaa-grid .nykaa-product-shell { flex: none; width: 100%; max-width: 330px; }
-.nykaa-grid + .visually-hidden + .fashion-back, .fashion-category-page > .fashion-back { margin-top: 36px; }
 .nykaa-get { display: flex; align-items: center; justify-content: center; gap: 12px; width: 100%; min-height: 46px; padding: 12px 18px; background: var(--f-ink); border: 1px solid var(--f-ink); border-radius: 999px; color: #fff; font-size: 13px; font-weight: 600; letter-spacing: .02em; text-decoration: none; transition: background .2s; }
 .nykaa-get:hover { background: #3a3832; color: #fff; text-decoration: none; }
 .nykaa-get:focus-visible { outline: 3px solid var(--f-gold-ink); outline-offset: 3px; }
@@ -187,13 +162,10 @@
   .fashion-widget-banner.fashion-tint-footwear .fashion-art { object-position: 50% 94%; }
   .fashion-widget-banner.fashion-tint-westernwear .fashion-art { left: 30%; width: 50%; }
   .fashion-widget-banner.fashion-tint-westernwear .fashion-art + .fashion-art { left: 72%; }
-  .fashion-widget-bar { flex-direction: column; align-items: flex-start; gap: 12px; }
-  .nykaa-rail { margin: 0 calc(-1 * var(--fpad)); padding: 4px var(--fpad) 18px; scroll-padding-left: var(--fpad); }
   .nykaa-product-shell { flex-basis: min(86vw, 312px); }
   .nykaa-grid { grid-template-columns: minmax(0, 1fr); }
   .nykaa-grid .nykaa-product-shell { max-width: 340px; }
 }
-@media (prefers-reduced-motion: reduce) { .nykaa-controls button { transition: none; } }
 
 /* Featured Brands: understated, derived from product data; a clear fallback until real data exists. */
 .fashion-brands { border-top: 1px solid var(--f-line); padding: clamp(40px, 6vw, 72px) 0; }

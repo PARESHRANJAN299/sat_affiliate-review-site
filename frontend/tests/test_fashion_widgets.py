@@ -132,19 +132,34 @@ class WidgetTests(unittest.TestCase):
 
 
 class WidgetPageTests(unittest.TestCase):
-    def build(self, widgets):
+    def source(self, widgets, category_pages=None):
         directory = tempfile.TemporaryDirectory()
         self.addCleanup(directory.cleanup)
         src = Path(directory.name)
         (src / 'fashion').mkdir()
         (src / 'fashion/catalog.json').write_text(json.dumps({'approved_image_hosts': [], 'approved_affiliate_hosts': [], 'products': []}))
         if widgets is not None:
-            (src / 'fashion/widgets.json').write_text(json.dumps(base(widgets)))
-        return fashion.page(src, lambda *args: '')
+            data = base(widgets)
+            if category_pages is not None:
+                data['category_pages'] = category_pages
+            (src / 'fashion/widgets.json').write_text(json.dumps(data))
+        return src
+
+    def build(self, widgets, category_pages=None):
+        return fashion.page(self.source(widgets, category_pages), lambda *args: '')
 
     def record(self, product_id='28560370', url=FIRST_URL, **extra):
         return {'id': f'nykaa-{product_id}', 'product_id': product_id, 'category': 'womens-kurtas', 'source': 'nykaa-fashion', 'widget_url': url,
                 'width': 280, 'height': 360, 'active': True, 'featured': False, **extra}
+
+    def widget(self, pid, category='womens-kurtas', **extra):
+        return self.record(pid, FIRST_URL.replace('28560370', pid), category=category, **extra)
+
+    def panel(self, body, slug):
+        """The markup of one category panel (from its section to the next section or the brands block)."""
+        start = body.index(f'id="{slug}" data-category-panel')
+        ends = [i for i in (body.find('<section class="fashion-section', start + 10), body.find('<section class="fashion-brands', start)) if i != -1]
+        return body[start:min(ends)]
 
     def test_widget_renders_official_iframe_with_unchanged_url(self):
         page, problems = self.build([self.record()])
@@ -157,10 +172,23 @@ class WidgetPageTests(unittest.TestCase):
         self.assertIn('loading="lazy"', body.split('<iframe')[1])
         self.assertIn('height:360px;width:280px;overflow:hidden;', body)
 
-    def test_kurta_section_is_retailer_powered_and_others_stay_empty(self):
+    def test_a_category_lists_every_widget_in_its_panel_with_no_rail_button_or_extra_page(self):
+        many = [self.widget(str(1000 + n)) for n in range(100)]
+        pages, problems = fashion.pages(self.source(many), lambda *args: '', 'https://sat.net.in')
+        self.assertEqual((problems, [p['url'] for p in pages]), ([], ['/fashion/']))  # no separate page per category
+        body = pages[0]['_body']
+        kurtas = self.panel(body, 'womens-kurtas')
+        self.assertEqual(kurtas.count('<iframe'), 100)  # all of them, not a preview
+        self.assertEqual(len(set(re.findall(r'id="(pick-\d+)"', kurtas))), 100)
+        self.assertEqual(kurtas.count('loading="lazy" style="height:360px'), 100)
+        self.assertIn('data-widget-grid', kurtas)
+        for removed in ('data-widget-rail', 'nykaa-explore', 'Explore Kurtis', 'data-rail-controls'):
+            self.assertNotIn(removed, body)
+
+    def test_kurta_panel_is_retailer_powered_and_others_stay_empty(self):
         page, _ = self.build([self.record()])
         body = page['_body']
-        kurtas = body.split('id="womens-kurtas"')[1].split('id="westernwear"')[0]
+        kurtas = self.panel(body, 'womens-kurtas')
         self.assertIn('THE KURTA EDIT', kurtas)
         self.assertIn('Elegant Indian styles selected for everyday and occasion wear.', kurtas)
         self.assertIn('/images/fashion/models/ivory-banner-1536.jpg', kurtas)
@@ -169,7 +197,7 @@ class WidgetPageTests(unittest.TestCase):
         self.assertEqual(body.count('<iframe'), 1)
 
     def test_each_card_has_a_sat_share_link_and_no_whatsapp_button(self):
-        page, _ = self.build([self.record(), self.record('27826893', FIRST_URL.replace('28560370', '27826893'))])
+        page, _ = self.build([self.record(), self.widget('27826893')])
         body = page['_body']
         self.assertEqual(body.count('class="nykaa-product-shell"'), 2)
         for pid in ('28560370', '27826893'):
@@ -177,19 +205,13 @@ class WidgetPageTests(unittest.TestCase):
             self.assertIn(f'data-url="https://sat.net.in/fashion/#pick-{pid}"', body)
         self.assertEqual(body.count('data-copy-pick'), 2)
         self.assertEqual(body.count('data-share-pick'), 2)
-        self.assertNotIn('wa.me', body)
-        self.assertNotIn('WhatsApp', body)
-        self.assertIn('data-widget-rail', body)
-        self.assertNotIn('nykaa-get', body)  # no button until an approved affiliate_url is supplied
+        for absent in ('wa.me', 'WhatsApp', 'nykaa-get'):
+            self.assertNotIn(absent, body)
 
     def test_get_it_on_nykaa_button_renders_with_sponsored_link(self):
         link = 'https://www.nykaafashion.example/p/28560370?aff=1&x=2'
-        directory = tempfile.TemporaryDirectory()
-        self.addCleanup(directory.cleanup)
-        src = Path(directory.name)
-        (src / 'fashion').mkdir()
-        (src / 'fashion/catalog.json').write_text(json.dumps({'approved_image_hosts': [], 'approved_affiliate_hosts': [], 'products': []}))
-        data = base([self.record(affiliate_url=link)])
+        src = self.source([self.record(affiliate_url=link)])
+        data = json.loads((src / 'fashion/widgets.json').read_text())
         data['allowed_product_link_hosts'] = ['www.nykaafashion.example']
         (src / 'fashion/widgets.json').write_text(json.dumps(data))
         body = fashion.page(src, lambda *args: '')[0]['_body']
@@ -197,244 +219,81 @@ class WidgetPageTests(unittest.TestCase):
         self.assertIn('href="https://www.nykaafashion.example/p/28560370?aff=1&amp;x=2" target="_blank" rel="sponsored nofollow noopener"', body)
         self.assertIn('Get it on Nykaa', body)
 
-    def test_a_hundred_widgets_preview_on_landing_and_all_list_on_category_page(self):
-        many = [self.record(str(1000 + n), FIRST_URL.replace('28560370', str(1000 + n))) for n in range(100)]
-        pages, problems = self.build_pages(many, collections=())
+    def test_audience_toggle_splits_women_and_men_inside_the_category_panel(self):
+        widgets = [self.widget('111', 'westernwear'), self.widget('222', 'westernwear', audience='women'), self.widget('333', 'westernwear', audience='men')]
+        page, problems = self.build(widgets, [{'category': 'westernwear', 'audience_toggle': True}])
         self.assertEqual(problems, [])
-        landing, category = pages[0], pages[1]
-        self.assertEqual(landing['_body'].count('<iframe'), fashion.WIDGET_RAIL_LIMIT)
-        self.assertEqual(category['_body'].count('<iframe'), 100)
-        self.assertEqual(category['_body'].count('loading="lazy" style="height:360px'), 100)
-        self.assertEqual(len(set(__import__('re').findall(r'id="(pick-\d+)"', category['_body']))), 100)
-        self.assertEqual(landing['js'], ['fashion-widgets'])
-        self.assertEqual(landing['_body'].count('class="nykaa-explore-link"'), 1)
-
-    def build_pages(self, widgets, collections=(COLLECTION,), category_pages=None):
-        directory = tempfile.TemporaryDirectory()
-        self.addCleanup(directory.cleanup)
-        src = Path(directory.name)
-        (src / 'fashion').mkdir()
-        (src / 'fashion/catalog.json').write_text(json.dumps({'approved_image_hosts': [], 'approved_affiliate_hosts': [], 'products': []}))
-        data = base(widgets, list(collections))
-        if category_pages is not None:
-            data['category_pages'] = category_pages
-        (src / 'fashion/widgets.json').write_text(json.dumps(data))
-        return fashion.pages(src, lambda *args: '', 'https://sat.net.in')
-
-    CATEGORY_PAGE = {'category': 'womens-kurtas', 'h1': 'Women’s Kurtas', 'intro': 'Intro text.', 'meta_title': 'Women’s Kurtas and Kurta Sets from Nykaa Fashion',
-                     'meta_description': 'A description.', 'main_heading': 'Search results for Women’s Kurtas', 'explore_label': 'Explore Kurtis'}
-
-    def test_landing_has_one_rail_and_one_explore_button(self):
-        second = self.record('27421822', FIRST_URL.replace('28560370', '27421822'), collection='kurta-sets-search')
-        pages, problems = self.build_pages([self.record(), second], category_pages=[self.CATEGORY_PAGE])
-        landing = pages[0]['_body']
-        self.assertEqual(problems, [])
-        self.assertEqual(landing.count('data-rail-group'), 1)
-        self.assertEqual(landing.count('data-widget-rail'), 1)
-        self.assertEqual(landing.count('<iframe'), 1)  # the collection widget is not on the landing rail
-        self.assertNotIn('<h3>', landing)
-        self.assertEqual(landing.count('class="nykaa-explore-link" href="/fashion/womens-kurtas/"'), 1)
-        self.assertIn('Explore Kurtis', landing)
-        self.assertEqual(landing.count(fashion.WIDGET_AFFILIATE_NOTE), 1)
-        self.assertEqual(landing.count('id="pick-28560370"'), 1)
-
-    def test_category_page_lists_everything_as_search_results(self):
-        second = self.record('27421822', FIRST_URL.replace('28560370', '27421822'), collection='kurta-sets-search')
-        pages, _ = self.build_pages([self.record(), second], category_pages=[self.CATEGORY_PAGE])
-        self.assertEqual([p['url'] for p in pages], ['/fashion/', '/fashion/womens-kurtas/'])
-        category = pages[1]
-        body = category['_body']
-        self.assertTrue(category['noindex'])
-        self.assertTrue(category['canonical_always'])
-        self.assertEqual(category['title'], 'Women’s Kurtas and Kurta Sets from Nykaa Fashion')
-        self.assertEqual(category['description'], 'A description.')
-        self.assertEqual(category['breadcrumbs'], [['Fashion Edit', '/fashion/'], ['Women’s Kurtas', '/fashion/womens-kurtas/']])
-        self.assertIn('{{breadcrumb}}', body)
-        self.assertEqual(body.count('<h1>'), 1)
-        self.assertEqual(body.count('<iframe'), 2)
-        self.assertEqual(body.count('data-widget-grid'), 2)
-        self.assertIn('Search results for Women’s Kurtas', body)
-        self.assertIn('Search results for Women’s kurtas set', body)
-        self.assertIn('Suggestions:', body)
-        self.assertEqual(body.count(fashion.WIDGET_AFFILIATE_NOTE), 1)
-        self.assertEqual(category['js'], ['fashion-widgets'])
-        for pid in ('28560370', '27421822'):  # shares point at this page, never the Nykaa link
-            self.assertIn(f'data-url="https://sat.net.in/fashion/womens-kurtas/#pick-{pid}"', body)
-        self.assertNotIn('wa.me', body)
-
-    def build_production_config_with(self, category, product_id='5550001'):
-        """Production category settings plus one widget of the given category (a stand-in widget, in a temporary copy)."""
-        directory = tempfile.TemporaryDirectory()
-        self.addCleanup(directory.cleanup)
-        src = Path(directory.name)
-        (src / 'fashion').mkdir()
-        (src / 'fashion/catalog.json').write_text(json.dumps({'approved_image_hosts': [], 'approved_affiliate_hosts': [], 'products': []}))
-        data = fashion.read_widgets(ROOT / 'src')
-        data['widgets'] = [{**self.record(product_id, FIRST_URL.replace('28560370', product_id)), 'category': category}]
-        (src / 'fashion/widgets.json').write_text(json.dumps(data))
-        return fashion.pages(src, lambda *args: '', 'https://sat.net.in')
-
-    def test_westernwear_gets_the_same_rail_button_and_page_as_kurtas(self):
-        pages, problems = self.build_production_config_with('westernwear')
-        self.assertEqual(problems, [])
-        self.assertEqual([p['url'] for p in pages], ['/fashion/', '/fashion/westernwear/'])
-        landing = pages[0]['_body']
-        western = landing.split('id="westernwear"')[1].split('id="indianwear"')[0]
-        self.assertIn('THE WESTERN EDIT', western)
-        self.assertIn('data-widget-rail', western)
-        self.assertNotIn(fashion.EMPTY_NOTE, western)
-        self.assertIn('class="nykaa-explore-link" href="/fashion/westernwear/">Explore Westernwear', western)
-        self.assertEqual(western.count('fashion-widget-banner'), 1)
-        for stem in ('pink-dress', 'orange-dress'):  # the banner shows both Westernwear models
-            self.assertIn(fashion.art_file(stem), western)
-        self.assertIn(fashion.EMPTY_NOTE, landing.split('id="womens-kurtas"')[1].split('id="westernwear"')[0])  # kurtas has no widgets in this fixture
-        page = pages[1]
-        self.assertEqual((page['title'], page['noindex']), ('Westernwear from Nykaa Fashion', True))
-        self.assertEqual(page['breadcrumbs'], [['Fashion Edit', '/fashion/'], ['Westernwear', '/fashion/westernwear/']])
-        self.assertIn('<h1>Westernwear</h1>', page['_body'])
-        self.assertIn('Women’s Westernwear', page['_body'])
-        self.assertIn('data-url="https://sat.net.in/fashion/westernwear/#pick-5550001"', page['_body'])
-
-    def test_production_category_settings_cover_every_collection(self):
-        configs = fashion.category_page_config(ROOT / 'src')
-        self.assertEqual(sorted(configs), sorted(slug for slug, *_ in fashion.SECTIONS))  # every collection has its category page settings
-        self.assertEqual(configs['westernwear']['explore_label'], 'Explore Westernwear')
-        self.assertEqual(fashion.validate_category_pages(fashion.read_widgets(ROOT / 'src'))[1], [])
-
-    def toggle_page(self, widgets, toggle=True):
-        directory = tempfile.TemporaryDirectory()
-        self.addCleanup(directory.cleanup)
-        src = Path(directory.name)
-        (src / 'fashion').mkdir()
-        (src / 'fashion/catalog.json').write_text(json.dumps({'approved_image_hosts': [], 'approved_affiliate_hosts': [], 'products': []}))
-        data = base(widgets)
-        data['category_pages'] = [{'category': 'westernwear', 'h1': 'Westernwear', **({'audience_toggle': True} if toggle else {})}]
-        (src / 'fashion/widgets.json').write_text(json.dumps(data))
-        pages, problems = fashion.pages(src, lambda *args: '', 'https://sat.net.in')
-        return pages, problems
-
-    def western(self, pid, **extra):
-        return {**self.record(pid, FIRST_URL.replace('28560370', pid)), 'category': 'westernwear', **extra}
-
-    def test_audience_toggle_splits_women_and_men_with_default_women(self):
-        widgets = [self.western('111'), self.western('222', audience='women'), self.western('333', audience='men')]
-        pages, problems = self.toggle_page(widgets)
-        self.assertEqual(problems, [])
-        body = pages[1]['_body']
-        self.assertEqual(body.count('data-audience-tab='), 2)
-        self.assertIn('data-audience-tab="women" aria-current="true">Women <span>2</span>', body)
-        self.assertIn('data-audience-tab="men">Men <span>1</span>', body)
-        women, men = body.split('data-audience-panel="women"')[1].split('data-audience-panel="men"')
+        western = self.panel(page['_body'], 'westernwear')
+        self.assertEqual(western.count('data-audience-group'), 1)
+        self.assertIn('data-audience-tab="women" aria-current="true">Women <span>2</span>', western)
+        self.assertIn('data-audience-tab="men">Men <span>1</span>', western)
+        women, men = western.split('data-audience-panel="women"')[1].split('data-audience-panel="men"')
         self.assertEqual((women.count('class="nykaa-product-shell"'), men.count('class="nykaa-product-shell"')), (2, 1))
         self.assertIn('id="pick-333"', men)
-        self.assertIn('<h2 class="nykaa-results-title">Women’s Westernwear</h2>', body)
-        self.assertIn('<h2 class="nykaa-results-title">Men’s Westernwear</h2>', body)
-        self.assertEqual(body.count('<h1>'), 1)
-        self.assertLess(body.index('data-audience-tab="women"'), body.index('class="nykaa-product-shell"'))  # the toggle sits above every product
+        self.assertIn('Women’s Westernwear', western)
+        self.assertIn('Men’s Westernwear', western)
+        self.assertLess(western.index('data-audience-tab="women"'), western.index('class="nykaa-product-shell"'))  # the toggle sits above every product
 
-    def test_page_opens_on_the_first_audience_that_has_products(self):
-        pages, _ = self.toggle_page([self.western('111', audience='men'), self.western('222', audience='men')])
-        body = pages[1]['_body']
-        self.assertIn('data-audience-tab="men" aria-current="true">Men <span>2</span>', body)
-        self.assertNotIn('data-audience-tab="women" aria-current', body)
-        pages, _ = self.toggle_page([self.western('111'), self.western('333', audience='men')])
-        self.assertIn('data-audience-tab="women" aria-current="true"', pages[1]['_body'])
+    def test_each_category_has_its_own_toggle_with_unique_ids(self):
+        widgets = [self.widget('111', 'westernwear'), self.widget('222', 'footwear', audience='men')]
+        settings = [{'category': 'westernwear', 'audience_toggle': True}, {'category': 'footwear', 'audience_toggle': True}]
+        body = self.build(widgets, settings)[0]['_body']
+        self.assertEqual(body.count('data-audience-group'), 2)
+        ids = re.findall(r'<section class="nykaa-panel" id="([\w-]+)"', body)
+        self.assertEqual(sorted(ids), ['footwear-men', 'footwear-women', 'westernwear-men', 'westernwear-women'])
 
-    def test_every_remaining_category_is_set_up_like_the_others(self):
-        expected = {'indianwear': ('THE INDIAN EDIT', 'Explore Indianwear', 'indianwear'), 'active-sports': ('THE ACTIVE EDIT', 'Explore Active &amp; Sports', 'active-sports'),
-                    'bags': ('THE BAG EDIT', 'Explore Bags', 'bags'), 'footwear': ('THE FOOTWEAR EDIT', 'Explore Footwear', 'footwear')}
-        for slug, (label, button, _) in expected.items():
-            with self.subTest(slug=slug):
-                directory = tempfile.TemporaryDirectory()
-                self.addCleanup(directory.cleanup)
-                src = Path(directory.name)
-                (src / 'fashion').mkdir()
-                (src / 'fashion/catalog.json').write_text(json.dumps({'approved_image_hosts': [], 'approved_affiliate_hosts': [], 'products': []}))
-                data = fashion.read_widgets(ROOT / 'src')
-                data['widgets'] = [{**self.record('555', FIRST_URL.replace('28560370', '555')), 'category': slug, 'audience': 'men'}]
-                (src / 'fashion/widgets.json').write_text(json.dumps(data))
-                pages, problems = fashion.pages(src, lambda *args: '', 'https://sat.net.in')
-                self.assertEqual((problems, [p['url'] for p in pages]), ([], ['/fashion/', f'/fashion/{slug}/']))
-                section = pages[0]['_body'].split(f'id="{slug}"')[1].split('</section>')[0]
-                self.assertIn(label, section)
-                self.assertIn(button, section)
-                self.assertIn(f'fashion-widget-banner fashion-tint-{slug}', section)
-                self.assertIn(f'href="/fashion/{slug}/"', section)
-                self.assertIn('data-audience-tab="men" aria-current="true">Men <span>1</span>', pages[1]['_body'])
-                self.assertTrue(pages[1]['noindex'])
-
-    def test_footwear_is_set_up_for_men_like_the_other_categories(self):
-        config = fashion.category_page_config(ROOT / 'src')['footwear']
-        self.assertTrue(config['audience_toggle'])
-        self.assertEqual(config['explore_label'], 'Explore Footwear')
-        self.assertEqual(fashion.EDIT_LABELS['footwear'], 'THE FOOTWEAR EDIT')
-        item = {**self.record('777', FIRST_URL.replace('28560370', '777')), 'category': 'footwear', 'audience': 'men'}
-        directory = tempfile.TemporaryDirectory()
-        self.addCleanup(directory.cleanup)
-        src = Path(directory.name)
-        (src / 'fashion').mkdir()
-        (src / 'fashion/catalog.json').write_text(json.dumps({'approved_image_hosts': [], 'approved_affiliate_hosts': [], 'products': []}))
-        data = fashion.read_widgets(ROOT / 'src')
-        data['widgets'] = [item]
-        (src / 'fashion/widgets.json').write_text(json.dumps(data))
-        pages, problems = fashion.pages(src, lambda *args: '', 'https://sat.net.in')
-        self.assertEqual((problems, [p['url'] for p in pages]), ([], ['/fashion/', '/fashion/footwear/']))
-        landing = pages[0]['_body'].split('id="footwear"')[1].split('id="active-sports"')[0]
-        self.assertIn('THE FOOTWEAR EDIT', landing)
-        self.assertIn('Explore Footwear', landing)
-        self.assertIn('fashion-widget-banner fashion-tint-footwear', landing)
-        body = pages[1]['_body']
+    def test_a_toggle_opens_on_the_first_audience_that_has_products(self):
+        body = self.build([self.widget('111', 'footwear', audience='men')], [{'category': 'footwear', 'audience_toggle': True}])[0]['_body']
         self.assertIn('data-audience-tab="men" aria-current="true">Men <span>1</span>', body)
-        self.assertIn('Men’s Footwear', body)
+        self.assertNotIn('data-audience-tab="women" aria-current', body)
 
     def test_empty_audience_shows_a_note_not_fake_products(self):
-        pages, _ = self.toggle_page([self.western('111')])
-        body = pages[1]['_body']
-        men = body.split('data-audience-panel="men"')[1]
+        body = self.build([self.widget('111', 'westernwear')], [{'category': 'westernwear', 'audience_toggle': True}])[0]['_body']
+        men = body.split('data-audience-panel="men"')[1].split('</section>')[0]
         self.assertIn('data-audience-tab="men">Men <span>0</span>', body)
         self.assertNotIn('class="nykaa-product-shell"', men)
         self.assertIn('Men’s picks will appear here once approved Nykaa catalogue items are added.', men)
 
-    def test_no_toggle_without_the_setting_and_landing_is_unchanged(self):
-        pages, _ = self.toggle_page([self.western('111'), self.western('333', audience='men')], toggle=False)
-        self.assertNotIn('data-audience', pages[1]['_body'])
-        self.assertEqual(pages[1]['_body'].count('class="nykaa-product-shell"'), 2)
-        self.assertNotIn('data-audience', pages[0]['_body'])
+    def test_no_toggle_without_the_setting(self):
+        body = self.build([self.widget('111', 'westernwear'), self.widget('333', 'westernwear', audience='men')])[0]['_body']
+        self.assertNotIn('data-audience', body)
+        self.assertEqual(body.count('class="nykaa-product-shell"'), 2)
 
-    def test_audience_values_and_setting_are_validated(self):
+    def test_audience_values_and_settings_are_validated(self):
         self.assertTrue(fashion.validate_widgets(base([{**self.record(), 'audience': 'kids'}]))[1])
         self.assertEqual(fashion.validate_widgets(base([{**self.record(), 'audience': 'men'}]))[1], [])
-        entry = {'category': 'westernwear', 'audience_toggle': 'yes'}
-        self.assertTrue(fashion.validate_widgets({**base([self.record()]), 'category_pages': [entry]})[1])
+        for entry in ({'category': 'westernwear', 'audience_toggle': 'yes'}, {'category': 'nope'}, {'category': 'westernwear', 'h1': 'x'}):
+            self.assertTrue(fashion.validate_widgets({**base([self.record()]), 'category_pages': [entry]})[1], entry)
+        self.assertTrue(fashion.validate_widgets({**base([self.record()]), 'category_pages': [{'category': 'bags'}, {'category': 'bags'}]})[1])
+        self.assertTrue(fashion.validate_widgets({**base([self.record()]), 'category_pages': {}})[1])
 
-    def test_production_westernwear_page_has_the_toggle_and_labelled_women(self):
+    def test_production_settings_and_labels(self):
+        settings = fashion.category_page_config(ROOT / 'src')
+        self.assertEqual(sorted(settings), sorted(slug for slug, *_ in fashion.SECTIONS if slug != 'womens-kurtas'))
+        self.assertTrue(all(value == {'audience_toggle': True} for value in settings.values()))
         data = fashion.read_widgets(ROOT / 'src')
-        self.assertTrue(fashion.category_page_config(ROOT / 'src')['westernwear']['audience_toggle'])
         western = [w for w in data['widgets'] if w['category'] == 'westernwear']
         self.assertTrue(western)
         self.assertTrue(all(w.get('audience') in ('women', 'men') for w in western))
+        for slug, label in {'womens-kurtas': 'THE KURTA EDIT', 'westernwear': 'THE WESTERN EDIT', 'footwear': 'THE FOOTWEAR EDIT', 'indianwear': 'THE INDIAN EDIT',
+                            'active-sports': 'THE ACTIVE EDIT', 'bags': 'THE BAG EDIT'}.items():
+            self.assertEqual(fashion.EDIT_LABELS[slug], label)
 
-    def test_category_page_defaults_and_no_page_without_widgets(self):
-        pages, _ = self.build_pages([self.record()], collections=(), category_pages=None)
-        self.assertEqual(len(pages), 2)
-        self.assertEqual(pages[1]['title'], 'Women’s Kurtas from Nykaa Fashion')
-        self.assertIn('Search results for Women’s Kurtas', pages[1]['_body'])
-        self.assertEqual(len(self.build_pages([], collections=())[0]), 1)
-
-    def test_all_widgets_in_collections_still_fill_the_landing_rail(self):
-        only = self.record(collection='kurta-sets-search')
-        pages, _ = self.build_pages([only])
-        self.assertEqual(pages[0]['_body'].count('<iframe'), 1)
-        self.assertEqual(pages[0]['_body'].count(fashion.WIDGET_AFFILIATE_NOTE), 1)
-
-    def test_category_page_fields_are_validated(self):
-        ok = {'category': 'womens-kurtas', 'h1': 'Women’s Kurtas'}
-        self.assertEqual(fashion.validate_widgets({**base([self.record()]), 'category_pages': [ok]})[1], [])
-        for name, entry in {'unknown category': {'category': 'nope'}, 'extra field': {**ok, 'html': '<b>'}, 'long description': {**ok, 'meta_description': 'x' * 200},
-                            'empty': {**ok, 'h1': ' '}, 'not text': {**ok, 'intro': 5}}.items():
-            self.assertTrue(fashion.validate_widgets({**base([self.record()]), 'category_pages': [entry]})[1], name)
-        self.assertTrue(fashion.validate_widgets({**base([self.record()]), 'category_pages': [ok, ok]})[1])
-        self.assertTrue(fashion.validate_widgets({**base([self.record()]), 'category_pages': {}})[1])
+    def test_every_category_is_set_up_the_same_way(self):
+        for slug, label in {'indianwear': 'THE INDIAN EDIT', 'active-sports': 'THE ACTIVE EDIT', 'bags': 'THE BAG EDIT', 'footwear': 'THE FOOTWEAR EDIT'}.items():
+            with self.subTest(slug=slug):
+                src = self.source([self.widget('555', slug, audience='men')])
+                data = json.loads((src / 'fashion/widgets.json').read_text())
+                data['category_pages'] = fashion.read_widgets(ROOT / 'src')['category_pages']
+                (src / 'fashion/widgets.json').write_text(json.dumps(data))
+                pages, problems = fashion.pages(src, lambda *args: '', 'https://sat.net.in')
+                self.assertEqual((problems, [p['url'] for p in pages]), ([], ['/fashion/']))
+                section = self.panel(pages[0]['_body'], slug)
+                self.assertIn(label, section)
+                self.assertIn(f'fashion-widget-banner fashion-tint-{slug}', section)
+                self.assertIn('data-audience-tab="men" aria-current="true">Men <span>1</span>', section)
+                self.assertNotIn('Explore', section)
+                self.assertTrue(pages[0]['noindex'])
 
     def test_disclosure_appears_only_with_widgets(self):
         with_widgets, _ = self.build([self.record()])
@@ -442,7 +301,7 @@ class WidgetPageTests(unittest.TestCase):
         self.assertEqual(with_widgets['_body'].count(fashion.WIDGET_AFFILIATE_NOTE), 1)
         self.assertIn('data-disclosure="temporary"', with_widgets['_body'])
         self.assertNotIn(fashion.WIDGET_AFFILIATE_NOTE, without['_body'])
-        self.assertIn(fashion.EMPTY_NOTE, without['_body'].split('id="womens-kurtas"')[1].split('id="westernwear"')[0])
+        self.assertIn(fashion.EMPTY_NOTE, self.panel(without['_body'], 'womens-kurtas'))
 
     def test_no_retailer_data_is_copied_into_the_page(self):
         body = self.build([self.record()])[0]['_body']

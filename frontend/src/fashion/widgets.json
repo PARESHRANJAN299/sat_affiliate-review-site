@@ -1312,62 +1312,23 @@
   ],
   "category_pages": [
     {
-      "category": "womens-kurtas",
-      "h1": "Women’s Kurtas",
-      "intro": "Elegant Indian styles selected for everyday and occasion wear.",
-      "meta_title": "Women’s Kurtas and Kurta Sets from Nykaa Fashion",
-      "meta_description": "Browse women’s kurtas and kurta sets selected by SAT from Nykaa Fashion, for everyday and occasion wear.",
-      "main_heading": "Search results for Women’s Kurtas",
-      "explore_label": "Explore Kurtis"
-    },
-    {
       "category": "westernwear",
-      "h1": "Westernwear",
-      "intro": "Modern pieces for everyday style.",
-      "meta_title": "Westernwear from Nykaa Fashion",
-      "meta_description": "Browse westernwear selected by SAT from Nykaa Fashion, for everyday style.",
-      "main_heading": "Search results for Westernwear",
-      "explore_label": "Explore Westernwear",
       "audience_toggle": true
     },
     {
       "category": "footwear",
-      "h1": "Footwear",
-      "intro": "Comfort for every step.",
-      "meta_title": "Footwear from Nykaa Fashion",
-      "meta_description": "Browse footwear selected by SAT from Nykaa Fashion, for comfort in every step.",
-      "main_heading": "Search results for Footwear",
-      "explore_label": "Explore Footwear",
       "audience_toggle": true
     },
     {
       "category": "indianwear",
-      "h1": "Indianwear",
-      "intro": "Tradition with a personal touch.",
-      "meta_title": "Indianwear from Nykaa Fashion",
-      "meta_description": "Browse Indianwear selected by SAT from Nykaa Fashion, with tradition and a personal touch.",
-      "main_heading": "Search results for Indianwear",
-      "explore_label": "Explore Indianwear",
       "audience_toggle": true
     },
     {
       "category": "active-sports",
-      "h1": "Active & Sports",
-      "intro": "Move comfortably. Feel like yourself.",
-      "meta_title": "Active and Sportswear from Nykaa Fashion",
-      "meta_description": "Browse active and sportswear selected by SAT from Nykaa Fashion, to move comfortably.",
-      "main_heading": "Search results for Active & Sports",
-      "explore_label": "Explore Active & Sports",
       "audience_toggle": true
     },
     {
       "category": "bags",
-      "h1": "Bags",
-      "intro": "Carry what matters.",
-      "meta_title": "Bags from Nykaa Fashion",
-      "meta_description": "Browse bags selected by SAT from Nykaa Fashion, for everything you carry.",
-      "main_heading": "Search results for Bags",
-      "explore_label": "Explore Bags",
       "audience_toggle": true
     }
   ]

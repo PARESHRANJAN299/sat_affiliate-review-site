@@ -38,34 +38,21 @@
     window.addEventListener('hashchange', function () { var name = categoryFromHash(); if (name) showCategory(name); });
   }
 
-  // Women / Men toggle: without JavaScript both lists are shown one after the other.
-  var tabs = document.querySelectorAll('[data-audience-tab]');
-  var panels = document.querySelectorAll('[data-audience-panel]');
-  function showAudience(name) {
-    panels.forEach(function (panel) { panel.hidden = panel.dataset.audiencePanel !== name; });
-    tabs.forEach(function (tab) {
-      if (tab.dataset.audienceTab === name) tab.setAttribute('aria-current', 'true'); else tab.removeAttribute('aria-current');
-    });
-  }
-  function audienceFromHash() {
-    var id = location.hash.slice(1);
-    if (!id) return null;
-    var target = document.getElementById(id);
-    var panel = target && target.closest ? target.closest('[data-audience-panel]') : null;
-    if (panel) return panel.dataset.audiencePanel;
-    return document.querySelector('[data-audience-tab="' + id.replace(/[^a-z-]/g, '') + '"]') ? id : null;
-  }
-  if (tabs.length) {
-    var first = document.querySelector('[data-audience-tab][aria-current]') || tabs[0];
-    showAudience(audienceFromHash() || first.dataset.audienceTab);
-    tabs.forEach(function (tab) {
-      tab.addEventListener('click', function (event) {
-        event.preventDefault();
-        showAudience(tab.dataset.audienceTab);
-        try { history.replaceState(null, '', '#' + tab.dataset.audienceTab); } catch (error) { /* the toggle still works */ }
+  // Women / Men toggle inside a category panel: each toggle works on its own list. Without JavaScript both lists show one after the other.
+  document.querySelectorAll('[data-audience-group]').forEach(function (group) {
+    var tabs = group.querySelectorAll('[data-audience-tab]');
+    var panels = group.querySelectorAll('[data-audience-panel]');
+    group.showAudience = function (name) {
+      panels.forEach(function (panel) { panel.hidden = panel.dataset.audiencePanel !== name; });
+      tabs.forEach(function (tab) {
+        if (tab.dataset.audienceTab === name) tab.setAttribute('aria-current', 'true'); else tab.removeAttribute('aria-current');
       });
+    };
+    group.showAudience((group.querySelector('[data-audience-tab][aria-current]') || tabs[0]).dataset.audienceTab);
+    tabs.forEach(function (tab) {
+      tab.addEventListener('click', function (event) { event.preventDefault(); group.showAudience(tab.dataset.audienceTab); });
     });
-  }
+  });
 
   var rails = document.querySelectorAll('[data-widget-rail], [data-widget-grid]');
   if (!rails.length) return;
@@ -161,8 +148,9 @@
     if (!target || !target.classList.contains('nykaa-product-shell')) return;
     var cat = target.closest('[data-category-panel]');
     if (cat && cat.hidden) showCategory(cat.dataset.categoryPanel);
-    var panel = target.closest('[data-audience-panel]');
-    if (panel && panel.hidden) showAudience(panel.dataset.audiencePanel);
+    var audience = target.closest('[data-audience-panel]');
+    var group = target.closest('[data-audience-group]');
+    if (audience && audience.hidden && group && group.showAudience) group.showAudience(audience.dataset.audiencePanel);
     target.scrollIntoView({ inline: 'center', block: 'center' });
   }
   window.addEventListener('hashchange', reveal);

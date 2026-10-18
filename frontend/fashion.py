@@ -39,14 +39,12 @@ ART_ALT = {'ivory-kurta': 'Editorial image: a woman in an ivory floral kurta set
 # Easy-to-replace wording shown beside the first Nykaa widgets.
 WIDGET_AFFILIATE_NOTE = 'This section contains affiliate links. SAT may earn a commission from qualifying purchases at no extra cost to you.'
 EDIT_LABELS = {'womens-kurtas': 'THE KURTA EDIT', 'westernwear': 'THE WESTERN EDIT', 'footwear': 'THE FOOTWEAR EDIT', 'indianwear': 'THE INDIAN EDIT', 'active-sports': 'THE ACTIVE EDIT', 'bags': 'THE BAG EDIT'}
-# The /fashion/ rail is a short preview; the category page lists every widget.
-WIDGET_RAIL_LIMIT = 12
 WIDGET_KEYS = {'id', 'product_id', 'category', 'source', 'widget_url', 'width', 'height', 'active', 'featured', 'collection', 'affiliate_url', 'audience'}
 # A category page can split its widgets by audience (a Women / Men toggle). Widgets without an audience count as women's.
 AUDIENCES = (('women', 'Women'), ('men', 'Men'))
 DEFAULT_AUDIENCE = 'women'
 COLLECTION_KEYS = {'id', 'category', 'title', 'suggestions'}
-CATEGORY_PAGE_KEYS = {'category', 'h1', 'intro', 'meta_title', 'meta_description', 'main_heading', 'explore_label', 'audience_toggle'}
+CATEGORY_PAGE_KEYS = {'category', 'audience_toggle'}
 WIDGET_URL_CHARS = re.compile(r'[A-Za-z0-9._~:/?&=%+-]+')
 EMPTY_NOTE = 'Products will appear here once approved Nykaa catalogue items are added.'
 BRANDS_EMPTY_NOTE = 'Brands will appear here once approved Nykaa catalogue items are added.'
@@ -193,29 +191,23 @@ def validate_collections(data):
 
 
 def validate_category_pages(data):
-    """Owner-editable SEO fields for each retailer-powered category page (/fashion/<category>/)."""
+    """Per-category display settings. Today only audience_toggle (a Women / Men toggle inside that category's panel)."""
     entries = data.get('category_pages', [])
     if not isinstance(entries, list):
         return {}, ['fashion widgets: category_pages must be a list']
     out, problems = {}, []
-    limits = {'h1': 80, 'intro': 240, 'meta_title': 70, 'meta_description': 160, 'main_heading': 120, 'explore_label': 40}
     for entry in entries:
         if not isinstance(entry, dict) or set(entry) - CATEGORY_PAGE_KEYS:
-            problems.append('fashion widgets: each category page must be an object with only ' + ', '.join(sorted(CATEGORY_PAGE_KEYS)))
+            problems.append('fashion widgets: each category setting must be an object with only ' + ', '.join(sorted(CATEGORY_PAGE_KEYS)))
             continue
         slug = category_slug(entry.get('category'))
         if not slug or slug in out:
-            problems.append(f'fashion category page {entry.get("category")!r}: unknown or duplicate category')
+            problems.append(f'fashion category setting {entry.get("category")!r}: unknown or duplicate category')
             continue
-        bad = [k for k, limit in limits.items() if k in entry and (not isinstance(entry[k], str) or not entry[k].strip() or len(entry[k]) > limit)]
         if 'audience_toggle' in entry and not isinstance(entry['audience_toggle'], bool):
-            bad.append('audience_toggle')
-        if bad:
-            problems.append(f'fashion category page {slug}: {bad} must be non-empty text within the length limit (audience_toggle must be true or false)')
+            problems.append(f'fashion category setting {slug}: audience_toggle must be true or false')
             continue
-        out[slug] = {k: entry[k].strip() for k in limits if k in entry}
-        if entry.get('audience_toggle'):
-            out[slug]['audience_toggle'] = True
+        out[slug] = {'audience_toggle': True} if entry.get('audience_toggle') else {}
     return out, problems
 
 
@@ -329,76 +321,40 @@ def widget_shell(widget, title='', site_url=SITE_URL, page_path='/fashion/'):
             f'<button type="button" data-share-pick data-url="{esc(link)}" data-title="{esc(title)}" hidden>Share</button></div></article>')
 
 
-def widget_controls():
-    return ('<div class="nykaa-controls" data-rail-controls hidden><button type="button" data-rail-prev aria-label="Scroll picks left">←</button>'
-            '<button type="button" data-rail-next aria-label="Scroll picks right">→</button></div>')
+def widget_group(head, items, label, title, site_url, page_path='/fashion/'):
+    """Every widget in the list as a grid (lazy-loaded). The official Nykaa cards stay Nykaa's; SAT only wraps them."""
+    return (f'<div class="nykaa-group" data-rail-group>{head}<div data-widget-grid class="nykaa-grid" aria-label="{esc(label)}">'
+            + ''.join(widget_shell(item, title, site_url, page_path) for item in items) + '</div><p class="visually-hidden" role="status" data-widget-status></p></div>')
 
 
-def widget_suggestions(texts):
-    if not texts:
-        return ''
-    return ('<p class="nykaa-suggestions"><span>Suggestions:</span> ' + '<span class="nykaa-sep" aria-hidden="true">|</span>'.join(f'<span>{esc(text)}</span>' for text in texts) + '</p>')
+def audience_split(slug, title, items, site_url, page_path='/fashion/'):
+    """A Women / Men toggle inside a category panel, one list per audience (widgets without an audience count as women's)."""
+    counts = {key: sum(1 for item in items if item.get('audience', DEFAULT_AUDIENCE) == key) for key, _ in AUDIENCES}
+    first = next((key for key, _ in AUDIENCES if counts[key]), AUDIENCES[0][0])  # open on the first list that has products
+    tabs, panels = [], []
+    for key, name in AUDIENCES:
+        members = [item for item in items if item.get('audience', DEFAULT_AUDIENCE) == key]
+        current = ' aria-current="true"' if key == first else ''
+        panel_id = f'{slug}-{key}'
+        tabs.append(f'<a href="#{panel_id}" data-audience-tab="{key}"{current}>{esc(name)} <span>{len(members)}</span></a>')
+        heading = f'{name}’s {title}'
+        head = f'<h3 class="nykaa-results-title">{esc(heading)}</h3>'
+        inside = (widget_group(head, members, f'{heading} from Nykaa Fashion', title, site_url, page_path) if members else
+                  f'{head}<p class="fashion-empty-note nykaa-audience-empty">{esc(name)}’s picks will appear here once approved Nykaa catalogue items are added.</p>')
+        panels.append(f'<section class="nykaa-panel" id="{panel_id}" data-audience-panel="{key}" aria-label="{esc(heading)}">{inside}</section>')
+    return f'<div data-audience-group><nav class="nykaa-audience" aria-label="Show {esc(title)} for">' + ''.join(tabs) + '</nav>' + ''.join(panels) + '</div>'
 
 
-def widget_group(head, items, label, title, site_url, extra='', tail='', page_path='/fashion/', grid=False):
-    kind = 'data-widget-grid class="nykaa-grid"' if grid else 'data-widget-rail class="nykaa-rail" tabindex="0" role="region"'
-    return (f'<div class="nykaa-group" data-rail-group>{head}{extra}<div {kind} aria-label="{esc(label)}">'
-            + ''.join(widget_shell(item, title, site_url, page_path) for item in items) + f'</div>{tail}<p class="visually-hidden" role="status" data-widget-status></p></div>')
-
-
-def category_page_url(slug):
-    return f'/fashion/{slug}/'
-
-
-def render_widgets(slug, items, title='', site_url=SITE_URL, collections=(), explore_label=None):
-    """The collection's home on /fashion/: a wide SAT editorial banner, the replaceable affiliate note and ONE left-to-right rail of
-    official Nykaa widgets, with a single button to the full category page where every widget is listed."""
+def render_widgets(slug, items, title='', site_url=SITE_URL, config=None):
+    """A collection's panel on /fashion/: a wide SAT editorial banner, the replaceable affiliate note and EVERY official Nykaa widget of the
+    collection (split into Women / Men lists where the category is set up that way). There is no separate page per category."""
     banner = f'<figure class="fashion-widget-banner fashion-tint-{slug}">{art_picture(slug, "(min-width: 900px) 1232px, 100vw", stem=BANNER_STEMS.get(slug))}</figure>'
     note = f'<p class="fashion-widget-note" data-disclosure="temporary">{esc(WIDGET_AFFILIATE_NOTE)}</p>'
-    rail = ([item for item in items if not item.get('collection')] or items)[:WIDGET_RAIL_LIMIT]
-    button = (f'<div class="nykaa-explore"><a class="nykaa-explore-link" href="{category_page_url(slug)}">{esc(explore_label or "Explore " + title)} '
-              '<span aria-hidden="true">→</span></a></div>')
-    return banner + widget_group(f'<div class="fashion-widget-bar">{note}{widget_controls()}</div>', rail, f'{title} picks from Nykaa Fashion', title, site_url, tail=button)
-
-
-def category_page(slug, title, items, collections, config, site_url=SITE_URL):
-    """/fashion/<category>/: every widget of the category in one place, laid out as search results (SEO-ready, kept noindex for now)."""
-    url = category_page_url(slug)
-    h1 = config.get('h1', title)
-    intro = config.get('intro') or next((section[3] for section in SECTIONS if section[0] == slug), '')
-    description = config.get('meta_description') or f'{title} selected by SAT from Nykaa Fashion.'
-    main = [item for item in items if not item.get('collection')]
-    groups = []
-    if config.get('audience_toggle'):
-        tabs, panels = [], []
-        counts = {key: sum(1 for item in main if item.get('audience', DEFAULT_AUDIENCE) == key) for key, _ in AUDIENCES}
-        first = next((key for key, _ in AUDIENCES if counts[key]), AUDIENCES[0][0])  # open on the first list that has products
-        for key, name in AUDIENCES:
-            members = [item for item in main if item.get('audience', DEFAULT_AUDIENCE) == key]
-            current = ' aria-current="true"' if key == first else ''
-            tabs.append(f'<a href="#{key}" data-audience-tab="{key}"{current}>{esc(name)} <span>{len(members)}</span></a>')
-            heading = f'{name}’s {title}'
-            inside = (widget_group(f'<h2 class="nykaa-results-title">{esc(heading)}</h2>', members, f'{heading} from Nykaa Fashion', title, site_url, page_path=url, grid=True)
-                      if members else f'<h2 class="nykaa-results-title">{esc(heading)}</h2><p class="fashion-empty-note nykaa-audience-empty">{esc(name)}’s picks will appear here once approved Nykaa catalogue items are added.</p>')
-            panels.append(f'<section class="nykaa-panel" id="{key}" data-audience-panel="{key}" aria-label="{esc(heading)}">{inside}</section>')
-        groups.append(f'<nav class="nykaa-audience" aria-label="Show {esc(title)} for">' + ''.join(tabs) + '</nav>' + ''.join(panels))
-    elif main:
-        heading = config.get('main_heading', f'Search results for {title}')
-        groups.append(widget_group(f'<h2 class="nykaa-results-title">{esc(heading)}</h2>', main, f'{heading} from Nykaa Fashion', title, site_url, page_path=url, grid=True))
-    for collection in collections:
-        members = [item for item in items if item.get('collection') == collection['id']]
-        if members:
-            groups.append(widget_group(f'<h2 class="nykaa-results-title">{esc(collection["title"])}</h2>', members, f'{collection["title"]} from Nykaa Fashion', title, site_url,
-                                       extra=widget_suggestions(collection['suggestions']), page_path=url, grid=True))
-    label = EDIT_LABELS.get(slug)
-    eyebrow = f'<p class="sat-fashion-eyebrow">{esc(label)} <span aria-hidden="true"></span></p>' if label else ''
-    body = ('<div class="container fashion-page fashion-category-page">{{breadcrumb}}'
-            f'<header class="fashion-category-head">{eyebrow}<h1>{esc(h1)}</h1><p>{esc(intro)}</p>'
-            f'<p class="fashion-widget-note" data-disclosure="temporary">{esc(WIDGET_AFFILIATE_NOTE)}</p></header>'
-            + ''.join(groups) + f'<a class="fashion-back" href="/fashion/#{slug}">← Back to the Fashion Edit</a></div>')
-    return {'url': url, 'title': config.get('meta_title', f'{title} from Nykaa Fashion'), 'description': description,
-            'css': ['buttons', 'breadcrumb', 'fashion-gateway', 'fashion-art', 'fashion'], 'js': ['fashion-widgets'], 'noindex': True, 'canonical_always': True,
-            'breadcrumbs': [['Fashion Edit', '/fashion/'], [h1, url]], 'updated': '2026-10-18', '_slug': 'fashion-' + slug, '_body': body}
+    if (config or {}).get('audience_toggle'):
+        listing = audience_split(slug, title, items, site_url)
+    else:
+        listing = widget_group('', items, f'{title} picks from Nykaa Fashion', title, site_url)
+    return banner + note + listing
 
 
 def product_url(product):
@@ -496,14 +452,7 @@ def pages(src, icon, site_url):
     errors = errors + widgets(src)[1]
     landing, _ = page(src, icon, site_url)
     landing['canonical_always'] = True
-    live, _ = widgets(src)
-    collections, configs = widget_collections(src), category_page_config(src)
-    categories = []
-    for slug, title, *_ in SECTIONS:
-        here = get_widgets_by_category(live, slug)
-        if here:
-            categories.append(category_page(slug, title, here, [c for c in collections if c['category'] == slug], configs.get(slug, {}), site_url))
-    return [landing] + categories + [product_page(product, products, site_url) for product in products], errors
+    return [landing] + [product_page(product, products, site_url) for product in products], errors
 
 
 def render_products(layout, matching):
@@ -574,7 +523,7 @@ def page(src, icon, site_url=SITE_URL):
         tabs.append(f'<a href="#{slug}" data-category-tab="{slug}"{current}>{esc(title)}</a>')
         here = get_widgets_by_category(live_widgets, slug)
         if here:
-            contents = render_widgets(slug, here, title, site_url, [c for c in live_collections if c['category'] == slug], page_configs.get(slug, {}).get('explore_label'))
+            contents = render_widgets(slug, here, title, site_url, page_configs.get(slug, {}))
         else:
             contents = render_products(layout, matching) if matching else render_empty(slug, tips, layout, icon)
         label = EDIT_LABELS.get(slug)
