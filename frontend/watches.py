@@ -823,7 +823,8 @@ f'<linearGradient id="g{uid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-
         tiers = [b for b in (cfg["tiers"] if isinstance(cfg.get("tiers"), list) else self.DEFAULT_TIERS) if b in self.budgets]
         after = cfg.get("premium_after") if cfg.get("premium_after") in self.budgets else (tiers[-1] if tiers else "")
         menu = [m for m in (cfg["menu"] if isinstance(cfg.get("menu"), list) else self.DEFAULT_MENU) if isinstance(m, str)]
-        return {"tiers": tiers, "premium_after": after, "menu": menu, "descriptions": cfg["descriptions"] if isinstance(cfg.get("descriptions"), dict) else {}}
+        hide = [h for h in (cfg["menu_hide_more"] if isinstance(cfg.get("menu_hide_more"), list) else []) if isinstance(h, str)]
+        return {"tiers": tiers, "premium_after": after, "menu": menu, "menu_hide_more": hide, "descriptions": cfg["descriptions"] if isinstance(cfg.get("descriptions"), dict) else {}}
 
     def premium_bands(self):
         """Price bands above the last shopper tier (budget_discovery.premium_after): a watch in one of these is Premium."""

@@ -665,8 +665,10 @@ class ReviewFixes(unittest.TestCase):
             build.SHOP[0] = old
         listed = {u for _, u in m["price"] + m["brand"] + m["feature"]}
         card_urls = {c["href"] for c in m["cards"][:5]}
-        for u in ("/watches/under-1000/", "/watches/titan/under-3000/", "/watches/brands/titan/", "/watches/style/leather-strap/", "/watches/men/under-3000/"):
-            self.assertIn(u, listed | card_urls, u)                        # no approved destination type disappears
+        for u in ("/watches/under-1000/", "/watches/brands/titan/", "/watches/style/leather-strap/"):
+            self.assertIn(u, listed | card_urls, u)                        # no approved destination type disappears ...
+        for u in ("/watches/titan/under-3000/", "/watches/men/under-3000/"):
+            self.assertNotIn(u, listed, u)                                 # ... except bands the owner hides (settings menu_hide_more: under-3000)
         self.assertIn("/watches/under-3000/", card_urls)                   # a published tier is a card ...
         self.assertNotIn("/watches/under-3000/", listed)                   # ... and is not repeated as text
         self.assertTrue("/watches/premium/" in listed | card_urls)
@@ -1067,3 +1069,17 @@ class Duplicates(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class MenuHideMore(unittest.TestCase):
+    """The owner can keep a price band (under-3000) out of the menu's More collections row; the page itself stays live."""
+
+    def test_under_3000_not_in_more_collections(self):
+        import re
+        page = (ROOT / "dist" / "index.html").read_text(encoding="utf-8")
+        extra = re.search(r'mega-extra"><p class="mega-title">More collections</p><ul>(.*?)</ul>', page, re.S)
+        self.assertIsNotNone(extra)
+        self.assertNotIn("under-3000", extra.group(1))
+        self.assertNotIn("3,000", extra.group(1))
+        self.assertIn("under-1000", extra.group(1))
+        self.assertTrue((ROOT / "dist" / "watches" / "titan" / "under-3000" / "index.html").exists())

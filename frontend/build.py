@@ -1310,9 +1310,10 @@ def mega_data(pages):
             entry["shopfor"] = [x for x in entry["shopfor"] if x[2]]
             entry["brandlive"] = [(name, f"/watches/brands/{slug_}/", n) for slug_, name, n in shop.active_brands()]
         if c["slug"] == "watches":
+            hide = (shop.discovery_config()["menu_hide_more"] if SHOP[0] is not None else [])   # price bands the owner keeps out of "More collections" (the pages stay live)
             card_urls = {x["href"] for x in entry.get("cards", [])[:5]}   # a tier shown as a card is not repeated; every other approved destination stays in the menu
             for url, p in sorted(live.items()):
-                if url in card_urls:
+                if url in card_urls or any(url.endswith(f"/{h}/") for h in hide):
                     continue
                 m = re.fullmatch(r"/watches/(men|women)/under-(\d+)/", url)
                 if m:
