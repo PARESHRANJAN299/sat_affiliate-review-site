@@ -1071,6 +1071,39 @@
       "height": 360,
       "active": true,
       "featured": false
+    },
+    {
+      "id": "nykaa-24425075",
+      "product_id": "24425075",
+      "category": "westernwear",
+      "source": "nykaa-fashion",
+      "widget_url": "https://affiliate.nykaa.com/v2/get_product_widget?ad_id=6ad4aa161bde18e19f3d28ad&add_resources=True&affiliate_id=PARESHRA-445235&product_id=24425075&store=nykaa_fashion&text_color=000000&theme_variation=TEXT_AND_IMAGE&theme=affiliate&aff_link_type=affiliate%3Anap_dashboard%3Aproduct&hlp=hlpa",
+      "width": 280,
+      "height": 360,
+      "active": true,
+      "featured": false
+    },
+    {
+      "id": "nykaa-25280817",
+      "product_id": "25280817",
+      "category": "westernwear",
+      "source": "nykaa-fashion",
+      "widget_url": "https://affiliate.nykaa.com/v2/get_product_widget?ad_id=6ad4aa291bde18e19f3d28ae&add_resources=True&affiliate_id=PARESHRA-445235&product_id=25280817&store=nykaa_fashion&text_color=000000&theme_variation=TEXT_AND_IMAGE&theme=affiliate&aff_link_type=affiliate%3Anap_dashboard%3Aproduct&hlp=hlpa",
+      "width": 280,
+      "height": 360,
+      "active": true,
+      "featured": false
+    },
+    {
+      "id": "nykaa-25217538",
+      "product_id": "25217538",
+      "category": "westernwear",
+      "source": "nykaa-fashion",
+      "widget_url": "https://affiliate.nykaa.com/v2/get_product_widget?ad_id=6ad4aa3467cca929453d386e&add_resources=True&affiliate_id=PARESHRA-445235&product_id=25217538&store=nykaa_fashion&text_color=000000&theme_variation=TEXT_AND_IMAGE&theme=affiliate&aff_link_type=affiliate%3Anap_dashboard%3Aproduct&hlp=hlpa",
+      "width": 280,
+      "height": 360,
+      "active": true,
+      "featured": false
     }
   ],
   "category_pages": [
