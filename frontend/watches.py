@@ -840,17 +840,21 @@ f'<linearGradient id="g{uid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-
         return {"url": url, "label": str(cfg.get("label") or "Shop watches on Amazon").strip()}
 
     @staticmethod
-    def affiliate_search(aff, words, rh=""):
-        """The owner's link with only the search words (k) and, when given, Amazon's refinement (rh) changed; every other parameter is kept as supplied."""
+    def affiliate_search(aff, words, rh="", index=""):
+        """The owner's link with only the search words (k) and, when given, Amazon's refinement (rh) and category (i) changed; every other parameter is kept as supplied."""
         parts = urllib.parse.urlsplit(aff["url"])
-        out, swapped = [], False
+        out, swapped, indexed = [], False, False
         for k, v in urllib.parse.parse_qsl(parts.query, keep_blank_values=True):
             if k == "k":
                 out.append((k, words)); swapped = True
+            elif k == "i" and index:
+                out.append((k, index)); indexed = True
             elif k != "rh":
                 out.append((k, v))
         if not swapped:
             out.insert(0, ("k", words))
+        if index and not indexed:
+            out.append(("i", index))
         if rh:
             out.append(("rh", rh))
         return urllib.parse.urlunsplit(parts._replace(query=urllib.parse.urlencode(out)))

@@ -333,6 +333,14 @@ def home_collage():
     wall_path = SRC / "home-wall.json"
     wall = {t["file"]: t["category"] for t in json.loads(read(wall_path)).get("tiles", [])} if wall_path.exists() else {}
     cats = {c["slug"]: c for c in CATEGORIES}
+    wall_cfg = json.loads(read(wall_path)) if wall_path.exists() else {}
+    searches = {t["file"]: str(t.get("search") or "").strip() for t in wall_cfg.get("tiles", [])}
+    indexes = {**wall_cfg.get("indexes", {}), **{t["file"]: t["index"] for t in wall_cfg.get("tiles", []) if t.get("index")}}
+    aff = SHOP[0].hub_affiliate() if SHOP[0] is not None else None   # the owner's Amazon link, only while affiliate links are on
+    def amazon(name, cat):
+        """The Amazon search this picture opens: the owner's link with the search words for what the picture shows and the matching Amazon category."""
+        words = searches.get(name) or cat["name"]
+        return SHOP[0].affiliate_search(aff, words, index=indexes.get(name) or indexes.get(cat["slug"], ""))
     for f, slug in wall.items():
         if f not in names:
             warnings.append(f"src/home-wall.json lists {f}, which is not in static/images/home")
@@ -352,7 +360,10 @@ def home_collage():
                 img = (f'<img src="/images/home/{esc(name)}" alt="" width="256" height="320" '
                        f'loading="{"eager" if (n == 0 and not copy and i < 6) else "lazy"}" decoding="async">')
                 cat = cats.get(wall.get(name))
-                if cat:
+                if cat and aff:   # the picture opens an Amazon search for what it shows, in a new tab, and does nothing on the page
+                    parts.append(f'<a class="tile" href="{esc(amazon(name, cat))}" target="_blank" rel="sponsored nofollow noopener" data-no-paid-label="1" '
+                                 f'data-cat="{esc(cat["name"])} on Amazon" tabindex="-1">{img}</a>')
+                elif cat:
                     parts.append(f'<a class="tile" href="{esc(cat["url"])}" data-cat="{esc(cat["name"])}" tabindex="-1">{img}</a>')
                 else:
                     parts.append(f'<span class="tile">{img}</span>')
