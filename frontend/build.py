@@ -1749,6 +1749,7 @@ def build_page(meta, base, header_t, footer_t, year, articles):
         "about_cover_cards": about_cover_cards(),
         "about_faq": about_faq(),
         "home_category_strip": home_category_strip(),
+        "fashion_discover": fashion.discover_html(SRC),
         "home_watches_block": home_watches_block(),
         "home_guides_strip": home_guides_strip(),
         "home_collage": home_collage(),

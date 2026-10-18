@@ -1,75 +1,24 @@
-/* SAT Fashion Edit landing page. Tokens are scoped to the fashion pages so the rest of SAT is unaffected. */
-.fashion-page, .fashion-detail {
-  --f-ivory: #f7f3ea; --f-sand: #efe8da; --f-ink: #1d1d1b; --f-muted: #66645b; --f-line: #e3dac8; --f-gold: #a98a4f; --f-gold-ink: #6f5524;
-  --fpad: clamp(16px, 4vw, 24px);
-  color: var(--f-ink);
-}
+/* SAT Fashion Edit pages (category switcher, widget rails, category pages). Tokens and artwork live in fashion-art.css. */
 .fashion-page { max-width: 1440px; padding-top: 18px; padding-bottom: 0; }
 .fashion-page :is(a, button):focus-visible { outline: 3px solid var(--f-gold-ink); outline-offset: 3px; }
 @media (prefers-reduced-motion: no-preference) { html:has(.fashion-page) { scroll-behavior: smooth; } }
 
-/* SAT editorial artwork: cutouts sit on a tinted ground and are positioned with per-collection variables. */
-.fashion-tint-womens-kurtas { --t1: #efdfc6; --t2: #d9b88c; }
-.fashion-tint-westernwear { --t1: #efe5de; --t2: #d8c3b6; }
-/* Westernwear shows two models side by side. */
-.fashion-tint-westernwear .fashion-art { width: 78%; left: 27%; }
-.fashion-tint-westernwear .fashion-art + .fashion-art { left: 62%; }
-.fashion-tint-indianwear { --t1: #edd3ba; --t2: #d3a27c; --aw: 150%; }
-.fashion-tint-footwear { --t1: #ebe4d8; --t2: #d0c3b0; --aw: 260%; }
-.fashion-tint-active-sports { --t1: #e3e7da; --t2: #bdc6af; }
-.fashion-tint-bags { --t1: #e3d6c1; --t2: #c9b79c; }
-[class*="fashion-tint-"] { background: linear-gradient(160deg, var(--t1), var(--t2)); }
-.fashion-frame, .fashion-category, .fashion-banner-art, .fashion-widget-banner { position: relative; overflow: hidden; }
-.fashion-art { position: absolute; left: 50%; top: 0; width: var(--aw, 100%); max-width: none; height: auto; transform: translateX(-50%); }
-.fashion-tint-footwear .fashion-art { top: auto; bottom: 0; left: -12%; transform: none; }
-/* Active & Sports shows the whole photograph, shoes included. */
-.fashion-tint-active-sports .fashion-art { width: auto; height: 100%; }
-.fashion-category-active-sports .fashion-art { top: auto; bottom: 84px; height: calc(100% - 84px); }
-.fashion-tint-bags .fashion-art, .fashion-tint-womens-kurtas .fashion-art { left: 0; width: 100%; height: 100%; transform: none; object-fit: cover; }
-.fashion-tint-womens-kurtas .fashion-art { object-position: 60% center; }
-.fashion-photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .fashion-frame { margin: 0; aspect-ratio: 4 / 5; width: min(100%, 440px); }
 
-
-/* Discover Your Style: asymmetric editorial mosaic (swipe cards on small screens). */
-.fashion-discover { padding-top: clamp(20px, 3vw, 40px); scroll-margin-top: 80px; }
-.fashion-discover > h1 { font: 400 clamp(2rem, 4vw, 3.2rem)/1.1 var(--font-display); letter-spacing: -.03em; margin: 0 0 clamp(20px, 3vw, 36px); }
-.fashion-categories { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; margin: 0 calc(-1 * var(--fpad)); padding: 0 var(--fpad) 14px; scroll-padding-left: var(--fpad); scrollbar-width: none; }
-.fashion-categories::-webkit-scrollbar { display: none; }
-.fashion-category { flex: 0 0 min(64vw, 300px); aspect-ratio: 4 / 5; scroll-snap-align: start; display: block; color: var(--f-ink); text-decoration: none; }
-.fashion-category:hover { color: var(--f-ink); text-decoration: none; }
-.fashion-category .fashion-art, .fashion-category .fashion-photo { transition: transform .7s ease; }
-.fashion-category:hover .fashion-art { transform: translateX(-50%) scale(1.03); }
-.fashion-category:hover .fashion-photo, .fashion-category-footwear:hover .fashion-art { transform: scale(1.03); }
-.fashion-category-label { position: absolute; inset: auto 0 0; display: flex; flex-direction: column; gap: 4px; padding: 64px 56px 18px 18px; background: linear-gradient(0deg, var(--t2) 0%, var(--t2) 22%, transparent 100%); }
-.fashion-category-label strong { font: 400 clamp(1.3rem, 2vw, 1.8rem)/1.1 var(--font-display); letter-spacing: -.02em; }
-.fashion-category-label em { font-style: normal; font-size: 13px; line-height: 1.45; color: #3d3b34; }
-.fashion-category-arrow { position: absolute; right: 16px; bottom: 16px; display: grid; place-items: center; width: 34px; height: 34px; border: 1px solid #1d1d1b66; border-radius: 50%; font-size: 15px; transition: background .25s, color .25s; }
-.fashion-category:hover .fashion-category-arrow { background: var(--f-ink); color: #fff; }
-/* Real product photographs need a scrim under the label instead of the tinted fade. */
-.fashion-category:has(.fashion-photo) { color: #fff; }
-.fashion-category:has(.fashion-photo) .fashion-category-label { background: linear-gradient(0deg, #14130fb8, #14130f00); }
-.fashion-category:has(.fashion-photo) .fashion-category-label em { color: #f4ead3; }
-.fashion-category:has(.fashion-photo) .fashion-category-arrow { border-color: #ffffffb3; }
-@media (min-width: 900px) {
-  .fashion-categories { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); --row: clamp(220px, 21vw, 290px); grid-template-rows: var(--row) var(--row) calc(var(--row) * 1.4); gap: 16px; margin: 0; padding: 0; overflow: visible; }
-  .fashion-category { flex: none; aspect-ratio: auto; }
-  .fashion-category-womens-kurtas { grid-column: 1 / 6; grid-row: 1 / 3; }
-  .fashion-category-westernwear { grid-column: 6 / 13; grid-row: 1; }
-  .fashion-category-indianwear { grid-column: 6 / 13; grid-row: 2; }
-  .fashion-category-footwear { grid-column: 1 / 5; grid-row: 3; }
-  .fashion-category-active-sports { grid-column: 5 / 9; grid-row: 3; }
-  .fashion-category-bags { grid-column: 9 / 13; grid-row: 3; }
-  .fashion-category-indianwear .fashion-art { left: auto; right: 3%; width: 52%; transform: none; }
-  .fashion-category-westernwear .fashion-art { left: auto; right: 32%; width: 38%; transform: none; }
-  .fashion-category-westernwear .fashion-art + .fashion-art { right: 7%; }
-  .fashion-category-westernwear:hover .fashion-art, .fashion-category-indianwear:hover .fashion-art { transform: scale(1.03); }
-  .fashion-category-westernwear:not(:has(.fashion-photo)) .fashion-category-label, .fashion-category-indianwear:not(:has(.fashion-photo)) .fashion-category-label { right: 50%; background: none; padding-right: 0; }
-}
+/* Category switcher: one collection at a time. */
+.fashion-switch-head { padding: clamp(8px, 2vw, 24px) 0 clamp(14px, 2vw, 22px); }
+.fashion-switch-head h1 { margin: 0; font: 400 clamp(2.2rem, 5vw, 4rem)/1.05 var(--font-display); letter-spacing: -.035em; }
+.fashion-switch { display: flex; gap: 8px; overflow-x: auto; scroll-snap-type: x proximity; margin: 0 calc(-1 * var(--fpad)); padding: 4px var(--fpad) 18px; scrollbar-width: none; scroll-padding: 0 var(--fpad); scroll-margin-top: 80px; }
+.fashion-switch::-webkit-scrollbar { display: none; }
+.fashion-switch a { flex: none; display: inline-flex; align-items: center; min-height: 48px; padding: 0 24px; border: 1px solid var(--f-line); border-radius: 999px; background: #fffdf8; color: var(--f-ink); font-size: 14px; font-weight: 600; letter-spacing: .03em; text-decoration: none; white-space: nowrap; scroll-snap-align: start; transition: background .2s, color .2s; }
+.fashion-switch a:hover { background: var(--f-sand); color: var(--f-ink); text-decoration: none; }
+.fashion-switch a[aria-current="true"] { background: var(--f-ink); border-color: var(--f-ink); color: #fff; }
+.fashion-section[hidden] { display: none; }
+@media (min-width: 900px) { .fashion-switch { flex-wrap: wrap; overflow: visible; margin: 0; padding: 4px 0 22px; } }
+@media (prefers-reduced-motion: reduce) { .fashion-switch a { transition: none; } }
 
 /* Collections share a header; each has its own composition. */
 .fashion-section { border-top: 1px solid var(--f-line); padding: clamp(36px, 5vw, 64px) 0; scroll-margin-top: 95px; }
-.fashion-discover + .fashion-section { margin-top: clamp(40px, 6vw, 80px); }
 .fashion-section > header { margin-bottom: clamp(24px, 4vw, 44px); }
 .fashion-section-number { font-size: 11px; letter-spacing: .18em; color: var(--f-gold-ink); margin: 0 0 10px; font-weight: 600; }
 .fashion-section h2, .fashion-brands h2 { font: 400 clamp(2rem, 4.4vw, 3.6rem)/1.05 var(--font-display); letter-spacing: -.035em; margin: 0 0 12px; }

@@ -113,14 +113,16 @@ class FashionTests(unittest.TestCase):
             html = fashion.render_products(layout, [self.product])
             self.assertEqual(html.count('class="fashion-product"'), 1)
 
-    def test_category_tile_uses_approved_product_image_else_sat_editorial_art(self):
+    def test_home_tiles_use_approved_product_image_else_sat_editorial_art(self):
         self.data['products'] = [self.make('kurta-1', 'womens-kurtas')]
         self.save()
-        page, _ = fashion.page(self.src, lambda *args: '')
-        body = page['_body']
-        self.assertIn('<img class="fashion-photo" src="https://approved-images.example/image.jpg"', body)
-        self.assertIn('/images/fashion/models/pink-dress-640.webp', body)
-        self.assertNotIn('/images/fashion/models/pink-dress', body.split('id="womens-kurtas"')[0].split('fashion-category-westernwear')[0])
+        html = fashion.discover_html(self.src)
+        self.assertIn('<img class="fashion-photo" src="https://approved-images.example/image.jpg"', html)
+        self.assertIn('/images/fashion/models/pink-dress-640.webp', html)
+        self.assertEqual(html.count('class="fashion-category fashion-category-'), len(fashion.SECTIONS))
+        for slug, *_ in fashion.SECTIONS:
+            self.assertIn(f'href="/fashion/#{slug}"', html)
+        self.assertIn('<h2 id="fashion-discover-title">Discover Your Style</h2>', html)
 
     def test_empty_catalogue_is_safe_and_has_no_retailer_content(self):
         self.save()
@@ -142,18 +144,47 @@ class FashionTests(unittest.TestCase):
         landing, *product_pages = fashion.pages(self.src, lambda *args: '', 'https://sat.net.in')[0]
         self.assertEqual(product_pages, [])
 
-    def test_homepage_journey_order_and_approved_copy(self):
+    def test_fashion_page_is_a_category_switcher_with_the_agreed_journey(self):
         self.save()
         body = fashion.page(self.src, lambda *args: '')[0]['_body']
-        order = ['Discover Your Style', 'id="womens-kurtas"', 'id="bags"',
-                 'Featured Brands', 'Everyday fashion', 'Style. Confidence. You.', 'Explore Looks', 'A little research.', 'Styles for every part of your life.']
+        order = ['Discover Your Style', 'data-category-tab="womens-kurtas"', 'data-category-tab="bags"', 'id="womens-kurtas"', 'id="bags"',
+                 'Featured Brands', 'Everyday fashion', 'Style. Confidence. You.', 'Explore Looks', 'A little research.']
         positions = [body.index(text) for text in order]
         self.assertEqual(positions, sorted(positions))
         self.assertIn(fashion.BRANDS_EMPTY_NOTE, body)
-        self.assertEqual(body.count('href="#fashion-categories"'), 1 + len(fashion.SECTIONS))  # banner CTA, one back link per section
         self.assertEqual(body.count('<h1'), 1)
-        for removed in ('fashion-hero', 'THE SAT FASHION EDIT', 'Explore the Fashion Edit'):
-            self.assertNotIn(removed, body)
+        self.assertEqual(body.count('data-category-tab='), len(fashion.SECTIONS))
+        self.assertEqual(body.count('data-category-panel='), len(fashion.SECTIONS))
+        self.assertEqual(body.count('data-category-tab="womens-kurtas" aria-current="true"'), 1)  # nothing listed yet: opens on the first collection
+        self.assertEqual(body.count('href="#fashion-categories"'), 1)  # the banner button returns to the switcher
+        self.assertNotIn('Back to styles', body)
+        for removed in ('fashion-hero', 'THE SAT FASHION EDIT', 'Curated style', 'class="fashion-categories"', 'fashion-category-label'):
+            self.assertNotIn(removed, body)  # no hero and no mosaic on this page any more
+
+    def test_switcher_opens_on_the_first_collection_with_products(self):
+        self.save()
+        directory = tempfile.TemporaryDirectory()
+        self.addCleanup(directory.cleanup)
+        src = Path(directory.name)
+        (src / 'fashion').mkdir()
+        (src / 'fashion/catalog.json').write_text(json.dumps(self.data))
+        widget = {'id': 'nykaa-1', 'product_id': '1', 'category': 'footwear', 'source': 'nykaa-fashion', 'active': True, 'featured': False, 'width': 280, 'height': 360,
+                  'widget_url': 'https://affiliate.nykaa.com/v2/get_product_widget?affiliate_id=PARESHRA-445235&product_id=1&store=nykaa_fashion'}
+        (src / 'fashion/widgets.json').write_text(json.dumps({'allowed_widget_host': 'affiliate.nykaa.com', 'allowed_widget_path': '/v2/get_product_widget', 'allowed_affiliate_id': 'PARESHRA-445235', 'widgets': [widget]}))
+        body = fashion.page(src, lambda *args: '')[0]['_body']
+        self.assertIn('data-category-tab="footwear" aria-current="true"', body)
+        self.assertNotIn('data-category-tab="womens-kurtas" aria-current', body)
+
+    def test_home_page_uses_the_discover_mosaic_and_not_the_old_fashion_block(self):
+        home = (ROOT / 'src/pages/home/index.html').read_text()
+        self.assertIn('{{fashion_discover}}', home)
+        for gone in ('sat-fashion-gateway', 'Curated style', 'sat-fashion-visual', 'Explore the Fashion Edit'):
+            self.assertNotIn(gone, home)
+        css = json.loads((ROOT / 'src/pages/home/page.json').read_text())['css']
+        self.assertIn('fashion-discover', css)
+        self.assertIn('fashion-art', css)
+        self.assertNotIn('fashion', css[:1])  # the heavy page stylesheet is not loaded on the home page
+        self.assertLess((ROOT / 'src/css/components/fashion-discover.css').stat().st_size + (ROOT / 'src/css/components/fashion-art.css').stat().st_size, 8000)
 
     def test_featured_brands_are_derived_from_products(self):
         self.data['products'] = [self.make('x-1', 'bags', 'Zed'), self.make('x-2', 'bags', 'Zed'), self.make('y-1', 'footwear', 'Yan')]

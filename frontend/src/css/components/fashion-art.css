@@ -1,0 +1,27 @@
+/* Shared by the home mosaic and the fashion pages: design tokens, tints and SAT editorial artwork. */
+/* SAT Fashion Edit landing page. Tokens are scoped to the fashion pages so the rest of SAT is unaffected. */
+.fashion-page, .fashion-detail, .fashion-discover {
+  --f-ivory: #f7f3ea; --f-sand: #efe8da; --f-ink: #1d1d1b; --f-muted: #66645b; --f-line: #e3dac8; --f-gold: #a98a4f; --f-gold-ink: #6f5524;
+  --fpad: clamp(16px, 4vw, 24px);
+  color: var(--f-ink);
+}
+
+/* SAT editorial artwork: cutouts sit on a tinted ground and are positioned with per-collection variables. */
+.fashion-tint-womens-kurtas { --t1: #efdfc6; --t2: #d9b88c; }
+.fashion-tint-westernwear { --t1: #efe5de; --t2: #d8c3b6; }
+/* Westernwear shows two models side by side. */
+.fashion-tint-westernwear .fashion-art { width: 78%; left: 27%; }
+.fashion-tint-westernwear .fashion-art + .fashion-art { left: 62%; }
+.fashion-tint-indianwear { --t1: #edd3ba; --t2: #d3a27c; --aw: 150%; }
+.fashion-tint-footwear { --t1: #ebe4d8; --t2: #d0c3b0; --aw: 260%; }
+.fashion-tint-active-sports { --t1: #e3e7da; --t2: #bdc6af; }
+.fashion-tint-bags { --t1: #e3d6c1; --t2: #c9b79c; }
+[class*="fashion-tint-"] { background: linear-gradient(160deg, var(--t1), var(--t2)); }
+.fashion-frame, .fashion-category, .fashion-banner-art, .fashion-widget-banner { position: relative; overflow: hidden; }
+.fashion-art { position: absolute; left: 50%; top: 0; width: var(--aw, 100%); max-width: none; height: auto; transform: translateX(-50%); }
+.fashion-tint-footwear .fashion-art { top: auto; bottom: 0; left: -12%; transform: none; }
+/* Active & Sports shows the whole photograph, shoes included. */
+.fashion-tint-active-sports .fashion-art { width: auto; height: 100%; }
+.fashion-tint-bags .fashion-art, .fashion-tint-womens-kurtas .fashion-art { left: 0; width: 100%; height: 100%; transform: none; object-fit: cover; }
+.fashion-tint-womens-kurtas .fashion-art { object-position: 60% center; }
+.fashion-photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }

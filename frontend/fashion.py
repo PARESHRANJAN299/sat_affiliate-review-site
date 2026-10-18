@@ -397,7 +397,7 @@ def category_page(slug, title, items, collections, config, site_url=SITE_URL):
             f'<p class="fashion-widget-note" data-disclosure="temporary">{esc(WIDGET_AFFILIATE_NOTE)}</p></header>'
             + ''.join(groups) + f'<a class="fashion-back" href="/fashion/#{slug}">← Back to the Fashion Edit</a></div>')
     return {'url': url, 'title': config.get('meta_title', f'{title} from Nykaa Fashion'), 'description': description,
-            'css': ['buttons', 'breadcrumb', 'fashion-gateway', 'fashion'], 'js': ['fashion-widgets'], 'noindex': True, 'canonical_always': True,
+            'css': ['buttons', 'breadcrumb', 'fashion-gateway', 'fashion-art', 'fashion'], 'js': ['fashion-widgets'], 'noindex': True, 'canonical_always': True,
             'breadcrumbs': [['Fashion Edit', '/fashion/'], [h1, url]], 'updated': '2026-10-18', '_slug': 'fashion-' + slug, '_body': body}
 
 
@@ -486,7 +486,7 @@ def product_page(product, products, site_url):
             f'<section class="fashion-share" id="fashion-share"><h2>Share this find</h2><div><a href="{esc(whatsapp)}" target="_blank" rel="noopener">WhatsApp</a><button type="button" data-copy-product hidden>Copy link</button><button type="button" data-share-product hidden>More ↗</button></div><p role="status" data-product-status></p></section></div></div>'
             + related_html + f'<aside class="fashion-sticky" aria-label="Retailer link">{retailer_cta(product)}<small>Affiliate link · Purchase on Nykaa</small></aside></div>')
     return {'url': url, 'title': product['brand'] + ' ' + product['title'], 'description': (product['description'] or product['title'])[:155],
-            'css': ['buttons', 'breadcrumb', 'fashion-gateway', 'fashion', 'fashion-product'], 'js': ['fashion-product'], 'theme': 'fashion-detail',
+            'css': ['buttons', 'breadcrumb', 'fashion-gateway', 'fashion-art', 'fashion', 'fashion-product'], 'js': ['fashion-product'], 'theme': 'fashion-detail',
             'noindex': True, 'canonical_always': True, 'breadcrumbs': [['Fashion Edit', '/fashion/'], [category[1], '/fashion/#' + category[0]], [product['title'], url]],
             'updated': product.get('updated', '2026-10-18'), '_slug': 'fashion-product-' + product['slug'], '_body': body}
 
@@ -539,29 +539,48 @@ TRUST_ICONS = (
 )
 
 
+def discover_tiles(products, prefix='/fashion/'):
+    """The Discover Your Style tiles: SAT editorial artwork (or an approved product photo) per collection, each opening that collection."""
+    tiles = []
+    for slug, title, art, description, tips, layout in SECTIONS:
+        matching = get_products_by_category(products, slug)
+        if matching:
+            visual = f'<img class="fashion-photo" src="{esc(matching[0]["image_url"])}" alt="" loading="lazy" decoding="async" width="800" height="1000">'
+        else:
+            visual = art_picture(slug, '(min-width: 900px) 34vw, 62vw')
+        tiles.append(f'<a class="fashion-category fashion-category-{slug} fashion-tint-{slug}" href="{prefix}#{slug}">{visual}'
+                     f'<span class="fashion-category-label"><strong>{esc(title)}</strong><em>{esc(description)}</em><span class="fashion-category-arrow" aria-hidden="true">→</span></span></a>')
+    return ''.join(tiles)
+
+
+def discover_html(src, prefix='/fashion/'):
+    """The Discover Your Style mosaic for the home page; every tile opens that collection on /fashion/."""
+    products, _ = catalog(src)
+    return ('<section class="fashion-discover" aria-labelledby="fashion-discover-title"><h2 id="fashion-discover-title">Discover Your Style</h2>'
+            '<nav class="fashion-categories" aria-label="Fashion collections">' + discover_tiles(products, prefix) + '</nav></section>')
+
+
 def page(src, icon, site_url=SITE_URL):
     products, problems = catalog(src)
     live_widgets, widget_problems = widgets(src)
     live_collections = widget_collections(src)
     page_configs = category_page_config(src)
     problems = problems + widget_problems
-    tiles, sections = [], []
+    first_live = next((slug for slug, *_ in SECTIONS if get_widgets_by_category(live_widgets, slug)), SECTIONS[0][0])  # open on the first collection that has products
+    tabs, sections = [], []
     for index, (slug, title, art, description, tips, layout) in enumerate(SECTIONS, 1):
         matching = get_products_by_category(products, slug)
-        if matching:
-            visual = f'<img class="fashion-photo" src="{esc(matching[0]["image_url"])}" alt="" loading="lazy" decoding="async" width="800" height="1000">'
-        else:
-            visual = art_picture(slug, '(min-width: 900px) 34vw, 62vw', priority=(index == 1))
-        tiles.append(f'<a class="fashion-category fashion-category-{slug} fashion-tint-{slug}" href="#{slug}">{visual}'
-                     f'<span class="fashion-category-label"><strong>{esc(title)}</strong><em>{esc(description)}</em><span class="fashion-category-arrow" aria-hidden="true">→</span></span></a>')
+        current = ' aria-current="true"' if slug == first_live else ''
+        tabs.append(f'<a href="#{slug}" data-category-tab="{slug}"{current}>{esc(title)}</a>')
         here = get_widgets_by_category(live_widgets, slug)
         if here:
-            contents = render_widgets(slug, here, title, site_url, [c for c in live_collections if c['category'] == slug], page_configs.get(slug, {}).get('explore_label')) + (render_products(layout, matching) if matching else '')
+            contents = render_widgets(slug, here, title, site_url, [c for c in live_collections if c['category'] == slug], page_configs.get(slug, {}).get('explore_label'))
         else:
             contents = render_products(layout, matching) if matching else render_empty(slug, tips, layout, icon)
         label = EDIT_LABELS.get(slug)
-        marker = f'<p class="sat-fashion-eyebrow">{esc(label)} <span aria-hidden="true"></span></p>' if here and label else f'<p class="fashion-section-number">0{index}</p>'
-        sections.append(f'<section class="fashion-section fashion-section-{layout}{" fashion-section-widgets" if here else ""}" id="{slug}" aria-labelledby="{slug}-title"><header>{marker}<h2 id="{slug}-title">{esc(title)}</h2><p>{esc(description)}</p></header>{contents}<a class="fashion-back" href="#fashion-categories">Back to styles ↑</a></section>')
+        marker = f'<p class="sat-fashion-eyebrow">{esc(label)} <span aria-hidden="true"></span></p>' if here and label else ''
+        sections.append(f'<section class="fashion-section fashion-section-{layout}{" fashion-section-widgets" if here else ""}" id="{slug}" data-category-panel="{slug}" aria-labelledby="{slug}-title">'
+                        f'<header>{marker}<h2 id="{slug}-title">{esc(title)}</h2><p>{esc(description)}</p></header>{contents}</section>')
     brands = get_brands(products)
     if brands:
         brands_html = ('<section class="fashion-brands" aria-labelledby="fashion-brands-title"><header><p class="fashion-section-number">BRANDS</p><h2 id="fashion-brands-title">Featured Brands</h2></header><ul>'
@@ -573,10 +592,9 @@ def page(src, icon, site_url=SITE_URL):
               f'<figure class="fashion-banner-art"><picture><source media="(max-width: 719px)" srcset="{MODEL_DIR}white-tee-b-640.webp"><img class="fashion-art" src="{MODEL_DIR}pink-dress-640.webp" srcset="{MODEL_DIR}pink-dress-640.webp 640w, {MODEL_DIR}pink-dress-1122.webp 1122w" sizes="(min-width: 900px) 40vw, 100vw" alt="{esc(ART_ALT["pink-dress"])}" width="1122" height="1402" loading="lazy" decoding="async"></picture></figure></section>')
     trust = ('<section class="fashion-trust" aria-label="Why SAT"><ul>'
              f'<li>{TRUST_ICONS[0]}<span>A little research.<br>A better choice.</span></li><li>{TRUST_ICONS[1]}<span>Curated from trusted retailers.</span></li><li>{TRUST_ICONS[2]}<span>Styles for every part of your life.</span></li></ul></section>')
-    body = ('<div class="container fashion-page">'
-            '<section class="fashion-discover" id="fashion-categories" aria-labelledby="fashion-discover-title"><h1 id="fashion-discover-title">Discover Your Style</h1>'
-            '<nav class="fashion-categories" aria-label="Fashion collections">' + ''.join(tiles) + '</nav></section>'
+    body = ('<div class="container fashion-page"><header class="fashion-switch-head"><h1>Discover Your Style</h1></header>'
+            '<nav class="fashion-switch" id="fashion-categories" aria-label="Choose a fashion category">' + ''.join(tabs) + '</nav>'
             + ''.join(sections) + brands_html + banner + trust + '</div>')
     return {'url': '/fashion/', 'title': 'The SAT Fashion Edit', 'description': 'Explore women’s kurtas, westernwear, Indianwear, footwear, active and sportswear, and bags with the SAT Fashion Edit.',
-            'css': ['buttons', 'breadcrumb', 'fashion-gateway', 'fashion'], 'js': ['fashion-widgets'], 'noindex': True,
+            'css': ['buttons', 'breadcrumb', 'fashion-gateway', 'fashion-art', 'fashion'], 'js': ['fashion-widgets'], 'noindex': True,
             'breadcrumbs': [['Fashion Edit', '/fashion/']], 'updated': '2026-10-18', '_slug': 'fashion', '_body': body}, problems

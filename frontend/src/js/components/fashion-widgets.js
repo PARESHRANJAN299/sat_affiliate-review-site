@@ -1,5 +1,43 @@
 (function () {
   'use strict';
+  // Category switcher on /fashion/: one collection at a time. Without JavaScript every collection is shown one after the other.
+  var catTabs = document.querySelectorAll('[data-category-tab]');
+  var catPanels = document.querySelectorAll('[data-category-panel]');
+  function showCategory(name) {
+    catPanels.forEach(function (panel) { panel.hidden = panel.dataset.categoryPanel !== name; });
+    catTabs.forEach(function (tab) {
+      if (tab.dataset.categoryTab === name) tab.setAttribute('aria-current', 'true'); else tab.removeAttribute('aria-current');
+    });
+    window.dispatchEvent(new Event('resize'));  // rails measure themselves again once they are visible
+  }
+  function categoryFromHash() {
+    var id = location.hash.slice(1);
+    if (!id) return null;
+    var target = document.getElementById(id);
+    var panel = target && target.closest ? target.closest('[data-category-panel]') : null;
+    return panel ? panel.dataset.categoryPanel : null;
+  }
+  if (catTabs.length) {
+    var firstCat = document.querySelector('[data-category-tab][aria-current]') || catTabs[0];
+    var fromHash = categoryFromHash();
+    showCategory(fromHash || firstCat.dataset.categoryTab);
+    if (fromHash && !/^#pick-/.test(location.hash)) {
+      // A link from the home page opens the collection with the category options in view: undo the browser's jump to the anchor.
+      var toTop = function () { window.scrollTo({ top: 0, left: 0, behavior: 'instant' }); };
+      toTop();
+      window.addEventListener('load', function () { toTop(); window.setTimeout(toTop, 60); });
+    }
+    catTabs.forEach(function (tab) {
+      tab.addEventListener('click', function (event) {
+        event.preventDefault();
+        showCategory(tab.dataset.categoryTab);
+        try { history.replaceState(null, '', '#' + tab.dataset.categoryTab); } catch (error) { /* the switcher still works */ }
+        tab.scrollIntoView({ block: 'nearest', inline: 'center' });
+      });
+    });
+    window.addEventListener('hashchange', function () { var name = categoryFromHash(); if (name) showCategory(name); });
+  }
+
   // Women / Men toggle: without JavaScript both lists are shown one after the other.
   var tabs = document.querySelectorAll('[data-audience-tab]');
   var panels = document.querySelectorAll('[data-audience-panel]');
@@ -121,6 +159,8 @@
   function reveal() {
     var target = location.hash && document.getElementById(location.hash.slice(1));
     if (!target || !target.classList.contains('nykaa-product-shell')) return;
+    var cat = target.closest('[data-category-panel]');
+    if (cat && cat.hidden) showCategory(cat.dataset.categoryPanel);
     var panel = target.closest('[data-audience-panel]');
     if (panel && panel.hidden) showAudience(panel.dataset.audiencePanel);
     target.scrollIntoView({ inline: 'center', block: 'center' });

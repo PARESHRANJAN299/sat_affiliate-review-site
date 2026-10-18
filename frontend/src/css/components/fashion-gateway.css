@@ -1,18 +1,10 @@
-/* Approved homepage gateway and minimal trust strip. Isolated from the existing hero, header and categories. */
-.sat-fashion-gateway { margin: 38px 0 0; display: grid; grid-template-columns: 47% 53%; min-height: 480px; background: #f2eee4; overflow: hidden; border: 1px solid #e8dfcc; }
-.sat-fashion-copy { padding: clamp(30px, 4.5vw, 68px); align-self: center; }
+/* Shared fashion eyebrow and button styles, and the minimal trust strip on the home page. */
 .sat-fashion-eyebrow { display: flex; align-items: center; gap: 16px; color: #534c3b; letter-spacing: .23em; font-size: 10px; font-weight: 700; margin: 0 0 24px; }
 .sat-fashion-eyebrow span { width: 45px; height: 1px; background: #ac884b; }
-.sat-fashion-gateway h2 { font-family: var(--font-display); font-weight: 400; font-size: clamp(36px, 3.8vw, 58px); line-height: 1.05; letter-spacing: -.035em; color: #22221f; margin: 0 0 22px; }
-.sat-fashion-gateway h2 em { font-weight: 400; }
-.sat-fashion-description { max-width: 45ch; font-size: 14px; color: #666457; line-height: 1.75; margin: 0 0 24px; }
 .sat-fashion-cta { display: inline-flex; align-items: center; justify-content: center; gap: 22px; padding: 14px 22px; min-height: 48px; background: #181d23; border: 1px solid #181d23; color: #fff; font-size: 12px; font-weight: 600; border-radius: 999px; text-decoration: none; }
 .sat-fashion-cta:hover { background: #35342f; color: #fff; text-decoration: none; }
 .sat-fashion-cta:focus-visible { outline: 3px solid #9b793c; outline-offset: 4px; }
 .sat-fashion-cta span { font-size: 20px; font-weight: 400; line-height: 1; }
-.sat-fashion-visual { position: relative; margin: 0; min-width: 0; overflow: hidden; background: linear-gradient(150deg, #ecd9bd, #cf9f73); }
-.sat-fashion-visual::before { content: ""; position: absolute; left: 50%; bottom: 0; width: 74%; height: 90%; transform: translateX(-50%); border-radius: 999px 999px 0 0; background: #f6ead7; opacity: .5; }
-.sat-fashion-visual img { position: absolute; left: 50%; bottom: 0; width: auto; max-width: none; height: 104%; transform: translateX(-50%); }
 .sat-trust-minimal { display: flex; align-items: center; justify-content: space-between; gap: 40px; padding: 44px 0 0; margin: 36px 0 4px; border-top: 1px solid #e7e1d7; }
 .sat-trust-minimal h2 { margin: 0; font-family: var(--font-display); font-size: 27px; font-weight: 400; line-height: 1.2; letter-spacing: -.02em; }
 .sat-trust-minimal h2 em { font-weight: 400; }
@@ -20,13 +12,8 @@
 .sat-trust-minimal li { font-size: 12px; color: #52534e; }
 .sat-trust-minimal li span { display: block; margin: 0 0 7px; font-size: 9px; color: #a08754; letter-spacing: .12em; }
 @media (max-width: 760px) {
- .sat-fashion-gateway { grid-template-columns: 1fr; margin-top: 30px; min-height: 0; }
- .sat-fashion-copy { padding: 32px 25px; order: 1; }
- .sat-fashion-visual { order: 0; height: 380px; }
  .sat-fashion-eyebrow { margin-bottom: 18px; font-size: 9px; letter-spacing: .19em; gap: 12px; }
  .sat-fashion-eyebrow span { width: 32px; }
- .sat-fashion-gateway h2 { font-size: clamp(33px, 8.5vw, 43px); margin-bottom: 18px; }
- .sat-fashion-description { font-size: 13px; margin-bottom: 20px; }
  .sat-fashion-cta { font-size: 12px; padding: 13px 19px; }
  .sat-trust-minimal { align-items: flex-start; flex-direction: column; gap: 24px; padding-top: 30px; margin-top: 30px; }
  .sat-trust-minimal h2 { font-size: 26px; }
