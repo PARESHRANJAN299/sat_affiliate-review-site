@@ -47,11 +47,6 @@
 .watch-store .collection .watch-actions { padding-top: 7px; display: flex; flex-direction: column; gap: 4px; }
 .watch-store .collection .watch-actions .btn { width: 100%; border-radius: 7px; padding: 10px; font-size: .8rem; }
 .watch-store .collection-filter-open { display: inline-flex; font-size: .8rem; padding: 10px 14px; border-radius: 8px; }
-.watch-store .collection-filters[open] { position: fixed; inset: auto 0 0; margin: 0 auto; width: min(100%, 580px); max-height: 85dvh; border-radius: 20px 20px 0 0; padding: 0 20px; overflow: auto; }
-.watch-store .collection-filters::backdrop { background: rgb(0 0 0 / .5); }
-.watch-store .cf-head, .watch-store .cf-foot { display: flex; position: sticky; background: #fff; z-index: 1; padding: 12px 0; }
-.watch-store .cf-head { top: 0; }.watch-store .cf-foot { bottom: 0; padding-bottom: calc(14px + env(safe-area-inset-bottom)); }
-.watch-store .cf-head button, .watch-store .cf-foot [data-filter-close] { display: inline-flex; align-items: center; justify-content: center; }
 .collection-pagination { display: flex; gap: 7px; justify-content: center; flex-wrap: wrap; margin: 26px 0 0; }
 .collection-pagination button { min-height: 44px; min-width: 40px; padding: 8px 10px; border: 1px solid var(--color-border); background: #fff; border-radius: 7px; color: var(--color-text); cursor: pointer; font-size: .8rem; }
 .collection-pagination button[aria-current] { background: #252624; color: #fff; border-color: #252624; }
@@ -103,7 +98,6 @@
   .watch-store .collection-sort select { max-width: 105px; padding: 7px; font-size: .72rem; }
 }
 @media (min-width: 1000px) {
-  .watch-store .collection-filters[open] { inset: 0 0 0 auto; width: 380px; height: 100dvh; max-height: 100dvh; margin: 0; border-radius: 16px 0 0 16px; }
 }
 .watch-quick > span { white-space: nowrap; }
 
@@ -156,17 +150,6 @@
   .watch-quick-row, .watch-store .collection-filter-open { display: none; }
   .watch-store .collection-layout, .watch-store .collection.is-enhanced .collection-layout { display: grid; grid-template-columns: minmax(0, 1fr) 290px; grid-template-areas: "main panel"; gap: 24px; align-items: start; }
   .watch-store .collection-layout .collection-main { grid-area: main; }
-  .watch-store .collection-layout .collection-filters, .watch-store .collection-layout .collection-filters[open] {
-    grid-area: panel; display: block; position: sticky; top: 88px; inset: auto; width: auto; height: auto; max-height: calc(100vh - 110px); margin: 0; padding: 18px 18px 8px;
-    overflow: auto; border: 1px solid rgba(176, 141, 87, 0.4); border-radius: 18px; color: var(--color-text);
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(251, 246, 235, 0.96)); box-shadow: 0 24px 48px -32px rgba(80, 55, 15, 0.7);
-  }
-  .watch-store .collection-layout .cf-head { position: static; padding: 0 0 8px; }
-  .watch-store .collection-layout .cf-head strong { font: 700 .72rem var(--font-sans); letter-spacing: .14em; text-transform: uppercase; color: #846631; }
-  .watch-store .collection-layout .cf-head button, .watch-store .collection-layout .cf-foot [data-filter-close] { display: none; }
-  .watch-store .collection-layout .cf-foot { position: static; padding: 6px 0 12px; border-top: 0; }
-  .watch-store .collection-layout .fgroup:has(input[data-group="style"]) { display: none; }
-  .watch-store .collection-layout .fopt { min-height: 40px; }
   .watch-store .collection .watch-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 @media (min-width: 1500px) { .watch-store .collection .watch-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
@@ -176,9 +159,6 @@
 
 /* compact filter lists (like a shop sidebar); empty options stay visible but dimmed */
 .fopt.is-empty { opacity: .45; cursor: default; }
-.watch-store .collection-filters .fopt { min-height: 34px; font-size: .88rem; }
-.watch-store .collection-filters .fgroup { margin-bottom: 12px; padding-bottom: 10px; }
-.watch-store .collection-filters .fgroup legend { font-size: .86rem; font-weight: 700; color: var(--color-text); letter-spacing: 0; text-transform: none; }
 @media (max-width: 999px) { .watch-quick-row { display: flex; } .watch-store .watch-quick-row > .collection-filter-open { display: inline-flex; width: 100%; justify-content: center; min-height: 44px; } }
 /* no search box and no sort on the Watches page */
 .watch-store .collection-sort { display: none; }

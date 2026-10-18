@@ -643,6 +643,15 @@ f'<linearGradient id="g{uid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-
         ("case", "Case material", CASES, lambda self, p: [p.get("case_material", "")]),
     ]
 
+    # The filter sheet groups its rows under four labelled sections; any group not listed here (Strap colour, Case shape, Features, Case material ...) joins the last one.
+    FILTER_SECTIONS = [("Shop", ["budget", "brand", "gender"]), ("Fit", ["dial", "strapmat", "dialcolour"]),
+                       ("Technical", ["movement", "water", "display"]), ("Style", ["style"])]
+    # Short explanations opened from a link inside a filter group. Conservative wording: water-resistant only; the ratings are the seller's.
+    FILTER_INFO = {"water": {"link": "What does this mean?", "title": "Water resistance, plainly",
+                             "paragraphs": ["The number is a rating from the maker, not a depth you can swim or dive to. A higher number is a stronger water-resistance rating.",
+                                            "SAT describes watches as water-resistant and shows the rating from each seller's listing. Read the listing and the maker's care note before wearing a watch near water."],
+                             "ok": "Got it"}}
+
     @staticmethod
     def bucket(table, value):
         """Size and depth are matched to the nearest whole unit (40.2 mm is 40, 44.6 mm is 45), so a decimal never falls between two buckets.
@@ -1213,6 +1222,9 @@ f'<linearGradient id="g{uid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-
                        "items": [(slug_, value["label"], n(lambda p, s=slug_: s in p["styles"])) for slug_, value in self.styles.items()]})
         priority = ["brand", "budget", "gender", "dial", "strapmat", "dialcolour", "movement", "water", "style", "occasion"]
         groups.sort(key=lambda g: priority.index(g["key"]) if g["key"] in priority else len(priority))
+        for g in groups:
+            if g["key"] in self.FILTER_INFO:
+                g["info"] = self.FILTER_INFO[g["key"]]
         steps = self.price_steps()
         budget_rail = collection.price_slider(steps, title="Budget")
         quick = self.keyword_chips(url, shown)
@@ -1243,7 +1255,7 @@ f'<linearGradient id="g{uid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-
         block = collection.render_store(card_html, groups, uid="watch-collection", title="Selected for you", noun="watch", plural="watches",
                                         preset_gender=gender, genders=[(g, g.title(), gcount[g]) for g in self.genders],
                                         top_html=top, visible=[matches(p) for p in products], page_size=24, grid_note=note,
-                                        panel_top=budget_rail + curated, panel_title="Refine your watches", sizes_json=sizes_json,
+                                        panel_title="Refine your watches", sizes_json=sizes_json, sections=self.FILTER_SECTIONS, slots={"budget": budget_rail + curated},
                                         preset_from=self.discovery_config()["premium_after"] if premium else "", premium_json=self.premium_ui())
         body = ('<section class="section watch-store" data-mobile-grid="two"><div class="container watch-store-inner">{{breadcrumb}}' + hub_top + block + hub_bottom + footline + self.collection_tables(table, shown) + self.collection_copy(url) + self.related_collections(url) + extra_html + '<noscript><nav class="watch-static-links" aria-label="Browse watches"><a href="/watches/men/">Men</a> · <a href="/watches/women/">Women</a> · ' + ' · '.join(f'<a href="/watches/brands/{esc(slug_)}/">{esc(name)}</a>' for slug_, name, _ in active) + '</nav></noscript></div></section>')
         meta = self._meta(url, title, intro, body, crumbs or [["Watches", "/watches/"]], shown, js=False)
@@ -1251,7 +1263,7 @@ f'<linearGradient id="g{uid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-
         custom = str((self.approved.get(url) or {}).get("meta_description") or "").strip()
         if custom:   # an approved meta_description in collections.json always wins
             meta["description"] = custom
-        meta["css"] += ["collection", "watch-store", "price-slider", "watch-luxe"]
+        meta["css"] += ["collection", "watch-store", "price-slider", "watch-luxe", "watch-sheet"]
         meta["js"] = ["collection", "watch-tilt"]
         return meta
 
