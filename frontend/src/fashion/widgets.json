@@ -1126,6 +1126,50 @@
       "height": 360,
       "active": true,
       "featured": false
+    },
+    {
+      "id": "nykaa-25798918",
+      "product_id": "25798918",
+      "category": "westernwear",
+      "source": "nykaa-fashion",
+      "widget_url": "https://affiliate.nykaa.com/v2/get_product_widget?ad_id=6ad4aa85cd34ac061ac62070&add_resources=True&affiliate_id=PARESHRA-445235&product_id=25798918&store=nykaa_fashion&text_color=000000&theme_variation=TEXT_AND_IMAGE&theme=affiliate&aff_link_type=affiliate%3Anap_dashboard%3Aproduct&hlp=hlpa",
+      "width": 280,
+      "height": 360,
+      "active": true,
+      "featured": false
+    },
+    {
+      "id": "nykaa-20457934",
+      "product_id": "20457934",
+      "category": "westernwear",
+      "source": "nykaa-fashion",
+      "widget_url": "https://affiliate.nykaa.com/v2/get_product_widget?ad_id=6ad4aa96d820e81af4f6b45d&add_resources=True&affiliate_id=PARESHRA-445235&product_id=20457934&store=nykaa_fashion&text_color=000000&theme_variation=TEXT_AND_IMAGE&theme=affiliate&aff_link_type=affiliate%3Anap_dashboard%3Aproduct&hlp=hlpa",
+      "width": 280,
+      "height": 360,
+      "active": true,
+      "featured": false
+    },
+    {
+      "id": "nykaa-19873664",
+      "product_id": "19873664",
+      "category": "westernwear",
+      "source": "nykaa-fashion",
+      "widget_url": "https://affiliate.nykaa.com/v2/get_product_widget?ad_id=6ad4aaadff1995200437b23d&add_resources=True&affiliate_id=PARESHRA-445235&product_id=19873664&store=nykaa_fashion&text_color=000000&theme_variation=TEXT_AND_IMAGE&theme=affiliate&aff_link_type=affiliate%3Anap_dashboard%3Aproduct&hlp=hlpa",
+      "width": 280,
+      "height": 360,
+      "active": true,
+      "featured": false
+    },
+    {
+      "id": "nykaa-26326038",
+      "product_id": "26326038",
+      "category": "westernwear",
+      "source": "nykaa-fashion",
+      "widget_url": "https://affiliate.nykaa.com/v2/get_product_widget?ad_id=6ad4aaba67cca929453d386f&add_resources=True&affiliate_id=PARESHRA-445235&product_id=26326038&store=nykaa_fashion&text_color=000000&theme_variation=TEXT_AND_IMAGE&theme=affiliate&aff_link_type=affiliate%3Anap_dashboard%3Aproduct&hlp=hlpa",
+      "width": 280,
+      "height": 360,
+      "active": true,
+      "featured": false
     }
   ],
   "category_pages": [
