@@ -303,6 +303,13 @@
           label.classList.toggle('is-on', box.checked);   // the chosen look does not rely on :has(), which older WebViews lack
           if (dead) { label.title = NO_MATCH; off++; } else label.removeAttribute('title');
         });
+        var optsBox = group.querySelector('.fopts');
+        if (optsBox) {   // options that match nothing under the other choices sit after the live ones, so the live ones are the first thing seen
+          var labels = Array.from(optsBox.children).filter(function (el) { return el.classList.contains('fopt'); });
+          labels.forEach(function (el, i) { if (el._at === undefined) el._at = i; });
+          var ordered = labels.slice().sort(function (a, b) { return (a.classList.contains('is-empty') ? 1 : 0) - (b.classList.contains('is-empty') ? 1 : 0) || a._at - b._at; });
+          if (ordered.some(function (el, i) { return el !== labels[i]; })) ordered.forEach(function (el) { optsBox.appendChild(el); });
+        }
         var note = group.querySelector('.fopts-note');
         if (off && !note) {
           note = document.createElement('p'); note.className = 'fopts-note'; note.textContent = 'Dimmed options have no watch with your other choices.';
@@ -312,6 +319,7 @@
       });
     }
     // The sheet's own summary: Active selections, Quick refine, the zero-result way back, the button labels.
+    var countTimer = 0;
     function sheetState(st, list, n, premiumOn) {
       var noun = n === 1 ? root.dataset.noun : plural;
       var anyChip = list.length > 0;
@@ -322,7 +330,7 @@
         if (anyChip) {
           var top = document.createElement('div'); top.className = 'cf-sum-t';
           var t = document.createElement('span'); t.textContent = 'Active selections';
-          var all = document.createElement('button'); all.type = 'button'; all.className = 'linklike'; all.textContent = 'Clear all'; all.addEventListener('click', clearAll);
+          var all = document.createElement('button'); all.type = 'button'; all.className = 'linklike'; all.textContent = 'Reset all'; all.addEventListener('click', clearAll);
           top.appendChild(t); top.appendChild(all);
           var row = document.createElement('div'); row.className = 'cf-sum-c';
           list.forEach(function (item) { row.appendChild(chipButton(item)); });
@@ -364,6 +372,8 @@
       if (state.open && !state.closing) {
         quickRefine(st, n);   // Quick refine stays current while the sheet is open
         placeTips();
+        window.clearTimeout(countTimer);   // the sheet has one live region: the new count is said once, after the last tap
+        countTimer = window.setTimeout(function () { announce(n + (n === 1 ? ' match' : ' matches')); }, 600);
         var ae = document.activeElement;
         if (cfBody && (!ae || ae === document.body || !panel.contains(ae) || ae.disabled || ae.hidden || !ae.offsetParent && ae !== cfBody)) cfBody.focus({ preventScroll: true });   // a tapped chip was replaced: keep focus inside the sheet
       }
@@ -388,13 +398,21 @@
         if ((st.selected[g] || []).length) return;
         var own = Array.from(group.querySelectorAll('input')).filter(function (box) { return box._n > 0 && box._n < n && !box.checked; })
           .sort(function (a, b) { return b._n - a._n; }).slice(0, 2);
-        own.forEach(function (box) { picks.push({ label: labelOf(box), group: group.querySelector('.fg-title').textContent, n: box._n, run: function () { box.checked = true; update(); } }); });
+        own.forEach(function (box) { picks.push({ label: labelOf(box), group: group.querySelector('.fg-title').textContent, key: g, n: box._n, run: function () { box.checked = true; update(); } }); });
       });
       picks.sort(function (a, b) { return b.n - a.n; });
-      picks = picks.slice(0, 6);
-      var names = picks.map(function (pick) { return pick.label; });
-      picks.forEach(function (pick) {   // two options with the same name (Analog as a style and as a display) say which group they belong to
-        if (pick.group && names.indexOf(pick.label) !== names.lastIndexOf(pick.label)) pick.label = pick.group + ': ' + pick.label;
+      // one chip per idea: an option from another group that says the same thing with about the same count (Style Analog and Display Analog, Leather and Leather Strap) is dropped
+      var wordsOf = function (text) { return String(text).toLowerCase().split(/[^a-z0-9]+/).filter(Boolean); };
+      var within = function (a, b) { return a.every(function (w) { return b.indexOf(w) !== -1; }); };
+      var kept = [];
+      picks.forEach(function (pick) {
+        pick.words = wordsOf(pick.label);
+        var twin = kept.some(function (k) { return k.key !== pick.key && Math.abs(k.n - pick.n) <= 2 && (within(pick.words, k.words) || within(k.words, pick.words)); });
+        if (!twin) kept.push(pick);
+      });
+      picks = kept.slice(0, 6);
+      picks.forEach(function (pick) {   // every chip that does not name its own group says which group it belongs to (Water resistance: 30 m); budget, brand and gender are clear already
+        if (pick.group && ['budget', 'brand', 'gender'].indexOf(pick.key) === -1 && pick.label.toLowerCase().indexOf(pick.group.toLowerCase()) === -1) pick.label = pick.group + ': ' + pick.label;
       });
       cfQuick.hidden = n < 2 || !picks.length;
       if (cfQuick.hidden) return;
@@ -445,6 +463,8 @@
       button.innerHTML = '<span class="fg-lab"><span class="fg-title"></span><em class="fg-sum"></em></span><b class="fg-n" aria-hidden="true"></b><i class="fg-chev" aria-hidden="true"></i>';
       button.querySelector('.fg-title').textContent = title;
       legend.textContent = ''; legend.appendChild(button);
+      var infoBtn = Array.from(group.children).filter(function (el) { return el.classList.contains('cf-info-open'); })[0];
+      if (infoBtn) legend.appendChild(infoBtn);   // the round "i" belongs to the row header: it sits beside the toggle button, never inside it
       var hasSub = subKeys.indexOf(key) !== -1;
       var collapsed = store ? true : desktop.matches && index >= 3;
       group.classList.toggle('is-collapsed', collapsed);
@@ -531,7 +551,7 @@
         try { sizes = JSON.parse(panel.dataset.sizes || '[]'); } catch (e) { sizes = []; }
         if (sizes.length) {
           var q = document.createElement('div'); q.className = 'sub-quick';
-          q.innerHTML = '<p class="sub-note">Common sizes for everyday wear.</p><h4>Quick select</h4><div class="sub-sizes"></div>';
+          q.innerHTML = '<h4>Quick select</h4><div class="sub-sizes"></div>';
           sizes.forEach(function (s) {
             var b = document.createElement('button'); b.type = 'button'; b.className = 'sub-size'; b.textContent = s[0] + ' mm';
             b.addEventListener('click', function () {
@@ -706,7 +726,21 @@
       void b.offsetWidth; b.classList.add('is-on');
     }
     function removeBackdrop() { if (state.backdrop) { state.backdrop.remove(); state.backdrop = null; } }
+    function thinLabels(slider) {   // where the rail is too narrow for every label (a 320 px phone), show the ones that fit; Any, the last and the chosen step always stay
+      var steps = Array.from(slider.querySelectorAll('.sr-step')), spans = steps.map(function (step) { return step.querySelector('span'); });
+      if (!steps.length || !steps[0].offsetWidth) return;
+      spans.forEach(function (span) { span.classList.remove('is-thin'); });
+      var boxes = steps.map(function (step, i) { var r = spans[i].getBoundingClientRect(); return { l: r.left, r: r.right }; });
+      var keep = [];
+      var must = {}; must[0] = 1; must[steps.length - 1] = 1;
+      steps.forEach(function (step, i) { if (step.getAttribute('aria-pressed') === 'true') must[i] = 1; });
+      Object.keys(must).forEach(function (i) { keep.push(Number(i)); });
+      var clash = function (i, j) { return boxes[i].l < boxes[j].r + 6 && boxes[j].l < boxes[i].r + 6; };
+      steps.forEach(function (step, i) { if (!must[i] && !keep.some(function (j) { return clash(i, j); })) keep.push(i); });
+      spans.forEach(function (span, i) { span.classList.toggle('is-thin', keep.indexOf(i) === -1); });
+    }
     function placeTips() {   // keep the budget tooltip inside the sheet at both ends of the rail
+      sliders.forEach(thinLabels);
       sliders.forEach(function (slider) {
         var tip = slider.querySelector('[data-price-tip]'), wrap = slider.querySelector('.sr-wrap');
         if (!tip || !wrap || !tip.textContent) return;
@@ -742,7 +776,9 @@
       if (cfBody) cfBody.scrollTop = 0;
       if (!target) return;
       expandRow(target);
-      var anchor = target.classList.contains('price-slider') ? (target.closest('.cf-sec') || target) : target;
+      var sec = target.closest('.cf-sec');   // the first row of a section scrolls to the section title, so the label is never cut under the header
+      var firstRow = !!sec && Array.from(sec.querySelectorAll('.fgroup, .price-slider')).filter(function (el) { return !el.hidden; })[0] === target;
+      var anchor = (target.classList.contains('price-slider') || firstRow) ? sec : target;
       var box = cfBody.getBoundingClientRect(), at = target.getBoundingClientRect();
       if (at.bottom > box.bottom - 24) cfBody.scrollTop = Math.max(0, anchor.getBoundingClientRect().top - box.top + cfBody.scrollTop - 10);   // only scroll when the section is not already on the first screen
     }
@@ -855,6 +891,7 @@
       if (inlinePanel()) panel.setAttribute('open', '');
       if (typeof update === 'function') update(false);
     }
+    window.addEventListener('resize', function () { if (state.open && !state.closing) placeTips(); });   // a phone turned sideways: the rail labels are chosen again
     if (desktop.addEventListener) desktop.addEventListener('change', resize); else if (desktop.addListener) desktop.addListener(resize);
     // /watches/?price=under-3000 (the home page slider) opens the list with that price band chosen
     var query = new URLSearchParams(window.location.search);

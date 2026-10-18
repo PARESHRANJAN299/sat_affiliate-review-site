@@ -63,8 +63,9 @@ def _fieldset(group):
     if not boxes:
         return ''
     info = group.get('info')
-    info_btn = (f'<button type="button" class="cf-info-open" data-info-open="{esc(group["key"])}" aria-haspopup="dialog">{esc(info["link"])}</button>' if info else '')
-    return f'<fieldset class="fgroup" data-fgroup="{esc(group["key"])}"><legend>{esc(group["title"])}</legend>{info_btn}<div class="fopts">{boxes}</div></fieldset>'
+    # a small round "i" in the row header (the visible text lives in the aria-label, which names the group it explains)
+    info_btn = (f'<button type="button" class="cf-info-open" data-info-open="{esc(group["key"])}" aria-haspopup="dialog" aria-label="{esc(info["link"])}" title="{esc(info["link"])}"><span aria-hidden="true">i</span></button>' if info else '')
+    return f'<fieldset class="fgroup{" has-info" if info else ""}" data-fgroup="{esc(group["key"])}"><legend>{esc(group["title"])}</legend>{info_btn}<div class="fopts">{boxes}</div></fieldset>'
 
 
 def _info_layer(group):
@@ -131,11 +132,11 @@ def render_store(cards, groups, *, uid, title, noun='product', plural='products'
     active = '<div class="collection-active" data-active hidden></div>'
     panel = (f'<dialog class="collection-filters" id="{esc(uid)}-filters" aria-labelledby="{esc(uid)}-filter-title" data-filter-panel{f" data-sizes={chr(39)}{esc(sizes_json)}{chr(39)}" if sizes_json else ""}>'
              '<div class="cf-head" data-cf-head><i class="cf-grab" aria-hidden="true"></i>'
-             f'<div class="cf-ht"><strong id="{esc(uid)}-filter-title">{esc(panel_title)}</strong><span class="cf-count" data-cf-count role="status">{shown} {"match" if shown == 1 else "matches"}</span></div>'
-             '<button type="button" class="linklike cf-reset" data-filter-clear>Reset</button><button type="button" class="cf-x" data-filter-close aria-label="Close filters">\u2715</button></div>'
+             f'<div class="cf-ht"><strong id="{esc(uid)}-filter-title">{esc(panel_title)}</strong><span class="cf-count" data-cf-count>{shown} {"match" if shown == 1 else "matches"}</span></div>'
+             '<button type="button" class="linklike cf-reset" data-filter-clear>Reset all</button><button type="button" class="cf-x" data-filter-close aria-label="Close filters">\u2715</button></div>'
              '<div class="cf-body" data-cf-body tabindex="-1"><div class="cf-active" data-cf-active hidden></div><div class="cf-quick" data-cf-quick hidden></div><div class="cf-zero" data-cf-zero hidden></div>'
              + panel_top + lead + body + '</div>'
-             f'<div class="cf-foot" data-cf-foot><button type="button" class="linklike cf-clear" data-filter-clear>Clear</button><button type="button" class="btn btn-primary btn-small cf-cta" data-filter-close data-apply-label>Show {shown} {esc(plural if shown != 1 else noun)}</button>'
+             f'<div class="cf-foot" data-cf-foot><button type="button" class="btn btn-primary btn-small cf-cta" data-filter-close data-apply-label>Show {shown} {esc(plural if shown != 1 else noun)}</button>'
              '<button type="button" class="btn btn-outline btn-small cf-undo" data-cf-undo hidden>Clear one filter</button></div>'
              + infos + '</dialog>')
     rest_html = ('<div class="watch-grid" data-collection-grid>' + card_html + '</div>'

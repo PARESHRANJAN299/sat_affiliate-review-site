@@ -96,7 +96,7 @@ class Sheet(unittest.TestCase):
         self.assertIn("seller", info)
         self.assertNotIn("waterproof", info)
         self.assertIn('data-info-open="water"', self.panel)
-        self.assertIn("What does this mean?", self.panel)
+        self.assertIn('aria-label="What does water resistance mean?"', self.panel)
 
     def test_no_waterproof_and_no_commerce_words_anywhere_in_the_sheet(self):
         sources = {"sheet markup": self.panel, "collection.py": (ROOT / "collection.py").read_text(encoding="utf-8"), "script": JS, "css": CSS, "rail css": RAIL,
@@ -261,6 +261,71 @@ class RenderStore(unittest.TestCase):
         self.assertNotIn("cf-body", html)
         self.assertIn("data-filter-panel", html)
         self.assertNotIn("data-store", html)
+
+
+class Polish(unittest.TestCase):
+    """The tidy-up pass: copy that stays inside what the listings say, one label for resetting, one live region, quiet first screen."""
+    @classmethod
+    def setUpClass(cls):
+        cls.shop = watches.Watches(build.SRC, build.CONFIG)
+        cls.panel = panel_of(cls.shop.landing()["_body"])
+
+    def test_one_reset_label_and_no_second_clear_in_the_footer(self):
+        self.assertIn(">Reset all</button>", self.panel)
+        foot = self.panel[self.panel.index("data-cf-foot"):]
+        self.assertNotIn("cf-clear", foot.split("</div>", 1)[0])
+        self.assertNotIn(">Clear<", self.panel)
+        self.assertIn("'Reset all'", JS)                                                     # the Active selections link says the same
+
+    def test_one_live_region_while_the_sheet_is_open(self):
+        self.assertRegex(self.panel, r'<span class="cf-count" data-cf-count>')               # no role=status of its own
+        self.assertEqual(self.panel.count('role="status"'), 0)
+        self.assertIn("announce(n + (n === 1 ? ' match' : ' matches'))", JS)                 # the one polite region says the count once, after the last tap
+
+    def test_info_button_names_its_subject_and_the_copy_matches_the_listings(self):
+        self.assertRegex(self.panel, r'class="cf-info-open" data-info-open="water" aria-haspopup="dialog" aria-label="What does water resistance mean\?"')
+        text = " ".join(self.shop.FILTER_INFO["water"]["paragraphs"]).lower()
+        self.assertNotIn("maker", text)                                                      # no claim about who sets the rating: it is the seller's listing
+        self.assertIn("seller's listing", text)
+
+    def test_no_invented_case_size_line(self):
+        self.assertNotIn("Common sizes", JS)
+        self.assertNotIn("everyday wear", JS + CSS)
+
+    def test_budget_rail_holds_no_space_for_a_tooltip_in_the_sheet(self):
+        self.assertRegex(CSS, r"\.price-bands \.sr-wrap \{ margin: 0 -8px; padding: 2px 0 2px; \}")
+        self.assertRegex(CSS, r"\.sr-tip \{ display: none; \}")
+        self.assertIn("data-price-help", self.panel)                                         # the head row still says the chosen band
+
+    def test_rail_labels_are_thinned_by_measuring_not_by_count(self):
+        for hook in ("function thinLabels", "is-thin", "must[0] = 1", "must[steps.length - 1] = 1", "aria-pressed') === 'true') must[i] = 1", "addEventListener('resize'"):
+            self.assertIn(hook, JS, hook)
+        self.assertRegex(CSS, r"\.sr-step span\.is-thin \{[^}]*clip: rect")                  # hidden visually, still read out
+
+    def test_quick_refine_is_tidy(self):
+        for hook in ("one chip per idea", "Math.abs(k.n - pick.n) <= 2", "pick.group + ': ' + pick.label", "['budget', 'brand', 'gender']"):
+            self.assertIn(hook, JS, hook)
+        self.assertRegex(CSS, r"\.watch-store \.collection \.cf-q \{[^}]*min-height: 44px[^}]*font: 600 \.84rem")
+        self.assertIn(".cf-active:not([hidden]) + .cf-quick .cf-qrow", CSS)                  # one swipeable row once something is chosen
+
+    def test_empty_options_sort_after_live_ones(self):
+        self.assertIn("is-empty') ? 1 : 0", JS)
+        self.assertIn("a._at - b._at", JS)                                                   # live options keep their order
+
+    def test_jump_scrolls_to_the_section_title(self):
+        self.assertIn("var anchor = (target.classList.contains('price-slider') || firstRow) ? sec : target;", JS)
+
+    def test_short_and_narrow_screens_are_handled(self):
+        self.assertIn("@media (max-width: 359px)", CSS)
+        self.assertIn("@media (max-height: 720px)", CSS)
+        tail = CSS[CSS.index("@media (max-height: 480px)"):]
+        for part in ("height: 100dvh", ".cf-grab { display: none; }", ".cf-quick { display: none; }"):
+            self.assertIn(part, tail)
+
+    def test_collections_strip_wraps_in_the_drawer_and_fades_on_phones(self):
+        drawer = CSS[CSS.index("@media (min-width: 1000px)"):]
+        self.assertRegex(drawer, r"\.pc-list \{ flex-wrap: wrap; overflow: visible;")
+        self.assertRegex(CSS, r"\.pc-list \{[^}]*mask-image: linear-gradient")
 
 
 if __name__ == "__main__":

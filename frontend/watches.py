@@ -647,9 +647,9 @@ f'<linearGradient id="g{uid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-
     FILTER_SECTIONS = [("Shop", ["budget", "brand", "gender"]), ("Fit", ["dial", "strapmat", "dialcolour"]),
                        ("Technical", ["movement", "water", "display"]), ("Style", ["style"])]
     # Short explanations opened from a link inside a filter group. Conservative wording: water-resistant only; the ratings are the seller's.
-    FILTER_INFO = {"water": {"link": "What does this mean?", "title": "Water resistance, plainly",
-                             "paragraphs": ["The number is a rating from the maker, not a depth you can swim or dive to. A higher number is a stronger water-resistance rating.",
-                                            "SAT describes watches as water-resistant and shows the rating from each seller's listing. Read the listing and the maker's care note before wearing a watch near water."],
+    FILTER_INFO = {"water": {"link": "What does water resistance mean?", "title": "Water resistance, plainly",
+                             "paragraphs": ["SAT describes watches as water-resistant and shows the rating as given in each seller's listing. A higher number is a stronger rating, but it is not a depth you can swim or dive to.",
+                                            "Read the listing before wearing a watch near water."],
                              "ok": "Got it"}}
 
     @staticmethod

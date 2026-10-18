@@ -60,7 +60,7 @@ html.collection-modal-open { overflow: hidden; padding-right: var(--cf-sbw, 0px)
 .watch-store .collection .cf-ht { flex: 1; min-width: 0; display: grid; gap: 2px; }
 .watch-store .collection .cf-head strong { font: 600 1.3rem/1.15 var(--font-display); letter-spacing: -.01em; text-transform: none; color: var(--lx-ink); }
 .watch-store .collection .cf-count { font-size: .8rem; color: var(--lx-muted); font-variant-numeric: tabular-nums; }
-.watch-store .collection .cf-reset { flex: none; display: inline-flex; align-items: center; justify-content: center; min-width: 44px; min-height: 44px; padding: 0 8px; color: var(--lx-gold-ink); font: 600 .84rem var(--font-sans); text-decoration: underline; text-underline-offset: 3px; }
+.watch-store .collection .cf-reset { flex: none; display: inline-flex; align-items: center; justify-content: center; width: auto; min-width: 44px; min-height: 44px; padding: 0 8px; white-space: nowrap; color: var(--lx-gold-ink); font: 600 .84rem var(--font-sans); text-decoration: underline; text-underline-offset: 3px; }
 .watch-store .collection .cf-reset:disabled, .watch-store .collection .cf-reset.is-idle { opacity: .45; cursor: default; text-decoration: none; }
 .watch-store .collection .cf-x { flex: none; display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; padding: 0; border: 1px solid var(--lx-stone); border-radius: 50%; background: none; color: var(--lx-ink); font-size: .9rem; cursor: pointer; }
 
@@ -73,8 +73,11 @@ html.collection-modal-open { overflow: hidden; padding-right: var(--cf-sbw, 0px)
 .cf-sum-c, .cf-qrow { display: flex; flex-wrap: wrap; gap: 8px; }
 .cf-quick { padding: 14px 20px 6px; }
 .cf-qt { margin-bottom: 9px; }
-.cf-q { position: relative; display: inline-flex; align-items: center; gap: 7px; min-height: 36px; padding: 0 13px; border: 1px solid var(--lx-stone); border-radius: 12px; background: #fffefb; color: var(--lx-char); font: 600 .84rem var(--font-sans); cursor: pointer; touch-action: manipulation; }
-.cf-q::after { content: ""; position: absolute; inset: -4px -2px; }
+.watch-store .collection .cf-q { position: relative; display: inline-flex; flex: none; align-items: center; gap: 7px; box-sizing: border-box; max-width: 100%; min-height: 44px; padding: 0 13px; border: 1px solid var(--lx-stone); border-radius: 12px; background: #fffefb; color: var(--lx-char); font: 600 .84rem/1.2 var(--font-sans); text-align: left; cursor: pointer; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+.cf-q span { min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+/* with choices already made (or on a short screen) Quick refine is one swipeable row, so the filters themselves stay in view */
+.cf-active:not([hidden]) + .cf-quick .cf-qrow { flex-wrap: nowrap; overflow-x: auto; margin: 0 -20px; padding: 0 28px 4px 20px; scrollbar-width: none; overscroll-behavior-x: contain; -webkit-overflow-scrolling: touch; -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 28px), transparent); mask-image: linear-gradient(90deg, #000 calc(100% - 28px), transparent); }
+.cf-active:not([hidden]) + .cf-quick .cf-qrow::-webkit-scrollbar { display: none; }
 .cf-q em { font: 500 .72rem var(--font-sans); font-style: normal; color: #6d695f; }
 @media (hover: hover) { .cf-q:hover { border-color: var(--lx-gold); background: #fbf6e8; } }
 .cf-zero { margin: 14px 20px 6px; padding: 16px; border: 1px dashed #c9b88f; border-radius: 16px; background: #fbf5e4; }
@@ -88,9 +91,9 @@ html.collection-modal-open { overflow: hidden; padding-right: var(--cf-sbw, 0px)
 .cf-sec { padding: 0 0 4px; }
 .cf-sec-t { display: flex; align-items: center; gap: 12px; margin: 20px 20px 2px; font: 700 .66rem var(--font-sans); letter-spacing: .18em; text-transform: uppercase; color: var(--lx-gold-ink); }
 .cf-sec-t::after { content: ""; flex: 1; height: 1px; background: #eadfc3; }
-.watch-store .collection .fgroup { margin: 0 20px; padding: 0; border: 0; border-top: 1px solid #efe6d1; min-width: 0; }
+.watch-store .collection .fgroup { position: relative; margin: 0 20px; padding: 0; border: 0; border-top: 1px solid #efe6d1; min-width: 0; }
 .watch-store .collection .cf-sec-t + .fgroup, .watch-store .collection .cf-sec-t + .fgroup[hidden] + .fgroup { border-top: 0; }
-.watch-store .collection .fgroup legend { display: block; float: none; width: 100%; margin: 0; padding: 0; background: none; position: static; }
+.watch-store .collection .fgroup legend { display: block; float: none; width: 100%; margin: 0; padding: 0; background: none; position: relative; }
 .watch-store .collection .fg-toggle { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; align-items: center; gap: 10px; width: 100%; min-height: 60px; padding: 8px 0; border: 0; background: none; color: var(--lx-ink); text-align: left; cursor: pointer; touch-action: manipulation; }
 .watch-store .collection .fg-lab { display: grid; gap: 2px; min-width: 0; }
 .watch-store .collection .fg-title { margin: 0; font: 600 1.04rem var(--font-display); letter-spacing: 0; text-transform: none; color: var(--lx-ink); }
@@ -101,8 +104,12 @@ html.collection-modal-open { overflow: hidden; padding-right: var(--cf-sbw, 0px)
 .watch-store .collection .fg-chev { width: 8px; height: 8px; margin: -3px 4px 0 0; border-right: 1.6px solid var(--lx-char); border-bottom: 1.6px solid var(--lx-char); transform: rotate(45deg); opacity: .6; transition: transform .2s ease-out; }
 .watch-store .collection .fgroup.is-collapsed .fg-chev, .watch-store .collection .fgroup.has-sub .fg-chev { transform: rotate(-45deg); margin-top: 0; }
 .watch-store .collection .fg-toggle:focus-visible { outline: 3px solid var(--lx-gold); outline-offset: 2px; border-radius: 8px; }
-.watch-store .collection .fgroup.is-collapsed .fopts, .watch-store .collection .fgroup.is-collapsed .fopts-note, .watch-store .collection .fgroup.is-collapsed .cf-info-open { display: none; }
-.watch-store .collection .cf-info-open { display: inline-flex; align-items: center; min-height: 36px; margin: -6px 0 4px; padding: 0 2px; border: 0; background: none; color: var(--lx-gold-ink); font: 600 .78rem var(--font-sans); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; touch-action: manipulation; }
+.watch-store .collection .fgroup.is-collapsed .fopts, .watch-store .collection .fgroup.is-collapsed .fopts-note { display: none; }
+/* the round "i" sits in the row header, just before the count and the chevron; the label gives it room so a long summary never runs under it */
+.watch-store .collection .fgroup.has-info .fg-lab { padding-right: 64px; }
+.watch-store .collection .cf-info-open { position: absolute; top: 8px; right: 40px; z-index: 1; display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; margin: 0; padding: 0; border: 0; background: none; color: var(--lx-gold-ink); cursor: pointer; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+.watch-store .collection .fgroup.has-sel .cf-info-open { right: 72px; }
+.cf-info-open span { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border: 1.5px solid currentColor; border-radius: 50%; font: italic 700 .8rem/1 var(--font-display); }
 .watch-store .collection .fopts { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 124px), 1fr)); gap: 8px; padding: 2px 0 14px; }
 .watch-store .collection .fgroup:not(.is-collapsed) .fopts { animation: cf-rise .22s ease-out both; }
 @keyframes cf-rise { from { opacity: 0; transform: translate3d(0, 6px, 0); } to { opacity: 1; transform: none; } }
@@ -123,13 +130,15 @@ html.collection-modal-open { overflow: hidden; padding-right: var(--cf-sbw, 0px)
 .watch-store .collection .price-slider-head h2 { margin: 0; font: 600 1.04rem var(--font-display); letter-spacing: 0; text-transform: none; color: var(--lx-ink); }
 .watch-store .collection .sr-now { min-height: 44px; padding: 0 0 0 10px; color: var(--lx-gold-ink); font: 600 .84rem var(--font-sans); touch-action: manipulation; }
 .watch-store .collection .sr-now:disabled { color: var(--lx-muted); }
-.watch-store .collection .price-bands .sr-wrap { margin: 0 -8px; padding: 34px 0 2px; }
-.watch-store .collection .sr-tip { font-size: .78rem; }
+/* the head row already says the chosen band ("Under ₹5,000"), so the tooltip is not drawn in the sheet and no space is held for it */
+.watch-store .collection .price-bands .sr-wrap { margin: 0 -8px; padding: 2px 0 2px; }
+.watch-store .collection .sr-tip { display: none; }
+.sr-step span.is-thin { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; }
 
 /* Popular watch collections: a slim strip of small links under the budget rail */
 .watch-store .collection .pc { padding: 2px 20px 8px; }
 .watch-store .collection .pc-title { margin: 8px 0 6px; font: 700 .64rem var(--font-sans); letter-spacing: .16em; text-transform: uppercase; color: var(--lx-muted); }
-.watch-store .collection .pc-list { display: flex; gap: 8px; margin: 0 -20px; padding: 2px 20px 8px; list-style: none; overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x proximity; scroll-padding: 0 20px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+.watch-store .collection .pc-list { display: flex; gap: 8px; margin: 0 -20px; padding: 2px 44px 8px 20px; -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 32px), transparent); mask-image: linear-gradient(90deg, #000 calc(100% - 32px), transparent); list-style: none; overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x proximity; scroll-padding: 0 20px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
 .watch-store .collection .pc-list::-webkit-scrollbar { display: none; }
 .watch-store .collection .pc-list li { display: block; flex: none; width: auto; scroll-snap-align: start; }
 .watch-store .collection .pc-list li .card, .watch-store .collection .pc-list li .card-secondary.col-card { display: inline-flex; flex-direction: row; align-items: center; gap: 8px; box-sizing: border-box; width: auto; min-height: 44px; padding: 0 14px; border-radius: 999px; box-shadow: none; white-space: nowrap; touch-action: manipulation; }
@@ -140,12 +149,10 @@ html.collection-modal-open { overflow: hidden; padding-right: var(--cf-sbw, 0px)
 
 /* footer: sticky to the bottom of the sheet, clear of the home indicator */
 .watch-store .collection .cf-foot { flex: none; display: flex; align-items: center; gap: 12px; margin: 0; padding: 12px 20px calc(14px + env(safe-area-inset-bottom, 0px)); border-top: 1px solid var(--lx-line); background: #fffdf8; }
-.watch-store .collection .cf-foot .cf-clear { flex: none; min-height: 48px; padding: 0 4px; color: var(--lx-char); font-size: .86rem; white-space: nowrap; }
 .watch-store .collection .cf-foot .cf-cta, .watch-store .collection .cf-foot .cf-undo { flex: 1; display: inline-flex; align-items: center; justify-content: center; box-sizing: border-box; min-height: 50px; padding: 0 14px; border-radius: 14px; font: 600 .94rem var(--font-sans); white-space: nowrap; cursor: pointer; touch-action: manipulation; }
 .watch-store .collection .cf-foot .cf-cta { border: 0; background: var(--lx-ink); color: var(--lx-ivory); }
 .watch-store .collection .cf-foot .cf-cta:disabled { background: #e9e2d0; color: #6d695f; cursor: not-allowed; }
 .watch-store .collection .cf-foot .cf-undo { flex: 1.1; border: 1px solid var(--lx-ink); background: var(--lx-paper); color: var(--lx-ink); }
-.watch-store .collection .cf-foot.is-zero .cf-clear { display: none; }
 
 /* layers inside the sheet: sub-sheets slide in from the right over the whole sheet (one backdrop, never two) */
 .watch-store .collection .cf-sub { position: absolute; inset: 0; z-index: 5; display: flex; flex-direction: column; background: linear-gradient(180deg, #fffdf8 0%, #fbf7ec 100%); animation: cf-sub-in .24s cubic-bezier(.2, .7, .2, 1) both; }
@@ -203,6 +210,8 @@ html.collection-modal-open { overflow: hidden; padding-right: var(--cf-sbw, 0px)
   .watch-store .collection .collection-filters.is-dragged, .watch-store .collection .collection-filters.is-dragged.is-closing { animation: none; }
   .cf-grab { display: none; }
   .watch-store .collection .cf-head { padding-top: 22px; touch-action: auto; }
+  /* the drawer is wide enough to show every collection: the strip wraps instead of being cut at the edge */
+  .watch-store .collection .pc-list { flex-wrap: wrap; overflow: visible; padding-right: 20px; -webkit-mask-image: none; mask-image: none; }
 }
 @media (min-width: 720px) { .watch-store .collection .collection-sort select { max-width: 170px; } }
 
@@ -210,4 +219,27 @@ html.collection-modal-open { overflow: hidden; padding-right: var(--cf-sbw, 0px)
   .watch-store .collection .collection-filters[open], .watch-store .collection .collection-filters.is-closing, .watch-store .collection .collection-filters::backdrop,
   .watch-store .collection .cf-sub, .watch-store .collection .cf-sub.is-leaving, .cf-info-scrim, .cf-info-card, .watch-store .collection .fgroup:not(.is-collapsed) .fopts { animation: none; }
   .cf-backdrop, .watch-store .collection .fg-chev, .watch-store .collection .fopt, .sub-card { transition: none; }
+}
+
+/* narrow phones: the title keeps to one line and the rail labels are thinned by the script */
+@media (max-width: 359px) {
+  .watch-store .collection .cf-head { padding-left: 16px; padding-right: 10px; gap: 2px; }
+  .watch-store .collection .cf-head strong { font-size: 1.02rem; white-space: nowrap; }
+  .watch-store .collection .cf-reset { min-width: 0; padding: 0 4px; font-size: .78rem; }
+}
+/* short screens (a phone on its side, a small laptop window): one swipeable Quick refine row, a slimmer header and footer, a taller sheet, so the body keeps room */
+@media (max-height: 720px) {
+  .cf-quick .cf-qrow { flex-wrap: nowrap; overflow-x: auto; margin: 0 -20px; padding: 0 28px 4px 20px; scrollbar-width: none; overscroll-behavior-x: contain; -webkit-overflow-scrolling: touch; -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 28px), transparent); mask-image: linear-gradient(90deg, #000 calc(100% - 28px), transparent); }
+  .cf-quick .cf-qrow::-webkit-scrollbar { display: none; }
+}
+@media (max-height: 480px) {
+  .watch-store .collection .collection-filters[open] { height: 100vh; max-height: 100vh; height: 100dvh; max-height: 100dvh; border-radius: 18px 18px 0 0; }
+  .cf-grab { display: none; }
+  .watch-store .collection .cf-head { padding: 8px 10px 8px 20px; }
+  .watch-store .collection .cf-ht { display: flex; align-items: baseline; flex-wrap: wrap; gap: 0 10px; }
+  .watch-store .collection .cf-foot { padding: 8px 20px calc(8px + env(safe-area-inset-bottom, 0px)); }
+  .watch-store .collection .cf-foot .cf-cta, .watch-store .collection .cf-foot .cf-undo { min-height: 44px; }
+  .watch-store .collection .cf-quick { display: none; }
+  .watch-store .collection .sub-head { padding: 8px 20px 6px 8px; }
+  .watch-store .collection .sub-foot { padding: 8px 20px calc(8px + env(safe-area-inset-bottom, 0px)); }
 }
