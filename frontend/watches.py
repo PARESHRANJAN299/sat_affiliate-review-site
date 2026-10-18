@@ -379,6 +379,32 @@ f'<linearGradient id="g{uid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-
             return self.budgets[slug_]["label"]
         return f"Up to \u20b9{top:,}" if not low else f"\u20b9{low:,}\u2013\u20b9{top:,}"
 
+    SHARE_ICON = ('<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="18" cy="5.5" r="2.7"/><circle cx="6" cy="12" r="2.7"/>'
+                  '<circle cx="18" cy="18.5" r="2.7"/><path d="M8.4 10.7l7.2-3.9M8.4 13.3l7.2 3.9"/></svg>')
+
+    def share_name(self, p):
+        """The name a shopper sees on the card and the page: the brand and the model (the same words as data-name on the card)."""
+        return f'{self.brands[p["brand"]]["name"]} {p["model"]}'
+
+    def share_url(self, p):
+        """The SAT product page on the site's canonical address (from site.config.json), never the Amazon link."""
+        return str(self.site.get("site_url", "")).rstrip("/") + self.review_url(p)
+
+    def share_href(self, p):
+        """https://wa.me/?text= + encodeURIComponent('Check this watch on SAT: ' + name + '\\n' + canonical SAT URL): a real link that works without JavaScript.
+        Python's quote() with encodeURIComponent's unreserved set gives the same bytes as the browser."""
+        text = f"Check this watch on SAT: {self.share_name(p)}\n{self.share_url(p)}"
+        return "https://wa.me/?text=" + urllib.parse.quote(text, safe="-_.!~*'()")
+
+    def share_button(self, p, label=False):
+        """The share control for one watch, made from the record alone (no per-product setting). It is an anchor to WhatsApp so it works without
+        JavaScript; watch-share.js turns a click into the 'Share this watch' sheet and reads the id, brand, name and canonical URL from these data attributes."""
+        name = self.share_name(p)
+        text = '<span class="watch-share-text">Share</span>' if label else ""
+        return (f'<a class="watch-share{" watch-share--label" if label else " watch-share--icon"}" href="{esc(self.share_href(p))}" target="_blank" rel="noopener noreferrer" '
+                f'data-share-open data-share-product="{esc(p["id"])}" data-share-brand="{esc(p["brand"])}" data-share-name="{esc(name)}" data-share-url="{esc(self.share_url(p))}" '
+                f'aria-label="Share {esc(name)}" aria-haspopup="dialog">{self.SHARE_ICON}{text}</a>')
+
     def card(self, p, local=False):
         brand = self.brands[p["brand"]]["name"]
         href = f'#r-{p["id"]}' if local else self.review_url(p)
@@ -391,7 +417,7 @@ f'<linearGradient id="g{uid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-
         badge = f'<span class="watch-badge">{esc(watch_data.EDITORIAL_LABELS[badge_key])}</span>' if badge_key in watch_data.EDITORIAL_LABELS else ""
         fav = (f'<button type="button" class="watch-fav" data-fav="{esc(p["id"])}" aria-pressed="false" aria-label="Save {esc(p["model"])}">'
                '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7-4.4-9-9a5 5 0 0 1 9-3 5 5 0 0 1 9 3c-2 4.6-9 9-9 9z"/></svg></button>')
-        art = f'<div class="watch-visual">{media}{badge}{fav}</div>'
+        art = f'<div class="watch-visual">{media}{badge}{fav}{self.share_button(p)}</div>'
         return (
             f'<article class="watch-card" style="{self.watch_theme(p)}" data-id="{esc(p["id"])}" data-name="{esc(brand + " " + p["model"])}" data-brand="{esc(p["brand"])}" '
             f'data-gender="{esc(" ".join(p["gender"]))}" data-style="{esc(" ".join(p["styles"]))}" data-budget="{esc(" ".join(self.qualifies(p)) or "unlisted")}" data-own="{esc(p.get("budget") or "")}" data-styles="{esc(" ".join(p["styles"]))}" '
@@ -1497,7 +1523,8 @@ f'<linearGradient id="g{uid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-
         return ('<div class="watch-pdp">'
                 f'<div class="watch-pdp-photo">{self.dial_art(p)}<span class="tile-brand">{esc(brand)}</span>' + (f'<span class="tile-band">{esc(band)}</span>' if band else "") + '</div>'
                 '<div class="watch-pdp-info">'
-                f'<p class="watch-kicker">{esc(brand)}' + (f' \u00b7 {esc(label)}' if label else "") + f'</p><h1>{esc(title)}</h1>'
+                '<div class="watch-pdp-head">'
+                f'<p class="watch-kicker">{esc(brand)}' + (f' \u00b7 {esc(label)}' if label else "") + f'</p>{self.share_button(p, label=True)}</div><h1>{esc(title)}</h1>'
                 + self.spec_rows(p) +
                 f'<div class="watch-cta-row">{self.check_price(p, small=False, include_more=False)}</div>'
                 '<p class="watch-pdp-note">Specifications are as listed by the seller. Check the price and the colour on the Amazon page before you buy.</p>'
@@ -1576,4 +1603,8 @@ f'<linearGradient id="g{uid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-
         prev = self.preview()
         if prev:
             out.append(prev)
+        for meta in out:   # any page that carries a share control (cards, product pages) loads its sheet script and style, so a new page type needs no setup
+            if "data-share-open" in meta.get("_body", ""):
+                meta["css"] = list(meta.get("css", [])) + (["watch-share"] if "watch-share" not in meta.get("css", []) else [])
+                meta["js"] = list(meta.get("js", [])) + (["watch-share"] if "watch-share" not in meta.get("js", []) else [])
         return out

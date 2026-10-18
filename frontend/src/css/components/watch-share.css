@@ -1,0 +1,72 @@
+/* Share a watch: the icon on every card, the "Share" pill on a product page, and the "Share this watch" sheet (ivory, charcoal, muted gold). */
+.watch-share, .watch-share-sheet { --ws-paper: #fffdf8; --ws-cream: #f3ecda; --ws-line: #e9e2d0; --ws-stone: #ded6c3; --ws-char: #2b2c2f; --ws-ink: #121315; --ws-gold: #a88646; --ws-gold-ink: #7a5c22; --ws-gold-soft: #d8c08a; --ws-muted: #6d695f; }
+
+/* the control: a link to WhatsApp that the script turns into the sheet */
+.watch-share { position: relative; display: inline-grid; place-items: center; box-sizing: border-box; min-width: 44px; min-height: 44px; color: var(--ws-char); text-decoration: none; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.watch-share svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+.watch-share, .watch-share:hover, .watch-share:focus, .watch-share-sheet a.ws-item, .watch-share-sheet a.ws-item:hover { text-decoration: none; }
+.watch-share:focus-visible { outline: 3px solid var(--ws-gold); outline-offset: 2px; }
+
+/* on a card: a round button over the picture, under the heart, in a 44 px tap area (the visible circle is 36 px like the heart) */
+.watch-share--icon { position: absolute; top: 50px; right: 6px; z-index: 2; width: 44px; height: 44px; }
+.watch-share--icon::before { content: ""; position: absolute; inset: 4px; border-radius: 50%; background: rgba(255, 253, 248, .86); box-shadow: 0 6px 12px -8px rgba(0, 0, 0, .5); transition: transform .2s ease, background .2s ease; }
+.watch-share--icon svg { position: relative; }
+.watch-share--icon:active::before { transform: scale(.92); }
+@media (hover: hover) { .watch-share--icon:hover::before { background: #fff; } .watch-share--icon:hover svg { stroke: var(--ws-gold-ink); } }
+
+/* on a product page: a pill with a word, beside the brand line */
+.watch-pdp-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-width: 0; }
+.watch-pdp-head .watch-kicker { min-width: 0; }
+.watch-share--label { display: inline-flex; gap: 8px; align-items: center; justify-content: center; padding: 0 16px; border: 1px solid var(--ws-gold-soft); border-radius: 999px; background: var(--ws-paper); font: 600 .86rem/1 var(--font-sans, system-ui, sans-serif); letter-spacing: .02em; flex: none; transition: border-color .2s ease, background .2s ease; }
+@media (hover: hover) { .watch-share--label:hover { border-color: var(--ws-gold); background: #fbf5e4; } }
+
+/* a card on a product page (Alternatives) has no heart script, so the icon sits in the corner of the picture */
+.watch-pdp-wrap .watch-visual { position: relative; }
+.watch-pdp-wrap .watch-card .watch-fav { display: none; }
+.watch-pdp-wrap .watch-share--icon { top: 6px; }
+
+/* the sheet: slides up from the bottom on a phone, a small centred dialog on a larger screen */
+html.watch-share-open { overflow: hidden; }
+.watch-share-sheet { box-sizing: border-box; padding: 0; border: 0; color: var(--ws-ink); background: var(--ws-paper); font-family: var(--font-sans, system-ui, sans-serif); overscroll-behavior: contain; }
+.watch-share-sheet::backdrop { background: rgba(18, 19, 21, .52); animation: ws-fade .22s ease both; }
+.watch-share-sheet .ws-inner { box-sizing: border-box; display: grid; gap: 14px; padding: 18px 18px calc(20px + env(safe-area-inset-bottom, 0px)); }
+.watch-share-sheet .ws-grip { display: none; }
+.watch-share-sheet .ws-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.watch-share-sheet .ws-title { margin: 0; font: 600 1.25rem/1.2 var(--font-serif, Georgia, serif); color: var(--ws-ink); }
+.watch-share-sheet .ws-name { margin: 4px 0 0; font-size: .85rem; line-height: 1.35; color: var(--ws-muted); overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.watch-share-sheet .ws-close { flex: none; display: grid; place-items: center; width: 44px; height: 44px; margin: -6px -8px 0 0; padding: 0; border: 0; border-radius: 50%; background: transparent; color: var(--ws-char); cursor: pointer; }
+.watch-share-sheet .ws-close svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; }
+.watch-share-sheet .ws-list { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+.watch-share-sheet .ws-item { box-sizing: border-box; display: flex; align-items: center; gap: 14px; width: 100%; min-height: 56px; padding: 0 16px; border: 1px solid var(--ws-stone); border-radius: 14px; background: #fffefb; color: var(--ws-ink); font: 600 1rem/1.2 var(--font-sans, system-ui, sans-serif); text-align: left; text-decoration: none; cursor: pointer; transition: border-color .2s ease, background .2s ease; }
+.watch-share-sheet .ws-item svg { width: 22px; height: 22px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.watch-share-sheet .ws-item.ws-primary { border-color: #131416; background: linear-gradient(180deg, #2b2d33, #131416); color: #fbf6ea; box-shadow: inset 0 -2px 0 var(--ws-gold); }
+.watch-share-sheet .ws-item.ws-primary svg { stroke: none; fill: var(--ws-gold-soft); }
+.watch-share-sheet .ws-item.ws-primary .ws-handset { fill: #1b1d22; }
+.watch-share-sheet .ws-item[hidden] { display: none; }
+@media (hover: hover) { .watch-share-sheet .ws-item:not(.ws-primary):hover { border-color: var(--ws-gold); background: #fbf6e8; } .watch-share-sheet .ws-close:hover { background: var(--ws-cream); } }
+.watch-share-sheet :focus-visible { outline: 3px solid var(--ws-gold); outline-offset: 2px; }
+.watch-share-sheet .ws-status { min-height: 1.3em; margin: 0; font-size: .9rem; font-weight: 600; color: var(--ws-gold-ink); text-align: center; }
+
+/* phone: a bottom sheet */
+@media (max-width: 640px) {
+  .watch-share-sheet[open] { position: fixed; inset: auto 0 0 0; width: 100%; max-width: 100%; max-height: 88vh; max-height: 88dvh; margin: 0; overflow-y: auto; border-radius: 22px 22px 0 0; box-shadow: 0 -18px 50px -18px rgba(0, 0, 0, .55); animation: ws-up .3s cubic-bezier(.2, .8, .2, 1) both; }
+  .watch-share-sheet[open].is-closing { animation: ws-down .2s ease-in both; }
+  .watch-share-sheet[open].is-closing::backdrop { animation: ws-fade-out .2s ease-in both; }
+  .watch-share-sheet .ws-grip { display: block; width: 42px; height: 4px; margin: 0 auto -4px; border-radius: 4px; background: var(--ws-stone); }
+}
+/* larger screens: a small dialog */
+@media (min-width: 641px) {
+  .watch-share-sheet[open] { width: 380px; max-width: calc(100% - 32px); border-radius: 20px; box-shadow: 0 30px 80px -24px rgba(0, 0, 0, .6); animation: ws-pop .22s ease both; }
+  .watch-share-sheet[open].is-closing { animation: ws-pop-out .15s ease-in both; }
+}
+@keyframes ws-up { from { transform: translateY(100%); } to { transform: none; } }
+@keyframes ws-down { from { transform: none; } to { transform: translateY(100%); } }
+@keyframes ws-pop { from { opacity: 0; transform: translateY(10px) scale(.98); } to { opacity: 1; transform: none; } }
+@keyframes ws-pop-out { from { opacity: 1; } to { opacity: 0; transform: translateY(6px) scale(.98); } }
+@keyframes ws-fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes ws-fade-out { from { opacity: 1; } to { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) {
+  .watch-share-sheet[open], .watch-share-sheet[open].is-closing, .watch-share-sheet::backdrop, .watch-share-sheet[open].is-closing::backdrop { animation: none; }
+  .watch-share--icon::before, .watch-share--label, .watch-share-sheet .ws-item { transition: none; }
+}
+@media print { .watch-share, .watch-share-sheet { display: none !important; } }
