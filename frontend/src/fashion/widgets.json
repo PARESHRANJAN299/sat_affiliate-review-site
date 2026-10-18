@@ -81,6 +81,50 @@
       "height": 360,
       "active": true,
       "featured": false
+    },
+    {
+      "id": "nykaa-21203273",
+      "product_id": "21203273",
+      "category": "womens-kurtas",
+      "source": "nykaa-fashion",
+      "widget_url": "https://affiliate.nykaa.com/v2/get_product_widget?ad_id=6ad495885fa67ed743960744&add_resources=True&affiliate_id=PARESHRA-445235&product_id=21203273&store=nykaa_fashion&text_color=000000&theme_variation=TEXT_AND_IMAGE&theme=affiliate&aff_link_type=affiliate%3Anap_dashboard%3Aproduct&hlp=hlpa",
+      "width": 280,
+      "height": 360,
+      "active": true,
+      "featured": false
+    },
+    {
+      "id": "nykaa-17204334",
+      "product_id": "17204334",
+      "category": "womens-kurtas",
+      "source": "nykaa-fashion",
+      "widget_url": "https://affiliate.nykaa.com/v2/get_product_widget?ad_id=6ad495d967cca929453d381d&add_resources=True&affiliate_id=PARESHRA-445235&product_id=17204334&store=nykaa_fashion&text_color=000000&theme_variation=TEXT_AND_IMAGE&theme=affiliate&aff_link_type=affiliate%3Anap_dashboard%3Aproduct&hlp=hlpa",
+      "width": 280,
+      "height": 360,
+      "active": true,
+      "featured": false
+    },
+    {
+      "id": "nykaa-28385101",
+      "product_id": "28385101",
+      "category": "womens-kurtas",
+      "source": "nykaa-fashion",
+      "widget_url": "https://affiliate.nykaa.com/v2/get_product_widget?ad_id=6ad4960c1bde18e19f3d2847&add_resources=True&affiliate_id=PARESHRA-445235&product_id=28385101&store=nykaa_fashion&text_color=000000&theme_variation=TEXT_AND_IMAGE&theme=affiliate&aff_link_type=affiliate%3Anap_dashboard%3Aproduct&hlp=hlpa",
+      "width": 280,
+      "height": 360,
+      "active": true,
+      "featured": false
+    },
+    {
+      "id": "nykaa-15080096",
+      "product_id": "15080096",
+      "category": "womens-kurtas",
+      "source": "nykaa-fashion",
+      "widget_url": "https://affiliate.nykaa.com/v2/get_product_widget?ad_id=6ad496335593a5b8d678fb88&add_resources=True&affiliate_id=PARESHRA-445235&product_id=15080096&store=nykaa_fashion&text_color=000000&theme_variation=TEXT_AND_IMAGE&theme=affiliate&aff_link_type=affiliate%3Anap_dashboard%3Aproduct&hlp=hlpa",
+      "width": 280,
+      "height": 360,
+      "active": true,
+      "featured": false
     }
   ],
   "category_pages": [
