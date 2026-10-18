@@ -25,6 +25,8 @@
     var pager = root.querySelector('[data-pagination]');
     var pageSize = Number(root.dataset.pageSize) || 0;
     var page = 1;
+    var premium = null;   // {from, top, label, heading}: the Premium range shown as one label (the filter underneath is a lower limit plus a top band)
+    try { premium = JSON.parse(root.dataset.premium || 'null'); } catch (e) { premium = null; }
     var heading = topFilters ? root.closest('.watch-store').querySelector('h1') : null;
     var headingDefault = heading ? (heading.dataset.default || heading.textContent) : '';
     var reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -141,6 +143,7 @@
         chip.setAttribute('aria-pressed', (selected[chip.dataset.quickChip] || []).indexOf(chip.dataset.value) !== -1 && (!chip.dataset.chipGender || chip.dataset.chipGender === gender) ? 'true' : 'false');
       });
       var budgetValue = 'Any price';
+      var premiumOn = false;
       sliders.forEach(function (slider) {
         var steps = JSON.parse(slider.dataset.steps);
         var picked = (selected[slider.dataset.group] || []).filter(function (v) { return v !== 'unlisted'; });
@@ -151,8 +154,12 @@
         slider._lo = loAt;
         var any = !hiAt && !loAt;
         var text = any ? 'Any price' : !loAt ? 'Up to ' + money(steps[hiAt - 1][1]) : !hiAt ? money(steps[loAt - 1][1]) + ' and above' : money(steps[loAt - 1][1]) + ' – ' + money(steps[hiAt - 1][1]);
-        slider.querySelector('[data-price-label]').textContent = text;
         var shortText = any ? 'Any price' : !loAt ? 'Under ' + money(steps[hiAt - 1][1]) : text;
+        if (premium && slider.classList.contains('price-bands')) {   // from the end of the last tier up to the top band is the Premium range
+          var pf = values.indexOf(premium.from), pt = values.indexOf(premium.top);
+          if (pf >= 0 && pt >= 0 && loAt === pf + 1 && (!hiAt || hiAt >= pt + 1)) { premiumOn = true; text = shortText = premium.label; }
+        }
+        slider.querySelector('[data-price-label]').textContent = text;
         budgetValue = shortText;
         slider.querySelector('[data-price-help]').textContent = shortText;
         var clearBudget = slider.querySelector('[data-price-clear]');
@@ -198,19 +205,23 @@
         var styles = boxes.filter(function (box) {return box.dataset.group === 'style' && box.checked;});
         var budgets = boxes.filter(function (box) {return box.dataset.group === 'budget' && box.checked;});
         var priceText = budgetValue === 'Any price' ? '' : budgetValue.replace(/^Under /, 'Up to ');
-        heading.textContent = !gender && !brands.length && !styles.length && !budgets.length ? headingDefault :
+        heading.textContent = !gender && !brands.length && !styles.length && !budgets.length && !premiumOn ? headingDefault :
           (brands.length === 1 ? labelOf(brands[0]) + ' ' : '') + (gender === 'men' ? "Men's " : gender === 'women' ? "Women's " : '') +
-          (styles.length === 1 ? labelOf(styles[0]) + ' ' : '') + 'Watches' + (priceText ? ' ' + priceText : '');
+          (styles.length === 1 ? labelOf(styles[0]) + ' ' : '') + (premiumOn ? premium.heading : 'Watches' + (priceText ? ' ' + priceText : ''));
       }
       active.replaceChildren();
-      boxes.filter(function (box) { return box.checked; }).forEach(function (box) {
+      boxes.filter(function (box) { return box.checked && !(premiumOn && box.dataset.group === 'budget'); }).forEach(function (box) {
         removeButton(labelOf(box), function () { box.checked = false; });
+      });
+      if (premiumOn) removeButton(premium.label, function () {   // one chip for the whole Premium range; removing it clears both internal filters
+        boxes.forEach(function (box) { if (box.dataset.group === 'budget') box.checked = false; });
+        var ps = bandsSlider(); if (ps) ps._lo = 0;
       });
       if (gender && !genderBoxes.length) removeButton(gender === 'men' ? "Men's" : "Women's", function () { gender = ''; });
       var fromAt = fromLimit();
-      if (fromAt) { var fs = bandsSlider(); removeButton('From ' + money(JSON.parse(fs.dataset.steps)[fromAt - 1][1]), function () { fs._lo = 0; }); }
+      if (fromAt && !premiumOn) { var fs = bandsSlider(); removeButton('From ' + money(JSON.parse(fs.dataset.steps)[fromAt - 1][1]), function () { fs._lo = 0; }); }
       if (query) removeButton('Search: ' + search.value.trim(), function () { search.value = ''; });
-      var total = boxes.filter(function (box) { return box.checked; }).length + (gender && !genderBoxes.length ? 1 : 0) + (fromLimit() ? 1 : 0);
+      var total = boxes.filter(function (box) { return box.checked; }).length + (gender && !genderBoxes.length ? 1 : 0) + (fromLimit() ? 1 : 0) - (premiumOn ? 1 : 0);
       root.querySelector('[data-filter-badge]').textContent = total ? '(' + total + ')' : '';
       if (store && total) count.textContent += ' · refined by your choices';
       countGroups();
@@ -483,7 +494,7 @@
     desktop.addEventListener('change', resize);
     // /watches/?price=under-3000 (the home page slider) opens the list with that price band chosen
     var query = new URLSearchParams(window.location.search);
-    var from = query.get('from');   // /watches/?price=under-3000&from=under-2000 opens the 2,000 to 3,000 range
+    var from = query.get('from') || root.dataset.presetFrom;   // /watches/?price=under-3000&from=under-2000 opens the 2,000 to 3,000 range
     if (from) sliders.forEach(function (slider) {
       var at = JSON.parse(slider.dataset.steps).map(function (step) { return step[0]; }).indexOf(from);
       if (at >= 0 && slider.classList.contains('price-bands')) slider._lo = at + 1;

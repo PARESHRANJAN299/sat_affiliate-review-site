@@ -27,6 +27,7 @@ sys.path.insert(0, str(ROOT))
 import watches  # noqa: E402
 import listing  # noqa: E402
 import collection  # noqa: E402
+import cards as ui  # noqa: E402
 import watch_data as watch_data_mod  # noqa: E402
 SRC = ROOT / "src"
 DIST = ROOT / "dist"
@@ -1288,21 +1289,20 @@ def mega_data(pages):
         if c["slug"] == "watches" and SHOP[0] is not None:
             shop = SHOP[0]
             entry["soon"] = []
-            # one editorial card per published, indexable collection (SEO heading and a short sentence); fewer than two are not shown as cards
-            featured = sorted([x for x in shop.published_collections() if x["featured_on_watch_hub"]], key=lambda x: (-x["count"], x["heading"]))
-            entry["cards"] = [(x["heading"], x["summary"], x["url"]) for x in featured] if len(featured) >= 2 else []
+            # the shopper price tiers from the whole catalogue (budget_discovery), each linking to its approved page or the hub filter
+            entry["cards"] = shop.menu_discovery()
             entry["shopfor"] = [(f'{info["label"]} watches', f"/watches/{g}/", sum(1 for p in shop.products if g in p["gender"])) for g, info in shop.genders.items()]
             entry["shopfor"] = [x for x in entry["shopfor"] if x[2]]
             entry["brandlive"] = [(name, f"/watches/brands/{slug_}/", n) for slug_, name, n in shop.active_brands()]
         if c["slug"] == "watches":
+            card_urls = {x["href"] for x in entry.get("cards", [])[:5]}   # a tier shown as a card is not repeated; every other approved destination stays in the menu
             for url, p in sorted(live.items()):
+                if url in card_urls:
+                    continue
                 m = re.fullmatch(r"/watches/(men|women)/under-(\d+)/", url)
-                if SHOP[0] is not None and entry["cards"]:
-                    if re.fullmatch(r"/watches/[a-z0-9-]+/under-\d+/", url) or m:
-                        continue
                 if m:
                     entry["price"].append((f'{m.group(1).title()}\u2019s watches under \u20b9{int(m.group(2)):,}', url))
-                elif re.fullmatch(r"/watches/[a-z0-9-]+/under-\d+/", url):
+                elif re.fullmatch(r"/watches/(?:[a-z0-9-]+/)?under-\d+/", url) or url == "/watches/premium/":
                     entry["price"].append((p["title"].replace("Best ", ""), url))
                 elif url.startswith("/watches/brands/"):
                     entry["brand"].append((p["title"].replace("Best ", "").replace(" in India", ""), url))
@@ -1340,14 +1340,19 @@ def category_menu(item, current_url=None):
         m = MEGA.get(c["slug"], {})
         cols = ""
         if m.get("cards"):
-            cards = "".join(f'<li><a class="mega-card" href="{esc(u)}"><strong>{esc(t)}</strong><small>{esc(s)}</small>'
-                            '<span class="mega-go">Explore <i aria-hidden="true">&rarr;</i></span></a></li>' for t, s, u in m["cards"][:4])
-            cols += f'<div class="mega-col mega-cards"><p class="mega-title">Popular watch collections</p><ul>{cards}</ul></div>'
+            crow = "".join(f'<li>{ui.menu_row(c)}</li>' for c in m["cards"][:5])
+            cols += f'<div class="mega-col mega-cards"><p class="mega-title">Popular watch collections</p><ul>{crow}</ul></div>'
         if m.get("shopfor") or m.get("brandlive"):
-            chips = "".join(f'<li><a href="{esc(u)}"><span>{esc(t)}</span><em>{n}</em></a></li>' for t, u, n in (m.get("shopfor", []) + m.get("brandlive", [])))
+            chips = "".join(f'<li>{ui.quick_link(t, u, n)}</li>' for t, u, n in (m.get("shopfor", []) + m.get("brandlive", [])))
             cols += f'<div class="mega-col mega-counts"><p class="mega-title">Shop for</p><ul>{chips}</ul></div>'
-        cols += (col("Product types", m.get("types", [])) + col("Buying guides", m.get("guides", []), 10)
-                 + (col("By price", m.get("price", [])) + col("By brand", m.get("brand", [])) + col("By style", m.get("feature", []))))
+        more = m.get("price", []) + m.get("brand", []) + m.get("feature", [])   # every other approved collection: budget, brand + budget, brand, style, gender + budget
+        if m.get("cards") and more:
+            chips = "".join(f'<li>{ui.quick_link(t, u)}</li>' for t, u in more)
+            cols += f'<div class="mega-col mega-counts mega-extra"><p class="mega-title">More collections</p><ul>{chips}</ul></div>'
+            more_cols = ""
+        else:
+            more_cols = col("By price", m.get("price", [])) + col("By brand", m.get("brand", [])) + col("By style", m.get("feature", []))
+        cols += col("Product types", m.get("types", [])) + col("Buying guides", m.get("guides", []), 10) + more_cols
 
         if m.get("soon"):
             names = "".join(f'<li><a href="{esc(u)}">{esc(n)}</a></li>' for n, u in m["soon"][:20])
@@ -2242,7 +2247,12 @@ def watch_collections():
     """python3 build.py --collections: filter combinations with enough watches, and whether each has an approved page."""
     shop = watches.Watches(SRC, CONFIG)
     rows = shop.collection_candidates()
-    print(f"{len(shop.products)} live watches. Collections with at least {shop.min_index} watches:\n")
+    print(f"{len(shop.products)} live watches ({sum(1 for p in shop.products if not p.get('budget'))} with no price band, in no tier).\n")
+    print("Broad budget tiers (built from the whole catalogue; a page exists only when approved):")
+    print(f"  {'tier':<18}{'watches':>8}  {'brands':<66}{'URL':<24}SEO / publish status")
+    for t in shop.budget_discovery():
+        print(f"  {t['short_label']:<18}{t['count']:>8}  {', '.join(t['brands']):<66}{t['page_url']:<24}{shop.tier_seo_status(t)}  [{t['destination']} -> {t['href']}]")
+    print(f"\nCollections with at least {shop.min_index} watches:\n")
     for c in sorted(rows, key=lambda r: (-r["count"], r["name"])):
         state = "APPROVED, indexable" if c["approved"] else ("needs approval + own copy" if c["url"] else "filter only (no page URL)")
         print(f"  {c['name']:<40} {c['count']:>3} watches   {state}   {c['url'] or ''}")

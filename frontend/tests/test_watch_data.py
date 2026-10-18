@@ -169,16 +169,16 @@ class HubExtras(unittest.TestCase):
     def test_no_card_contains_nested_or_repeated_links(self):
         import re
         body = self.shop.landing()["_body"]
-        for block in re.findall(r'<a class="(?:lx-intent|lx-budget|lx-mcard lx-mlink)".*?</a>', body, flags=re.S):
+        for block in re.findall(r'<a class="card [^"]*(?:lx-intent|lx-budget|lx-mcard|col-card)[^"]*".*?</a>', body, flags=re.S):
             self.assertEqual(block.count("<a "), 1, block[:80])           # one card = one anchor
         for section in ("lx-intent-row", "lx-budget-row"):
-            hrefs = re.findall(r'<a class="lx-(?:intent|budget)" href="([^"]+)"', body.split(section)[1].split("</ul>")[0])
+            hrefs = re.findall(r'<a class="card [^"]*lx-(?:intent|budget)[^"]*" href="([^"]+)"', body.split(section)[1].split("</ul>")[0])
             self.assertEqual(len(hrefs), len(set(h + str(i) for i, h in enumerate(hrefs))))
 
     def test_counts_are_generated(self):
         c = next(c for c in self.shop.published_collections() if c["url"] == "/watches/titan/under-2000/")
         html = self.shop.hub_html()[1]
-        self.assertIn(f'<span>Best Titan Watches Under \u20b92,000</span><em>{c["count"]}<span class="visually-hidden"> watches</span></em>', html)
+        self.assertIn(f'<strong class="card-title">Best Titan Watches Under \u20b92,000</strong><span class="card-count">{c["count"]} watches</span>', html)
         self.assertEqual(c["count"], sum(1 for p in self.shop.products if p["brand"] == "titan" and "under-2000" in self.shop.qualifies(p)))
 
     def test_hub_page_order_is_watches_then_help(self):
@@ -409,6 +409,7 @@ class PremiumCards(unittest.TestCase):
             self.assertIn(f'<small class="gp-c">{n} watches</small>', body)
 
     def test_intent_cards_need_approval_and_a_matching_watch(self):
+        import re
         shop = self.shop
         saved = shop.settings.get("intent_cards")
         try:
@@ -423,8 +424,8 @@ class PremiumCards(unittest.TestCase):
             self.assertIn("Shown", html)
             for name in ("Hidden", "No filter", "No match"):
                 self.assertNotIn(name, html)
-            self.assertLessEqual(html.count('class="lx-intent"'), 4)
-            self.assertGreaterEqual(html.count('class="lx-intent"'), 2)
+            self.assertLessEqual(len(re.findall(r'class="card [^"]*lx-intent"', html)), 4)
+            self.assertGreaterEqual(len(re.findall(r'class="card [^"]*lx-intent"', html)), 2)
             shop.settings["intent_cards"] = []
             self.assertEqual(shop.intent_cards(fill=False), "")
             html2 = shop.intent_cards()
@@ -435,23 +436,18 @@ class PremiumCards(unittest.TestCase):
             shop.settings["intent_cards"] = saved
 
     def test_popular_collections_come_from_published_pages_and_hide_under_two(self):
+        import re
         shop = self.shop
         pubs = [c for c in shop.published_collections() if c["featured_on_watch_hub"]]
         html = shop.popular_collections(pubs)
         self.assertIn("Popular watch collections", html)
-        self.assertEqual(html.count('class="pc-card"'), len(pubs))
+        self.assertEqual(len(re.findall(r'class="card card-secondary col-card"', html)), len(pubs))
         for c in pubs:
             self.assertIn(f'href="{c["url"]}"', html)
             self.assertTrue(c["heading"].startswith("Best "))
             self.assertTrue(c["summary"])
         self.assertEqual(shop.popular_collections(pubs[:1]), "")
         self.assertEqual(shop.popular_collections([]), "")
-
-    def test_budget_cards_come_only_from_published_collections(self):
-        body = self.shop.landing()["_body"]
-        pubs = [c for c in self.shop.published_collections() if c["featured_on_watch_hub"] and c.get("price_band")]
-        self.assertEqual(body.count('class="lx-budget"'), len(pubs))
-        self.assertEqual(self.shop.budget_cards([]), "")
 
     def test_card_shows_the_band_range_and_marks_its_own_band(self):
         p = next(q for q in self.shop.products if q["id"] == "titan-analog-offwhite-b01clf3bfw")
@@ -473,6 +469,352 @@ class PremiumCards(unittest.TestCase):
         for key, _, options, getter in self.shop.FILTERS:
             if key == "dialcolour":
                 self.assertEqual({v for v, _ in options} - set(self.shop.DIAL_HEX), set())
+
+
+class CardSystem(unittest.TestCase):
+    """One canonical collection record feeds every card, so titles, counts and order cannot disagree between the menu, hub, popular block and links."""
+    @classmethod
+    def setUpClass(cls):
+        cls.shop = watches.Watches(build.SRC, build.CONFIG)
+
+    def test_every_collection_has_canonical_titles(self):
+        for c in self.shop.published_collections():
+            self.assertTrue(c["display_title"].startswith("Best "), c["display_title"])
+            self.assertTrue(c["seo_title"] and c["short_label"] and c["description"])
+            self.assertIn("\u00b7", c["short_label"])               # the short label is the compact chip form, never the full title
+            self.assertNotEqual(c["short_label"], c["display_title"])
+
+    def test_collection_name_is_one_function(self):
+        self.assertEqual(self.shop.collection_name(brand="titan", band="under-3000", best=True), "Best Titan Watches Under \u20b93,000")
+        self.assertEqual(self.shop.collection_name(brand="titan", band="under-3000"), "Titan Watches Under \u20b93,000")
+
+    def test_ordered_collections_follow_priority_and_budget(self):
+        recs = self.shop.published_collections()
+        bumped = [dict(c, priority=1, featured=(c["href"] == "/watches/titan/under-3000/")) for c in recs]
+        self.assertEqual(self.shop.ordered_collections(bumped)[0]["href"], "/watches/titan/under-3000/")      # featured first
+        flat = [dict(c, featured=False, priority=100) for c in recs]
+        order = list(self.shop.budgets)
+        titan = [c for c in self.shop.ordered_collections(flat) if c.get("brand") == "titan"]
+        self.assertEqual([c["price_band"] for c in titan], sorted([c["price_band"] for c in titan], key=order.index))   # budget progression
+        low = [dict(c, priority=50 if c["href"] == "/watches/titan/under-3000/" else 100) for c in flat]
+        self.assertEqual(self.shop.ordered_collections(low)[0]["href"], "/watches/titan/under-3000/")         # priority number wins
+
+    def test_service_helpers_group_the_same_records(self):
+        recs = self.shop.published_collections()
+        self.assertEqual(self.shop.collection_counts(), {c["href"]: c["count"] for c in recs})
+        by_budget = self.shop.collections_by_budget()
+        self.assertEqual(sum(len(v) for v in by_budget.values()), sum(1 for c in recs if c.get("price_band")))
+        for band, items in by_budget.items():
+            self.assertTrue(all(c["price_band"] == band for c in items))
+        for brand, items in self.shop.collections_by_brand().items():
+            self.assertTrue(all(c["brand"] == brand for c in items))
+        for key, title, items in self.shop.available_filters():
+            self.assertTrue(items and all(n > 0 for _, _, n in items), key)       # no option without a watch
+
+    def test_budget_tier_colour_progression(self):
+        tiers = [self.shop.budget_tier(v) for v in (1000, 2000, 3000, 5000, 10000, 20000, 50000)]
+        self.assertEqual(tiers, [1, 2, 3, 4, 5, 6, 7])
+        self.assertEqual(self.shop.budget_tier(999999), 7)
+
+    def test_one_anchor_per_card_and_no_plain_text_collection_names(self):
+        import re
+        bottom = self.shop.hub_html()[1]
+        for card in re.findall(r'<a class="card .*?</a>', bottom, flags=re.S):
+            self.assertEqual(card.count("<a "), 1)
+        text_only = re.sub(r'<a .*?</a>', "", bottom, flags=re.S)
+        for c in self.shop.published_collections():
+            self.assertNotIn(c["display_title"], text_only)                         # a collection name always sits inside a link
+
+    def test_same_title_in_budget_popular_curated_and_menu_cards(self):
+        body = self.shop.landing()["_body"]
+        bottom = self.shop.hub_html()[1]
+        popular = self.shop.popular_collections(self.shop.menu_discovery())
+        for c in self.shop.published_collections():
+            self.assertIn(f'<strong class="card-title">{c["display_title"]}</strong>', bottom)    # curated block: the published collections
+        for t in self.shop.budget_discovery():
+            self.assertIn(f'<span class="visually-hidden">: {t.get("heading") or t["display_title"]}</span>', body)  # budget card: visible text plus the full heading
+        for t in self.shop.menu_discovery():
+            self.assertIn(f'<strong class="card-title">{t.get("heading") or t["display_title"]}</strong>', popular)  # filter sheet: the same tiers, full headings
+            self.assertIn(f'<strong>{t["display_title"]}</strong>', build.ui.menu_row(t))        # category menu row
+
+    def test_page_titles_follow_the_canonical_record(self):
+        saved = dict(self.shop.approved)
+        try:
+            self.shop.approved["/watches/titan/under-3000/"] = dict(self.shop.approved["/watches/titan/under-3000/"], seo_title="Custom Titan Title")
+            self.assertEqual(self.shop.page_title("/watches/titan/under-3000/", brand="titan", band="under-3000"), "Custom Titan Title")
+            self.assertEqual(self.shop.brand_budget_page("titan", "under-3000")["title"], "Custom Titan Title")
+        finally:
+            self.shop.approved.clear()
+            self.shop.approved.update(saved)
+        self.assertEqual(self.shop.page_title("/watches/brands/titan/", brand="titan"), "Titan Watches")     # not published: plain name
+
+    def test_curated_block_hides_below_two_collections(self):
+        shop = self.shop
+        saved = dict(shop.approved)
+        try:
+            for url in list(shop.approved)[1:]:
+                del shop.approved[url]
+            self.assertNotIn("Curated for every budget", shop.hub_html()[1])
+        finally:
+            shop.approved.clear()
+            shop.approved.update(saved)
+
+
+class BudgetDiscovery(unittest.TestCase):
+    """Shopper price tiers come from the whole live catalogue; approved SEO pages are a separate system that only decides where a tier links."""
+    @classmethod
+    def setUpClass(cls):
+        cls.shop = watches.Watches(build.SRC, build.CONFIG)
+
+    def test_tiers_are_counted_from_every_live_watch(self):
+        shop = self.shop
+        tiers = shop.budget_discovery()
+        ids = [t["id"] for t in tiers]
+        self.assertEqual(ids, [b for b in shop.settings["budget_discovery"]["tiers"] if b in ids] + ["premium"])
+        for t in tiers:
+            if t["kind"] == "budget":
+                live = [p for p in shop.products if t["id"] in shop.qualifies(p)]
+            else:
+                live = [p for p in shop.products if p.get("budget") in shop.premium_bands()]
+            self.assertEqual(t["count"], len(live), t["id"])                                   # cumulative for Under tiers, own bands above the last tier for Premium
+            self.assertEqual(sorted(t["brand_slugs"]), sorted({p["brand"] for p in live}))
+            self.assertTrue(t["description"] and t["display_title"] and t["short_label"])
+
+    def test_under_tiers_are_cumulative_and_premium_is_not(self):
+        tiers = {t["id"]: t for t in self.shop.budget_discovery()}
+        counts = [tiers[i]["count"] for i in self.shop.settings["budget_discovery"]["tiers"] if i in tiers]
+        self.assertEqual(counts, sorted(counts))                                               # a cheaper watch also counts under every higher tier
+        cut = self.shop.settings["budget_discovery"]["premium_after"]
+        own = {p["id"] for p in self.shop.products if p.get("budget") in self.shop.premium_bands()}
+        self.assertTrue(own.isdisjoint({p["id"] for p in self.shop.products if cut in self.shop.qualifies(p)}))
+        self.assertEqual(tiers["premium"]["count"], len(own))
+
+    def test_a_watch_without_a_known_band_joins_no_tier(self):
+        shop = self.shop
+        before = {t["id"]: t["count"] for t in shop.budget_discovery()}
+        ghost = dict(next(p for p in shop.products if p.get("budget")), id="ghost-watch", budget="", price_band="")
+        shop.products.append(ghost)
+        try:
+            self.assertEqual({t["id"]: t["count"] for t in shop.budget_discovery()}, before)
+        finally:
+            shop.products.remove(ghost)
+
+    def test_a_tier_links_to_the_filter_until_its_page_is_published(self):
+        shop = self.shop
+        saved = dict(shop.approved)
+        try:
+            t = {x["id"]: x for x in shop.budget_discovery()}
+            self.assertEqual((t["under-10000"]["href"], t["under-10000"]["destination"]), ("/watches/?price=under-10000", "filter"))
+            self.assertEqual(t["premium"]["href"], "/watches/?price=" + shop.premium_top() + "&from=" + shop.settings["budget_discovery"]["premium_after"])
+            shop.approved["/watches/under-10000/"] = {"intro": " ".join(["word"] * 120)}
+            t = {x["id"]: x for x in shop.budget_discovery()}
+            self.assertEqual((t["under-10000"]["href"], t["under-10000"]["destination"], t["under-10000"]["has_page"]), ("/watches/under-10000/", "seo-page", True))
+            self.assertEqual(t["under-5000"]["destination"], "filter")                          # only the approved tier switches
+            shop.approved["/watches/under-5000/"] = {"intro": "far too short"}
+            self.assertEqual({x["id"]: x for x in shop.budget_discovery()}["under-5000"]["destination"], "filter")   # an approval without 100 words is not published
+        finally:
+            shop.approved.clear()
+            shop.approved.update(saved)
+
+    def test_seo_pages_exist_only_for_approved_tiers(self):
+        shop = self.shop
+        urls = {m["url"] for m in shop.pages()}
+        for u in ("/watches/under-1000/", "/watches/under-5000/", "/watches/under-10000/", "/watches/under-20000/", "/watches/premium/"):
+            self.assertNotIn(u, urls)                                                           # nothing is generated just because a tier exists
+        saved = dict(shop.approved)
+        try:
+            shop.approved["/watches/under-5000/"] = {"intro": " ".join(["word"] * 120)}
+            page = next(m for m in shop.pages() if m["url"] == "/watches/under-5000/")
+            self.assertFalse(page["noindex"])
+            self.assertEqual(page["title"], "Best Watches Under \u20b95,000 in India")
+            shop.approved["/watches/premium/"] = {"intro": " ".join(["word"] * 120)}
+            prem = next(m for m in shop.pages() if m["url"] == "/watches/premium/")
+            self.assertIn('data-preset-from="under-20000"', prem["_body"])                      # the premium page opens with the premium filter
+        finally:
+            shop.approved.clear()
+            shop.approved.update(saved)
+
+    def test_menu_mix_and_premium_name(self):
+        menu = self.shop.menu_discovery()
+        self.assertEqual([t["id"] for t in menu], self.shop.settings["budget_discovery"]["menu"][:5])
+        self.assertEqual(menu[-1]["display_title"], "Premium Watches")                      # the short label in the menu
+        self.assertEqual(menu[-1]["heading"], "Premium Watches Above \u20b920,000")           # the full heading everywhere else
+        self.assertEqual(menu[0]["heading"], menu[0]["display_title"])                      # Under tiers have one name
+        self.assertEqual(menu[0]["display_title"], "Best Watches Under \u20b93,000")
+        self.assertEqual(menu[0]["seo_title"], "Best Watches Under \u20b93,000 in India")
+
+    def test_hub_shows_every_tier_as_one_crawlable_card(self):
+        import re
+        body = self.shop.landing()["_body"]
+        tiers = self.shop.budget_discovery()
+        cards = re.findall(r'<a class="card card-primary lx-budget tier-(\d)" href="([^"]+)">.*?</a>', body, flags=re.S)
+        self.assertEqual(len(cards), len(tiers))
+        self.assertEqual([c[1] for c in cards], [t["href"].replace("&", "&amp;") for t in tiers])
+        self.assertEqual([int(c[0]) for c in cards], sorted(int(c[0]) for c in cards))          # the colour never steps back as the price rises
+        self.assertEqual(cards[-1][0], "7")                                                     # Premium is the deepest tier
+        self.assertIn('data-count="%d"' % len(tiers), body)
+        for block in re.findall(r'<a class="card card-primary lx-budget.*?</a>', body, flags=re.S):
+            self.assertEqual(block.count("<a "), 1)
+
+    def test_budget_cards_hide_empty_tiers(self):
+        self.assertEqual(self.shop.budget_cards([]), "")
+        self.assertEqual(self.shop.budget_cards([dict(self.shop.budget_discovery()[0], count=0)]), "")
+
+
+class ReviewFixes(unittest.TestCase):
+    """Regression tests for the findings of the budget-discovery review."""
+    LONG = " ".join(["word"] * 120)
+
+    @classmethod
+    def setUpClass(cls):
+        cls.shop = watches.Watches(build.SRC, build.CONFIG)
+
+    def approved(self, **entries):
+        shop = self.shop
+        saved = dict(shop.approved)
+        self.addCleanup(lambda: (shop.approved.clear(), shop.approved.update(saved)))
+        shop.approved.update(entries)
+
+    def test_menu_keeps_every_approved_destination_type(self):
+        import io, contextlib
+        self.approved(**{"/watches/under-3000/": {"intro": self.LONG}})
+        urls = ["/watches/under-1000/", "/watches/under-3000/", "/watches/titan/under-3000/", "/watches/brands/titan/", "/watches/style/leather-strap/",
+                "/watches/men/under-3000/", "/watches/premium/", "/watches/men/"]
+        pages = [{"url": u, "title": "Best " + u.strip("/").replace("/", " ") + " in India", "noindex": False} for u in urls]
+        old = build.SHOP[0]
+        build.SHOP[0] = self.shop
+        try:
+            build.mega_data(pages)
+            m = build.MEGA["watches"]
+        finally:
+            build.SHOP[0] = old
+        listed = {u for _, u in m["price"] + m["brand"] + m["feature"]}
+        card_urls = {c["href"] for c in m["cards"][:5]}
+        for u in ("/watches/under-1000/", "/watches/titan/under-3000/", "/watches/brands/titan/", "/watches/style/leather-strap/", "/watches/men/under-3000/"):
+            self.assertIn(u, listed | card_urls, u)                        # no approved destination type disappears
+        self.assertIn("/watches/under-3000/", card_urls)                   # a published tier is a card ...
+        self.assertNotIn("/watches/under-3000/", listed)                   # ... and is not repeated as text
+        self.assertTrue("/watches/premium/" in listed | card_urls)
+
+    def test_premium_sorts_after_every_under_tier(self):
+        self.approved(**{u: {"intro": self.LONG} for u in ("/watches/under-1000/", "/watches/under-3000/", "/watches/premium/")})
+        recs = [c for c in self.shop.published_collections() if c["url"] in ("/watches/under-1000/", "/watches/under-3000/", "/watches/premium/")]
+        flat = [dict(c, featured=False, priority=100) for c in recs]
+        self.assertEqual([c["url"] for c in self.shop.ordered_collections(flat)], ["/watches/under-1000/", "/watches/under-3000/", "/watches/premium/"])
+        ids = [t["id"] for t in self.shop.budget_discovery()]
+        self.assertEqual(ids[-1], "premium")
+        self.assertEqual(ids[:-1], sorted(ids[:-1], key=list(self.shop.budgets).index))
+
+    def test_approved_overrides_beat_generated_defaults(self):
+        base = {t["id"]: t for t in self.shop.budget_discovery()}
+        self.assertEqual(base["under-5000"]["display_title"], "Best Watches Under \u20b95,000")
+        self.approved(**{"/watches/under-5000/": {"intro": self.LONG, "display_title": "Custom Display", "seo_title": "Custom SEO", "short_label": "Custom short", "summary": "Custom summary."},
+                         "/watches/under-3000/": {"intro": "too short", "display_title": "Draft Title"}})
+        t = {x["id"]: x for x in self.shop.budget_discovery()}
+        self.assertEqual((t["under-5000"]["display_title"], t["under-5000"]["seo_title"], t["under-5000"]["short_label"], t["under-5000"]["description"]),
+                         ("Custom Display", "Custom SEO", "Custom short", "Custom summary."))
+        self.assertEqual(t["under-3000"]["display_title"], "Draft Title")                    # an approved override applies even before the page is publishable
+        self.assertEqual(t["under-3000"]["seo_title"], "Best Watches Under \u20b93,000 in India")   # fields without an override keep the generated default
+        self.assertEqual(t["under-2000"]["display_title"], "Best Watches Under \u20b92,000")
+        self.assertEqual(self.shop.page_title("/watches/under-5000/", band="under-5000"), "Custom SEO")
+
+    def test_more_brands_wording(self):
+        f = watches.Watches.brand_list_text
+        self.assertEqual(f(["A"]), "A")
+        self.assertEqual(f(["A", "B", "C"]), "A, B and C")
+        self.assertEqual(f(["A", "B", "C", "D"]), "A, B, C and 1 more brand")
+        self.assertEqual(f(["A", "B", "C", "D", "E"]), "A, B, C and 2 more brands")
+        for t in self.shop.budget_discovery():
+            self.assertNotIn("1 more brands", t["description"] + t["brand_line"])
+
+    def test_premium_copy_is_neutral_and_not_editorial(self):
+        t = {x["id"]: x for x in self.shop.budget_discovery()}["premium"]
+        self.assertEqual(t["description"], "Explore higher-budget watches from the premium end of the current SAT catalogue.")
+        self.assertEqual(self.shop.settings["budget_discovery"]["descriptions"], {})            # no unapproved production copy in settings
+        for word in ("fashion", "statement", "luxury", "higher-end"):
+            self.assertNotIn(word, t["description"].lower())
+        self.approved(**{"/watches/premium/": {"intro": self.LONG, "summary": "Approved line."}})
+        self.assertEqual({x["id"]: x for x in self.shop.budget_discovery()}["premium"]["description"], "Approved line.")   # approved copy wins
+
+    def test_premium_heading_and_single_chip_data(self):
+        import json as _json
+        shop = self.shop
+        self.assertEqual(shop.premium_heading(), "Premium Watches Above \u20b920,000")
+        cfg = _json.loads(shop.premium_ui())
+        self.assertEqual(cfg, {"from": "under-20000", "top": shop.premium_top(), "label": "\u20b920,000+", "heading": "Premium Watches Above \u20b920,000"})
+        body = shop.landing()["_body"]
+        self.assertIn("data-premium=", body)                                                   # the script gets one label for the pair of internal filters
+        self.assertIn("&quot;label&quot;: &quot;\u20b920,000+&quot;", body)
+        self.assertEqual(shop.page_title("/watches/premium/", premium=True), "Premium Watches Above \u20b920,000")   # an unpublished premium page is headed by the full heading
+        saved = dict(shop.approved)
+        self.addCleanup(lambda: (shop.approved.clear(), shop.approved.update(saved)))
+        shop.approved["/watches/premium/"] = {"intro": " ".join(["word"] * 120)}
+        self.assertEqual(shop.page_title("/watches/premium/", premium=True), "Best Premium Watches in India")   # once published the SEO title is used
+        self.assertIn("data-premium=", shop.premium_page()["_body"])
+
+    def test_no_premium_watch_means_no_premium_data(self):
+        shop = self.shop
+        own = [p for p in shop.products if p.get("budget") in shop.premium_bands()]
+        for p in own:
+            shop.products.remove(p)
+        try:
+            self.assertEqual(shop.premium_ui(), "")
+            self.assertNotIn("data-premium=", shop.landing()["_body"])
+        finally:
+            shop.products.extend(own)
+
+    def test_collections_report_lists_every_tier_including_premium(self):
+        import io, contextlib
+        buf = io.StringIO()
+        with contextlib.redirect_stdout(buf):
+            build.watch_collections()
+        out = buf.getvalue()
+        tiers = self.shop.budget_discovery()
+        for t in tiers:
+            self.assertIn(t["page_url"], out)
+            self.assertIn(str(t["count"]), out)
+        self.assertIn("Premium", out)
+        self.assertIn("/watches/premium/", out)
+        self.assertIn("not approved (filter link only)", out)
+        self.assertIn("Michael Kors", out)                                                       # brands are listed for the premium tier
+
+    def test_seo_status_follows_the_publishing_rules(self):
+        self.approved(**{"/watches/under-5000/": {"intro": "short intro"}, "/watches/under-10000/": {"intro": self.LONG}})
+        t = {x["id"]: x for x in self.shop.budget_discovery()}
+        self.assertEqual(self.shop.tier_seo_status(t["under-1000"]), "not approved (filter link only)")
+        self.assertIn("2 of 100 words", self.shop.tier_seo_status(t["under-5000"]))
+        self.assertEqual(self.shop.tier_seo_status(t["under-10000"]), "published and indexable")
+
+    def test_missing_or_malformed_discovery_settings_never_crash(self):
+        shop = self.shop
+        saved = shop.settings.get("budget_discovery", "__none__")
+        self.addCleanup(lambda: shop.settings.__setitem__("budget_discovery", saved) if saved != "__none__" else shop.settings.pop("budget_discovery", None))
+        base = [t["id"] for t in shop.budget_discovery()]
+        for bad in ("__missing__", None, "text", [], {}, {"tiers": "nope", "premium_after": "no-such-band", "menu": 5, "descriptions": []}):
+            if bad == "__missing__":
+                shop.settings.pop("budget_discovery", None)
+            else:
+                shop.settings["budget_discovery"] = bad
+            self.assertEqual([t["id"] for t in shop.budget_discovery()], base, bad)               # safe defaults give the same tiers
+            self.assertTrue(shop.menu_discovery())
+            self.approved(**{"/watches/premium/": {"intro": self.LONG}})
+            page = shop.premium_page()                                                            # an approved Premium page builds with no settings at all
+            self.assertIn('data-preset-from="under-20000"', page["_body"])
+        shop.settings["budget_discovery"] = {"tiers": ["not-a-band"]}
+        self.assertEqual(shop.budget_discovery(), [])                                             # nothing to show is not an error
+        self.assertEqual(shop.budget_cards(shop.budget_discovery()), "")
+
+    def test_meta_descriptions_are_unique_per_tier_and_overridable(self):
+        tiers = self.shop.budget_discovery()
+        metas = [self.shop.tier_meta(t) for t in tiers]
+        self.assertEqual(len(metas), len(set(metas)))
+        for t, m in zip(tiers, metas):
+            self.assertLessEqual(len(m), 155, m)
+            self.assertIn(str(t["count"]), m)
+            self.assertIn(t["brands"][0], m)
+        self.approved(**{"/watches/under-5000/": {"intro": self.LONG, "meta_description": "Approved meta for five thousand."}})
+        self.assertEqual(self.shop.all_brands_budget_page("under-5000")["description"], "Approved meta for five thousand.")
+        self.assertNotEqual(self.shop.all_brands_budget_page("under-1000")["description"], self.shop.all_brands_budget_page("under-2000")["description"])
 
 
 class UniqueIds(unittest.TestCase):

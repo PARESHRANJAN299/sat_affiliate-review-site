@@ -304,7 +304,7 @@ nav.main-nav .category-menu a.menu-all:hover { background: var(--color-bg-alt); 
   .mega-item.is-active > .menu-row { background: var(--color-accent-soft); }
   nav.main-nav .category-menu .mega-item.is-active > a.menu-row .chev { color: var(--color-primary); }
 }
-.mega-cols { display: grid; gap: 14px 22px; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); padding: 8px 0 4px; }
+.mega-cols { display: grid; gap: 10px 22px; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); padding: 8px 0 4px; }
 .mega-title { margin: 0 0 6px; font-size: .74rem; font-weight: 800; letter-spacing: .07em; text-transform: uppercase; color: var(--color-primary-dark); }
 nav.main-nav .category-menu .mega-col ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 1px; flex-wrap: nowrap; }
 nav.main-nav .category-menu .mega-col a { display: block; min-height: 0; padding: 6px 0; color: var(--color-text); font-size: .92rem; font-weight: 600; line-height: 1.3; background: none; }
@@ -324,21 +324,37 @@ nav.main-nav .category-menu a.mega-all:hover { text-decoration: underline; backg
 }
 @media (prefers-reduced-motion: reduce) { .mega-more .ic { transition: none; } }
 
-/* Watches panel in the category menu: collection cards and counted chips */
+/* Card system: three levels share one look, so every collection, brand, budget and quick link reads as clickable. */
+.card { background: #fffdf7; border: 1px solid rgba(120, 90, 35, .18); box-shadow: 0 4px 16px rgba(0, 0, 0, .05); color: #14161a; text-decoration: none; cursor: pointer;
+  transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease; }
+.card:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(0, 0, 0, .09); border-color: rgba(170, 125, 45, .35); text-decoration: none; }
+.card:focus-visible { outline: 3px solid #a88646; outline-offset: 2px; }
+.card-primary { border-radius: 22px; }
+.card-secondary { border-radius: 18px; }
+.card-compact { border-radius: 12px; }
+@media (prefers-reduced-motion: reduce) { .card { transition: none; } .card:hover { transform: none; } }
+
+/* Watches panel in the category menu: collection rows and counted chips */
 .mega-cols .mega-cards, .mega-cols .mega-counts { grid-column: 1 / -1; }
-nav.main-nav .category-menu .mega-cards ul { display: grid; grid-template-columns: 1fr; gap: 6px; }
-nav.main-nav .category-menu .mega-cards a.mega-card { position: relative; display: grid; gap: 1px; align-content: center; padding: 8px 40px 8px 14px; border: 1px solid #e6dcc3; border-radius: 13px; background: linear-gradient(135deg, #fffdf8, #f6efdd); color: #14161a; text-decoration: none; transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease; }
-nav.main-nav .category-menu .mega-cards a.mega-card:hover { transform: translateY(-2px); border-color: #c9a96a; box-shadow: 0 14px 22px -18px rgba(60, 40, 10, .5); text-decoration: none; background: linear-gradient(135deg, #fffdf8, #f6efdd); color: #14161a; }
-.mega-card strong { font: 600 .88rem/1.25 var(--font-display, Georgia, serif); }
-.mega-card small { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: .74rem; line-height: 1.4; color: #6d695f; font-weight: 500; }
-.mega-go { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); font-size: .72rem; font-weight: 700; color: #7a5c22; }
-.mega-go { font-size: 0; }
-.mega-go i { font-size: 1.05rem; }
-.mega-go i { display: inline-block; font-style: normal; transition: transform .2s ease; }
+nav.main-nav .category-menu .mega-cards ul { display: grid; grid-template-columns: 1fr; gap: 3px; }
+nav.main-nav .category-menu .mega-cards a.mega-card { position: relative; display: grid; gap: 1px; align-content: center; padding: 3px 40px 3px 14px; background: #fffdf7; color: #14161a; text-decoration: none; }
+nav.main-nav .category-menu .mega-cards a.mega-card:hover { background: #fffdf7; color: #14161a; text-decoration: none; }
+nav.main-nav .category-menu .mega-cards a.card-compact { border-radius: 12px; }
+nav.main-nav .category-menu .mega-counts a.card-compact { border-radius: 999px; }
+.mega-card strong { font: 600 .86rem/1.2 var(--font-display, Georgia, serif); }
+.mega-card small { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: .72rem; line-height: 1.3; color: #6d695f; font-weight: 500; }
+.mega-go { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); font-size: 0; font-weight: 700; color: #7a5c22; }
+.mega-go i { display: inline-block; font-style: normal; font-size: 1.05rem; transition: transform .2s ease; }
 .mega-card:hover .mega-go i { transform: translateX(4px); }
 nav.main-nav .category-menu .mega-counts ul { display: flex; flex-wrap: wrap; gap: 6px; }
-nav.main-nav .category-menu .mega-counts a { display: inline-flex; align-items: baseline; gap: 7px; padding: 6px 12px; border: 1px solid #e6dcc3; border-radius: 999px; background: #fffdf8; font-size: .84rem; font-weight: 600; }
-nav.main-nav .category-menu .mega-counts a:hover { border-color: #c9a96a; background: #fbf6e8; text-decoration: none; color: var(--color-text); }
+nav.main-nav .category-menu .mega-counts a.card { display: inline-flex; align-items: baseline; gap: 7px; padding: 4px 12px; background: #fffdf7; font-size: .84rem; font-weight: 600; color: var(--color-text); }
+nav.main-nav .category-menu .mega-counts a.card:hover { background: #fffdf7; text-decoration: none; color: var(--color-text); }
 nav.main-nav .category-menu .mega-counts a em { font-style: normal; font-size: .72rem; font-weight: 500; color: var(--color-text-muted); }
-.mega-card:focus-visible, nav.main-nav .category-menu .mega-counts a:focus-visible { outline: 3px solid #a88646; outline-offset: 2px; }
-@media (prefers-reduced-motion: reduce) { nav.main-nav .category-menu .mega-cards a.mega-card, .mega-go i { transition: none; } }
+@media (prefers-reduced-motion: reduce) { .mega-go i { transition: none; } }
+
+/* the price tiers sit two to a row in the wide menu panel (an odd last tier takes the full row), so the whole Watches panel fits without scrolling */
+@media (min-width: 720px) {
+  nav.main-nav .category-menu .mega-cards ul { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  nav.main-nav .category-menu .mega-cards li:last-child:nth-child(odd) { grid-column: 1 / -1; }
+}
+nav.main-nav .category-menu .mega-extra a.card-compact { border-radius: 999px; }

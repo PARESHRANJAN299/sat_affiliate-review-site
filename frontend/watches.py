@@ -15,6 +15,7 @@ import hashlib
 import html
 import re
 import collection
+import cards as ui
 import watch_data
 import json
 import math
@@ -716,6 +717,10 @@ f'<linearGradient id="g{uid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-
         parts = parts[1:]
         if len(parts) == 1 and parts[0] in self.genders:
             return {"gender": parts[0]}
+        if len(parts) == 1 and parts[0] in self.budgets:
+            return {"price_band": parts[0]}      # /watches/under-5000/: every brand, one price band
+        if len(parts) == 1 and parts[0] == "premium":
+            return {"premium": True}             # /watches/premium/: watches above the last shopper tier
         if len(parts) == 2 and parts[0] == "brands" and parts[1] in self.brands:
             return {"brand": parts[1]}
         if len(parts) == 2 and parts[0] == "style" and parts[1] in self.styles:
@@ -727,57 +732,244 @@ f'<linearGradient id="g{uid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-
                 return {"brand": parts[0], "price_band": parts[1]}
         return None
 
+    def collection_name(self, brand="", gender="", style="", band="", best=False):
+        """The one canonical name of a collection page, for the title, menu, cards, related links and search: "Best Titan Watches Under \u20b93,000"
+        ("Best" only once the page is published). Everything that names a collection calls this or reads display_title from published_collections()."""
+        name = (self.brands[brand]["name"] if brand else self.genders[gender]["label"] if gender else self.styles[style]["label"] if style else "")
+        label = self.budgets[band]["label"] if band else ""
+        return ("Best " if best else "") + (f"{name} Watches" if name else "Watches") + (f" {label}" if label else "")
+
+    def page_title(self, url, premium=False, **key):
+        """The title and H1 of a collection page: the canonical seo_title once published (so an override in collections.json applies), else the plain name."""
+        rec = next((c for c in self.published_collections() if c["url"] == url), None)
+        if rec:
+            return rec["seo_title"]
+        return self.premium_heading() if premium else self.collection_name(**key)
+
     def published_collections(self):
-        """Collections open to Google: approved in collections.json, with their own introduction and enough watches. Each entry carries
-        the metadata the Watches hub is built from: category, brand, price_band, gender, style, seo_status, featured_on_watch_hub.
-        An entry in collections.json may set "featured_on_watch_hub": false to keep a published page off the hub."""
+        """The canonical collection records, one per published, indexable collection page (approved in collections.json with its own introduction and
+        enough watches). Every menu, card, link and count on the Watches pages reads from these records.
+        Fields: id, category, url/href, brand, brand_name, price_band, gender, genders, count (live), published, indexable, seo_status, featured,
+        featured_on_watch_hub, priority (lower first), seo_title, display_title, short_label, description, and the older label, title, heading, summary.
+        collections.json may override display_title, short_label, seo_title, summary (the one-line description), featured, priority and featured_on_watch_hub."""
         out = []
         for url, entry in self.approved.items():
             key = self.parse_collection_url(url)
             if not key:
                 continue
             shown = [p for p in self.products if (not key.get("gender") or key["gender"] in p["gender"]) and (not key.get("brand") or p["brand"] == key["brand"])
-                     and (not key.get("price_band") or key["price_band"] in self.qualifies(p)) and (not key.get("style") or key["style"] in p["styles"])]
+                     and (not key.get("price_band") or key["price_band"] in self.qualifies(p)) and (not key.get("style") or key["style"] in p["styles"])
+                     and (not key.get("premium") or p.get("budget") in self.premium_bands())]
             if self.collection_noindex(url, shown):
                 continue
             band = self.budgets[key["price_band"]]["label"] if key.get("price_band") else ""
-            name = self.brands[key["brand"]]["name"] if key.get("brand") else (self.genders[key["gender"]]["label"] if key.get("gender") else self.styles[key["style"]]["label"])
-            heading = f"Best {name} Watches {band}" if band else f"Best {name} Watches"
-            summary = str(entry.get("summary") or "").strip() or (f"{len(shown)} {name} watches {band.lower()} to compare." if band else f"{len(shown)} {name} watches to compare.")
-            out.append({"category": "watches", "url": url, **key, "genders": sorted({g for p in shown for g in p["gender"]}), "count": len(shown),
-                        "seo_status": "indexable", "featured_on_watch_hub": entry.get("featured_on_watch_hub", True) is not False,
-                        "label": name, "title": f"{name} watches {band.lower()}" if band else f"{name} watches", "heading": heading, "summary": summary})
+            name = (self.brands[key["brand"]]["name"] if key.get("brand") else self.genders[key["gender"]]["label"] if key.get("gender") else
+                    self.styles[key["style"]]["label"] if key.get("style") else "Premium" if key.get("premium") else "")
+            broad = not (key.get("brand") or key.get("gender") or key.get("style"))    # a price page for every brand
+            seo = str(entry.get("seo_title") or "").strip() or (("Best Premium Watches in India" if key.get("premium") else f"Best Watches {band} in India") if broad else
+                  self.collection_name(brand=key.get("brand", ""), gender=key.get("gender", ""), style=key.get("style", ""), band=key.get("price_band", ""), best=True))
+            display = str(entry.get("display_title") or "").strip() or (("Best Premium Watches" if key.get("premium") else f"Best Watches {band}") if broad else seo)
+            short = str(entry.get("short_label") or "").strip() or ((self.premium_label() if key.get("premium") else band) if broad else f"{name} \u00b7 {band}" if band else name)
+            desc = str(entry.get("summary") or "").strip() or (" ".join(x for x in (f"{len(shown)}", name if not key.get("premium") else "premium", "watches", band.lower()) if x) + " to compare.")
+            out.append({"id": url.strip("/").replace("/", "-"), "category": "watches", "url": url, "href": url, **key, "genders": sorted({g for p in shown for g in p["gender"]}), "count": len(shown),
+                        "brand_name": self.brands[key["brand"]]["name"] if key.get("brand") else "", "premium": bool(key.get("premium")), "published": True, "indexable": True, "seo_status": "indexable",
+                        "featured": bool(entry.get("featured")), "priority": entry.get("priority", 100),
+                        "featured_on_watch_hub": entry.get("featured_on_watch_hub", True) is not False,
+                        "seo_title": seo, "display_title": display, "short_label": short, "description": desc,
+                        "label": name or band, "title": f"{name} watches {band.lower()}".strip() if band else f"{name} watches", "heading": display, "summary": desc})
+        return out
+
+    def ordered_collections(self, pubs=None):
+        """Collections in the order shoppers should meet them: featured first, then the owner's priority number, then wider pages before brand pages, then the budget
+        progression (lowest band first), then the strongest product count."""
+        order = list(self.budgets)
+        pubs = self.published_collections() if pubs is None else pubs
+        return sorted(pubs, key=lambda c: (not c["featured"], c["priority"], bool(c.get("brand") or c.get("style")), order.index(c["price_band"]) if c.get("price_band") in order else (len(order) if c.get("premium") else -1),
+                                          -c["count"], c["display_title"]))
+
+    # ---- collection service: the same records, grouped for the places that need them
+    def collections_by_budget(self):
+        out = {}
+        for c in self.ordered_collections():
+            if c.get("price_band"):
+                out.setdefault(c["price_band"], []).append(c)
+        return out
+
+    def collections_by_brand(self):
+        out = {}
+        for c in self.ordered_collections():
+            if c.get("brand"):
+                out.setdefault(c["brand"], []).append(c)
+        return out
+
+    def collection_counts(self):
+        return {c["href"]: c["count"] for c in self.published_collections()}
+
+    def popular_collection_records(self, limit=None):
+        pubs = self.ordered_collections([c for c in self.published_collections() if c["featured_on_watch_hub"]])
+        return pubs[:limit] if limit else pubs
+
+    # ---- budget discovery: the shopper price tiers, built from the whole live catalogue (the approved SEO pages are a separate thing, see published_collections)
+    DEFAULT_TIERS = ["under-1000", "under-2000", "under-3000", "under-5000", "under-10000", "under-20000"]
+    DEFAULT_MENU = ["under-3000", "under-5000", "under-10000", "under-20000", "premium"]
+    PREMIUM_NOTE = "Explore higher-budget watches from the premium end of the current SAT catalogue."   # neutral default until the owner approves other wording
+
+    def discovery_config(self):
+        """settings.json budget_discovery with safe defaults. Every part is optional: a missing or malformed block falls back to the defaults, a slug that is not a
+        price band is ignored, and Premium starts above the last tier when premium_after is not set. It never raises."""
+        cfg = self.settings.get("budget_discovery")
+        cfg = cfg if isinstance(cfg, dict) else {}
+        tiers = [b for b in (cfg["tiers"] if isinstance(cfg.get("tiers"), list) else self.DEFAULT_TIERS) if b in self.budgets]
+        after = cfg.get("premium_after") if cfg.get("premium_after") in self.budgets else (tiers[-1] if tiers else "")
+        menu = [m for m in (cfg["menu"] if isinstance(cfg.get("menu"), list) else self.DEFAULT_MENU) if isinstance(m, str)]
+        return {"tiers": tiers, "premium_after": after, "menu": menu, "descriptions": cfg["descriptions"] if isinstance(cfg.get("descriptions"), dict) else {}}
+
+    def premium_bands(self):
+        """Price bands above the last shopper tier (budget_discovery.premium_after): a watch in one of these is Premium."""
+        order = list(self.budgets)
+        after = self.discovery_config()["premium_after"]
+        return order[order.index(after) + 1:] if after in order else []
+
+    def premium_heading(self):
+        after = self.discovery_config()["premium_after"]
+        return f"Premium Watches Above \u20b9{self.budgets[after]['max']:,}" if after in self.budgets else "Premium Watches"
+
+    def premium_ui(self):
+        """The Premium filter as the page script needs it, as JSON: where it starts and ends and the one shopper-facing label ('₹20,000+') and heading.
+        The script shows this one label in place of the two internal filters (a top band and a lower limit). Empty when there is no premium watch."""
+        top = self.premium_top()
+        if not top:
+            return ""
+        return json.dumps({"from": self.discovery_config()["premium_after"], "top": top, "label": self.premium_label(), "heading": self.premium_heading()}, ensure_ascii=False)
+
+    def premium_label(self):
+        after = self.discovery_config()["premium_after"]
+        return f"\u20b9{self.budgets[after]['max']:,}+" if after in self.budgets else ""
+
+    @staticmethod
+    def brand_list_text(names):
+        """'Titan', 'Titan and Fossil', 'Titan, Fossil and Casio', then 'Titan, Fossil, Casio and 1 more brand' / '... and 4 more brands'."""
+        if len(names) <= 1:
+            return names[0] if names else ""
+        if len(names) <= 3:
+            return ", ".join(names[:-1]) + " and " + names[-1]
+        more = len(names) - 3
+        return ", ".join(names[:3]) + f" and {more} more brand{'' if more == 1 else 's'}"
+
+    def budget_discovery(self):
+        """One record per shopper price tier, from every live watch that has a known price band (a watch without one joins no tier): Under tiers are
+        cumulative (a watch in a lower band also counts under a higher one, like the filter), Premium holds the watches above the last tier.
+        Fields: id, kind ('budget' or 'premium'), tier (1 to 7, the colour), amount, eyebrow, count, brands (names), brand_slugs, brand_line, seo_title,
+        display_title, short_label, description, page_url, has_page, href (the approved page when published, else a filter link), destination ('seo-page' or 'filter')."""
+        cfg = self.discovery_config()
+        tiers, overrides = cfg["tiers"], cfg["descriptions"]
+        published = {c["url"] for c in self.published_collections()}
+        active = [s for s, _, _ in self.active_brands()]
+        def summarize(items):
+            counts = {}
+            for p in items:
+                counts[p["brand"]] = counts.get(p["brand"], 0) + 1
+            slugs = sorted(counts, key=lambda s: (-counts[s], active.index(s) if s in active else len(active)))
+            return slugs, [self.brands[s]["name"] for s in slugs]
+        def record(id_, kind, items, **fields):
+            slugs, names = summarize(items)
+            line = " \u00b7 ".join(names[:3]) + (f" +{len(names) - 3}" if len(names) > 3 else "")
+            n = len(items)
+            entry = self.approved.get(fields["page_url"]) or {}   # collections.json is authoritative: approved override, then generated default
+            for key in ("seo_title", "display_title", "short_label"):
+                if str(entry.get(key) or "").strip():
+                    fields[key] = str(entry[key]).strip()
+            fields.setdefault("heading", fields.get("display_title"))
+            if str(entry.get("display_title") or "").strip():
+                fields["heading"] = fields["display_title"]
+            default = self.PREMIUM_NOTE if kind == "premium" else f'From {self.brand_list_text(names)}.'
+            desc = str(entry.get("summary") or "").strip() or str(overrides.get(id_) or "").strip() or default
+            has_page = fields["page_url"] in published
+            return {"id": id_, "kind": kind, "count": n, "brands": names, "brand_slugs": slugs, "brand_line": line, "description": desc, "has_page": has_page,
+                    "href": fields["page_url"] if has_page else fields["filter_url"], "destination": "seo-page" if has_page else "filter", "brand_name": "", "price_band": fields.get("price_band", ""), **fields}
+        out = []
+        for slug_ in tiers:
+            items = [p for p in self.products if slug_ in self.qualifies(p)]
+            if items:
+                band = self.budgets[slug_]
+                out.append(record(slug_, "budget", items, tier=self.budget_tier(band["max"]), amount="\u20b9" + format(band["max"], ","), eyebrow="Under", label=band["label"],
+                                  seo_title=f'Best Watches {band["label"]} in India', display_title=f'Best Watches {band["label"]}', short_label=band["label"],
+                                  page_url=f"/watches/{slug_}/", filter_url=f"/watches/?price={slug_}", max=band["max"], price_band=slug_))
+        premium = [p for p in self.products if p.get("budget") in self.premium_bands()]
+        if premium:
+            top = max((p["budget"] for p in premium), key=list(self.budgets).index)
+            after = cfg["premium_after"]
+            out.append(record("premium", "premium", premium, tier=7, amount=self.premium_label(), eyebrow="Premium", label="Premium",
+                              seo_title="Best Premium Watches in India", display_title="Premium Watches", heading=self.premium_heading(), short_label=self.premium_label(),
+                              page_url="/watches/premium/", filter_url=f"/watches/?price={top}&from={after}", max=self.budgets[top]["max"]))
+        return out
+
+    def tier_meta(self, t):
+        """A meta description for a tier page, written from the tier's own count and brands (so no two tiers share one). An approved meta_description wins
+        (applied in catalog). Kept under 155 characters by naming fewer brands when needed."""
+        names = t["brands"]
+        for keep in range(min(len(names), 5), 0, -1):
+            shown, more = names[:keep], len(names) - keep
+            who = (", ".join(shown) + f" and {more} more brand{'' if more == 1 else 's'}") if more else self.brand_list_text(shown)
+            if t["kind"] == "premium":
+                text = f'Compare {t["count"]} higher-budget watches from {who}, with case size, movement, strap and water-resistance details.'
+            else:
+                text = f'Compare {t["count"]} watches {t["label"].lower()} from {who}, with case size, movement, strap and water-resistance details.'
+            if len(text) <= 155:
+                return text
+        return text[:152].rstrip(" ,") + "..."
+
+    def tier_seo_status(self, t):
+        """Where a tier's own SEO page stands: published, approved but short of the rules, or not approved."""
+        entry = self.approved.get(t["page_url"])
+        if t["has_page"]:
+            return "published and indexable"
+        if not entry:
+            return "not approved (filter link only)"
+        words = len(str(entry.get("intro", "")).split())
+        if words < 100:
+            return f"approved but not published: intro has {words} of 100 words"
+        return "approved but not published: too few watches in the tier"
+
+    def menu_discovery(self, limit=5):
+        """The tiers shown in the menu and in the filter sheet's Popular watch collections: the order set in settings (budget_discovery.menu), live tiers only."""
+        by_id = {r["id"]: r for r in self.budget_discovery()}
+        return [by_id[i] for i in self.discovery_config()["menu"] if i in by_id][:limit]
+
+    def available_filters(self):
+        """Every filter option that has at least one watch, with live counts: [(key, title, [(slug, label, count)])]."""
+        out = []
+        for key, title, options, getter in self.FILTERS:
+            items = [(slug_, label, sum(1 for p in self.products if slug_ in getter(self, p))) for slug_, label in options]
+            items = [i for i in items if i[2]]
+            if items:
+                out.append((key, title, items))
         return out
 
     def hub_html(self):
-        """The part of /watches/ that sits below the watches: an Explore more block (curated collections, the buying guide, Find your fit) and a short
-        How SAT helps you choose block. Collections are real published pages. Returns (top, bottom); top is empty."""
-        pubs = [c for c in self.published_collections() if c["featured_on_watch_hub"]]
-        order = list(self.budgets)
-        pubs.sort(key=lambda c: (order.index(c["price_band"]) if c.get("price_band") in order else -1, c["label"]))
-        top3 = sorted(pubs, key=lambda c: (-c["count"], c["heading"]))[:3]
-        has_budget = any(c.get("price_band") in self.budgets for c in pubs)
-        cta = '<a class="lx-mcta" href="#lx-budgets">Explore collections <i aria-hidden="true">&rarr;</i></a>' if has_budget else ""
-        links = "".join(f'<li><a href="{esc(c["url"])}"><span>{esc(c["heading"])}</span><em>{c["count"]}<span class="visually-hidden"> {"watch" if c["count"] == 1 else "watches"}</span></em><i aria-hidden="true">&rarr;</i></a></li>' for c in top3)
-        curated = ('<div class="lx-mcard lx-mcol"><p class="lx-mk">Curated collections</p><h3>Curated for every budget</h3>'
-                   '<p>Browse ready-made collections by brand and price, selected to make comparison easier.</p>'
-                   f'<ul class="lx-mlinks">{links}</ul>{cta}</div>') if len(top3) >= 2 else ""
+        """The part of /watches/ that sits below the watches: Continue your watch journey (curated collection cards, the buying guide, Find your fit) and
+        How SAT helps you choose. Collections are the published pages, named by their canonical display_title. Returns (top, bottom); top is empty."""
+        top3 = self.popular_collection_records(3)
+        curated = ""
+        if len(top3) >= 2:
+            items = "".join(f'<li>{ui.collection_card(c)}</li>' for c in top3)
+            curated = ('<div class="lx-curated"><div class="cur-head"><p class="lx-mk">Curated collections</p><h3>Curated for every budget</h3>'
+                       '<p>Browse ready-made collections by brand and price, selected to make comparison easier.</p></div>'
+                       f'<ul class="cur-grid" data-count="{len(top3)}">{items}</ul></div>')
         pool = [p for p in self.products if not p.get("sample")]
-        art_a = f'<span class="lx-mart" aria-hidden="true">{self.art_copy(pool[min(1, len(pool) - 1)], "g1")}</span>' if pool else ""
-        art_b = f'<span class="lx-mart" aria-hidden="true">{self.art_copy(pool[min(5, len(pool) - 1)], "g2")}</span>' if pool else ""
-        guide = ('<a class="lx-mcard lx-mlink" href="/watches/guide/"><p class="lx-mk">Watch buying guide</p><h3>Choose with confidence</h3>'
-                 f'<p>Understand case size, movement, strap type and water resistance before you buy.</p><span class="lx-mcta">Read the buying guide <i aria-hidden="true">&rarr;</i></span>{art_a}</a>')
-        fit = ('<a class="lx-mcard lx-mlink" href="#watch-filters"><p class="lx-mk">Find your fit</p><h3>Find a watch that feels right</h3>'
-               f'<p>Start with your budget, style or wrist size and narrow down the options that suit you.</p><span class="lx-mcta">Find your fit <i aria-hidden="true">&rarr;</i></span>{art_b}</a>')
+        art_a = self.art_copy(pool[min(1, len(pool) - 1)], "g1") if pool else ""
+        art_b = self.art_copy(pool[min(5, len(pool) - 1)], "g2") if pool else ""
+        guide = ui.feature_card("Watch buying guide", "Choose with confidence", "Understand case size, movement, strap type and water resistance before you buy.", "/watches/guide/", "Read the buying guide", art_a)
+        fit = ui.feature_card("Find your fit", "Find a watch that feels right", "Start with your budget, style or wrist size and narrow down the options that suit you.", "#watch-filters", "Find your fit", art_b)
         how = [("Compare clearly", "See case size, strap, movement and water resistance exactly as the seller lists them."),
                ("No guessing", "Anything not stated stays unknown."),
                ("Check before buying", "Retailer prices change, so confirm the current price before purchase.")]
-        how_cards = "".join(f'<li><h3>{esc(t)}</h3><p>{esc(d)}</p></li>' for t, d in how)
+        how_cards = "".join(f'<li class="info-card"><h3>{esc(t)}</h3><p>{esc(d)}</p></li>' for t, d in how)
         lede = ("Use this page to find a watch you can compare properly. Start with a budget, a brand or a style, or choose Men or Women, "
                 "then narrow the list by strap material, case size, dial colour, movement or water resistance. Anything a listing does not state is shown as unknown, never guessed.")
         bottom = ('<section class="hub-after" aria-label="About these watches">'
                   '<section class="lx-sec lx-more" aria-labelledby="lx-more"><div class="lx-sec-head"><div><h2 id="lx-more">Continue your watch journey</h2><p class="lx-sec-sub">Explore curated collections, learn what matters, or find the style that fits you.</p></div></div>'
-                  f'<div class="lx-more-row" data-count="{(1 if curated else 0) + 2}">{curated}{guide}{fit}</div></section>'
+                  f'{curated}<div class="lx-more-row" data-count="2">{guide}{fit}</div></section>'
                   '<section class="lx-sec lx-how" aria-labelledby="lx-how"><div class="lx-sec-head"><div><h2 id="lx-how">How SAT helps you choose</h2>'
                   f'<p class="lx-sec-sub lx-how-lede">{esc(lede)}</p></div></div><ul class="lx-how-row">{how_cards}</ul></section></section>')
         return "", bottom
@@ -832,7 +1024,7 @@ f'<linearGradient id="g{uid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-
         if not me or not others:
             return ""
         others.sort(key=lambda c: -((c.get("brand") == me.get("brand") and bool(me.get("brand"))) + (c.get("price_band") == me.get("price_band") and bool(me.get("price_band")))))
-        pills = "".join(f'<li><a class="hub-pill" href="{esc(c["url"])}">{esc(c["title"])} <span class="hub-count">{c["count"]}</span></a></li>' for c in others[:8])
+        pills = "".join(f'<li><a class="hub-pill" href="{esc(c["url"])}">{esc(c["display_title"])} <span class="hub-count">{c["count"]}</span></a></li>' for c in others[:8])
         return f'<nav class="watch-related" aria-labelledby="related-collections"><h2 id="related-collections">Related watch collections</h2><ul class="hub-pills">{pills}</ul></nav>'
 
     def collection_table(self, products, heading="Compare these watches"):
@@ -897,13 +1089,11 @@ f'<linearGradient id="g{uid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-
         return [p for p in self.products if getter and value in getter(self, p)]
 
     def popular_collections(self, pubs):
-        """'Popular watch collections': one editorial card per published, indexable collection (SEO heading, a short sentence, an arrow). Hidden with fewer than two.
-        The sentence is the collection's approved summary in collections.json, otherwise a neutral count line. One card = one link."""
+        """'Popular watch collections' in the filter panel: one card per budget tier (budget_discovery records, in the given order). Hidden with fewer than two."""
         if len(pubs) < 2:
             return ""
-        cards = "".join(f'<li><a class="pc-card" href="{esc(c["url"])}"><strong>{esc(c["heading"])}</strong><small>{esc(c["summary"])}</small>'
-                        '<span class="pc-go">Explore <i aria-hidden="true">&rarr;</i></span></a></li>' for c in pubs)
-        return (f'<section class="pc" aria-labelledby="pc-h"><h2 id="pc-h" class="pc-title">Popular watch collections</h2><ul class="pc-list" data-count="{len(pubs)}">{cards}</ul></section>')
+        cards_html = "".join(f'<li>{ui.collection_card(c, "secondary")}</li>' for c in pubs)
+        return (f'<section class="pc" aria-labelledby="pc-h"><h2 id="pc-h" class="pc-title">Popular watch collections</h2><ul class="pc-list" data-count="{len(pubs)}">{cards_html}</ul></section>')
 
     # Data-backed destinations used to fill the discovery rail when fewer than four editorial cards are approved. They use only listing facts (movement, display),
     # never editorial fields such as features or styles; the text is a plain count. Without scripts a card link only scrolls to the list; scripts apply the filter.
@@ -923,8 +1113,7 @@ f'<linearGradient id="g{uid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-
                 return
             seen.add(key)
             n = len(cards)
-            cards.append(f'<li><a class="lx-intent" href="{esc(href)}" data-intent="{esc(flt["group"])}:{esc(flt["value"])}"><span class="lx-i-ico" aria-hidden="true">{self.WATCH_GLYPH}</span>'
-                         f'<span class="lx-i-t"><strong>{esc(title)}</strong><small>{esc(text)}</small><span class="lx-i-go">Explore <i aria-hidden="true">&rarr;</i></span></span></a></li>')
+            cards.append(f'<li>{ui.intent_card(title, text, href, flt["group"] + ":" + flt["value"], self.WATCH_GLYPH)}</li>')
         for card in self.settings.get("intent_cards", []):
             flt = card.get("filter")
             if card.get("approved") and flt:
@@ -941,36 +1130,44 @@ f'<linearGradient id="g{uid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-
         return ('<section class="lx-sec lx-intents" aria-labelledby="lx-intents"><div class="lx-sec-head"><h2 id="lx-intents">What are you looking for?</h2></div>'
                 f'<ul class="lx-intent-row" data-count="{len(cards)}">{"".join(cards)}</ul></section>')
 
-    def budget_cards(self, pubs):
-        """Shop by budget: one card per published price collection, with a watch from it. Nothing is shown for a band that has no published page."""
-        if not pubs:
+    @staticmethod
+    def budget_tier(max_value):
+        """1 (lightest) to 7 (charcoal and gold): the colour progression of a budget card as the price band rises."""
+        for tier, limit in enumerate((1000, 2000, 3000, 6000, 15000, 20000), start=1):
+            if max_value <= limit:
+                return tier
+        return 7
+
+    def budget_cards(self, tiers):
+        """Shop by budget: one card per shopper price tier (see budget_discovery), each with live count and brands, a watch from the tier and a colour that deepens
+        with the price. A tier with no watch is not shown, and a tier never links to a page that is not published: it links to the hub filter instead."""
+        tiers = [t for t in tiers if t["count"]]
+        if not tiers:
             return ""
-        captions = self.settings.get("budget_captions", {})
-        cards = []
-        for c in pubs:
-            band = self.budgets[c["price_band"]]
-            mine = [p for p in self.products if (not c.get("brand") or p["brand"] == c["brand"]) and p.get("budget") == c["price_band"]] or \
-                   [p for p in self.products if (not c.get("brand") or p["brand"] == c["brand"]) and c["price_band"] in self.qualifies(p)]
-            caption = captions.get(c["price_band"]) or f'{c["count"]} {"watch" if c["count"] == 1 else "watches"}'
-            cards.append(f'<li><a class="lx-budget" href="{esc(c["url"])}"><span class="b-under">Under</span><strong>\u20b9{band["max"]:,}</strong>'
-                         f'<span class="b-cap">{esc(caption)}</span><span class="b-brand">{esc(c["label"].upper())}</span><em>Explore watches <i aria-hidden="true">&rarr;</i></em>'
-                         f'<span class="b-art" aria-hidden="true">{self.art_copy(mine[0], "b" + str(len(cards))) if mine else ""}</span></a></li>')
+        items = []
+        for t in tiers:
+            if t["kind"] == "premium":
+                mine = [p for p in self.products if p.get("budget") in self.premium_bands()]
+            else:
+                mine = [p for p in self.products if p.get("budget") == t["price_band"]] or [p for p in self.products if t["price_band"] in self.qualifies(p)]
+            art = self.art_copy(mine[0], "b" + str(len(items))) if mine else ""
+            items.append(f'<li>{ui.budget_card(t, art)}</li>')
         return ('<section class="lx-sec lx-budgets" aria-labelledby="lx-budgets"><div class="lx-sec-head"><h2 id="lx-budgets">Shop by budget</h2></div>'
-                f'<ul class="lx-budget-row" data-count="{len(cards)}">{"".join(cards)}</ul></section>')
+                f'<ul class="lx-budget-row" data-count="{len(items)}">{"".join(items)}</ul></section>')
 
     def brand_tiles(self, active):
         if len(active) < 2:
             return ""
-        tiles = "".join(f'<li><a class="lx-brandtile" href="/watches/brands/{esc(s)}/" data-brand-tile="{esc(s)}" aria-current="false"><strong>{esc(name.upper())}</strong>'
-                        f'<small>{cnt} {"watch" if cnt == 1 else "watches"}</small></a></li>' for s, name, cnt in active)
+        tiles = "".join(f'<li>{ui.brand_card(s, name, cnt)}</li>' for s, name, cnt in active)
         return ('<section class="lx-sec lx-brands" aria-labelledby="lx-brands"><div class="lx-sec-head"><h2 id="lx-brands">Shop by brand</h2></div>'
                 f'<ul class="lx-brand-row">{tiles}</ul></section>')
 
-    def catalog(self, url, title, intro, *, gender="", brand="", budget="", style="", crumbs=None, extra_html="", table=False, hub=None):
+    def catalog(self, url, title, intro, *, gender="", brand="", budget="", style="", premium=False, crumbs=None, extra_html="", table=False, hub=None):
         products = self.products
         def matches(p):
             return ((not gender or gender in p["gender"]) and (not brand or p["brand"] == brand)
-                    and (not budget or budget in self.qualifies(p)) and (not style or style in p["styles"]))
+                    and (not budget or budget in self.qualifies(p)) and (not style or style in p["styles"])
+                    and (not premium or p.get("budget") in self.premium_bands()))
         shown = [p for p in products if matches(p)]
         def n(pred):
             return sum(1 for p in products if pred(p))
@@ -978,7 +1175,7 @@ f'<linearGradient id="g{uid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-
         active = self.active_brands()
         groups = [
             {"key": "brand", "title": "Brand", "checked": [brand] if brand else [], "items": [(slug_, name, cnt) for slug_, name, cnt in active]},
-            {"key": "budget", "title": "Price", "checked": [budget] if budget else [],
+            {"key": "budget", "title": "Price", "checked": [budget] if budget else [self.premium_top()] if premium else [],
              "items": [(slug_, value["label"], n(lambda p, s=slug_: s in self.qualifies(p))) for slug_, value in self.budgets.items() if n(lambda p, s=slug_: s in self.qualifies(p))]
                       + ([("unlisted", "Price at retailer", n(lambda p: not p.get("budget")))] if n(lambda p: not p.get("budget")) else [])},
         ]
@@ -1000,10 +1197,7 @@ f'<linearGradient id="g{uid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-
         steps = self.price_steps()
         budget_rail = collection.price_slider(steps, title="Budget")
         quick = self.keyword_chips(url, shown)
-        order = list(self.budgets)
-        pubs = sorted([c for c in self.published_collections() if c["featured_on_watch_hub"] and c.get("price_band") in order],
-                      key=lambda c: (order.index(c["price_band"]), c["label"])) if hub else []
-        curated = self.popular_collections([c for c in self.published_collections() if c["featured_on_watch_hub"]]) if hub else ""
+        curated = self.popular_collections(self.menu_discovery()) if hub else ""
         quick_row = f'<div class="lx-quick" data-quick-controls hidden>{quick}</div>' if quick else ""
         headline, sub = (("Timeless Watches. Smart Choices.", "Discover classic and analog watches by budget, brand, style and fit.") if hub else (title, intro))
         reviewed = (f'<span class="lx-reviewed">Last reviewed: <time datetime="{esc(self.updated(shown))}">{esc(self.human_date(self.updated(shown)))}</time></span>' if shown else "")
@@ -1014,7 +1208,7 @@ f'<linearGradient id="g{uid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-
                 f'<div class="lx-hero-art" aria-hidden="true"><div class="lx-hero-watch">{self.art_copy(art_for, "h")}</div>'
                 f'<dl class="lx-stats"><div><dt>{gcount["men"]}</dt><dd>Men\'s watches</dd></div><div><dt>{gcount["women"]}</dt><dd>Women\'s watches</dd></div></dl></div></header>')
         footline = f'<p class="lx-foot">{reviewed}</p>' if reviewed else ""
-        top = (hero + self.quick_row(steps, active, any(self.styles)) + quick_row + (self.intent_cards() + self.budget_cards(pubs) + self.brand_tiles(active) if hub else ""))
+        top = (hero + self.quick_row(steps, active, any(self.styles)) + quick_row + (self.intent_cards() + self.budget_cards(self.budget_discovery()) + self.brand_tiles(active) if hub else ""))
         hub_top, hub_bottom = hub or ("", "")
         note = ('<p class="watch-affiliate-note">Amazon links on this page are affiliate links. As an Amazon Associate I earn from qualifying purchases. '
                 '<a href="/affiliate-disclosure/">How we earn</a></p>') if any(self.merchant_links(p) for p in shown) else ""
@@ -1029,13 +1223,22 @@ f'<linearGradient id="g{uid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-
         block = collection.render_store(card_html, groups, uid="watch-collection", title="Selected for you", noun="watch", plural="watches",
                                         preset_gender=gender, genders=[(g, g.title(), gcount[g]) for g in self.genders],
                                         top_html=top, visible=[matches(p) for p in products], page_size=24, grid_note=note,
-                                        panel_top=budget_rail + curated, panel_title="Refine your watches", sizes_json=sizes_json)
+                                        panel_top=budget_rail + curated, panel_title="Refine your watches", sizes_json=sizes_json,
+                                        preset_from=self.discovery_config()["premium_after"] if premium else "", premium_json=self.premium_ui())
         body = ('<section class="section watch-store" data-mobile-grid="two"><div class="container watch-store-inner">{{breadcrumb}}' + hub_top + block + hub_bottom + footline + self.collection_tables(table, shown) + self.collection_copy(url) + self.related_collections(url) + extra_html + '<noscript><nav class="watch-static-links" aria-label="Browse watches"><a href="/watches/men/">Men</a> · <a href="/watches/women/">Women</a> · ' + ' · '.join(f'<a href="/watches/brands/{esc(slug_)}/">{esc(name)}</a>' for slug_, name, _ in active) + '</nav></noscript></div></section>')
         meta = self._meta(url, title, intro, body, crumbs or [["Watches", "/watches/"]], shown, js=False)
         meta["noindex"] = self.collection_noindex(url, shown)
+        custom = str((self.approved.get(url) or {}).get("meta_description") or "").strip()
+        if custom:   # an approved meta_description in collections.json always wins
+            meta["description"] = custom
         meta["css"] += ["collection", "watch-store", "price-slider", "watch-luxe"]
         meta["js"] = ["collection", "watch-tilt"]
         return meta
+
+    def premium_top(self):
+        """The highest band that holds a live watch: the Premium page and filter link choose it, with a lower limit at the end of the last tier."""
+        own = [p["budget"] for p in self.products if p.get("budget") in self.premium_bands()]
+        return max(own, key=list(self.budgets).index) if own else ""
 
     def filter_state(self, products):
         """{group key: number of different live values}: a group is shown to shoppers when this is 2 or more."""
@@ -1085,6 +1288,8 @@ f'<linearGradient id="g{uid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-
         for b, info in self.budgets.items():
             if b in own:  # only bands that a live watch actually belongs to; the filter still lists every higher band
                 dims.append(("budget", b, info["label"], lambda p, v=b: v in self.qualifies(p)))
+        if self.premium_bands():
+            dims.append(("premium", "premium", f"Premium {self.premium_label()}", lambda p: p.get("budget") in self.premium_bands()))
         for st, info in self.styles.items():
             dims.append(("style", st, info["label"], lambda p, v=st: st in p["styles"] if v == st else False))
         for key, _, options, getter in self.FILTERS:
@@ -1096,6 +1301,8 @@ f'<linearGradient id="g{uid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-
             for b in [None] + dims[i + 1:]:
                 if b is not None and a[0] == b[0]:
                     continue
+                if b is not None and "premium" in (a[0], b[0]):
+                    continue   # Premium is a broad tier on its own, not combined with other filters
                 items = [p for p in self.products if a[3](p) and (b is None or b[3](p))]
                 if len(items) < self.min_index:
                     continue
@@ -1116,7 +1323,7 @@ f'<linearGradient id="g{uid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-
             pair[b[0]] = b[1]
         if len(pair) == 1:
             k, v = next(iter(pair.items()))
-            return {"gender": f"/watches/{v}/", "brand": f"/watches/brands/{v}/", "style": f"/watches/style/{v}/"}.get(k)
+            return {"gender": f"/watches/{v}/", "brand": f"/watches/brands/{v}/", "style": f"/watches/style/{v}/", "budget": f"/watches/{v}/", "premium": "/watches/premium/"}.get(k)
         if set(pair) == {"gender", "budget"}:
             return f'/watches/{pair["gender"]}/{pair["budget"]}/'
         if set(pair) == {"brand", "budget"}:
@@ -1126,9 +1333,22 @@ f'<linearGradient id="g{uid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-
     def budget_page(self, gender, budget):
         g, b = self.genders[gender], self.budgets[budget]
         url = f"/watches/{gender}/{budget}/"
-        title = f'{g["label"]} Watches {b["label"]}'
+        title = self.page_title(url, gender=gender, band=budget)
         return self.catalog(url, title, "Compare styles and published details. Confirm the current price with the retailer.", gender=gender, budget=budget,
                             crumbs=[["Watches", "/watches/"], [g["label"], f"/watches/{gender}/"], [b["label"], url]])
+
+    def all_brands_budget_page(self, budget):
+        url = f"/watches/{budget}/"
+        b = self.budgets[budget]
+        t = next((x for x in self.budget_discovery() if x["id"] == budget), None)
+        return self.catalog(url, self.page_title(url, band=budget), self.tier_meta(t) if t else "Compare watches from every brand in this price range by case size, strap, movement and water resistance.", budget=budget,
+                            crumbs=[["Watches", "/watches/"], [b["label"], url]])
+
+    def premium_page(self):
+        url = "/watches/premium/"
+        t = next((x for x in self.budget_discovery() if x["id"] == "premium"), None)
+        return self.catalog(url, self.page_title(url, premium=True), self.tier_meta(t) if t else "Compare the higher-budget watches in the catalogue by case size, strap, movement and water resistance.", premium=True,
+                            crumbs=[["Watches", "/watches/"], ["Premium", url]])
 
     def brand_budget_pairs(self):
         """(brand, band) pairs where a live watch of that brand sits in that band: each gets a clean URL /watches/<brand>/<band>/."""
@@ -1146,9 +1366,9 @@ f'<linearGradient id="g{uid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-
         shown = [p for p in self.products if p["brand"] == brand and budget in self.qualifies(p)]
         ready = not self.collection_noindex(url, shown)
         lead = "Best " if ready else ""
-        title = f'{lead}{br["name"]} Watches {bd["label"]}'
+        title = self.page_title(url, brand=brand, band=budget)
         intro = f'{br["name"]} watches {bd["label"].lower()}, for men and women. Compare the published details and confirm the current price at the retailer.'
-        sections = [(f'{lead}{br["name"]} Watches {bd["label"]} for {info["adjective"].title()}', [p for p in shown if g in p["gender"]])
+        sections = [(f'{title} for {info["adjective"].title()}', [p for p in shown if g in p["gender"]])
                     for g, info in self.genders.items()]
         return self.catalog(url, title, intro, brand=brand, budget=budget, table=[(h, ps) for h, ps in sections if ps],
                             crumbs=[["Watches", "/watches/"], [br["name"], f"/watches/brands/{brand}/"], [bd["label"], url]])
@@ -1156,9 +1376,10 @@ f'<linearGradient id="g{uid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-
     def brand_page(self, slug):
         br = self.brands[slug]
         url = f"/watches/brands/{slug}/"
-        pair_links = "".join(f'<li><a href="/watches/{slug}/{b}/">{esc(br["name"])} watches {esc(self.budgets[b]["label"].lower())}</a></li>' for br_, b in self.brand_budget_pairs() if br_ == slug)
+        pub_urls = {c["url"] for c in self.published_collections()}
+        pair_links = "".join(f'<li><a href="/watches/{slug}/{b}/">{esc(self.collection_name(brand=slug, band=b, best=f"/watches/{slug}/{b}/" in pub_urls))}</a></li>' for br_, b in self.brand_budget_pairs() if br_ == slug)
         extra = f'<nav class="watch-static-links" aria-label="{esc(br["name"])} by price"><h2>{esc(br["name"])} by price</h2><ul class="related-links">{pair_links}</ul></nav>' if pair_links else ""
-        meta = self.catalog(url, br["name"] + " Watches", "Explore the collection by style and budget. Read the details before you choose.", brand=slug,
+        meta = self.catalog(url, self.page_title(url, brand=slug), "Explore the collection by style and budget. Read the details before you choose.", brand=slug,
                             crumbs=[["Watches", "/watches/"], [br["name"], url]], extra_html=extra)
         # Keep old product and gender anchors reachable after introducing dedicated detail pages.
         anchors = ''.join(f'<span id="r-{esc(p["id"])}"></span>' for p in self.products if p["brand"] == slug)
@@ -1169,13 +1390,13 @@ f'<linearGradient id="g{uid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-
     def style_page(self, slug):
         st = self.styles[slug]
         url = f"/watches/style/{slug}/"
-        return self.catalog(url, st["label"] + " Watches", "Find a style for your everyday, workdays and special occasions.", style=slug,
+        return self.catalog(url, self.page_title(url, style=slug), "Find a style for your everyday, workdays and special occasions.", style=slug,
                             crumbs=[["Watches", "/watches/"], [st["label"], url]])
 
     def gender_page(self, gender):
         g = self.genders[gender]
         url = f"/watches/{gender}/"
-        return self.catalog(url, g["label"] + " Watches", "Explore watches by style, brand and budget. Choose what suits you.", gender=gender,
+        return self.catalog(url, self.page_title(url, gender=gender), "Explore watches by style, brand and budget. Choose what suits you.", gender=gender,
                             crumbs=[["Watches", "/watches/"], [g["label"], url]])
 
     def landing(self):
@@ -1314,6 +1535,12 @@ f'<linearGradient id="g{uid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-
             out.append(self.brand_budget_page(brand_, budget_))
         for s in self.styles:
             out.append(self.style_page(s))
+        for url in self.approved:   # a price page for every brand exists only once the owner approves it with its own copy
+            key = self.parse_collection_url(url) or {}
+            if key.get("premium"):
+                out.append(self.premium_page())
+            elif set(key) == {"price_band"}:
+                out.append(self.all_brands_budget_page(key["price_band"]))
         prev = self.preview()
         if prev:
             out.append(prev)

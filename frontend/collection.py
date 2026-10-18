@@ -55,7 +55,7 @@ def render(cards, groups, *, uid, title, noun='product', plural='products', pres
     return (opening + top_html + head + controls + active + '<div class="collection-layout">' + panel + '<div class="collection-main">' + grid_note + rest + '</div></div>' + after_html + '</section>')
 
 
-def render_store(cards, groups, *, uid, title, noun='product', plural='products', preset_gender='', genders=None, top_html='', visible=None, page_size=0, grid_note='',
+def render_store(cards, groups, *, uid, title, noun='product', plural='products', preset_gender='', preset_from='', premium_json='', genders=None, top_html='', visible=None, page_size=0, grid_note='',
                  panel_top='', after_html='', panel_title='Filters', sizes_json=''):
     """All cards remain accessible without JS; controls enhance the same server-rendered list.
     genders = [(value, label, count)]: rendered as a raised two-part plate where the top_html placeholder <!--segments--> sits.
@@ -93,7 +93,8 @@ def render_store(cards, groups, *, uid, title, noun='product', plural='products'
     rest = ('<div class="watch-grid" data-collection-grid>' + card_html + '</div>'
             f'<div class="collection-empty" data-empty {"hidden" if shown else ""}><h3>No matching {esc(plural)}</h3><p>Try another search or remove a filter.</p><button type="button" class="btn btn-outline" data-filter-clear>Clear filters</button></div>'
             '<nav class="collection-pagination" data-pagination aria-label="Product pages" hidden></nav>')
-    opening = (f'<section class="collection" id="{esc(uid)}" data-collection data-noun="{esc(noun)}" data-plural="{esc(plural)}" data-preset-gender="{esc(preset_gender)}" data-page-size="{page_size}" '
+    prem_attr = ' data-premium="' + esc(premium_json) + '"' if premium_json else ''
+    opening = (f'<section class="collection" id="{esc(uid)}" data-collection data-noun="{esc(noun)}" data-plural="{esc(plural)}" data-preset-gender="{esc(preset_gender)}" data-preset-from="{esc(preset_from)}"{prem_attr} data-page-size="{page_size}" '
                f'data-top-filters data-store aria-labelledby="{esc(uid)}-title">')
     return (opening + top_html + '<div class="collection-layout">' + panel + '<div class="collection-main">' + head + active + grid_note + rest + '</div></div>' + after_html + '</section>')
 

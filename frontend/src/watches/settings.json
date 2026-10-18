@@ -1,5 +1,5 @@
 {
-  "_note": "Display settings only. Brands, filters and prices come from the watch files. brand_order lists brand slugs to show first; featured_brands are shown before the rest (default: the featured tier in config.json); hidden_brands are never shown. planned_filters shows an option dimmed before any watch has it, for example {\"water\": [\"200-plus\"]}. brand_names overrides the name made from a new brand's slug. intent_cards: the four discovery cards. A card is shown only when approved is true, it has a filter ({group, value}) and at least one watch matches; the owner approves the label and the filter together. budget_captions: an optional editorial line per price band (otherwise the watch count is shown).",
+  "_note": "Display settings only. Brands, filters and prices come from the watch files. brand_order lists brand slugs to show first; featured_brands are shown before the rest (default: the featured tier in config.json); hidden_brands are never shown. planned_filters shows an option dimmed before any watch has it, for example {\"water\": [\"200-plus\"]}. brand_names overrides the name made from a new brand's slug. intent_cards: the four discovery cards. A card is shown only when approved is true, it has a filter ({group, value}) and at least one watch matches; the owner approves the label and the filter together. budget_discovery: the shopper price tiers shown on /watches/ and in the menu, built from every live watch (not from the approved SEO pages). tiers are price band slugs from config.json; premium_after is the band where the Premium group starts above; menu lists the tiers (and 'premium') shown in the menu, in order; descriptions optionally overrides the neutral one-line description of a tier by its id (draft or default copy only; an approved summary in collections.json always wins). Every part of budget_discovery is optional and falls back to safe defaults.",
   "brand_order": [
     "titan",
     "casio",
@@ -46,8 +46,23 @@
       "filter": null
     }
   ],
-  "budget_captions": {
-    "under-2000": "Everyday value",
-    "under-3000": "More choice, still sensible"
+  "budget_discovery": {
+    "tiers": [
+      "under-1000",
+      "under-2000",
+      "under-3000",
+      "under-5000",
+      "under-10000",
+      "under-20000"
+    ],
+    "premium_after": "under-20000",
+    "menu": [
+      "under-3000",
+      "under-5000",
+      "under-10000",
+      "under-20000",
+      "premium"
+    ],
+    "descriptions": {}
   }
 }
