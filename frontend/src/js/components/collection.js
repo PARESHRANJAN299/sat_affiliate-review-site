@@ -402,6 +402,7 @@
       });
     });
     brandTiles.forEach(function (tile) {
+      if (tile.target === '_blank') return;   // a tile that opens an outside link is never turned into an in-page filter
       tile.addEventListener('click', function (event) {
         event.preventDefault();
         var box = boxes.filter(function (b) { return b.dataset.group === 'brand' && b.value === tile.dataset.brandTile; })[0];

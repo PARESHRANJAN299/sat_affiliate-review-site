@@ -940,6 +940,80 @@ class HubAffiliateCards(unittest.TestCase):
         self.assertEqual(len(re.findall(r'(?:lx-hero-link|lx-budget tier-\d)"[^>]*>(?:(?!</a>).)*</a><small class="paid-link">', text, flags=re.S)), 0)   # no visible "Paid link" tag on them
 
 
+class HubBrandSearches(unittest.TestCase):
+    """Each Shop by brand tile opens an Amazon search for that brand (the owner's link as base) and does nothing on the page."""
+    URL = "https://www.amazon.in/s?k=watch&i=watches&linkCode=ll2&tag=pareshsat-21&linkId=d365214107ba31edaa9fc39bb8fa609b&ref_=as_li_ss_tl"
+
+    @classmethod
+    def setUpClass(cls):
+        cls.shop = watches.Watches(build.SRC, build.CONFIG)
+
+    def tiles(self, body):
+        import re
+        row = re.search(r'<ul class="lx-brand-row">(.*?)</ul>', body, flags=re.S).group(1)
+        return re.findall(r'<a class="card card-secondary lx-brandtile" href="([^"]+)"([^>]*)><strong>([^<]*)</strong>', row)
+
+    def test_every_brand_tile_searches_amazon_for_its_brand(self):
+        import html, urllib.parse
+        body = self.shop.landing()["_body"]
+        tiles = self.tiles(body)
+        active = self.shop.active_brands()
+        self.assertEqual(len(tiles), len(active))
+        base = urllib.parse.parse_qs(urllib.parse.urlsplit(self.URL).query)
+        for (href, rest, label), (slug, name, count) in zip(tiles, active):
+            q = urllib.parse.parse_qs(urllib.parse.urlsplit(html.unescape(href)).query)
+            self.assertEqual(q["k"], [f"{name} watches"], name)                              # the brand's own name from the data
+            for keep in ("tag", "linkCode", "linkId", "ref_", "i"):
+                self.assertEqual(q[keep], base[keep], keep)                                   # the owner's tracking parameters are untouched
+            self.assertNotIn("rh", q)                                                         # no price limit on a brand search
+            self.assertIn('target="_blank"', rest)
+            self.assertIn('rel="sponsored nofollow noopener"', rest)
+            self.assertNotIn("data-brand-tile", rest)                                         # no filter hook, so no script handles the click
+            self.assertNotIn("aria-current", rest)
+        self.assertEqual(len({h for h, r, l in tiles}), len(tiles))                           # no two brands share a search
+        self.assertEqual(body.count("/watches/brands/"), 0 if "/watches/brands/" not in body else body.count("/watches/brands/"))
+
+    def test_no_brand_tile_scrolls_or_filters(self):
+        import re
+        body = self.shop.landing()["_body"]
+        for href, rest, label in self.tiles(body):
+            self.assertTrue(href.startswith("https://www.amazon.in/s?"), href)                # no on-site or in-page link
+        row = re.search(r'<ul class="lx-brand-row">(.*?)</ul>', body, flags=re.S).group(1)
+        self.assertNotIn("/watches/brands/", row)
+        for block in re.findall(r'<a class="card card-secondary lx-brandtile.*?</a>', row, flags=re.S):
+            self.assertEqual(block.count("<a "), 1)
+        js = (build.SRC / "js" / "components" / "collection.js").read_text(encoding="utf-8")
+        self.assertIn("tile.target === '_blank'", js)                                         # the script skips a tile that opens an outside link
+
+    def test_brand_search_wording_is_configurable(self):
+        import html, urllib.parse
+        shop = self.shop
+        saved = shop.settings["hub_affiliate"]
+        self.addCleanup(lambda: shop.settings.__setitem__("hub_affiliate", saved))
+        shop.settings["hub_affiliate"] = dict(saved, brand_keyword="buy {brand} wrist watch")
+        href, rest, label = self.tiles(shop.landing()["_body"])[0]
+        q = urllib.parse.parse_qs(urllib.parse.urlsplit(html.unescape(href)).query)
+        self.assertTrue(q["k"][0].startswith("buy ") and q["k"][0].endswith(" wrist watch"))
+        self.assertIsNone(shop.brand_affiliate("Titan", None))
+
+    def test_plain_on_site_brand_tiles_without_affiliate_mode(self):
+        shop = self.shop
+        saved = shop.affiliate_active
+        self.addCleanup(lambda: setattr(shop, "affiliate_active", saved))
+        shop.affiliate_active = False
+        tiles = self.tiles(shop.landing()["_body"])
+        for (href, rest, label), (slug, name, count) in zip(tiles, shop.active_brands()):
+            self.assertEqual(href, f"/watches/brands/{slug}/")                                 # the on-site brand page, filterable by the script
+            self.assertIn(f'data-brand-tile="{slug}"', rest)
+
+    def test_multi_word_brand_is_encoded_in_the_search(self):
+        import html
+        body = self.shop.landing()["_body"]
+        for href, rest, label in self.tiles(body):
+            if label == "MICHAEL KORS":
+                self.assertIn("k=Michael+Kors+watches", html.unescape(href))
+
+
 class UniqueIds(unittest.TestCase):
     def test_two_cards_never_share_svg_ids(self):
         import re

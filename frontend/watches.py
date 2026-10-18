@@ -839,6 +839,30 @@ f'<linearGradient id="g{uid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-
             return None
         return {"url": url, "label": str(cfg.get("label") or "Shop watches on Amazon").strip()}
 
+    @staticmethod
+    def affiliate_search(aff, words, rh=""):
+        """The owner's link with only the search words (k) and, when given, Amazon's refinement (rh) changed; every other parameter is kept as supplied."""
+        parts = urllib.parse.urlsplit(aff["url"])
+        out, swapped = [], False
+        for k, v in urllib.parse.parse_qsl(parts.query, keep_blank_values=True):
+            if k == "k":
+                out.append((k, words)); swapped = True
+            elif k != "rh":
+                out.append((k, v))
+        if not swapped:
+            out.insert(0, ("k", words))
+        if rh:
+            out.append(("rh", rh))
+        return urllib.parse.urlunsplit(parts._replace(query=urllib.parse.urlencode(out)))
+
+    def brand_affiliate(self, name, aff):
+        """The owner's Amazon link for one brand tile: a search for that brand's watches (settings hub_affiliate.brand_keyword), or None without a base link."""
+        if not aff:
+            return None
+        cfg = self.settings.get("hub_affiliate") if isinstance(self.settings.get("hub_affiliate"), dict) else {}
+        words = str(cfg.get("brand_keyword") or "{brand} watches").replace("{brand}", name).strip()
+        return {"url": self.affiliate_search(aff, words), "label": aff["label"], "search": f"{name} watches"}
+
     def tier_affiliate(self, t, aff):
         """The owner's Amazon link for one budget card: the supplied url with only the search words (k) and Amazon's price limit (rh) changed, so an Under 2,000
         card searches for watches under 2,000 and shows only those. Everything else in the link (tag, linkCode, linkId, ref_, i) is kept as supplied.
@@ -851,20 +875,8 @@ f'<linearGradient id="g{uid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-
         high = int(t.get("max") or 0)
         template = str(cfg.get("premium_keyword" if premium else "keyword") or ("watches above {min}" if premium else "watches under {max}"))
         words = template.replace("{min}", str(low)).replace("{max}", str(high)).strip()
-        parts = urllib.parse.urlsplit(aff["url"])
-        pairs = [(k, v) for k, v in urllib.parse.parse_qsl(parts.query, keep_blank_values=True)]
-        swapped = False
-        out = []
-        for k, v in pairs:
-            if k == "k":
-                out.append((k, words)); swapped = True
-            elif k != "rh":
-                out.append((k, v))
-        if not swapped:
-            out.insert(0, ("k", words))
-        if cfg.get("price_filter", True) and (high or low):
-            out.append(("rh", f"p_36:{low * 100}-" if premium else f"p_36:-{high * 100}"))
-        link = urllib.parse.urlunsplit(parts._replace(query=urllib.parse.urlencode(out)))
+        limit = (f"p_36:{low * 100}-" if premium else f"p_36:-{high * 100}") if cfg.get("price_filter", True) and (high or low) else ""
+        link = self.affiliate_search(aff, words, limit)
         what = f"watches above \u20b9{low:,}" if premium else f"watches under \u20b9{high:,}"
         return {"url": link, "label": aff["label"], "search": what}
 
@@ -1193,10 +1205,10 @@ f'<linearGradient id="g{uid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-
         return ('<section class="lx-sec lx-budgets" aria-labelledby="lx-budgets"><div class="lx-sec-head"><h2 id="lx-budgets">Shop by budget</h2></div>'
                 f'<ul class="lx-budget-row" data-count="{len(items)}">{"".join(items)}</ul></section>')
 
-    def brand_tiles(self, active):
+    def brand_tiles(self, active, aff=None):
         if len(active) < 2:
             return ""
-        tiles = "".join(f'<li>{ui.brand_card(s, name, cnt)}</li>' for s, name, cnt in active)
+        tiles = "".join(f'<li>{ui.brand_card(s, name, cnt, self.brand_affiliate(name, aff))}</li>' for s, name, cnt in active)
         return ('<section class="lx-sec lx-brands" aria-labelledby="lx-brands"><div class="lx-sec-head"><h2 id="lx-brands">Shop by brand</h2></div>'
                 f'<ul class="lx-brand-row">{tiles}</ul></section>')
 
@@ -1247,7 +1259,7 @@ f'<linearGradient id="g{uid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-
                 f'<div class="lx-hero-art" aria-hidden="true"><div class="lx-hero-watch">{self.art_copy(art_for, "h")}</div>'
                 f'<dl class="lx-stats"><div><dt>{gcount["men"]}</dt><dd>Men\'s watches</dd></div><div><dt>{gcount["women"]}</dt><dd>Women\'s watches</dd></div></dl></div></header>')
         footline = f'<p class="lx-foot">{reviewed}</p>' if reviewed else ""
-        top = (hero + self.quick_row(steps, active, any(self.styles)) + quick_row + (self.intent_cards() + self.budget_cards(self.budget_discovery(), aff) + self.brand_tiles(active) if hub else ""))
+        top = (hero + self.quick_row(steps, active, any(self.styles)) + quick_row + (self.intent_cards() + self.budget_cards(self.budget_discovery(), aff) + self.brand_tiles(active, aff) if hub else ""))
         hub_top, hub_bottom = hub or ("", "")
         note = ('<p class="watch-affiliate-note">Amazon links on this page are affiliate links. As an Amazon Associate I earn from qualifying purchases. '
                 '<a href="/affiliate-disclosure/">How we earn</a></p>') if any(self.merchant_links(p) for p in shown) else ""

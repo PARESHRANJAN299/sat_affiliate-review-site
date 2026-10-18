@@ -51,9 +51,14 @@ def budget_card(t, art="", aff=None):
             f'<span class="b-art" aria-hidden="true">{art}</span></a>')
 
 
-def brand_card(slug, name, count):
-    return (f'<a class="card card-secondary lx-brandtile" href="/watches/brands/{esc(slug)}/" data-brand-tile="{esc(slug)}" aria-current="false">'
-            f'<strong>{esc(name.upper())}</strong><small>{watches_text(count)}</small></a>')
+def brand_card(slug, name, count, aff=None):
+    """A brand tile. With the owner's Amazon link it opens an Amazon search for that brand in a new tab and does nothing on the page (no filter, no scrolling,
+    so it carries no data-brand-tile hook); without it, it opens the on-site brand page and the page script can apply the brand filter."""
+    inner = f'<strong>{esc(name.upper())}</strong><small>{watches_text(count)}</small>'
+    if aff:
+        note = f'<span class="visually-hidden"> (opens an Amazon search for {esc(aff.get("search") or name + " watches")}, paid link)</span>'
+        return f'<a class="card card-secondary lx-brandtile" href="{esc(aff["url"])}" {AFFILIATE_ATTRS}>{inner}{note}</a>'
+    return f'<a class="card card-secondary lx-brandtile" href="/watches/brands/{esc(slug)}/" data-brand-tile="{esc(slug)}" aria-current="false">{inner}</a>'
 
 
 def intent_card(title, text, href, intent, icon):
