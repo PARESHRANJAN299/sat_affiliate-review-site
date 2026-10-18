@@ -1,5 +1,5 @@
 {
-  "_note": "Display settings only. Brands, filters and prices come from the watch files. brand_order lists brand slugs to show first; featured_brands are shown before the rest (default: the featured tier in config.json); hidden_brands are never shown. planned_filters shows an option dimmed before any watch has it, for example {\"water\": [\"200-plus\"]}. brand_names overrides the name made from a new brand's slug. intent_cards: the four discovery cards. A card is shown only when approved is true, it has a filter ({group, value}) and at least one watch matches; the owner approves the label and the filter together. budget_discovery: the shopper price tiers shown on /watches/ and in the menu, built from every live watch (not from the approved SEO pages). tiers are price band slugs from config.json; premium_after is the band where the Premium group starts above; menu lists the tiers (and 'premium') shown in the menu, in order; descriptions optionally overrides the neutral one-line description of a tier by its id (draft or default copy only; an approved summary in collections.json always wins). Every part of budget_discovery is optional and falls back to safe defaults.",
+  "_note": "Display settings only. Brands, filters and prices come from the watch files. brand_order lists brand slugs to show first; featured_brands are shown before the rest (default: the featured tier in config.json); hidden_brands are never shown. planned_filters shows an option dimmed before any watch has it, for example {\"water\": [\"200-plus\"]}. brand_names overrides the name made from a new brand's slug. intent_cards: the four discovery cards. A card is shown only when approved is true, it has a filter ({group, value}) and at least one watch matches; the owner approves the label and the filter together. budget_discovery: the shopper price tiers shown on /watches/ and in the menu, built from every live watch (not from the approved SEO pages). tiers are price band slugs from config.json; premium_after is the band where the Premium group starts above; menu lists the tiers (and 'premium') shown in the menu, in order; descriptions optionally overrides the neutral one-line description of a tier by its id (draft or default copy only; an approved summary in collections.json always wins). Every part of budget_discovery is optional and falls back to safe defaults. hub_affiliate: the owner's own Amazon link (kept exactly as supplied, never rebuilt) that opens from the watch picture on the /watches/ hero and on each Shop by budget card, in a new tab, rel sponsored. It is used only while affiliate links are switched on; the text and arrow of each card still open the on-site page.",
   "brand_order": [
     "titan",
     "casio",
@@ -64,5 +64,9 @@
       "premium"
     ],
     "descriptions": {}
+  },
+  "hub_affiliate": {
+    "url": "https://www.amazon.in/s?k=watch&i=watches&linkCode=ll2&tag=pareshsat-21&linkId=d365214107ba31edaa9fc39bb8fa609b&ref_=as_li_ss_tl",
+    "label": "Shop watches on Amazon"
   }
 }

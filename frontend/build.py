@@ -542,6 +542,8 @@ def compact_affiliate_notices(content):
         query = urllib.parse.parse_qs(url.query) if url else {}
         # A rel=sponsored attribute alone does not establish an affiliate relationship.
         paid = bool(url and (url.hostname == "amazon.in" or (url.hostname or "").endswith(".amazon.in")) and query.get("tag"))
+        if 'data-no-paid-label="1"' in match.group(0):
+            return match.group(0)   # picture links on the hub: still rel=sponsored with a "(paid link)" name for screen readers, no visible tag
         return match.group(0) + ('<small class="paid-link">Paid link</small>' if paid else '')
     return re.sub(r'<a\b[^>]*\brel="[^"]*\bsponsored\b[^"]*"[^>]*>.*?</a>', paid_label, content, flags=re.S)
 

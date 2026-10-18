@@ -830,6 +830,14 @@ f'<linearGradient id="g{uid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-
         after = self.discovery_config()["premium_after"]
         return order[order.index(after) + 1:] if after in order else []
 
+    def hub_affiliate(self):
+        """The owner's Amazon link for the watch pictures on the hub (settings hub_affiliate), as {url, label}, or None. Only while affiliate links are on."""
+        cfg = self.settings.get("hub_affiliate")
+        url = str(cfg.get("url") or "").strip() if isinstance(cfg, dict) else ""
+        if not (self.affiliate_active and url.startswith("https://")):
+            return None
+        return {"url": url, "label": str(cfg.get("label") or "Shop watches on Amazon").strip()}
+
     def premium_heading(self):
         after = self.discovery_config()["premium_after"]
         return f"Premium Watches Above \u20b9{self.budgets[after]['max']:,}" if after in self.budgets else "Premium Watches"
@@ -1138,7 +1146,7 @@ f'<linearGradient id="g{uid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-
                 return tier
         return 7
 
-    def budget_cards(self, tiers):
+    def budget_cards(self, tiers, aff=None):
         """Shop by budget: one card per shopper price tier (see budget_discovery), each with live count and brands, a watch from the tier and a colour that deepens
         with the price. A tier with no watch is not shown, and a tier never links to a page that is not published: it links to the hub filter instead."""
         tiers = [t for t in tiers if t["count"]]
@@ -1151,7 +1159,7 @@ f'<linearGradient id="g{uid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-
             else:
                 mine = [p for p in self.products if p.get("budget") == t["price_band"]] or [p for p in self.products if t["price_band"] in self.qualifies(p)]
             art = self.art_copy(mine[0], "b" + str(len(items))) if mine else ""
-            items.append(f'<li>{ui.budget_card(t, art)}</li>')
+            items.append(f'<li>{ui.budget_card(t, art, aff)}</li>')
         return ('<section class="lx-sec lx-budgets" aria-labelledby="lx-budgets"><div class="lx-sec-head"><h2 id="lx-budgets">Shop by budget</h2></div>'
                 f'<ul class="lx-budget-row" data-count="{len(items)}">{"".join(items)}</ul></section>')
 
@@ -1203,12 +1211,13 @@ f'<linearGradient id="g{uid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-
         reviewed = (f'<span class="lx-reviewed">Last reviewed: <time datetime="{esc(self.updated(shown))}">{esc(self.human_date(self.updated(shown)))}</time></span>' if shown else "")
         gcount = {g: n(lambda p, g=g: g in p["gender"]) for g in self.genders}
         art_for = (shown or products)[0]
-        hero = ('<header class="lx-hero"><div class="lx-hero-text"><p class="lx-kicker">The SAT watch edit</p>'
+        aff = self.hub_affiliate() if hub else None
+        hero = ('<header class="lx-hero">' + (ui.hero_link(aff) if aff else "") + '<div class="lx-hero-text"><p class="lx-kicker">The SAT watch edit</p>'
                 f'<h1 data-default="{esc(headline)}"{" data-static" if hub else ""}>{esc(headline)}</h1><p class="lx-sub">{esc(sub)}</p><!--segments--></div>'
                 f'<div class="lx-hero-art" aria-hidden="true"><div class="lx-hero-watch">{self.art_copy(art_for, "h")}</div>'
                 f'<dl class="lx-stats"><div><dt>{gcount["men"]}</dt><dd>Men\'s watches</dd></div><div><dt>{gcount["women"]}</dt><dd>Women\'s watches</dd></div></dl></div></header>')
         footline = f'<p class="lx-foot">{reviewed}</p>' if reviewed else ""
-        top = (hero + self.quick_row(steps, active, any(self.styles)) + quick_row + (self.intent_cards() + self.budget_cards(self.budget_discovery()) + self.brand_tiles(active) if hub else ""))
+        top = (hero + self.quick_row(steps, active, any(self.styles)) + quick_row + (self.intent_cards() + self.budget_cards(self.budget_discovery(), aff) + self.brand_tiles(active) if hub else ""))
         hub_top, hub_bottom = hub or ("", "")
         note = ('<p class="watch-affiliate-note">Amazon links on this page are affiliate links. As an Amazon Associate I earn from qualifying purchases. '
                 '<a href="/affiliate-disclosure/">How we earn</a></p>') if any(self.merchant_links(p) for p in shown) else ""

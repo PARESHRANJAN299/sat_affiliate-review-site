@@ -647,9 +647,11 @@ class BudgetDiscovery(unittest.TestCase):
         import re
         body = self.shop.landing()["_body"]
         tiers = self.shop.budget_discovery()
-        cards = re.findall(r'<a class="card card-primary lx-budget tier-(\d)" href="([^"]+)">.*?</a>', body, flags=re.S)
+        cards = re.findall(r'<a class="card card-primary lx-budget tier-(\d)" href="([^"]+)"[^>]*>.*?</a>', body, flags=re.S)
         self.assertEqual(len(cards), len(tiers))
-        self.assertEqual([c[1] for c in cards], [t["href"].replace("&", "&amp;") for t in tiers])
+        aff = self.shop.hub_affiliate()
+        expected = [(aff["url"] if aff and not t["has_page"] else t["href"]).replace("&", "&amp;") for t in tiers]   # Amazon unless the tier has its own published page
+        self.assertEqual([c[1] for c in cards], expected)
         self.assertEqual([int(c[0]) for c in cards], sorted(int(c[0]) for c in cards))          # the colour never steps back as the price rises
         self.assertEqual(cards[-1][0], "7")                                                     # Premium is the deepest tier
         self.assertIn('data-count="%d"' % len(tiers), body)
@@ -815,6 +817,91 @@ class ReviewFixes(unittest.TestCase):
         self.approved(**{"/watches/under-5000/": {"intro": self.LONG, "meta_description": "Approved meta for five thousand."}})
         self.assertEqual(self.shop.all_brands_budget_page("under-5000")["description"], "Approved meta for five thousand.")
         self.assertNotEqual(self.shop.all_brands_budget_page("under-1000")["description"], self.shop.all_brands_budget_page("under-2000")["description"])
+
+
+class HubAffiliateCards(unittest.TestCase):
+    """The hero background and every budget card open the owner's Amazon link; nothing on them scrolls the page or filters it."""
+    URL = "https://www.amazon.in/s?k=watch&i=watches&linkCode=ll2&tag=pareshsat-21&linkId=d365214107ba31edaa9fc39bb8fa609b&ref_=as_li_ss_tl"
+    LONG = " ".join(["word"] * 120)
+
+    @classmethod
+    def setUpClass(cls):
+        cls.shop = watches.Watches(build.SRC, build.CONFIG)
+
+    def cards(self, body):
+        import re
+        return re.findall(r'<a class="card card-primary lx-budget tier-\d" href="([^"]+)"([^>]*)>', body)
+
+    def test_the_link_is_stored_exactly_as_supplied(self):
+        self.assertEqual(self.shop.settings["hub_affiliate"]["url"], self.URL)
+        self.assertEqual(self.shop.hub_affiliate()["url"], self.URL)
+
+    def test_every_budget_card_and_the_hero_open_the_link_in_a_new_tab(self):
+        import re, html
+        body = self.shop.landing()["_body"]
+        cards = self.cards(body)
+        self.assertEqual(len(cards), len(self.shop.budget_discovery()))
+        for href, rest in cards:
+            self.assertEqual(html.unescape(href), self.URL)                                  # never rebuilt or retagged
+            self.assertIn('target="_blank"', rest)
+            self.assertIn('rel="sponsored nofollow noopener"', rest)
+        hero = re.findall(r'<a class="lx-hero-link" href="([^"]+)"([^>]*)>', body)
+        self.assertEqual(len(hero), 1)
+        self.assertEqual(html.unescape(hero[0][0]), self.URL)
+        self.assertIn("(paid link)", hero[0][1])                                             # the accessible name says it is paid
+        self.assertIn("(opens Amazon, paid link)", body)
+
+    def test_nothing_on_these_cards_scrolls_or_filters_the_page(self):
+        import re
+        body = self.shop.landing()["_body"]
+        for href, rest in self.cards(body):
+            self.assertFalse(href.startswith("#") or href.startswith("/"), href)             # no in-page anchor, no on-site filter URL
+        js = (build.SRC / "js" / "components" / "collection.js").read_text(encoding="utf-8")
+        for name in ("lx-budget", "lx-hero-link", "b-main"):
+            self.assertNotIn(name, js)                                                       # no script handles a click on them
+        for block in re.findall(r'<a class="card card-primary lx-budget.*?</a>', body, flags=re.S):
+            self.assertEqual(block.count("<a "), 1)                                          # one link per card, none inside another
+
+    def test_a_tier_with_its_own_published_page_still_opens_that_page(self):
+        shop = self.shop
+        saved = dict(shop.approved)
+        self.addCleanup(lambda: (shop.approved.clear(), shop.approved.update(saved)))
+        shop.approved["/watches/under-10000/"] = {"intro": self.LONG}
+        cards = self.cards(shop.landing()["_body"])
+        own = [rest for href, rest in cards if href == "/watches/under-10000/"]
+        self.assertEqual(len(own), 1)
+        self.assertNotIn("target=", own[0])                                                    # an on-site link opens in the same tab
+        self.assertEqual(sum(1 for href, rest in cards if href.replace("&amp;", "&") == self.URL), len(shop.budget_discovery()) - 1)
+
+    def test_plain_on_site_links_without_affiliate_mode_or_url(self):
+        shop = self.shop
+        saved_active, saved_cfg = shop.affiliate_active, shop.settings.get("hub_affiliate")
+        self.addCleanup(lambda: (setattr(shop, "affiliate_active", saved_active), shop.settings.__setitem__("hub_affiliate", saved_cfg)))
+        shop.affiliate_active = False
+        body = shop.landing()["_body"]
+        self.assertNotIn("lx-hero-link", body)
+        self.assertEqual([h for h, r in self.cards(body)], [t["href"].replace("&", "&amp;") for t in shop.budget_discovery()])
+        shop.affiliate_active = True
+        for bad in (None, {}, {"url": ""}, {"url": "http://insecure.example/"}, "text"):
+            shop.settings["hub_affiliate"] = bad
+            self.assertIsNone(shop.hub_affiliate(), bad)
+            self.assertNotIn("lx-hero-link", shop.landing()["_body"])
+
+    def test_only_the_hub_carries_the_link(self):
+        self.assertNotIn("lx-hero-link", self.shop.brand_page("titan")["_body"])
+        self.assertNotIn(self.URL.replace("&", "&amp;"), self.shop.brand_page("titan")["_body"])
+
+    def test_built_page_keeps_the_link_untouched_and_shows_no_paid_tag_on_it(self):
+        import re, html
+        page = build.DIST / "watches" / "index.html"
+        if not page.exists():
+            self.skipTest("run build.py first")
+        text = page.read_text(encoding="utf-8")
+        hub = [m for m in re.finditer(r'<a [^>]*href="([^"]*)"[^>]*>', text) if html.unescape(m.group(1)) == self.URL]
+        self.assertEqual(len(hub), 1 + len(self.shop.budget_discovery()))                    # the hero plus one per tier
+        for m in hub:
+            self.assertIn('rel="sponsored nofollow noopener"', m.group(0))
+        self.assertEqual(len(re.findall(r'(?:lx-hero-link|lx-budget tier-\d)"[^>]*>(?:(?!</a>).)*</a><small class="paid-link">', text, flags=re.S)), 0)   # no visible "Paid link" tag on them
 
 
 class UniqueIds(unittest.TestCase):

@@ -29,12 +29,26 @@ def collection_card(c, level="primary", cta="Explore", art=""):
             f'<span class="card-go">{esc(cta)} <i aria-hidden="true">&rarr;</i></span>{art_html}</a>')
 
 
-def budget_card(t, art=""):
-    """A shopper price tier (see Watches.budget_discovery): eyebrow, amount, live count, participating brands, art. The accessible name is the visible text plus the
-    canonical title; tier (1 to 7) sets the colour progression."""
-    return (f'<a class="card card-primary lx-budget tier-{t["tier"]}" href="{esc(t["href"])}"><span class="b-under">{esc(t["eyebrow"])}</span>'
+AFFILIATE_ATTRS = 'target="_blank" rel="sponsored nofollow noopener" data-no-paid-label="1"'
+
+
+def hero_link(aff):
+    """The whole hero background opens the owner's Amazon link in a new tab (the Men and Women buttons sit above it and keep working)."""
+    label = esc(aff["label"]) + " (paid link)"
+    return f'<a class="lx-hero-link" href="{esc(aff["url"])}" {AFFILIATE_ATTRS} aria-label="{label}" title="{label}"></a>'
+
+
+def budget_card(t, art="", aff=None):
+    """A shopper price tier (see Watches.budget_discovery): eyebrow, amount, live count, participating brands, art. One link per card. With the owner's Amazon
+    link set, the card opens it in a new tab and does nothing on the page itself (no scrolling, no filter); a tier whose own SEO page is published still opens
+    that page. The accessible name is the visible text plus the full heading, and says when the card opens Amazon."""
+    redirect = bool(aff) and not t.get("has_page")
+    href, attrs = (aff["url"], " " + AFFILIATE_ATTRS) if redirect else (t["href"], "")
+    note = '<span class="visually-hidden"> (opens Amazon, paid link)</span>' if redirect else ""
+    return (f'<a class="card card-primary lx-budget tier-{t["tier"]}" href="{esc(href)}"{attrs}><span class="b-under">{esc(t["eyebrow"])}</span>'
             f'<strong>{esc(t["amount"])}</strong><span class="b-cap">{watches_text(t["count"])}</span><span class="b-brand">{esc(t["brand_line"].upper())}</span>'
-            f'<span class="card-go">Explore watches <i aria-hidden="true">&rarr;</i></span><span class="visually-hidden">: {esc(t.get("heading") or t["display_title"])}</span><span class="b-art" aria-hidden="true">{art}</span></a>')
+            f'<span class="card-go">Explore watches <i aria-hidden="true">&rarr;</i></span><span class="visually-hidden">: {esc(t.get("heading") or t["display_title"])}</span>{note}'
+            f'<span class="b-art" aria-hidden="true">{art}</span></a>')
 
 
 def brand_card(slug, name, count):

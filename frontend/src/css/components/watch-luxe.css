@@ -399,3 +399,9 @@
 /* 1000 px and up: the watch sits a little further left so the Men's and Women's figures clear the case */
 @media (min-width: 1000px) { .lx-hero-watch { right: 23.2%; } }
 @media (min-width: 1000px) and (max-width: 1199px) { .lx-hero h1 { font-size: 2.8vw; } }
+
+/* hub cards that open the owner's Amazon link: the whole hero background and each whole budget card is the link; the Men and Women buttons stay on top and work */
+.lx-hero-link { position: absolute; inset: 0; z-index: 0; border-radius: inherit; cursor: pointer; }
+.lx-hero-link:focus-visible { outline: 3px solid #d8c08a; outline-offset: -6px; }
+.lx-hero-text { pointer-events: none; }
+.lx-hero-text .gender-plate, .lx-hero-text button, .lx-hero-text a { pointer-events: auto; }
