@@ -1,6 +1,6 @@
 (function () {
   'use strict';
-  var rails = document.querySelectorAll('[data-widget-rail]');
+  var rails = document.querySelectorAll('[data-widget-rail], [data-widget-grid]');
   if (!rails.length) return;
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 

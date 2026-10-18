@@ -208,42 +208,80 @@ class WidgetPageTests(unittest.TestCase):
         self.assertEqual(page['_body'].count('loading="lazy" style="height:360px'), 50)
         self.assertEqual(page['js'], ['fashion-widgets'])
 
-    def build_with_collection(self, widgets, collections=(COLLECTION,)):
+    def build_pages(self, widgets, collections=(COLLECTION,), category_pages=None):
         directory = tempfile.TemporaryDirectory()
         self.addCleanup(directory.cleanup)
         src = Path(directory.name)
         (src / 'fashion').mkdir()
         (src / 'fashion/catalog.json').write_text(json.dumps({'approved_image_hosts': [], 'approved_affiliate_hosts': [], 'products': []}))
-        (src / 'fashion/widgets.json').write_text(json.dumps(base(widgets, list(collections))))
-        return fashion.page(src, lambda *args: '')
+        data = base(widgets, list(collections))
+        if category_pages is not None:
+            data['category_pages'] = category_pages
+        (src / 'fashion/widgets.json').write_text(json.dumps(data))
+        return fashion.pages(src, lambda *args: '', 'https://sat.net.in')
 
-    def test_collection_gets_its_own_titled_rail_with_suggestions(self):
+    CATEGORY_PAGE = {'category': 'womens-kurtas', 'h1': 'Women’s Kurtas', 'intro': 'Intro text.', 'meta_title': 'Women’s Kurtas and Kurta Sets from Nykaa Fashion',
+                     'meta_description': 'A description.', 'main_heading': 'Search results for Women’s Kurtas', 'explore_label': 'Explore Kurtis'}
+
+    def test_landing_has_one_rail_and_one_explore_button(self):
         second = self.record('27421822', FIRST_URL.replace('28560370', '27421822'), collection='kurta-sets-search')
-        page, problems = self.build_with_collection([self.record(), second])
-        body = page['_body']
+        pages, problems = self.build_pages([self.record(), second], category_pages=[self.CATEGORY_PAGE])
+        landing = pages[0]['_body']
         self.assertEqual(problems, [])
-        self.assertEqual(body.count('data-rail-group'), 2)
-        self.assertEqual(body.count('data-widget-rail'), 2)
-        self.assertEqual(body.count('data-rail-controls'), 2)
-        self.assertIn('<h3>Search results for Women’s kurtas set</h3>', body)
-        self.assertIn('Suggestions:', body)
-        self.assertIn('Pure cotton kurtas set for women', body)
-        self.assertEqual(body.count('class="nykaa-sep"'), 1)
-        self.assertEqual(body.count(fashion.WIDGET_AFFILIATE_NOTE), 1)
-        self.assertEqual(len(set(re.findall(r'id="(pick-\d+)"', body))), 2)
-        first_group, second_group = body.split('data-rail-group')[1:3]
-        self.assertIn('pick-28560370', first_group)
-        self.assertIn('pick-27421822', second_group)
-        self.assertNotIn('<h3>', first_group)
+        self.assertEqual(landing.count('data-rail-group'), 1)
+        self.assertEqual(landing.count('data-widget-rail'), 1)
+        self.assertEqual(landing.count('<iframe'), 1)  # the collection widget is not on the landing rail
+        self.assertNotIn('<h3>', landing)
+        self.assertEqual(landing.count('class="nykaa-explore-link" href="/fashion/womens-kurtas/"'), 1)
+        self.assertIn('Explore Kurtis', landing)
+        self.assertEqual(landing.count(fashion.WIDGET_AFFILIATE_NOTE), 1)
+        self.assertEqual(landing.count('id="pick-28560370"'), 1)
 
-    def test_collection_without_widgets_is_not_shown_and_all_grouped_still_shows_note(self):
-        page, _ = self.build_with_collection([self.record()])
-        self.assertNotIn('<h3>', page['_body'])
+    def test_category_page_lists_everything_as_search_results(self):
+        second = self.record('27421822', FIRST_URL.replace('28560370', '27421822'), collection='kurta-sets-search')
+        pages, _ = self.build_pages([self.record(), second], category_pages=[self.CATEGORY_PAGE])
+        self.assertEqual([p['url'] for p in pages], ['/fashion/', '/fashion/womens-kurtas/'])
+        category = pages[1]
+        body = category['_body']
+        self.assertTrue(category['noindex'])
+        self.assertTrue(category['canonical_always'])
+        self.assertEqual(category['title'], 'Women’s Kurtas and Kurta Sets from Nykaa Fashion')
+        self.assertEqual(category['description'], 'A description.')
+        self.assertEqual(category['breadcrumbs'], [['Fashion Edit', '/fashion/'], ['Women’s Kurtas', '/fashion/womens-kurtas/']])
+        self.assertIn('{{breadcrumb}}', body)
+        self.assertEqual(body.count('<h1>'), 1)
+        self.assertEqual(body.count('<iframe'), 2)
+        self.assertEqual(body.count('data-widget-grid'), 2)
+        self.assertIn('Search results for Women’s Kurtas', body)
+        self.assertIn('Search results for Women’s kurtas set', body)
+        self.assertIn('Suggestions:', body)
+        self.assertEqual(body.count(fashion.WIDGET_AFFILIATE_NOTE), 1)
+        self.assertEqual(category['js'], ['fashion-widgets'])
+        for pid in ('28560370', '27421822'):  # shares point at this page, never the Nykaa link
+            self.assertIn(f'data-url="https://sat.net.in/fashion/womens-kurtas/#pick-{pid}"', body)
+        self.assertNotIn('wa.me', body)
+
+    def test_category_page_defaults_and_no_page_without_widgets(self):
+        pages, _ = self.build_pages([self.record()], collections=(), category_pages=None)
+        self.assertEqual(len(pages), 2)
+        self.assertEqual(pages[1]['title'], 'Women’s Kurtas from Nykaa Fashion')
+        self.assertIn('Search results for Women’s Kurtas', pages[1]['_body'])
+        self.assertEqual(len(self.build_pages([], collections=())[0]), 1)
+
+    def test_all_widgets_in_collections_still_fill_the_landing_rail(self):
         only = self.record(collection='kurta-sets-search')
-        page, _ = self.build_with_collection([only])
-        self.assertEqual(page['_body'].count('data-rail-group'), 1)
-        self.assertEqual(page['_body'].count(fashion.WIDGET_AFFILIATE_NOTE), 1)
-        self.assertIn('<h3>Search results', page['_body'])
+        pages, _ = self.build_pages([only])
+        self.assertEqual(pages[0]['_body'].count('<iframe'), 1)
+        self.assertEqual(pages[0]['_body'].count(fashion.WIDGET_AFFILIATE_NOTE), 1)
+
+    def test_category_page_fields_are_validated(self):
+        ok = {'category': 'womens-kurtas', 'h1': 'Women’s Kurtas'}
+        self.assertEqual(fashion.validate_widgets({**base([self.record()]), 'category_pages': [ok]})[1], [])
+        for name, entry in {'unknown category': {'category': 'nope'}, 'extra field': {**ok, 'html': '<b>'}, 'long description': {**ok, 'meta_description': 'x' * 200},
+                            'empty': {**ok, 'h1': ' '}, 'not text': {**ok, 'intro': 5}}.items():
+            self.assertTrue(fashion.validate_widgets({**base([self.record()]), 'category_pages': [entry]})[1], name)
+        self.assertTrue(fashion.validate_widgets({**base([self.record()]), 'category_pages': [ok, ok]})[1])
+        self.assertTrue(fashion.validate_widgets({**base([self.record()]), 'category_pages': {}})[1])
 
     def test_disclosure_appears_only_with_widgets(self):
         with_widgets, _ = self.build([self.record()])
