@@ -1175,6 +1175,36 @@
       "image_classification": "AI-generated illustrative imagery",
       "confirmed_by": "SAT site owner",
       "confirmed_on": "2026-10-18"
+    },
+    {
+      "file": "/images/fashion/models/ivory-banner-1536.jpg",
+      "use": "Wide banner above the Women’s Kurtas widget rail on /fashion/: crop of the owner’s ivory kurta editorial photograph; SAT editorial artwork, not a retailer product image",
+      "platform": "Derivative of /images/fashion/sat-editorial-ivory.jpg",
+      "ai_generated": true,
+      "source": "Cropped and resized copy of the confirmed AI-generated editorial visual; no new content",
+      "licence": "Same basis as /images/fashion/sat-editorial-ivory.jpg",
+      "licence_page": "https://openai.com/policies/terms-of-use",
+      "date_added": "2026-10-18",
+      "proof": "Derivative of a record with confirmed status. No Nykaa product imagery is used.",
+      "status": "confirmed",
+      "image_classification": "AI-generated illustrative imagery",
+      "confirmed_by": "SAT site owner",
+      "confirmed_on": "2026-10-18"
+    },
+    {
+      "file": "/images/fashion/models/ivory-banner-828.jpg",
+      "use": "Wide banner above the Women’s Kurtas widget rail on /fashion/: crop of the owner’s ivory kurta editorial photograph; SAT editorial artwork, not a retailer product image",
+      "platform": "Derivative of /images/fashion/sat-editorial-ivory.jpg",
+      "ai_generated": true,
+      "source": "Cropped and resized copy of the confirmed AI-generated editorial visual; no new content",
+      "licence": "Same basis as /images/fashion/sat-editorial-ivory.jpg",
+      "licence_page": "https://openai.com/policies/terms-of-use",
+      "date_added": "2026-10-18",
+      "proof": "Derivative of a record with confirmed status. No Nykaa product imagery is used.",
+      "status": "confirmed",
+      "image_classification": "AI-generated illustrative imagery",
+      "confirmed_by": "SAT site owner",
+      "confirmed_on": "2026-10-18"
     }
   ],
   "governance": {

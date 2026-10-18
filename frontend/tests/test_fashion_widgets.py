@@ -117,10 +117,33 @@ class WidgetPageTests(unittest.TestCase):
         kurtas = body.split('id="womens-kurtas"')[1].split('id="westernwear"')[0]
         self.assertIn('THE KURTA EDIT', kurtas)
         self.assertIn('Elegant Indian styles selected for everyday and occasion wear.', kurtas)
-        self.assertIn(fashion.art_file('ivory-kurta'), kurtas)
+        self.assertIn('/images/fashion/models/ivory-banner-1536.jpg', kurtas)
         self.assertNotIn(fashion.EMPTY_NOTE, kurtas)
         self.assertEqual(body.count(fashion.EMPTY_NOTE), len(fashion.SECTIONS) - 1)
         self.assertEqual(body.count('<iframe'), 1)
+
+    def test_each_card_has_a_sat_share_link_and_buttons(self):
+        page, _ = self.build([self.record(), self.record('27826893', FIRST_URL.replace('28560370', '27826893'))])
+        body = page['_body']
+        self.assertEqual(body.count('class="nykaa-product-shell"'), 2)
+        for pid in ('28560370', '27826893'):
+            self.assertIn(f'id="pick-{pid}"', body)
+            self.assertIn(f'data-url="https://sat.net.in/fashion/#pick-{pid}"', body)
+            self.assertIn('https%3A%2F%2Fsat.net.in%2Ffashion%2F%23pick-' + pid, body)
+        self.assertEqual(body.count('href="https://wa.me/?text='), 2)
+        self.assertEqual(body.count('data-copy-pick'), 2)
+        self.assertEqual(body.count('data-share-pick'), 2)
+        self.assertIn('data-widget-rail', body)
+        # the shared link is the SAT page, never the Nykaa affiliate URL
+        self.assertNotIn('wa.me/?text=' + 'https%3A%2F%2Faffiliate', body)
+
+    def test_rail_scales_to_many_widgets(self):
+        many = [self.record(str(1000 + n), FIRST_URL.replace('28560370', str(1000 + n))) for n in range(50)]
+        page, problems = self.build(many)
+        self.assertEqual(problems, [])
+        self.assertEqual(page['_body'].count('<iframe'), 50)
+        self.assertEqual(page['_body'].count('loading="lazy" style="height:360px'), 50)
+        self.assertEqual(page['js'], ['fashion-widgets'])
 
     def test_disclosure_appears_only_with_widgets(self):
         with_widgets, _ = self.build([self.record()])

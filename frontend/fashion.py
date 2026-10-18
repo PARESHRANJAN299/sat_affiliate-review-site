@@ -26,7 +26,11 @@ MODEL_DIR = '/images/fashion/models/'
 ART = {'womens-kurtas': ('ivory-kurta',), 'westernwear': ('pink-dress', 'orange-dress'), 'indianwear': ('purple-saree',),
        'footwear': ('white-tee-b',), 'active-sports': ('white-tee-a',), 'bags': ()}
 # Cutouts are 1122x1402 WebP; the ivory kurta photograph is a portrait JPEG crop. (extension, small width, large width, large height)
-ART_FILES = {'ivory-kurta': ('jpg', 640, 836, 1024)}
+ART_FILES = {'ivory-kurta': ('jpg', 640, 836, 1024), 'ivory-banner': ('jpg', 828, 1536, 832)}
+# Wide banner photograph used above a collection's widget rail.
+BANNER_STEMS = {'womens-kurtas': 'ivory-banner'}
+SHARE_TEXT = '{title}: a pick from the SAT Fashion Edit'
+SITE_URL = 'https://sat.net.in'
 ART_ALT = {'ivory-kurta': 'Editorial image: a woman in an ivory floral kurta set with a dupatta, seated on sandstone steps.',
            'purple-saree': 'Editorial image: a woman seated on a stool in a purple saree with an embroidered blouse.',
            'pink-dress': 'Editorial image: a woman in a pink ribbed dress with a black cardigan, holding a quilted black bag.',
@@ -214,18 +218,33 @@ def get_widgets_by_category(items, category):
     return [item for item in items if item['category'] == category]
 
 
-def widget_shell(widget):
-    """SAT wrapper around the official Nykaa iframe. The iframe URL is exactly the stored, validated widget_url; its content stays Nykaa's."""
-    return (f'<article class="nykaa-product-shell" data-product-id="{esc(widget["product_id"])}">'
+def widget_id(widget):
+    return 'pick-' + widget['product_id']
+
+
+def widget_shell(widget, title='', site_url=SITE_URL):
+    """SAT wrapper around the official Nykaa iframe. The iframe URL is exactly the stored, validated widget_url; its content stays Nykaa's.
+    Share links point to this SAT page and card (an anchor), never to the Nykaa affiliate link."""
+    link = site_url.rstrip('/') + '/fashion/#' + widget_id(widget)
+    whatsapp = 'https://wa.me/?text=' + quote(SHARE_TEXT.format(title=title) + '\n' + link, safe='')
+    return (f'<article class="nykaa-product-shell" id="{widget_id(widget)}" data-product-id="{esc(widget["product_id"])}">'
             f'<iframe src="{esc(widget["widget_url"])}" title="Nykaa Fashion product" width="{widget["width"]}" height="{widget["height"]}" loading="lazy" '
-            f'style="height:{widget["height"]}px;width:{widget["width"]}px;overflow:hidden;"></iframe></article>')
+            f'style="height:{widget["height"]}px;width:{widget["width"]}px;overflow:hidden;"></iframe>'
+            f'<div class="nykaa-share" role="group" aria-label="Share this pick">'
+            f'<a href="{esc(whatsapp)}" target="_blank" rel="noopener">WhatsApp</a>'
+            f'<button type="button" data-copy-pick data-url="{esc(link)}" hidden>Copy link</button>'
+            f'<button type="button" data-share-pick data-url="{esc(link)}" data-title="{esc(title)}" hidden>Share</button></div></article>')
 
 
-def render_widgets(slug, items, icon_free=True):
-    frame = f'<figure class="fashion-frame fashion-tint-{slug}">{art_picture(slug, "(min-width: 900px) 40vw, 90vw")}</figure>'
-    return (f'<div class="fashion-widget-layout">{frame}<div class="fashion-widget-area">'
-            f'<p class="fashion-widget-note" data-disclosure="temporary">{esc(WIDGET_AFFILIATE_NOTE)}</p>'
-            f'<div class="nykaa-widgets">{"".join(widget_shell(item) for item in items)}</div></div></div>')
+def render_widgets(slug, items, title='', site_url=SITE_URL):
+    """A wide SAT editorial banner, the replaceable affiliate note, and a left-to-right rail of official Nykaa widgets (any number)."""
+    banner = f'<figure class="fashion-widget-banner fashion-tint-{slug}">{art_picture(slug, "(min-width: 900px) 1232px, 100vw", stem=BANNER_STEMS.get(slug))}</figure>'
+    return (f'{banner}<div class="fashion-widget-bar"><p class="fashion-widget-note" data-disclosure="temporary">{esc(WIDGET_AFFILIATE_NOTE)}</p>'
+            f'<div class="nykaa-controls" data-rail-controls hidden><button type="button" data-rail-prev aria-label="Scroll picks left">←</button>'
+            f'<button type="button" data-rail-next aria-label="Scroll picks right">→</button></div></div>'
+            f'<div class="nykaa-rail" data-widget-rail tabindex="0" role="region" aria-label="{esc(title)} picks from Nykaa Fashion">'
+            + ''.join(widget_shell(item, title, site_url) for item in items) + '</div>'
+            '<p class="visually-hidden" role="status" data-widget-status></p>')
 
 
 def product_url(product):
@@ -321,7 +340,7 @@ def product_page(product, products, site_url):
 def pages(src, icon, site_url):
     products, errors = catalog(src)
     errors = errors + widgets(src)[1]
-    landing, _ = page(src, icon)
+    landing, _ = page(src, icon, site_url)
     landing['canonical_always'] = True
     return [landing] + [product_page(product, products, site_url) for product in products], errors
 
@@ -359,7 +378,7 @@ TRUST_ICONS = (
 )
 
 
-def page(src, icon):
+def page(src, icon, site_url=SITE_URL):
     products, problems = catalog(src)
     live_widgets, widget_problems = widgets(src)
     problems = problems + widget_problems
@@ -374,7 +393,7 @@ def page(src, icon):
                      f'<span class="fashion-category-label"><strong>{esc(title)}</strong><em>{esc(description)}</em><span class="fashion-category-arrow" aria-hidden="true">→</span></span></a>')
         here = get_widgets_by_category(live_widgets, slug)
         if here:
-            contents = render_widgets(slug, here) + (render_products(layout, matching) if matching else '')
+            contents = render_widgets(slug, here, title, site_url) + (render_products(layout, matching) if matching else '')
         else:
             contents = render_products(layout, matching) if matching else render_empty(slug, tips, layout, icon)
         label = EDIT_LABELS.get(slug)
@@ -396,5 +415,5 @@ def page(src, icon):
             '<nav class="fashion-categories" aria-label="Fashion collections">' + ''.join(tiles) + '</nav></section>'
             + ''.join(sections) + brands_html + banner + trust + '</div>')
     return {'url': '/fashion/', 'title': 'The SAT Fashion Edit', 'description': 'Explore women’s kurtas, westernwear, Indianwear, footwear, active and sportswear, and bags with the SAT Fashion Edit.',
-            'css': ['buttons', 'breadcrumb', 'fashion-gateway', 'fashion'], 'js': [], 'noindex': True,
+            'css': ['buttons', 'breadcrumb', 'fashion-gateway', 'fashion'], 'js': ['fashion-widgets'], 'noindex': True,
             'breadcrumbs': [['Fashion Edit', '/fashion/']], 'updated': '2026-10-18', '_slug': 'fashion', '_body': body}, problems
