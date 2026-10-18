@@ -38,7 +38,7 @@ ART_ALT = {'ivory-kurta': 'Editorial image: a woman in an ivory floral kurta set
            'white-tee-b': 'Editorial image: a woman sitting cross-legged in a white tee, blush joggers and white trainers.'}
 # Easy-to-replace wording shown beside the first Nykaa widgets.
 WIDGET_AFFILIATE_NOTE = 'This section contains affiliate links. SAT may earn a commission from qualifying purchases at no extra cost to you.'
-EDIT_LABELS = {'womens-kurtas': 'THE KURTA EDIT', 'westernwear': 'THE WESTERN EDIT'}
+EDIT_LABELS = {'womens-kurtas': 'THE KURTA EDIT', 'westernwear': 'THE WESTERN EDIT', 'footwear': 'THE FOOTWEAR EDIT'}
 # The /fashion/ rail is a short preview; the category page lists every widget.
 WIDGET_RAIL_LIMIT = 12
 WIDGET_KEYS = {'id', 'product_id', 'category', 'source', 'widget_url', 'width', 'height', 'active', 'featured', 'collection', 'affiliate_url', 'audience'}
@@ -371,9 +371,11 @@ def category_page(slug, title, items, collections, config, site_url=SITE_URL):
     groups = []
     if config.get('audience_toggle'):
         tabs, panels = [], []
+        counts = {key: sum(1 for item in main if item.get('audience', DEFAULT_AUDIENCE) == key) for key, _ in AUDIENCES}
+        first = next((key for key, _ in AUDIENCES if counts[key]), AUDIENCES[0][0])  # open on the first list that has products
         for key, name in AUDIENCES:
             members = [item for item in main if item.get('audience', DEFAULT_AUDIENCE) == key]
-            current = ' aria-current="true"' if key == AUDIENCES[0][0] else ''
+            current = ' aria-current="true"' if key == first else ''
             tabs.append(f'<a href="#{key}" data-audience-tab="{key}"{current}>{esc(name)} <span>{len(members)}</span></a>')
             heading = f'{name}’s {title}'
             inside = (widget_group(f'<h2 class="nykaa-results-title">{esc(heading)}</h2>', members, f'{heading} from Nykaa Fashion', title, site_url, page_path=url, grid=True)

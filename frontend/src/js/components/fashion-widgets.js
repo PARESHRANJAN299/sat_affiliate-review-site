@@ -18,7 +18,8 @@
     return document.querySelector('[data-audience-tab="' + id.replace(/[^a-z-]/g, '') + '"]') ? id : null;
   }
   if (tabs.length) {
-    showAudience(audienceFromHash() || tabs[0].dataset.audienceTab);
+    var first = document.querySelector('[data-audience-tab][aria-current]') || tabs[0];
+    showAudience(audienceFromHash() || first.dataset.audienceTab);
     tabs.forEach(function (tab) {
       tab.addEventListener('click', function (event) {
         event.preventDefault();

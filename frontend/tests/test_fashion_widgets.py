@@ -295,9 +295,9 @@ class WidgetPageTests(unittest.TestCase):
         self.assertIn('Women’s Westernwear', page['_body'])
         self.assertIn('data-url="https://sat.net.in/fashion/westernwear/#pick-5550001"', page['_body'])
 
-    def test_production_category_settings_cover_kurtas_and_westernwear(self):
+    def test_production_category_settings_cover_kurtas_westernwear_and_footwear(self):
         configs = fashion.category_page_config(ROOT / 'src')
-        self.assertEqual(sorted(configs), ['westernwear', 'womens-kurtas'])
+        self.assertEqual(sorted(configs), ['footwear', 'westernwear', 'womens-kurtas'])
         self.assertEqual(configs['westernwear']['explore_label'], 'Explore Westernwear')
         self.assertEqual(fashion.validate_category_pages(fashion.read_widgets(ROOT / 'src'))[1], [])
 
@@ -331,6 +331,38 @@ class WidgetPageTests(unittest.TestCase):
         self.assertIn('<h2 class="nykaa-results-title">Men’s Westernwear</h2>', body)
         self.assertEqual(body.count('<h1>'), 1)
         self.assertLess(body.index('data-audience-tab="women"'), body.index('class="nykaa-product-shell"'))  # the toggle sits above every product
+
+    def test_page_opens_on_the_first_audience_that_has_products(self):
+        pages, _ = self.toggle_page([self.western('111', audience='men'), self.western('222', audience='men')])
+        body = pages[1]['_body']
+        self.assertIn('data-audience-tab="men" aria-current="true">Men <span>2</span>', body)
+        self.assertNotIn('data-audience-tab="women" aria-current', body)
+        pages, _ = self.toggle_page([self.western('111'), self.western('333', audience='men')])
+        self.assertIn('data-audience-tab="women" aria-current="true"', pages[1]['_body'])
+
+    def test_footwear_is_set_up_for_men_like_the_other_categories(self):
+        config = fashion.category_page_config(ROOT / 'src')['footwear']
+        self.assertTrue(config['audience_toggle'])
+        self.assertEqual(config['explore_label'], 'Explore Footwear')
+        self.assertEqual(fashion.EDIT_LABELS['footwear'], 'THE FOOTWEAR EDIT')
+        item = {**self.record('777', FIRST_URL.replace('28560370', '777')), 'category': 'footwear', 'audience': 'men'}
+        directory = tempfile.TemporaryDirectory()
+        self.addCleanup(directory.cleanup)
+        src = Path(directory.name)
+        (src / 'fashion').mkdir()
+        (src / 'fashion/catalog.json').write_text(json.dumps({'approved_image_hosts': [], 'approved_affiliate_hosts': [], 'products': []}))
+        data = fashion.read_widgets(ROOT / 'src')
+        data['widgets'] = [item]
+        (src / 'fashion/widgets.json').write_text(json.dumps(data))
+        pages, problems = fashion.pages(src, lambda *args: '', 'https://sat.net.in')
+        self.assertEqual((problems, [p['url'] for p in pages]), ([], ['/fashion/', '/fashion/footwear/']))
+        landing = pages[0]['_body'].split('id="footwear"')[1].split('id="active-sports"')[0]
+        self.assertIn('THE FOOTWEAR EDIT', landing)
+        self.assertIn('Explore Footwear', landing)
+        self.assertIn('fashion-widget-banner fashion-tint-footwear', landing)
+        body = pages[1]['_body']
+        self.assertIn('data-audience-tab="men" aria-current="true">Men <span>1</span>', body)
+        self.assertIn('Men’s Footwear', body)
 
     def test_empty_audience_shows_a_note_not_fake_products(self):
         pages, _ = self.toggle_page([self.western('111')])

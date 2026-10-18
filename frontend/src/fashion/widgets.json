@@ -1329,6 +1329,16 @@
       "main_heading": "Search results for Westernwear",
       "explore_label": "Explore Westernwear",
       "audience_toggle": true
+    },
+    {
+      "category": "footwear",
+      "h1": "Footwear",
+      "intro": "Comfort for every step.",
+      "meta_title": "Footwear from Nykaa Fashion",
+      "meta_description": "Browse footwear selected by SAT from Nykaa Fashion, for comfort in every step.",
+      "main_heading": "Search results for Footwear",
+      "explore_label": "Explore Footwear",
+      "audience_toggle": true
     }
   ]
 }

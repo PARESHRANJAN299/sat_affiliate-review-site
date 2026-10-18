@@ -159,6 +159,8 @@
 /* Retailer-powered collections: a SAT editorial banner, then a left-to-right rail of official Nykaa product widgets. Only the wrapper is styled; the iframe content is Nykaa's. */
 .fashion-widget-banner { margin: 0 0 20px; width: 100%; aspect-ratio: 21 / 8; }
 .fashion-widget-banner .fashion-art { left: 0; width: 100%; height: 100%; transform: none; object-fit: cover; object-position: 72% 12%; }
+/* Footwear banner: crop to the sneakers. */
+.fashion-widget-banner.fashion-tint-footwear .fashion-art { object-position: 50% 96%; }
 /* Westernwear banner: its two models side by side on the tinted ground. */
 .fashion-widget-banner.fashion-tint-westernwear .fashion-art { left: 42%; width: 28%; height: auto; transform: translateX(-50%); object-fit: fill; }
 .fashion-widget-banner.fashion-tint-westernwear .fashion-art + .fashion-art { left: 60%; }
@@ -202,7 +204,7 @@
 .nykaa-sortbar { position: fixed; z-index: 60; left: 50%; bottom: 16px; transform: translateX(-50%); display: flex; align-items: center; gap: 14px; padding: 8px 8px 8px 20px; border-radius: 999px; background: var(--f-ink); color: #fff; font-size: 13px; }
 .nykaa-sortbar button { min-height: 44px; padding: 8px 18px; border: 0; border-radius: 999px; background: #fff; color: var(--f-ink); font: inherit; font-weight: 600; cursor: pointer; }
 .nykaa-panel[hidden] { display: none; }
-.nykaa-panel + .nykaa-panel { margin-top: clamp(36px, 5vw, 64px); }
+.nykaa-panel:not([hidden]) + .nykaa-panel:not([hidden]) { margin-top: clamp(36px, 5vw, 64px); }
 .nykaa-audience-empty { margin-top: 4px; }
 @media (max-width: 719px) { .nykaa-audience { display: flex; } .nykaa-audience a { flex: 1; padding: 0 12px; } }
 .nykaa-results-title { margin: 0 0 16px; font: 400 clamp(1.5rem, 3vw, 2.2rem)/1.2 var(--font-display); letter-spacing: -.02em; }
@@ -221,6 +223,7 @@
 @media (max-width: 719px) {
   .fashion-widget-banner { aspect-ratio: 4 / 3; margin: 0 calc(-1 * var(--fpad)) 18px; width: auto; }
   .fashion-widget-banner .fashion-art { object-position: 80% 20%; }
+  .fashion-widget-banner.fashion-tint-footwear .fashion-art { object-position: 50% 94%; }
   .fashion-widget-banner.fashion-tint-westernwear .fashion-art { left: 30%; width: 50%; }
   .fashion-widget-banner.fashion-tint-westernwear .fashion-art + .fashion-art { left: 72%; }
   .fashion-widget-bar { flex-direction: column; align-items: flex-start; gap: 12px; }
