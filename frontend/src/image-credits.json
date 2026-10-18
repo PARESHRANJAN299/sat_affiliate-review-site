@@ -996,6 +996,23 @@
       "licence": "Original site artwork; no third-party image copied",
       "proof": "SVG source tracked at frontend/src/static/images/india-flag.svg",
       "status": "confirmed"
+    },
+    {
+      "file": "/images/fashion/sat-editorial-ivory.jpg",
+      "use": "Homepage Fashion Edit gateway and Fashion editorial introduction; illustrative, not a retailer product photo",
+      "platform": "ChatGPT image generation (OpenAI)",
+      "creator": "Generated for SAT in the website design conversation",
+      "ai_generated": true,
+      "source": "Original AI-generated editorial visual, created for the approved homepage mockup",
+      "licence": "OpenAI output-ownership provisions",
+      "licence_page": "https://openai.com/policies/terms-of-use",
+      "original_file": "exec-705596e2-39a4-46d8-8e7b-627eb7ab4bfc.png",
+      "date_added": "2026-10-18",
+      "proof": "Generated in this conversation on 2026-10-18; the owner approved the mockup and requested implementation with the same design. No Nykaa product imagery is used.",
+      "status": "confirmed",
+      "image_classification": "AI-generated illustrative imagery",
+      "confirmed_by": "SAT site owner",
+      "confirmed_on": "2026-10-18"
     }
   ],
   "governance": {

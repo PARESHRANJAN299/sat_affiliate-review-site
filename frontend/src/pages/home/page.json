@@ -4,7 +4,8 @@
   "title_full": true,
   "description": "Research-based buying guides for Indian shoppers: sports and fitness, watches, beauty, home and kitchen, and clothing. Clear pros, cons and who each pick suits.",
   "css": [
-    "buttons"
+    "buttons",
+    "fashion-gateway"
   ],
   "page_css": "home",
   "js": [

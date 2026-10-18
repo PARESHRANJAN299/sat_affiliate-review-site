@@ -26,6 +26,7 @@ ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT))
 import watches  # noqa: E402
 import listing  # noqa: E402
+import fashion  # noqa: E402
 import collection  # noqa: E402
 import cards as ui  # noqa: E402
 import watch_data as watch_data_mod  # noqa: E402
@@ -1641,6 +1642,9 @@ def load_pages():
     errors.extend(shop.errors)
     warnings.extend(shop.warnings)
     pages.extend(shop.pages())
+    fashion_pages, fashion_errors = fashion.pages(SRC, category_icon, CONFIG["site_url"])
+    errors.extend(fashion_errors)
+    pages.extend(fashion_pages)
     if not PREVIEWS:
         pages = [p for p in pages if not re.search(r"/(preview|review-template|listing-preview)/$", p["url"])]
     return pages
@@ -1752,7 +1756,7 @@ def build_page(meta, base, header_t, footer_t, year, articles):
         "language": CONFIG["language"], "locale": CONFIG["locale"],
         "title": esc(title), "description": esc(meta["description"]),
         "canonical": canonical,
-        "canonical_tag": "" if meta.get("noindex") else f'<link rel="canonical" href="{canonical}">\n',
+        "canonical_tag": "" if meta.get("noindex") and not meta.get("canonical_always") else f'<link rel="canonical" href="{canonical}">\n',
         "og_url_tag": "" if meta.get("noindex") else f'<meta property="og:url" content="{canonical}">\n',
         "verification_tag": (f'<meta name="google-site-verification" content="{esc(CONFIG["google_site_verification"])}">\n'
                              if CONFIG.get("google_site_verification") else ""),
