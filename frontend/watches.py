@@ -30,6 +30,10 @@ def esc(value):
 
 # ---------- artwork (inline SVG, no photos) ----------
 
+ART_FILES = {}   # name -> svg text: each card illustration is written once to assets/art/<name>.svg and cached for a year, instead of ~5.9 KB of inline markup per card
+
+
+
 def watch_art(css_class="watch-art"):
     ticks = []
     for i in range(12):
@@ -258,6 +262,18 @@ class Watches:
         b = [int(other[k:k + 2], 16) for k in (1, 3, 5)]
         return "#" + "".join(f"{round(x + (y - x) * t):02x}" for x, y in zip(a, b))
 
+    def card_art(self, p):
+        """The card illustration (same drawing as dial_art) served as a small immutable SVG file and lazy-loaded, so a page of 111 cards no longer carries
+        111 inline drawings (about 650 KB and 15,000 DOM nodes). Colour ids are normalised so identical colourways share one file."""
+        svg = self.dial_art(p)
+        m = re.search(r'id="[a-z]([0-9a-f]{8})"', svg)
+        if m:
+            svg = svg.replace(m.group(1), "00000000")
+        svg = svg.replace('<svg class="dial-art" viewBox="0 20 140 150" aria-hidden="true" focusable="false">', '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 20 140 150" width="140" height="150">', 1)
+        name = hashlib.sha1(svg.encode("utf-8")).hexdigest()[:12]
+        ART_FILES[name] = svg
+        return f'<img class="dial-art" src="/assets/art/{name}.svg" alt="" width="140" height="150" loading="lazy" decoding="async">'
+
     def dial_art(self, p):
         """A watch drawn from what the listing states: dial colour, strap colour and material (leather stitching or metal links), case metal, case shape and size,
         chronograph sub-dials, date window. Colours that are not stated are drawn in a neutral tone, never guessed. It is an illustration, not a photograph."""
@@ -412,7 +428,7 @@ f'<linearGradient id="g{uid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-
         if p.get("image"):
             media = f'<a class="watch-media" href="{esc(href)}" tabindex="-1" aria-hidden="true">{self.media(p)}</a>'
         else:
-            media = f'<a class="watch-media watch-tile" href="{esc(href)}" tabindex="-1" aria-hidden="true">{self.dial_art(p)}</a>'
+            media = f'<a class="watch-media watch-tile" href="{esc(href)}" tabindex="-1" aria-hidden="true">{self.card_art(p)}</a>'
         badge_key = (p.get("editorial_labels") or [""])[0]
         badge = f'<span class="watch-badge">{esc(watch_data.EDITORIAL_LABELS[badge_key])}</span>' if badge_key in watch_data.EDITORIAL_LABELS else ""
         fav = (f'<button type="button" class="watch-fav" data-fav="{esc(p["id"])}" aria-pressed="false" aria-label="Save {esc(p["model"])}">'

@@ -1930,6 +1930,15 @@ def write_robots():
     (DIST / "robots.txt").write_text(f"User-agent: *\nAllow: /\n\nSitemap: {site_url}/sitemap.xml\n", encoding="utf-8")
 
 
+def write_art_files():
+    """Card illustrations (watches.ART_FILES) are written once each under assets/art/, served with the immutable /assets/* cache header."""
+    import watches as _w
+    art = DIST / "assets" / "art"
+    art.mkdir(parents=True, exist_ok=True)
+    for name, svg in sorted(_w.ART_FILES.items()):
+        (art / f"{name}.svg").write_text(svg, encoding="utf-8")
+
+
 def write_headers():
     (DIST / "_headers").write_text(
         "/assets/*\n  Cache-Control: public, max-age=31536000, immutable\n\n"
@@ -2025,6 +2034,7 @@ def build():
     base_redirects = redirects.read_text(encoding="utf-8").rstrip("\n").splitlines() if redirects.exists() else []
     known = {line.split()[0] for line in base_redirects if line.strip()}
     redirects.write_text("\n".join(base_redirects + [e for e in extra if e.split()[0] not in known]) + "\n", encoding="utf-8")
+    write_art_files()
     write_sitemap(pages)
     write_robots()
     write_headers()
