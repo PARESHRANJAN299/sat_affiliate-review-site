@@ -24,7 +24,7 @@ The mobile detail page has a large image, optional thumbnails, supplied facts, s
 
 ## Landing page structure and imagery (2026-10-18)
 
-- Order: hero, Discover Your Style (asymmetric mosaic on desktop, swipe cards on mobile), six collection sections, Featured Brands, editorial banner, trust strip with the temporary affiliate disclosure, then the sitewide footer.
+- Order: Discover Your Style (page heading) (asymmetric mosaic on desktop, swipe cards on mobile), six collection sections, Featured Brands, editorial banner, trust strip, then the sitewide footer.
 - Each collection in `fashion.SECTIONS` carries a layout (`feature`, `stagger`, `warm`, `rail`, `energetic`, `luxe`) that `render_products()` turns into a different composition. Every layout works with one product or many.
 - SAT editorial artwork: `fashion.ART` maps each collection to an owner-supplied model cutout in `/images/fashion/models/` (1122px and 640px WebP). Bags uses original SVG art in `/images/fashion/editorial/`. These are SAT editorial images, never retailer product photos, and are recorded as `needs-confirmation` in `src/image-credits.json` until the owner records their provenance.
 - A category tile uses the first approved product photo for that collection when one exists; otherwise it uses the editorial artwork.
@@ -32,4 +32,4 @@ The mobile detail page has a large image, optional thumbnails, supplied facts, s
 - Featured Brands is derived from product data (`get_brands()`); with no data it shows `BRANDS_EMPTY_NOTE`. Brand pages are not generated.
 - Image pipeline: remote images are only used from the exact hostnames in `approved_image_hosts`, which is empty until the permitted source is confirmed.
 - Accessors: `get_products`, `get_product_by_slug`, `get_products_by_category`, `get_products_by_brand`, `get_featured_products`, `get_related_products`, `get_brands`.
-- TEMPORARY WORDING: `SITE_AFFILIATE_NOTE` (landing page) and `AFFILIATE_NOTE` (product pages) are placeholders, marked `data-disclosure="temporary"`. Replace them when the final Nykaa-approved disclosure is confirmed.
+- The landing page carries no affiliate sentence of its own (the sitewide footer disclosure covers it). TEMPORARY WORDING: `AFFILIATE_NOTE` on product pages is a placeholder, marked `data-disclosure="temporary"`; replace it when the final Nykaa-approved disclosure is confirmed.

@@ -29,8 +29,6 @@ ART_ALT = {'purple-saree': 'Editorial image: a woman seated on a stool in a purp
            'white-tee-b': 'Editorial image: a woman sitting cross-legged in a white tee, blush joggers and white trainers.'}
 EMPTY_NOTE = 'Products will appear here once approved Nykaa catalogue items are added.'
 BRANDS_EMPTY_NOTE = 'Brands will appear here once approved Nykaa catalogue items are added.'
-# TEMPORARY: site-level disclosure for /fashion/, kept until the final Nykaa-approved wording is confirmed.
-SITE_AFFILIATE_NOTE = 'This site contains affiliate links. We may earn a commission at no extra cost to you.'
 
 
 def art_picture(slug, sizes, alt=False, stem=None, priority=False):
@@ -268,7 +266,7 @@ def page(src, icon):
         if matching:
             visual = f'<img class="fashion-photo" src="{esc(matching[0]["image_url"])}" alt="" loading="lazy" decoding="async" width="800" height="1000">'
         else:
-            visual = art_picture(slug, '(min-width: 900px) 34vw, 62vw')
+            visual = art_picture(slug, '(min-width: 900px) 34vw, 62vw', priority=(index == 1))
         tiles.append(f'<a class="fashion-category fashion-category-{slug} fashion-tint-{slug}" href="#{slug}">{visual}'
                      f'<span class="fashion-category-label"><strong>{esc(title)}</strong><em>{esc(description)}</em><span class="fashion-category-arrow" aria-hidden="true">→</span></span></a>')
         contents = render_products(layout, matching) if matching else render_empty(slug, tips, layout, icon)
@@ -283,13 +281,9 @@ def page(src, icon):
               '<a class="fashion-banner-cta" href="#fashion-categories">Explore Looks <span aria-hidden="true">→</span></a></div>'
               f'<figure class="fashion-banner-art"><picture><source media="(max-width: 719px)" srcset="{MODEL_DIR}white-tee-b-640.webp"><img class="fashion-art" src="{MODEL_DIR}orange-dress-640.webp" srcset="{MODEL_DIR}orange-dress-640.webp 640w, {MODEL_DIR}orange-dress-1122.webp 1122w" sizes="(min-width: 900px) 40vw, 100vw" alt="{esc(ART_ALT["orange-dress"])}" width="1122" height="1402" loading="lazy" decoding="async"></picture></figure></section>')
     trust = ('<section class="fashion-trust" aria-label="Why SAT"><ul>'
-             f'<li>{TRUST_ICONS[0]}<span>A little research.<br>A better choice.</span></li><li>{TRUST_ICONS[1]}<span>Curated from trusted retailers.</span></li><li>{TRUST_ICONS[2]}<span>Styles for every part of your life.</span></li></ul>'
-             f'<p class="fashion-disclosure" data-disclosure="temporary">{SITE_AFFILIATE_NOTE}</p></section>')
-    body = ('<div class="container fashion-page"><header class="fashion-hero"><div class="fashion-hero-copy"><p class="sat-fashion-eyebrow">THE SAT FASHION EDIT <span aria-hidden="true"></span></p>'
-            '<h1>Curated style,<br><em>thoughtfully selected.</em></h1><p class="fashion-hero-lede">Explore fashion picks across Women’s Kurtas, Westernwear, Indianwear, Footwear, Active &amp; Sports and Bags.</p>'
-            '<a class="sat-fashion-cta" href="#fashion-categories">Explore the Fashion Edit <span aria-hidden="true">→</span></a></div>'
-            f'<figure class="fashion-hero-art">{art_picture("womens-kurtas", "(min-width: 900px) 50vw, 100vw", alt=True, priority=True)}</figure></header>'
-            '<section class="fashion-discover" id="fashion-categories" aria-labelledby="fashion-discover-title"><h2 id="fashion-discover-title">Discover Your Style</h2>'
+             f'<li>{TRUST_ICONS[0]}<span>A little research.<br>A better choice.</span></li><li>{TRUST_ICONS[1]}<span>Curated from trusted retailers.</span></li><li>{TRUST_ICONS[2]}<span>Styles for every part of your life.</span></li></ul></section>')
+    body = ('<div class="container fashion-page">'
+            '<section class="fashion-discover" id="fashion-categories" aria-labelledby="fashion-discover-title"><h1 id="fashion-discover-title">Discover Your Style</h1>'
             '<nav class="fashion-categories" aria-label="Fashion collections">' + ''.join(tiles) + '</nav></section>'
             + ''.join(sections) + brands_html + banner + trust + '</div>')
     return {'url': '/fashion/', 'title': 'The SAT Fashion Edit', 'description': 'Explore women’s kurtas, westernwear, Indianwear, footwear, active and sportswear, and bags with the SAT Fashion Edit.',

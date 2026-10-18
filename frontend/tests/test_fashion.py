@@ -139,12 +139,15 @@ class FashionTests(unittest.TestCase):
     def test_homepage_journey_order_and_approved_copy(self):
         self.save()
         body = fashion.page(self.src, lambda *args: '')[0]['_body']
-        order = ['THE SAT FASHION EDIT', 'Curated style,', 'Explore the Fashion Edit', 'Discover Your Style', 'id="womens-kurtas"', 'id="bags"',
-                 'Featured Brands', 'Everyday fashion', 'Style. Confidence. You.', 'Explore Looks', 'A little research.', fashion.SITE_AFFILIATE_NOTE]
+        order = ['Discover Your Style', 'id="womens-kurtas"', 'id="bags"',
+                 'Featured Brands', 'Everyday fashion', 'Style. Confidence. You.', 'Explore Looks', 'A little research.', 'Styles for every part of your life.']
         positions = [body.index(text) for text in order]
         self.assertEqual(positions, sorted(positions))
         self.assertIn(fashion.BRANDS_EMPTY_NOTE, body)
-        self.assertEqual(body.count('href="#fashion-categories"'), 2 + len(fashion.SECTIONS))  # hero CTA, banner CTA, one back link per section
+        self.assertEqual(body.count('href="#fashion-categories"'), 1 + len(fashion.SECTIONS))  # banner CTA, one back link per section
+        self.assertEqual(body.count('<h1'), 1)
+        for removed in ('fashion-hero', 'THE SAT FASHION EDIT', 'Explore the Fashion Edit'):
+            self.assertNotIn(removed, body)
 
     def test_featured_brands_are_derived_from_products(self):
         self.data['products'] = [self.make('x-1', 'bags', 'Zed'), self.make('x-2', 'bags', 'Zed'), self.make('y-1', 'footwear', 'Yan')]
@@ -153,13 +156,13 @@ class FashionTests(unittest.TestCase):
         self.assertIn('<strong>Zed</strong><span>2 styles</span>', page['_body'])
         self.assertIn('<strong>Yan</strong><span>1 style</span>', page['_body'])
 
-    def test_temporary_disclosures_are_marked(self):
+    def test_landing_has_no_affiliate_sentence_and_product_page_keeps_temporary_note(self):
         self.data['products'] = [self.product]
         self.save()
         landing, _ = fashion.page(self.src, lambda *args: '')
         detail = fashion.product_page(self.product, [self.product], 'https://sat.net.in')
-        self.assertIn('data-disclosure="temporary"', landing['_body'])
-        self.assertIn(fashion.SITE_AFFILIATE_NOTE, landing['_body'])
+        self.assertNotIn('affiliate links', landing['_body'])
+        self.assertNotIn('data-disclosure', landing['_body'])
         self.assertIn('data-disclosure="temporary"', detail['_body'])
         self.assertIn(fashion.AFFILIATE_NOTE, detail['_body'])
 
