@@ -29,7 +29,6 @@ ART = {'womens-kurtas': ('ivory-kurta',), 'westernwear': ('pink-dress', 'orange-
 ART_FILES = {'ivory-kurta': ('jpg', 640, 836, 1024), 'ivory-banner': ('jpg', 828, 1536, 832)}
 # Wide banner photograph used above a collection's widget rail.
 BANNER_STEMS = {'womens-kurtas': 'ivory-banner'}
-SHARE_TEXT = '{title}: a pick from the SAT Fashion Edit'
 SITE_URL = 'https://sat.net.in'
 ART_ALT = {'ivory-kurta': 'Editorial image: a woman in an ivory floral kurta set with a dupatta, seated on sandstone steps.',
            'purple-saree': 'Editorial image: a woman seated on a stool in a purple saree with an embroidered blouse.',
@@ -40,7 +39,8 @@ ART_ALT = {'ivory-kurta': 'Editorial image: a woman in an ivory floral kurta set
 # Easy-to-replace wording shown beside the first Nykaa widgets.
 WIDGET_AFFILIATE_NOTE = 'This section contains affiliate links. SAT may earn a commission from qualifying purchases at no extra cost to you.'
 EDIT_LABELS = {'womens-kurtas': 'THE KURTA EDIT'}
-WIDGET_KEYS = {'id', 'product_id', 'category', 'source', 'widget_url', 'width', 'height', 'active', 'featured'}
+WIDGET_KEYS = {'id', 'product_id', 'category', 'source', 'widget_url', 'width', 'height', 'active', 'featured', 'collection', 'affiliate_url'}
+COLLECTION_KEYS = {'id', 'category', 'title', 'suggestions'}
 WIDGET_URL_CHARS = re.compile(r'[A-Za-z0-9._~:/?&=%+-]+')
 EMPTY_NOTE = 'Products will appear here once approved Nykaa catalogue items are added.'
 BRANDS_EMPTY_NOTE = 'Brands will appear here once approved Nykaa catalogue items are added.'
@@ -158,6 +158,34 @@ def read_widgets(src):
     return json.loads(path.read_text()) if path.is_file() else {'widgets': []}
 
 
+def validate_collections(data):
+    """Named scroll rails inside a category (for example a search-results group), each with an optional list of search suggestions."""
+    items = data.get('collections', [])
+    if not isinstance(items, list):
+        return [], ['fashion widgets: collections must be a list']
+    out, problems, ids = [], [], set()
+    for entry in items:
+        before = len(problems)
+        if not isinstance(entry, dict) or set(entry) - COLLECTION_KEYS:
+            problems.append('fashion widgets: each collection must be an object with only id, category, title and suggestions')
+            continue
+        cid = entry.get('id', '')
+        if not isinstance(cid, str) or not re.fullmatch(r'[a-z0-9]+(?:-[a-z0-9]+)*', cid) or cid in ids:
+            problems.append(f'fashion collection {cid!r}: id must be unique lowercase words/numbers')
+        ids.add(str(cid))
+        category = category_slug(entry.get('category'))
+        if not category:
+            problems.append(f'fashion collection {cid}: unknown category')
+        title, suggestions = entry.get('title'), entry.get('suggestions', [])
+        if not isinstance(title, str) or not title.strip() or len(title) > 120:
+            problems.append(f'fashion collection {cid}: a title of up to 120 characters is required')
+        if not isinstance(suggestions, list) or len(suggestions) > 12 or any(not isinstance(v, str) or not v.strip() or len(v) > 120 for v in suggestions):
+            problems.append(f'fashion collection {cid}: suggestions must be up to 12 short texts')
+        if len(problems) == before:
+            out.append({'id': cid, 'category': category, 'title': title.strip(), 'suggestions': [v.strip() for v in suggestions]})
+    return out, problems
+
+
 def validate_widgets(data):
     """Validate official Nykaa affiliate widget records. Only an exact, allowlisted widget URL is accepted, never HTML."""
     if not isinstance(data, dict) or not isinstance(data.get('widgets'), list):
@@ -165,7 +193,12 @@ def validate_widgets(data):
     host, path, affiliate = data.get('allowed_widget_host'), data.get('allowed_widget_path'), data.get('allowed_affiliate_id')
     if data['widgets'] and not all(isinstance(v, str) and v for v in (host, path, affiliate)):
         return [], ['fashion widgets: allowed_widget_host, allowed_widget_path and allowed_affiliate_id are required']
-    problems, active, ids = [], [], set()
+    collections, problems = validate_collections(data)
+    link_hosts = data.get('allowed_product_link_hosts', [])
+    if not isinstance(link_hosts, list) or any(not isinstance(h, str) or not re.fullmatch(r'[a-z0-9.-]+', h) for h in link_hosts):
+        return [], ['fashion widgets: allowed_product_link_hosts must be exact lowercase hostnames']
+    known = {c['id']: c['category'] for c in collections}
+    active, ids = [], set()
     for record in data['widgets']:
         before = len(problems)
         if not isinstance(record, dict):
@@ -188,6 +221,12 @@ def validate_widgets(data):
         widget['category'] = category_slug(widget.get('category'))
         if not widget['category']:
             problems.append(f'fashion widget {wid}: unknown category')
+        link = widget.get('affiliate_url')
+        if link is not None and not approved_url(link, link_hosts):
+            problems.append(f'fashion widget {wid}: affiliate_url requires https on an approved Nykaa product-link host (allowed_product_link_hosts)')
+        group = widget.get('collection')
+        if group is not None and (not isinstance(group, str) or known.get(group) != widget['category']):
+            problems.append(f'fashion widget {wid}: collection must be a defined collection of the same category')
         url = widget.get('widget_url')
         if not isinstance(url, str) or not WIDGET_URL_CHARS.fullmatch(url):
             problems.append(f'fashion widget {wid}: widget_url has unsupported characters')
@@ -204,7 +243,7 @@ def validate_widgets(data):
                 problems.append(f'fashion widget {wid}: {key} must be a whole number from 100 to 600')
         if len(problems) == before:
             active.append(widget)
-    return sorted(active, key=lambda item: (not item['featured'], item['id'])), problems
+    return sorted(active, key=lambda item: not item['featured']), problems  # stable: featured first, otherwise the order in widgets.json
 
 
 def widgets(src):
@@ -212,6 +251,13 @@ def widgets(src):
         return validate_widgets(read_widgets(src))
     except (OSError, ValueError) as exc:
         return [], [f'fashion widgets: cannot read widget data ({exc})']
+
+
+def widget_collections(src):
+    try:
+        return validate_collections(read_widgets(src))[0]
+    except (OSError, ValueError):
+        return []
 
 
 def get_widgets_by_category(items, category):
@@ -224,27 +270,52 @@ def widget_id(widget):
 
 def widget_shell(widget, title='', site_url=SITE_URL):
     """SAT wrapper around the official Nykaa iframe. The iframe URL is exactly the stored, validated widget_url; its content stays Nykaa's.
-    Share links point to this SAT page and card (an anchor), never to the Nykaa affiliate link."""
+    The optional 'Get it on Nykaa' button uses the owner-supplied affiliate product link unchanged. Share buttons use this SAT page and card (an anchor),
+    never the Nykaa affiliate link."""
     link = site_url.rstrip('/') + '/fashion/#' + widget_id(widget)
-    whatsapp = 'https://wa.me/?text=' + quote(SHARE_TEXT.format(title=title) + '\n' + link, safe='')
+    get = ''
+    if widget.get('affiliate_url'):
+        get = (f'<a class="nykaa-get" href="{esc(widget["affiliate_url"])}" target="_blank" rel="sponsored nofollow noopener">Get it on Nykaa '
+               '<span aria-hidden="true">→</span><span class="visually-hidden"> (opens in a new tab)</span></a>')
     return (f'<article class="nykaa-product-shell" id="{widget_id(widget)}" data-product-id="{esc(widget["product_id"])}">'
             f'<iframe src="{esc(widget["widget_url"])}" title="Nykaa Fashion product" width="{widget["width"]}" height="{widget["height"]}" loading="lazy" '
-            f'style="height:{widget["height"]}px;width:{widget["width"]}px;overflow:hidden;"></iframe>'
+            f'style="height:{widget["height"]}px;width:{widget["width"]}px;overflow:hidden;"></iframe>{get}'
             f'<div class="nykaa-share" role="group" aria-label="Share this pick">'
-            f'<a href="{esc(whatsapp)}" target="_blank" rel="noopener">WhatsApp</a>'
             f'<button type="button" data-copy-pick data-url="{esc(link)}" hidden>Copy link</button>'
             f'<button type="button" data-share-pick data-url="{esc(link)}" data-title="{esc(title)}" hidden>Share</button></div></article>')
 
 
-def render_widgets(slug, items, title='', site_url=SITE_URL):
-    """A wide SAT editorial banner, the replaceable affiliate note, and a left-to-right rail of official Nykaa widgets (any number)."""
+def widget_controls():
+    return ('<div class="nykaa-controls" data-rail-controls hidden><button type="button" data-rail-prev aria-label="Scroll picks left">←</button>'
+            '<button type="button" data-rail-next aria-label="Scroll picks right">→</button></div>')
+
+
+def widget_group(head, items, label, title, site_url, extra=''):
+    return (f'<div class="nykaa-group" data-rail-group>{head}{extra}<div class="nykaa-rail" data-widget-rail tabindex="0" role="region" aria-label="{esc(label)}">'
+            + ''.join(widget_shell(item, title, site_url) for item in items) + '</div><p class="visually-hidden" role="status" data-widget-status></p></div>')
+
+
+def render_widgets(slug, items, title='', site_url=SITE_URL, collections=()):
+    """A wide SAT editorial banner, the replaceable affiliate note, then one left-to-right rail of official Nykaa widgets
+    (any number) plus an optional rail per named collection, each with its own title and search suggestions."""
     banner = f'<figure class="fashion-widget-banner fashion-tint-{slug}">{art_picture(slug, "(min-width: 900px) 1232px, 100vw", stem=BANNER_STEMS.get(slug))}</figure>'
-    return (f'{banner}<div class="fashion-widget-bar"><p class="fashion-widget-note" data-disclosure="temporary">{esc(WIDGET_AFFILIATE_NOTE)}</p>'
-            f'<div class="nykaa-controls" data-rail-controls hidden><button type="button" data-rail-prev aria-label="Scroll picks left">←</button>'
-            f'<button type="button" data-rail-next aria-label="Scroll picks right">→</button></div></div>'
-            f'<div class="nykaa-rail" data-widget-rail tabindex="0" role="region" aria-label="{esc(title)} picks from Nykaa Fashion">'
-            + ''.join(widget_shell(item, title, site_url) for item in items) + '</div>'
-            '<p class="visually-hidden" role="status" data-widget-status></p>')
+    note = f'<p class="fashion-widget-note" data-disclosure="temporary">{esc(WIDGET_AFFILIATE_NOTE)}</p>'
+    main = [item for item in items if not item.get('collection')]
+    groups = []
+    if main:
+        groups.append(widget_group(f'<div class="fashion-widget-bar">{note}{widget_controls()}</div>', main, f'{title} picks from Nykaa Fashion', title, site_url))
+        note = ''
+    for collection in collections:
+        members = [item for item in items if item.get('collection') == collection['id']]
+        if not members:
+            continue
+        suggestions = ''
+        if collection['suggestions']:
+            suggestions = ('<p class="nykaa-suggestions"><span>Suggestions:</span> ' + '<span class="nykaa-sep" aria-hidden="true">|</span>'.join(f'<span>{esc(text)}</span>' for text in collection['suggestions']) + '</p>')
+        head = f'{note}<div class="fashion-widget-bar nykaa-collection-head"><h3>{esc(collection["title"])}</h3>{widget_controls()}</div>'
+        note = ''
+        groups.append(widget_group(head, members, f'{collection["title"]} from Nykaa Fashion', title, site_url, suggestions))
+    return banner + ''.join(groups)
 
 
 def product_url(product):
@@ -381,6 +452,7 @@ TRUST_ICONS = (
 def page(src, icon, site_url=SITE_URL):
     products, problems = catalog(src)
     live_widgets, widget_problems = widgets(src)
+    live_collections = widget_collections(src)
     problems = problems + widget_problems
     tiles, sections = [], []
     for index, (slug, title, art, description, tips, layout) in enumerate(SECTIONS, 1):
@@ -393,7 +465,7 @@ def page(src, icon, site_url=SITE_URL):
                      f'<span class="fashion-category-label"><strong>{esc(title)}</strong><em>{esc(description)}</em><span class="fashion-category-arrow" aria-hidden="true">→</span></span></a>')
         here = get_widgets_by_category(live_widgets, slug)
         if here:
-            contents = render_widgets(slug, here, title, site_url) + (render_products(layout, matching) if matching else '')
+            contents = render_widgets(slug, here, title, site_url, [c for c in live_collections if c['category'] == slug]) + (render_products(layout, matching) if matching else '')
         else:
             contents = render_products(layout, matching) if matching else render_empty(slug, tips, layout, icon)
         label = EDIT_LABELS.get(slug)

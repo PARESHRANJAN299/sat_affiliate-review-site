@@ -3,6 +3,7 @@
   "allowed_widget_host": "affiliate.nykaa.com",
   "allowed_widget_path": "/v2/get_product_widget",
   "allowed_affiliate_id": "PARESHRA-445235",
+  "allowed_product_link_hosts": [],
   "widgets": [
     {
       "id": "nykaa-28560370",
@@ -36,6 +37,67 @@
       "height": 360,
       "active": true,
       "featured": false
+    },
+    {
+      "id": "nykaa-27452179",
+      "product_id": "27452179",
+      "category": "womens-kurtas",
+      "source": "nykaa-fashion",
+      "widget_url": "https://affiliate.nykaa.com/v2/get_product_widget?ad_id=6ad486d75593a5b8d678fb68&add_resources=True&affiliate_id=PARESHRA-445235&product_id=27452179&store=nykaa_fashion&text_color=000000&theme_variation=TEXT_AND_IMAGE&theme=affiliate&aff_link_type=affiliate%3Anap_dashboard%3Aproduct&hlp=hlpa",
+      "width": 280,
+      "height": 360,
+      "active": true,
+      "featured": false
+    },
+    {
+      "id": "nykaa-20894232",
+      "product_id": "20894232",
+      "category": "womens-kurtas",
+      "source": "nykaa-fashion",
+      "widget_url": "https://affiliate.nykaa.com/v2/get_product_widget?ad_id=6ad4871267cca929453d37e9&add_resources=True&affiliate_id=PARESHRA-445235&product_id=20894232&store=nykaa_fashion&text_color=000000&theme_variation=TEXT_AND_IMAGE&theme=affiliate&aff_link_type=affiliate%3Anap_dashboard%3Aproduct&hlp=hlpa",
+      "width": 280,
+      "height": 360,
+      "active": true,
+      "featured": false
+    },
+    {
+      "id": "nykaa-27421822",
+      "product_id": "27421822",
+      "category": "womens-kurtas",
+      "source": "nykaa-fashion",
+      "widget_url": "https://affiliate.nykaa.com/v2/get_product_widget?ad_id=6ad487c71bde18e19f3d2815&add_resources=True&affiliate_id=PARESHRA-445235&product_id=27421822&store=nykaa_fashion&text_color=000000&theme_variation=TEXT_AND_IMAGE&theme=affiliate&aff_link_type=affiliate%3Anap_dashboard%3Aproduct&hlp=hlpa",
+      "width": 280,
+      "height": 360,
+      "active": true,
+      "featured": false,
+      "collection": "kurta-sets-search"
+    },
+    {
+      "id": "nykaa-21706664",
+      "product_id": "21706664",
+      "category": "womens-kurtas",
+      "source": "nykaa-fashion",
+      "widget_url": "https://affiliate.nykaa.com/v2/get_product_widget?ad_id=6ad487f9ff1995200437b20d&add_resources=True&affiliate_id=PARESHRA-445235&product_id=21706664&store=nykaa_fashion&text_color=000000&theme_variation=TEXT_AND_IMAGE&theme=affiliate&aff_link_type=affiliate%3Anap_dashboard%3Aproduct&hlp=hlpa",
+      "width": 280,
+      "height": 360,
+      "active": true,
+      "featured": false,
+      "collection": "kurta-sets-search"
+    }
+  ],
+  "collections": [
+    {
+      "id": "kurta-sets-search",
+      "category": "womens-kurtas",
+      "title": "Search results for Women’s kurtas set",
+      "suggestions": [
+        "Pure cotton kurtas set for women",
+        "Pure cotton kurta set for women",
+        "Pure cotton kurta sets for women",
+        "Pure cotton kurtas sets for women",
+        "Pure cotton kurti set for women",
+        "Indian kurta set for women pure cotton"
+      ]
     }
   ]
 }

@@ -5,7 +5,7 @@
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   rails.forEach(function (rail) {
-    var section = rail.closest('section') || document;
+    var section = rail.closest('[data-rail-group]') || rail.closest('section') || document;
     var controls = section.querySelector('[data-rail-controls]');
     var prev = section.querySelector('[data-rail-prev]');
     var next = section.querySelector('[data-rail-next]');
