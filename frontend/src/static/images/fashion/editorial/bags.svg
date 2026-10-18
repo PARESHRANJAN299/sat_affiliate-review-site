@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1500" width="1200" height="1500" role="img" aria-label="Editorial illustration of a tan leather handbag">
+<defs>
+<linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#e3d6c1"/><stop offset="1" stop-color="#c9b79c"/></linearGradient>
+<linearGradient id="leather" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#b9824a"/><stop offset="1" stop-color="#8f5d30"/></linearGradient>
+<linearGradient id="flap" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c58d55"/><stop offset="1" stop-color="#a87241"/></linearGradient>
+</defs>
+<rect width="1200" height="1500" fill="url(#bg)"/>
+<circle cx="600" cy="640" r="430" fill="#efe5d4" fill-opacity=".55"/>
+<ellipse cx="600" cy="1190" rx="360" ry="34" fill="#4a3320" fill-opacity=".22"/>
+<path d="M400 640c0-190 90-300 200-300s200 110 200 300" fill="none" stroke="#7d4f27" stroke-width="22" stroke-linecap="round"/>
+<path d="M330 660h540l70 500c4 28-16 46-44 46H304c-28 0-48-18-44-46z" fill="url(#leather)"/>
+<path d="M330 660h540l22 150H308z" fill="url(#flap)"/>
+<path d="M322 722l-8 0M878 722l8 0" stroke="#7d4f27" stroke-width="2"/>
+<path d="M340 700h520" stroke="#e8c79a" stroke-width="3" stroke-dasharray="14 12" stroke-opacity=".8" fill="none"/>
+<rect x="575" y="772" width="50" height="70" rx="8" fill="#d9b36a"/>
+<rect x="587" y="784" width="26" height="46" rx="5" fill="#b8903f"/>
+<path d="M330 660l-6 46M870 660l6 46" stroke="#7d4f27" stroke-width="3" fill="none"/>
+</svg>
