@@ -169,9 +169,9 @@ class HubExtras(unittest.TestCase):
     def test_no_card_contains_nested_or_repeated_links(self):
         import re
         body = self.shop.landing()["_body"]
-        for block in re.findall(r'<a class="card [^"]*(?:lx-intent|lx-budget|lx-mcard|col-card)[^"]*".*?</a>', body, flags=re.S):
+        for block in re.findall(r'<a class="card [^"]*(?:lx-budget|lx-mcard|col-card)[^"]*".*?</a>', body, flags=re.S):
             self.assertEqual(block.count("<a "), 1, block[:80])           # one card = one anchor
-        for section in ("lx-intent-row", "lx-budget-row"):
+        for section in ("lx-budget-row",):
             hrefs = re.findall(r'<a class="card [^"]*lx-(?:intent|budget)[^"]*" href="([^"]+)"', body.split(section)[1].split("</ul>")[0])
             self.assertEqual(len(hrefs), len(set(h + str(i) for i, h in enumerate(hrefs))))
 
@@ -407,33 +407,6 @@ class PremiumCards(unittest.TestCase):
         for g in ("men", "women"):
             n = sum(1 for p in self.shop.products if g in p["gender"])
             self.assertIn(f'<small class="gp-c">{n} watches</small>', body)
-
-    def test_intent_cards_need_approval_and_a_matching_watch(self):
-        import re
-        shop = self.shop
-        saved = shop.settings.get("intent_cards")
-        try:
-            shop.settings["intent_cards"] = [
-                {"title": "Hidden", "text": "x", "approved": False, "filter": {"group": "budget", "value": "under-3000"}},
-                {"title": "No filter", "text": "x", "approved": True, "filter": None},
-                {"title": "No match", "text": "x", "approved": True, "filter": {"group": "style", "value": "no-such-style"}},
-                {"title": "Shown", "text": "A line", "approved": True, "filter": {"group": "budget", "value": "under-3000"}}]
-            html = shop.intent_cards(fill=False)
-            self.assertEqual(html, "")                  # one real card is not enough for a rail
-            html = shop.intent_cards()                  # data-backed cards top the rail up
-            self.assertIn("Shown", html)
-            for name in ("Hidden", "No filter", "No match"):
-                self.assertNotIn(name, html)
-            self.assertLessEqual(len(re.findall(r'class="card [^"]*lx-intent"', html)), 4)
-            self.assertGreaterEqual(len(re.findall(r'class="card [^"]*lx-intent"', html)), 2)
-            shop.settings["intent_cards"] = []
-            self.assertEqual(shop.intent_cards(fill=False), "")
-            html2 = shop.intent_cards()
-            self.assertIn("watches with a", html2)
-            self.assertNotIn("chronograph", html2.lower())      # editorial fields never feed a data-backed card
-            self.assertNotIn("lx-i-art", html2)                 # compact cards, no large product pictures
-        finally:
-            shop.settings["intent_cards"] = saved
 
     def test_popular_collections_come_from_published_pages_and_hide_under_two(self):
         import re
@@ -1012,6 +985,29 @@ class HubBrandSearches(unittest.TestCase):
         for href, rest, label in self.tiles(body):
             if label == "MICHAEL KORS":
                 self.assertIn("k=Michael+Kors+watches", html.unescape(href))
+
+
+class IntentSectionRemoved(unittest.TestCase):
+    """The 'What are you looking for?' section was removed from /watches/ on the owner's request."""
+    def test_the_section_and_its_hooks_are_gone(self):
+        shop = watches.Watches(build.SRC, build.CONFIG)
+        body = shop.landing()["_body"]
+        for gone in ("What are you looking for", "lx-intents", "lx-intent", "data-intent", "lx-i-ico"):
+            self.assertNotIn(gone, body)
+        self.assertFalse(hasattr(shop, "intent_cards"))
+        self.assertNotIn("intent_cards", shop.settings)
+        js = (build.SRC / "js" / "components" / "collection.js").read_text(encoding="utf-8")
+        self.assertNotIn("data-intent", js)
+        css = (build.SRC / "css" / "components" / "watch-luxe.css").read_text(encoding="utf-8")
+        self.assertNotIn("lx-intent", css)
+        for rule in (".lx-budget-row li > .card", ".lx-brand-row li > .card", ".cur-grid li > .card", ".pc-list li > .card"):
+            self.assertIn(rule, css)                                                          # cards still fill their grid cells (one shared rule)
+
+    def test_the_hub_goes_from_the_quick_filters_straight_to_shop_by_budget(self):
+        import re
+        body = watches.Watches(build.SRC, build.CONFIG).landing()["_body"]
+        sections = re.findall(r'<section class="lx-sec (lx-[a-z]+)"', body)
+        self.assertEqual(sections[:2], ["lx-budgets", "lx-brands"])                           # the first section after the hero and quick filters is Shop by budget
 
 
 class UniqueIds(unittest.TestCase):

@@ -194,11 +194,6 @@
         });
         button.setAttribute('aria-current', (!button.dataset.styleToggle ? !values.length : values.indexOf(button.dataset.styleToggle) !== -1) ? 'true' : 'false');
       });
-      root.querySelectorAll('[data-intent]').forEach(function (card) {
-        var parts = card.dataset.intent.split(':');
-        var onlyThis = Object.keys(selected).filter(function (g) { return g !== 'gender'; });
-        card.setAttribute('aria-current', onlyThis.length === 1 && onlyThis[0] === parts[0] && selected[parts[0]].length === 1 && selected[parts[0]][0] === parts[1] ? 'true' : 'false');
-      });
       brandTiles.forEach(function (tile) { tile.setAttribute('aria-current', (selected.brand || []).indexOf(tile.dataset.brandTile) !== -1 ? 'true' : 'false'); });
       if (heading && !heading.hasAttribute('data-static')) {
         var brands = boxes.filter(function (box) {return box.dataset.group === 'brand' && box.checked;});
@@ -410,24 +405,6 @@
         var was = box.checked;
         boxes.filter(function (b) { return b.dataset.group === 'brand'; }).forEach(function (b) { b.checked = false; });
         box.checked = !was; update(); toResults();
-      });
-    });
-    root.querySelectorAll('[data-intent]').forEach(function (card) {   // "What are you looking for?" cards apply an existing filter
-      card.addEventListener('click', function (event) {
-        event.preventDefault();   // the link still works without scripts; with scripts the filter is applied in place
-        var parts = card.dataset.intent.split(':'), group = parts[0], value = parts[1];
-        var slider = bandsSlider();
-        // an intent replaces the other filters (the shopper path Men / Women stays), so its promised count is what appears
-        boxes.forEach(function (b) { if (b.dataset.group !== 'gender') b.checked = false; });
-        if (slider) slider._lo = 0;
-        search.value = '';
-        if (group === 'budget' && slider) {
-          var at = JSON.parse(slider.dataset.steps).map(function (s) { return s[0]; }).indexOf(value);
-          if (at >= 0) { slider._setMax(at); toResults(); return; }
-        }
-        boxes.filter(function (b) { return b.dataset.group === group && b.value === value; }).forEach(function (b) { b.checked = true; });
-        update();
-        toResults();
       });
     });
     segments.forEach(function (button) {

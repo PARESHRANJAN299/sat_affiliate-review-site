@@ -58,15 +58,9 @@
 .lx-sec-head { display: flex; align-items: baseline; justify-content: space-between; margin: 0 0 14px; }
 .lx-sec-sub { margin: 4px 0 0; font-size: .86rem; line-height: 1.5; color: var(--lx-muted); }
 .lx-sec-head h2 { margin: 0; font: 600 1.28rem var(--font-display); letter-spacing: -.005em; color: var(--lx-ink); }
-.lx-intent-row, .lx-budget-row, .lx-brand-row { display: flex; gap: 12px; margin: -6px -16px 0; padding: 8px 16px 12px; list-style: none; overflow-x: auto; scroll-snap-type: x proximity; scroll-padding: 0 16px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
-.lx-intent-row::-webkit-scrollbar, .lx-budget-row::-webkit-scrollbar, .lx-brand-row::-webkit-scrollbar { display: none; }
-.lx-intent-row li, .lx-budget-row li, .lx-brand-row li { min-width: 0; flex: none; scroll-snap-align: start; }
-.lx-i-ico { flex: none; display: grid; place-items: center; width: 42px; height: 42px; border-radius: 50%; background: var(--lx-cream); }
-.lx-i-ico svg { width: 22px; height: 22px; fill: none; stroke: var(--lx-char); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
-.lx-i-t { display: grid; gap: 3px; min-width: 0; }
-.lx-i-t strong { font: 600 1.04rem/1.2 var(--font-display); }
-.lx-i-t small { font-size: .78rem; line-height: 1.4; color: var(--lx-muted); }
-.lx-i-go { margin-top: 2px; font: 600 .74rem var(--font-sans); color: var(--lx-gold-ink); }
+.lx-budget-row, .lx-brand-row { display: flex; gap: 12px; margin: -6px -16px 0; padding: 8px 16px 12px; list-style: none; overflow-x: auto; scroll-snap-type: x proximity; scroll-padding: 0 16px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+.lx-budget-row::-webkit-scrollbar, .lx-brand-row::-webkit-scrollbar { display: none; }
+.lx-budget-row li, .lx-brand-row li { min-width: 0; flex: none; scroll-snap-align: start; }
 .b-under { font: 700 .64rem var(--font-sans); letter-spacing: .2em; text-transform: uppercase; color: #6d695f; }
 .lx-budget strong { margin: 3px 0 5px; font: 600 2.05rem/1 var(--font-display); letter-spacing: -.01em; }
 .b-cap { max-width: 128px; font-size: .8rem; line-height: 1.35; color: var(--lx-char); }
@@ -214,9 +208,6 @@
   .qa-t em { font-size: .74rem; -webkit-line-clamp: 1; }
   .qa-chev { display: block; width: 8px; height: 8px; margin: 0 2px 0 auto; border-right: 1.6px solid var(--lx-char); border-top: 1.6px solid var(--lx-char); transform: rotate(45deg); opacity: .55; }
   .lx-sec { margin-top: 64px; }
-  .lx-intent-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); margin: 0; padding: 4px 0 6px; overflow: visible; }
-  .lx-intent-row[data-count="3"] { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .lx-intent { width: 100%; }
   .lx-budget-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); margin: 0; padding: 2px 0 6px; overflow: visible; }
   .lx-budget { width: 100%; }
   .lx-budget-row[data-count="3"] { grid-template-columns: repeat(3, minmax(0, 1fr)); }
@@ -232,7 +223,6 @@
   .watch-store .collection .watch-facts { font-size: .74rem; }
 }
 @media (min-width: 1100px) {
-  .lx-intent-row[data-count="4"] { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 }
 @media (min-width: 1000px) {
   .lx-hero-watch { right: 8%; height: 118%; }
@@ -247,7 +237,7 @@
 @media (max-width: 380px) { .qa-t em { font-size: .62rem; } .lx-hero-text { max-width: 84%; } .sub-cards-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (prefers-reduced-motion: reduce) {
   .watch-store .collection .watch-card, .watch-store .collection .collection-filters[open], .watch-store .collection .collection-sub[open], .watch-store .collection .fgroup:not(.is-collapsed) .fopts { animation: none; }
-  .watch-store .collection .watch-card, .qa, .lx-intent, .lx-budget, .lx-brandtile, .gp-thumb, .sub-card { transition: none; }
+  .watch-store .collection .watch-card, .qa, .lx-budget, .lx-brandtile, .gp-thumb, .sub-card { transition: none; }
 }
 
 .watch-store .collection-pagination button { min-width: 42px; min-height: 42px; border: 1px solid var(--lx-stone); border-radius: 12px; background: var(--lx-paper); color: var(--lx-ink); font-weight: 600; }
@@ -286,8 +276,8 @@
 
 
 /* ===== card system: the internal layout of every card. The look (border, shadow, hover, selected) comes from .card in header.css ===== */
-.lx-intent-row li, .lx-budget-row li, .lx-brand-row li, .cur-grid li, .pc-list li { display: flex; min-width: 0; }
-.lx-intent-row li > .card, .lx-budget-row li > .card, .lx-brand-row li > .card, .cur-grid li > .card, .pc-list li > .card { flex: 1; }
+.lx-budget-row li, .lx-brand-row li, .cur-grid li, .pc-list li { display: flex; min-width: 0; }
+.lx-budget-row li > .card, .lx-brand-row li > .card, .cur-grid li > .card, .pc-list li > .card { flex: 1; }
 .card-title { font: 600 1.14rem/1.25 var(--font-display); letter-spacing: -.005em; color: inherit; }
 .card-count { font: 700 .66rem var(--font-sans); letter-spacing: .12em; text-transform: uppercase; color: var(--lx-gold-ink); }
 .card-sub { font-size: .86rem; line-height: 1.5; color: var(--lx-muted); }
@@ -297,18 +287,14 @@
 .card-secondary.col-card .card-title { font-size: .98rem; }
 .card-secondary.col-card .card-sub { font-size: .78rem; line-height: 1.45; }
 .card-secondary.col-card .card-go { padding-top: 4px; }
-.lx-intent { position: relative; display: flex; align-items: center; gap: 14px; width: 282px; min-height: 92px; padding: 16px 18px; overflow: hidden; }
-.lx-i-ico { flex: none; display: grid; place-items: center; width: 42px; height: 42px; border-radius: 50%; background: var(--lx-cream); }
-.lx-i-ico svg { width: 22px; height: 22px; fill: none; stroke: var(--lx-char); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
-.lx-i-go { margin-top: 2px; font: 700 .74rem var(--font-sans); color: var(--lx-gold-ink); }
 .lx-brandtile { display: grid; place-items: center; align-content: center; gap: 3px; width: 148px; min-height: 84px; padding: 14px 10px; text-align: center; }
 .lx-brandtile strong { font: 600 .98rem var(--font-display); letter-spacing: .1em; color: inherit; }
 .lx-brandtile small { font-size: .72rem; color: var(--lx-muted); }
 .lx-mcard { display: flex; flex-direction: column; gap: 6px; min-width: 0; padding: 22px 22px 20px; }
 .lx-mcta { margin-top: auto; padding-top: 14px; font: 700 .84rem var(--font-sans); color: var(--lx-ink); }
 .card-go { font: 700 .78rem var(--font-sans); color: #7a5c22; }
-.card-go i, .lx-mcta i, .lx-i-go i, .mega-go i { display: inline-block; font-style: normal; transition: transform .2s ease; }
-.card:hover .card-go i, .card:hover .lx-mcta i, .card:hover .lx-i-go i, .card:hover .mega-go i { transform: translateX(4px); }
+.card-go i, .lx-mcta i, .mega-go i { display: inline-block; font-style: normal; transition: transform .2s ease; }
+.card:hover .card-go i, .card:hover .lx-mcta i, .card:hover .mega-go i { transform: translateX(4px); }
 .info-card { padding: 18px 20px; border: 1px solid rgba(120, 90, 35, .18); border-radius: 18px; background: #fffdf7; box-shadow: 0 4px 16px rgba(0, 0, 0, .05); }
 
 /* budget cards: the colour deepens with the price band (accessible text colours per tier) */
@@ -336,7 +322,7 @@
 .cur-grid { display: grid; grid-template-columns: 1fr; gap: 12px; margin: 0; padding: 0; list-style: none; }
 @media (min-width: 720px) { .cur-grid[data-count="2"] { grid-template-columns: repeat(2, minmax(0, 1fr)); } .cur-grid[data-count="3"] { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; } }
 @media (max-width: 719px) { .pc-list li .card-secondary { width: 100%; } }
-@media (prefers-reduced-motion: reduce) { .card-go i, .lx-mcta i, .lx-i-go i, .mega-go i { transition: none; } }
+@media (prefers-reduced-motion: reduce) { .card-go i, .lx-mcta i, .mega-go i { transition: none; } }
 
 /* selected: the same near-black, ivory and muted-gold state everywhere */
 .card[aria-current="true"], .watch-store .collection .sub-card[aria-pressed="true"] {
@@ -349,9 +335,6 @@
 .watch-store .collection .fopt:has(input:checked) small { color: #d8c08a; }
 .watch-store .collection .sub-card[aria-pressed="true"]::after { background: #d8c08a; }
 .watch-store .collection .sub-card[aria-pressed="true"] .sub-art svg { stroke: #d8c08a; }
-.card[aria-current="true"] .lx-i-ico { background: rgba(251, 246, 234, .12); }
-.card[aria-current="true"] .lx-i-ico svg { stroke: #d8c08a; }
-.card[aria-current="true"] .lx-i-go, .card[aria-current="true"] .lx-i-t small { color: #d8c08a; }
 
 /* Selected for you: on phones the title and count get a full row, with Sort and Filter side by side below it */
 @media (max-width: 559px) {

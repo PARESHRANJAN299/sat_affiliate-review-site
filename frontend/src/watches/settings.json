@@ -1,5 +1,5 @@
 {
-  "_note": "Display settings only. Brands, filters and prices come from the watch files. brand_order lists brand slugs to show first; featured_brands are shown before the rest (default: the featured tier in config.json); hidden_brands are never shown. planned_filters shows an option dimmed before any watch has it, for example {\"water\": [\"200-plus\"]}. brand_names overrides the name made from a new brand's slug. intent_cards: the four discovery cards. A card is shown only when approved is true, it has a filter ({group, value}) and at least one watch matches; the owner approves the label and the filter together. budget_discovery: the shopper price tiers shown on /watches/ and in the menu, built from every live watch (not from the approved SEO pages). tiers are price band slugs from config.json; premium_after is the band where the Premium group starts above; menu lists the tiers (and 'premium') shown in the menu, in order; descriptions optionally overrides the neutral one-line description of a tier by its id (draft or default copy only; an approved summary in collections.json always wins). Every part of budget_discovery is optional and falls back to safe defaults. hub_affiliate: the owner's own Amazon link (kept exactly as supplied, never rebuilt) that opens from the watch picture on the /watches/ hero and on each Shop by budget card, in a new tab, rel sponsored. It is used only while affiliate links are switched on; the text and arrow of each card still open the on-site page. hub_affiliate.keyword / premium_keyword: the Amazon search words for a Shop by budget card ({max} is the tier's upper price, {min} the Premium starting price, digits only); price_filter adds Amazon's own price limit to that search. Each card's link is the owner's url with only the search words and the price limit changed (tag, linkCode, linkId and ref_ stay); the hero uses the url unchanged. hub_affiliate.brand_keyword: the Amazon search words for a Shop by brand tile ({brand} is the brand's name); the link is the owner's url with only the search words changed, opens in a new tab and does not filter or scroll the page.",
+  "_note": "Display settings only. Brands, filters and prices come from the watch files. brand_order lists brand slugs to show first; featured_brands are shown before the rest (default: the featured tier in config.json); hidden_brands are never shown. planned_filters shows an option dimmed before any watch has it, for example {\"water\": [\"200-plus\"]}. brand_names overrides the name made from a new brand's slug.json; premium_after is the band where the Premium group starts above; menu lists the tiers (and 'premium') shown in the menu, in order; descriptions optionally overrides the neutral one-line description of a tier by its id (draft or default copy only; an approved summary in collections.json always wins). Every part of budget_discovery is optional and falls back to safe defaults. hub_affiliate: the owner's own Amazon link. The /watches/ hero background opens it exactly as supplied; each Shop by budget card and each Shop by brand tile opens a search built from it (see the keys below). They open in a new tab, are rel sponsored, and do nothing on the page itself (no scrolling, no filtering). Used only while affiliate links are switched on; a tier whose own SEO page is published still opens that page. hub_affiliate.keyword / premium_keyword: the Amazon search words for a Shop by budget card ({max} is the tier's upper price, {min} the Premium starting price, digits only); price_filter adds Amazon's own price limit to that search. Each card's link is the owner's url with only the search words and the price limit changed (tag, linkCode, linkId and ref_ stay); the hero uses the url unchanged. hub_affiliate.brand_keyword: the Amazon search words for a Shop by brand tile ({brand} is the brand's name); the link is the owner's url with only the search words changed, opens in a new tab and does not filter or scroll the page.",
   "brand_order": [
     "titan",
     "casio",
@@ -17,35 +17,6 @@
   "hidden_brands": [],
   "planned_filters": {},
   "brand_names": {},
-  "intent_cards": [
-    {
-      "title": "A watch for work",
-      "text": "Clean, understated and easy to wear.",
-      "approved": false,
-      "filter": null
-    },
-    {
-      "title": "Under ₹3,000",
-      "text": "Great everyday choices.",
-      "approved": true,
-      "filter": {
-        "group": "budget",
-        "value": "under-3000"
-      }
-    },
-    {
-      "title": "A first proper watch",
-      "text": "Simple choices to start with.",
-      "approved": false,
-      "filter": null
-    },
-    {
-      "title": "Something elegant",
-      "text": "For occasions and formal wear.",
-      "approved": false,
-      "filter": null
-    }
-  ],
   "budget_discovery": {
     "tiers": [
       "under-1000",

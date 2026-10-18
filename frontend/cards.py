@@ -1,6 +1,6 @@
 """Reusable card renderers for the Watches pages: the one place card HTML is written.
 
-Every card is built from normalized data (see Watches.published_collections(), active_brands(), intent_cards()), never typed out where it is used.
+Every card is built from normalized data (see Watches.published_collections(), active_brands()), never typed out where it is used.
 Three levels give the page its hierarchy:
 
     primary    budget collections, curated collections, featured guides (largest, strongest border, art)
@@ -59,11 +59,6 @@ def brand_card(slug, name, count, aff=None):
         note = f'<span class="visually-hidden"> (opens an Amazon search for {esc(aff.get("search") or name + " watches")}, paid link)</span>'
         return f'<a class="card card-secondary lx-brandtile" href="{esc(aff["url"])}" {AFFILIATE_ATTRS}>{inner}{note}</a>'
     return f'<a class="card card-secondary lx-brandtile" href="/watches/brands/{esc(slug)}/" data-brand-tile="{esc(slug)}" aria-current="false">{inner}</a>'
-
-
-def intent_card(title, text, href, intent, icon):
-    return (f'<a class="card card-secondary lx-intent" href="{esc(href)}" data-intent="{esc(intent)}"><span class="lx-i-ico" aria-hidden="true">{icon}</span>'
-            f'<span class="lx-i-t"><strong>{esc(title)}</strong><small>{esc(text)}</small><span class="lx-i-go">Explore <i aria-hidden="true">&rarr;</i></span></span></a>')
 
 
 def feature_card(kicker, title, text, href, cta, art=""):

@@ -1108,7 +1108,6 @@ f'<linearGradient id="g{uid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-
             svg = svg.replace(f'id="{i}"', f'id="{i}-{tag}"').replace(f"url(#{i})", f"url(#{i}-{tag})").replace(f'href="#{i}"', f'href="#{i}-{tag}"')
         return svg
 
-    WATCH_GLYPH = '<svg viewBox="0 0 24 24"><rect x="8.5" y="2" width="7" height="4.5" rx="1.2"/><rect x="8.5" y="17.5" width="7" height="4.5" rx="1.2"/><circle cx="12" cy="12" r="5.4"/><path d="M12 9.4V12l1.9 1.3"/></svg>'
 
     def icon(self, name):
         return f'<svg viewBox="0 0 24 24" aria-hidden="true">{self.ICONS[name]}</svg>'
@@ -1144,41 +1143,6 @@ f'<linearGradient id="g{uid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-
             return ""
         cards_html = "".join(f'<li>{ui.collection_card(c, "secondary")}</li>' for c in pubs)
         return (f'<section class="pc" aria-labelledby="pc-h"><h2 id="pc-h" class="pc-title">Popular watch collections</h2><ul class="pc-list" data-count="{len(pubs)}">{cards_html}</ul></section>')
-
-    # Data-backed destinations used to fill the discovery rail when fewer than four editorial cards are approved. They use only listing facts (movement, display),
-    # never editorial fields such as features or styles; the text is a plain count. Without scripts a card link only scrolls to the list; scripts apply the filter.
-    FACT_CARDS = [("movement", "automatic", "Automatic watches", "Mechanical movement with a more traditional feel."), ("display", "digital", "Digital watches", "{n} {w} with a digital display."),
-                  ("movement", "quartz", "Quartz watches", "{n} {w} with a quartz movement.")]
-
-    def intent_cards(self, fill=True):
-        """The 'What are you looking for?' rail: up to four cards. Approved editorial cards come first (each needs an approved flag and a filter that matches a watch);
-        then data-backed cards (for example Automatic watches) top the rail up to four. With fewer than two cards the section is not shown. One card = one link."""
-        cards, seen = [], set()
-        def add(title, text, flt, href):
-            matches = self.filter_count(flt)
-            if not matches or len(cards) >= 4:
-                return
-            key = (flt["group"], flt["value"])
-            if key in seen:
-                return
-            seen.add(key)
-            n = len(cards)
-            cards.append(f'<li>{ui.intent_card(title, text, href, flt["group"] + ":" + flt["value"], self.WATCH_GLYPH)}</li>')
-        for card in self.settings.get("intent_cards", []):
-            flt = card.get("filter")
-            if card.get("approved") and flt:
-                href = f'/watches/style/{flt["value"]}/' if flt["group"] == "style" else "#watch-collection"
-                add(card["title"], card["text"], flt, href)
-        if fill:
-            for group, value, title, text in self.FACT_CARDS:
-                flt = {"group": group, "value": value}
-                n = len(self.filter_count(flt))
-                if n:
-                    add(title, text.format(n=n, w="watch" if n == 1 else "watches"), flt, "#watch-collection")
-        if len(cards) < 2:
-            return ""
-        return ('<section class="lx-sec lx-intents" aria-labelledby="lx-intents"><div class="lx-sec-head"><h2 id="lx-intents">What are you looking for?</h2></div>'
-                f'<ul class="lx-intent-row" data-count="{len(cards)}">{"".join(cards)}</ul></section>')
 
     @staticmethod
     def budget_tier(max_value):
@@ -1259,7 +1223,7 @@ f'<linearGradient id="g{uid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-
                 f'<div class="lx-hero-art" aria-hidden="true"><div class="lx-hero-watch">{self.art_copy(art_for, "h")}</div>'
                 f'<dl class="lx-stats"><div><dt>{gcount["men"]}</dt><dd>Men\'s watches</dd></div><div><dt>{gcount["women"]}</dt><dd>Women\'s watches</dd></div></dl></div></header>')
         footline = f'<p class="lx-foot">{reviewed}</p>' if reviewed else ""
-        top = (hero + self.quick_row(steps, active, any(self.styles)) + quick_row + (self.intent_cards() + self.budget_cards(self.budget_discovery(), aff) + self.brand_tiles(active, aff) if hub else ""))
+        top = (hero + self.quick_row(steps, active, any(self.styles)) + quick_row + (self.budget_cards(self.budget_discovery(), aff) + self.brand_tiles(active, aff) if hub else ""))
         hub_top, hub_bottom = hub or ("", "")
         note = ('<p class="watch-affiliate-note">Amazon links on this page are affiliate links. As an Amazon Associate I earn from qualifying purchases. '
                 '<a href="/affiliate-disclosure/">How we earn</a></p>') if any(self.merchant_links(p) for p in shown) else ""
