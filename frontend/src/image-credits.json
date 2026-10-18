@@ -1121,6 +1121,60 @@
       "proof": "Supplied by the site owner on 2026-10-18 with the instruction to use them as SAT editorial assets. Edge pixels cleaned and resized only.",
       "status": "needs-confirmation",
       "image_classification": "Owner-supplied editorial imagery (provenance pending)"
+    },
+    {
+      "file": "/images/fashion/models/orange-dress-1122.webp",
+      "use": "Orange pinafore dress: Westernwear tile and section (shown beside the pink-dress model); SAT editorial artwork, not a retailer product image",
+      "platform": "Supplied by the site owner as edited cutouts",
+      "ai_generated": null,
+      "source": "Owner-supplied model cutout; originating tool, licence and model-release details still to be recorded by the owner",
+      "licence": "To be confirmed by the owner",
+      "date_added": "2026-10-18",
+      "proof": "Supplied by the site owner on 2026-10-18 and re-requested for Westernwear. Edge pixels cleaned and resized only.",
+      "status": "needs-confirmation",
+      "image_classification": "Owner-supplied editorial imagery (provenance pending)"
+    },
+    {
+      "file": "/images/fashion/models/orange-dress-640.webp",
+      "use": "Orange pinafore dress: Westernwear tile and section (shown beside the pink-dress model); SAT editorial artwork, not a retailer product image",
+      "platform": "Supplied by the site owner as edited cutouts",
+      "ai_generated": null,
+      "source": "Owner-supplied model cutout; originating tool, licence and model-release details still to be recorded by the owner",
+      "licence": "To be confirmed by the owner",
+      "date_added": "2026-10-18",
+      "proof": "Supplied by the site owner on 2026-10-18 and re-requested for Westernwear. Edge pixels cleaned and resized only.",
+      "status": "needs-confirmation",
+      "image_classification": "Owner-supplied editorial imagery (provenance pending)"
+    },
+    {
+      "file": "/images/fashion/models/ivory-kurta-836.jpg",
+      "use": "Women’s Kurtas tile and section: portrait crop of the owner’s ivory kurta editorial photograph; SAT editorial artwork, not a retailer product image",
+      "platform": "Derivative of /images/fashion/sat-editorial-ivory.jpg",
+      "ai_generated": true,
+      "source": "Cropped and resized copy of the confirmed AI-generated editorial visual; no new content",
+      "licence": "Same basis as /images/fashion/sat-editorial-ivory.jpg",
+      "licence_page": "https://openai.com/policies/terms-of-use",
+      "date_added": "2026-10-18",
+      "proof": "Derivative of a record with confirmed status; the owner re-supplied the photograph on 2026-10-18 for Women’s Kurtas. No Nykaa product imagery is used.",
+      "status": "confirmed",
+      "image_classification": "AI-generated illustrative imagery",
+      "confirmed_by": "SAT site owner",
+      "confirmed_on": "2026-10-18"
+    },
+    {
+      "file": "/images/fashion/models/ivory-kurta-640.jpg",
+      "use": "Women’s Kurtas tile and section: portrait crop of the owner’s ivory kurta editorial photograph; SAT editorial artwork, not a retailer product image",
+      "platform": "Derivative of /images/fashion/sat-editorial-ivory.jpg",
+      "ai_generated": true,
+      "source": "Cropped and resized copy of the confirmed AI-generated editorial visual; no new content",
+      "licence": "Same basis as /images/fashion/sat-editorial-ivory.jpg",
+      "licence_page": "https://openai.com/policies/terms-of-use",
+      "date_added": "2026-10-18",
+      "proof": "Derivative of a record with confirmed status; the owner re-supplied the photograph on 2026-10-18 for Women’s Kurtas. No Nykaa product imagery is used.",
+      "status": "confirmed",
+      "image_classification": "AI-generated illustrative imagery",
+      "confirmed_by": "SAT site owner",
+      "confirmed_on": "2026-10-18"
     }
   ],
   "governance": {

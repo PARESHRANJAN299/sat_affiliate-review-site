@@ -131,8 +131,14 @@ class FashionTests(unittest.TestCase):
         for forbidden in ('affiliate_url', 'nykaa.com', 'View on Nykaa', 'class="fashion-product"', 'Add to cart'):
             self.assertNotIn(forbidden, body)
         self.assertEqual(body.count(fashion.EMPTY_NOTE), len(fashion.SECTIONS))
-        for slug, stem in fashion.ART.items():
-            self.assertIn(f'/images/fashion/models/{stem}-640.webp' if stem else f'/images/fashion/editorial/{slug}.svg', body)
+        for slug, stems in fashion.ART.items():
+            for stem in stems:
+                self.assertIn(fashion.art_file(stem), body)
+            if not stems:
+                self.assertIn(f'/images/fashion/editorial/{slug}.svg', body)
+        self.assertEqual(fashion.ART['womens-kurtas'], ('ivory-kurta',))
+        self.assertEqual(fashion.ART['westernwear'], ('pink-dress', 'orange-dress'))
+        self.assertEqual(fashion.ART['indianwear'], ('purple-saree',))
         landing, *product_pages = fashion.pages(self.src, lambda *args: '', 'https://sat.net.in')[0]
         self.assertEqual(product_pages, [])
 

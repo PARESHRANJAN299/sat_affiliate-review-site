@@ -22,22 +22,39 @@ SECTIONS = [
 AFFILIATE_NOTE = 'SAT may earn a commission if you purchase through this link, at no extra cost to you.'
 EDITORIAL_DIR = '/images/fashion/editorial/'
 MODEL_DIR = '/images/fashion/models/'
-# SAT editorial artwork per collection (owner-supplied model cutouts); None falls back to original SVG art. Never retailer imagery.
-ART = {'womens-kurtas': 'purple-saree', 'westernwear': 'pink-dress', 'indianwear': 'purple-saree', 'footwear': 'white-tee-b', 'active-sports': 'white-tee-a', 'bags': None}
-ART_ALT = {'purple-saree': 'Editorial image: a woman seated on a stool in a purple saree with an embroidered blouse.', 'pink-dress': 'Editorial image: a woman in a pink ribbed dress with a black cardigan, holding a quilted black bag.', 'white-tee-a': 'Editorial image: a woman sitting cross-legged in a white tee and blush joggers.',
+# SAT editorial artwork per collection (owner-supplied images); no stems means the original SVG fallback. Never retailer imagery.
+ART = {'womens-kurtas': ('ivory-kurta',), 'westernwear': ('pink-dress', 'orange-dress'), 'indianwear': ('purple-saree',),
+       'footwear': ('white-tee-b',), 'active-sports': ('white-tee-a',), 'bags': ()}
+# Cutouts are 1122x1402 WebP; the ivory kurta photograph is a portrait JPEG crop. (extension, small width, large width, large height)
+ART_FILES = {'ivory-kurta': ('jpg', 640, 836, 1024)}
+ART_ALT = {'ivory-kurta': 'Editorial image: a woman in an ivory floral kurta set with a dupatta, seated on sandstone steps.',
+           'purple-saree': 'Editorial image: a woman seated on a stool in a purple saree with an embroidered blouse.',
+           'pink-dress': 'Editorial image: a woman in a pink ribbed dress with a black cardigan, holding a quilted black bag.',
+           'orange-dress': 'Editorial image: a woman in an orange pinafore dress over a white top, with white trainers.',
+           'white-tee-a': 'Editorial image: a woman sitting cross-legged in a white tee and blush joggers.',
            'white-tee-b': 'Editorial image: a woman sitting cross-legged in a white tee, blush joggers and white trainers.'}
 EMPTY_NOTE = 'Products will appear here once approved Nykaa catalogue items are added.'
 BRANDS_EMPTY_NOTE = 'Brands will appear here once approved Nykaa catalogue items are added.'
 
 
+def art_file(stem, large=False):
+    ext, small, big, _ = ART_FILES.get(stem, ('webp', 640, 1122, 1402))
+    return f'{MODEL_DIR}{stem}-{big if large else small}.{ext}'
+
+
 def art_picture(slug, sizes, alt=False, stem=None, priority=False):
-    """SAT editorial image for a collection (responsive WebP cutout, or the original SVG fallback)."""
-    stem = stem or ART.get(slug)
-    if not stem:
+    """SAT editorial image(s) for a collection: responsive owner-supplied images, or the original SVG fallback."""
+    stems = (stem,) if stem else ART.get(slug, ())
+    if not stems:
         return f'<img class="fashion-art" src="{EDITORIAL_DIR}{slug}.svg" alt="" width="1200" height="1500" loading="lazy" decoding="async">'
     load = 'fetchpriority="high"' if priority else 'loading="lazy" decoding="async"'
-    return (f'<img class="fashion-art" src="{MODEL_DIR}{stem}-640.webp" srcset="{MODEL_DIR}{stem}-640.webp 640w, {MODEL_DIR}{stem}-1122.webp 1122w" sizes="{sizes}" '
-            f'alt="{esc(ART_ALT[stem]) if alt else ""}" width="1122" height="1402" {load}>')
+    images = []
+    for name in stems:
+        ext, small, big, height = ART_FILES.get(name, ('webp', 640, 1122, 1402))
+        width = ART_FILES[name][2] if name in ART_FILES else 1122
+        images.append(f'<img class="fashion-art" src="{art_file(name)}" srcset="{art_file(name)} {small}w, {art_file(name, True)} {big}w" sizes="{sizes}" '
+                      f'alt="{esc(ART_ALT[name]) if alt else ""}" width="{width}" height="{height}" {load}>')
+    return ''.join(images)
 
 
 def esc(value):
