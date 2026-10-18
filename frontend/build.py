@@ -1035,15 +1035,16 @@ def about_faq():
 
 
 def home_category_strip():
-    """Compact one-row category shortcuts for the home page (the full cards live on /products/)."""
+    """Category tiles for the home page (the full cards live on /products/)."""
     items = []
     for c in CATEGORIES:
         thumb = c.get("thumb") or c.get("image")
-        pic = (f'<img src="{esc(thumb)}" alt="" width="40" height="40" loading="lazy">' if thumb
+        pic = (f'<img src="{esc(thumb)}" alt="" width="48" height="48" loading="lazy">' if thumb
                else category_icon(c, "home-cat-ic"))
         items.append(f'<li><a class="home-cat" href="{esc(c["url"])}" style="--hue:{c["hue"]}">'
                      f'<span class="home-cat-pic" aria-hidden="true">{pic}</span>'
-                     f'<span class="home-cat-name">{esc(c["name"])}</span></a></li>')
+                     f'<span class="home-cat-name">{esc(c["name"])}</span>'
+                     f'<span class="home-cat-go" aria-hidden="true"><svg class="ic"><use href="#i-arrow"/></svg></span></a></li>')
     return '<ul class="home-cat-strip">' + "".join(items) + '</ul>'
 
 

@@ -25,12 +25,9 @@
   .home-description { color: #e3e8f3; }
   .home-hero::after { background: radial-gradient(420px 260px at 50% 0%, rgba(201, 164, 92, 0.22), transparent 70%), radial-gradient(420px 240px at 50% 110%, rgba(194, 65, 12, 0.4), transparent 70%); }
 
-  /* category strip: swipe sideways, thumbnails ringed in gold */
-  .home-cat-strip { flex-wrap: nowrap; overflow-x: auto; scroll-snap-type: x proximity; gap: 10px; padding: 4px 16px 10px; margin: 0 -16px; scrollbar-width: none; }
-  .home-cat-strip::-webkit-scrollbar { display: none; }
-  .home-cat-strip > li { flex: none; scroll-snap-align: start; }
-  .home-cat-strip a { min-height: 52px; background: #fff; border: 1px solid rgba(201, 164, 92, 0.5); box-shadow: 0 6px 16px -8px rgba(60, 40, 10, 0.35); }
-  .home-cat-strip img { box-shadow: 0 0 0 2px #fff, 0 0 0 3.5px var(--gold); }
+  /* category tiles: warm gold hairline on phones */
+  .home-cat { border-color: rgba(201, 164, 92, 0.45); }
+  .home-cat-pic { box-shadow: 0 0 0 2px #fff, 0 0 0 3.5px var(--gold); }
 
   /* guide chips */
   .home-guide, .chip { min-height: 46px; padding: 0 16px; background: #fff; border-color: rgba(201, 164, 92, 0.5); box-shadow: 0 4px 12px -6px rgba(60, 40, 10, 0.3); }

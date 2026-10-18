@@ -12,6 +12,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 import build
 import watches
 
+ROOT = Path(__file__).resolve().parent.parent
 URL = "https://www.amazon.in/s?k=watch&i=watches&linkCode=ll2&tag=pareshsat-21&linkId=d365214107ba31edaa9fc39bb8fa609b&ref_=as_li_ss_tl"
 
 
@@ -106,3 +107,22 @@ class HomeCollageAffiliate(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class HomeCategoryTiles(unittest.TestCase):
+    """The home 'Shop by Category' strip: five tiles that fit on a phone without sideways scrolling."""
+
+    def test_tiles_are_markup_links_with_arrow(self):
+        page = (ROOT / "dist" / "index.html").read_text(encoding="utf-8")
+        tiles = re.findall(r'<a class="home-cat" href="([^"]+)"', page)
+        self.assertEqual(len(tiles), 5)
+        self.assertEqual(page.count('class="home-cat-go"'), 5)
+
+    def test_phone_layout_is_a_grid_not_a_scroller(self):
+        css = (ROOT / "src" / "css" / "pages" / "home.css").read_text(encoding="utf-8")
+        phone = css[css.index("@media (max-width: 719px)", css.index(".home-cat-strip")):]
+        phone = phone[:phone.index("}\n@media")]
+        self.assertIn("grid-template-columns: repeat(2", phone)
+        self.assertNotIn("overflow-x", phone)
+        lux = (ROOT / "src" / "css" / "layout" / "mobile-luxury.css").read_text(encoding="utf-8")
+        self.assertNotIn("home-cat-strip", lux)
