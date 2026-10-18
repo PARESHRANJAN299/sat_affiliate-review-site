@@ -6,16 +6,14 @@
 .sat-fashion-gateway h2 { font-family: var(--font-display); font-weight: 400; font-size: clamp(36px, 3.8vw, 58px); line-height: 1.05; letter-spacing: -.035em; color: #22221f; margin: 0 0 22px; }
 .sat-fashion-gateway h2 em { font-weight: 400; }
 .sat-fashion-description { max-width: 45ch; font-size: 14px; color: #666457; line-height: 1.75; margin: 0 0 24px; }
-.sat-fashion-source { margin: 0 0 17px; color: #767064; font-size: 11px; line-height: 1.7; }
-.sat-fashion-source strong { color: #403d36; font-weight: 600; }
 .sat-fashion-cta { display: inline-flex; align-items: center; justify-content: center; gap: 22px; padding: 14px 22px; min-height: 48px; background: #181d23; border: 1px solid #181d23; color: #fff; font-size: 12px; font-weight: 600; border-radius: 999px; text-decoration: none; }
 .sat-fashion-cta:hover { background: #35342f; color: #fff; text-decoration: none; }
 .sat-fashion-cta:focus-visible { outline: 3px solid #9b793c; outline-offset: 4px; }
 .sat-fashion-cta span { font-size: 20px; font-weight: 400; line-height: 1; }
-.sat-fashion-caption { margin: 22px 0 0; font-size: 10px; letter-spacing: .035em; color: #867b65; }
-.sat-fashion-visual { position: relative; min-width: 0; overflow: hidden; }
-.sat-fashion-visual img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 72% center; }
-.sat-fashion-image-label { position: absolute; bottom: 23px; right: 24px; font-size: 9px; letter-spacing: .25em; color: #fffaf0; text-shadow: 0 1px 6px #3e2d21; }
+.sat-fashion-visual { position: relative; margin: 0; min-width: 0; overflow: hidden; background: linear-gradient(150deg, #ecd9bd, #cf9f73); }
+.sat-fashion-visual::before { content: ""; position: absolute; left: 50%; bottom: 0; width: 74%; height: 90%; transform: translateX(-50%); border-radius: 999px 999px 0 0; background: #f6ead7; opacity: .5; }
+.sat-fashion-visual img { position: absolute; left: 50%; bottom: 0; width: auto; max-width: none; height: 104%; transform: translateX(-50%); }
+.sat-fashion-image-label { position: absolute; z-index: 1; bottom: 12px; right: 14px; padding: 4px 9px; font-size: 10px; letter-spacing: .04em; color: #3b352a; background: #fff9edd9; }
 .sat-trust-minimal { display: flex; align-items: center; justify-content: space-between; gap: 40px; padding: 44px 0 0; margin: 36px 0 4px; border-top: 1px solid #e7e1d7; }
 .sat-trust-minimal h2 { margin: 0; font-family: var(--font-display); font-size: 27px; font-weight: 400; line-height: 1.2; letter-spacing: -.02em; }
 .sat-trust-minimal h2 em { font-weight: 400; }
@@ -25,16 +23,13 @@
 @media (max-width: 760px) {
  .sat-fashion-gateway { grid-template-columns: 1fr; margin-top: 30px; min-height: 0; }
  .sat-fashion-copy { padding: 32px 25px; order: 1; }
- .sat-fashion-visual { order: 0; height: 280px; }
- .sat-fashion-visual img { object-position: 76% 48%; }
- .sat-fashion-image-label { bottom: 15px; right: 16px; font-size: 8px; }
+ .sat-fashion-visual { order: 0; height: 380px; }
+ .sat-fashion-image-label { bottom: 10px; right: 10px; font-size: 9px; }
  .sat-fashion-eyebrow { margin-bottom: 18px; font-size: 9px; letter-spacing: .19em; gap: 12px; }
  .sat-fashion-eyebrow span { width: 32px; }
  .sat-fashion-gateway h2 { font-size: clamp(33px, 8.5vw, 43px); margin-bottom: 18px; }
  .sat-fashion-description { font-size: 13px; margin-bottom: 20px; }
- .sat-fashion-source { font-size: 11px; margin-bottom: 14px; }
  .sat-fashion-cta { font-size: 12px; padding: 13px 19px; }
- .sat-fashion-caption { margin-top: 18px; }
  .sat-trust-minimal { align-items: flex-start; flex-direction: column; gap: 24px; padding-top: 30px; margin-top: 30px; }
  .sat-trust-minimal h2 { font-size: 26px; }
  .sat-trust-minimal ul { flex-direction: column; gap: 14px; }
