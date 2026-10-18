@@ -189,6 +189,22 @@
 .fashion-category-head { padding: clamp(8px, 2vw, 24px) 0 clamp(20px, 3vw, 36px); }
 .fashion-category-head h1 { margin: 0 0 12px; font: 400 clamp(2.2rem, 5vw, 4rem)/1.05 var(--font-display); letter-spacing: -.035em; }
 .fashion-category-head > p:not(.sat-fashion-eyebrow):not(.fashion-widget-note) { margin: 0 0 14px; max-width: 62ch; font-size: 16px; color: var(--f-muted); }
+/* Women / Men toggle at the top of a category page. */
+.nykaa-audience { display: inline-flex; gap: 4px; padding: 4px; margin: 6px 0 32px; border: 1px solid var(--f-line); border-radius: 999px; background: #fffdf8; }
+.nykaa-audience a { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 46px; padding: 0 30px; border-radius: 999px; color: var(--f-ink); font-size: 14px; font-weight: 600; letter-spacing: .05em; text-decoration: none; transition: background .2s, color .2s; }
+.nykaa-audience a span { font-size: 11px; font-weight: 400; letter-spacing: .02em; opacity: .65; }
+.nykaa-audience a:hover { background: #efe8da; color: var(--f-ink); text-decoration: none; }
+.nykaa-audience a[aria-current="true"] { background: var(--f-ink); color: #fff; }
+.nykaa-audience a:focus-visible { outline: 3px solid var(--f-gold-ink); outline-offset: 2px; }
+.nykaa-mark { min-height: 44px; padding: 8px 16px; border: 1px dashed var(--f-gold-ink); border-radius: 999px; background: transparent; color: var(--f-gold-ink); font: inherit; font-size: 12px; cursor: pointer; }
+.nykaa-mark[aria-pressed="true"] { background: var(--f-ink); border-style: solid; border-color: var(--f-ink); color: #fff; }
+.nykaa-product-shell.is-marked { border-color: var(--f-ink); box-shadow: 0 0 0 2px var(--f-ink); }
+.nykaa-sortbar { position: fixed; z-index: 60; left: 50%; bottom: 16px; transform: translateX(-50%); display: flex; align-items: center; gap: 14px; padding: 8px 8px 8px 20px; border-radius: 999px; background: var(--f-ink); color: #fff; font-size: 13px; }
+.nykaa-sortbar button { min-height: 44px; padding: 8px 18px; border: 0; border-radius: 999px; background: #fff; color: var(--f-ink); font: inherit; font-weight: 600; cursor: pointer; }
+.nykaa-panel[hidden] { display: none; }
+.nykaa-panel + .nykaa-panel { margin-top: clamp(36px, 5vw, 64px); }
+.nykaa-audience-empty { margin-top: 4px; }
+@media (max-width: 719px) { .nykaa-audience { display: flex; } .nykaa-audience a { flex: 1; padding: 0 12px; } }
 .nykaa-results-title { margin: 0 0 16px; font: 400 clamp(1.5rem, 3vw, 2.2rem)/1.2 var(--font-display); letter-spacing: -.02em; }
 .nykaa-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(296px, 1fr)); gap: 16px; justify-items: center; }
 .nykaa-grid .nykaa-product-shell { flex: none; width: 100%; max-width: 330px; }

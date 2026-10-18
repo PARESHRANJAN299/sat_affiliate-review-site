@@ -292,7 +292,7 @@ class WidgetPageTests(unittest.TestCase):
         self.assertEqual((page['title'], page['noindex']), ('Westernwear from Nykaa Fashion', True))
         self.assertEqual(page['breadcrumbs'], [['Fashion Edit', '/fashion/'], ['Westernwear', '/fashion/westernwear/']])
         self.assertIn('<h1>Westernwear</h1>', page['_body'])
-        self.assertIn('Search results for Westernwear', page['_body'])
+        self.assertIn('Women’s Westernwear', page['_body'])
         self.assertIn('data-url="https://sat.net.in/fashion/westernwear/#pick-5550001"', page['_body'])
 
     def test_production_category_settings_cover_kurtas_and_westernwear(self):
@@ -300,6 +300,64 @@ class WidgetPageTests(unittest.TestCase):
         self.assertEqual(sorted(configs), ['westernwear', 'womens-kurtas'])
         self.assertEqual(configs['westernwear']['explore_label'], 'Explore Westernwear')
         self.assertEqual(fashion.validate_category_pages(fashion.read_widgets(ROOT / 'src'))[1], [])
+
+    def toggle_page(self, widgets, toggle=True):
+        directory = tempfile.TemporaryDirectory()
+        self.addCleanup(directory.cleanup)
+        src = Path(directory.name)
+        (src / 'fashion').mkdir()
+        (src / 'fashion/catalog.json').write_text(json.dumps({'approved_image_hosts': [], 'approved_affiliate_hosts': [], 'products': []}))
+        data = base(widgets)
+        data['category_pages'] = [{'category': 'westernwear', 'h1': 'Westernwear', **({'audience_toggle': True} if toggle else {})}]
+        (src / 'fashion/widgets.json').write_text(json.dumps(data))
+        pages, problems = fashion.pages(src, lambda *args: '', 'https://sat.net.in')
+        return pages, problems
+
+    def western(self, pid, **extra):
+        return {**self.record(pid, FIRST_URL.replace('28560370', pid)), 'category': 'westernwear', **extra}
+
+    def test_audience_toggle_splits_women_and_men_with_default_women(self):
+        widgets = [self.western('111'), self.western('222', audience='women'), self.western('333', audience='men')]
+        pages, problems = self.toggle_page(widgets)
+        self.assertEqual(problems, [])
+        body = pages[1]['_body']
+        self.assertEqual(body.count('data-audience-tab='), 2)
+        self.assertIn('data-audience-tab="women" aria-current="true">Women <span>2</span>', body)
+        self.assertIn('data-audience-tab="men">Men <span>1</span>', body)
+        women, men = body.split('data-audience-panel="women"')[1].split('data-audience-panel="men"')
+        self.assertEqual((women.count('class="nykaa-product-shell"'), men.count('class="nykaa-product-shell"')), (2, 1))
+        self.assertIn('id="pick-333"', men)
+        self.assertIn('<h2 class="nykaa-results-title">Women’s Westernwear</h2>', body)
+        self.assertIn('<h2 class="nykaa-results-title">Men’s Westernwear</h2>', body)
+        self.assertEqual(body.count('<h1>'), 1)
+        self.assertLess(body.index('data-audience-tab="women"'), body.index('class="nykaa-product-shell"'))  # the toggle sits above every product
+
+    def test_empty_audience_shows_a_note_not_fake_products(self):
+        pages, _ = self.toggle_page([self.western('111')])
+        body = pages[1]['_body']
+        men = body.split('data-audience-panel="men"')[1]
+        self.assertIn('data-audience-tab="men">Men <span>0</span>', body)
+        self.assertNotIn('class="nykaa-product-shell"', men)
+        self.assertIn('Men’s picks will appear here once approved Nykaa catalogue items are added.', men)
+
+    def test_no_toggle_without_the_setting_and_landing_is_unchanged(self):
+        pages, _ = self.toggle_page([self.western('111'), self.western('333', audience='men')], toggle=False)
+        self.assertNotIn('data-audience', pages[1]['_body'])
+        self.assertEqual(pages[1]['_body'].count('class="nykaa-product-shell"'), 2)
+        self.assertNotIn('data-audience', pages[0]['_body'])
+
+    def test_audience_values_and_setting_are_validated(self):
+        self.assertTrue(fashion.validate_widgets(base([{**self.record(), 'audience': 'kids'}]))[1])
+        self.assertEqual(fashion.validate_widgets(base([{**self.record(), 'audience': 'men'}]))[1], [])
+        entry = {'category': 'westernwear', 'audience_toggle': 'yes'}
+        self.assertTrue(fashion.validate_widgets({**base([self.record()]), 'category_pages': [entry]})[1])
+
+    def test_production_westernwear_page_has_the_toggle_and_labelled_women(self):
+        data = fashion.read_widgets(ROOT / 'src')
+        self.assertTrue(fashion.category_page_config(ROOT / 'src')['westernwear']['audience_toggle'])
+        western = [w for w in data['widgets'] if w['category'] == 'westernwear']
+        self.assertTrue(western)
+        self.assertTrue(all(w.get('audience') in ('women', 'men') for w in western))
 
     def test_category_page_defaults_and_no_page_without_widgets(self):
         pages, _ = self.build_pages([self.record()], collections=(), category_pages=None)

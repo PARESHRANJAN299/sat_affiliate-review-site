@@ -41,9 +41,12 @@ WIDGET_AFFILIATE_NOTE = 'This section contains affiliate links. SAT may earn a c
 EDIT_LABELS = {'womens-kurtas': 'THE KURTA EDIT', 'westernwear': 'THE WESTERN EDIT'}
 # The /fashion/ rail is a short preview; the category page lists every widget.
 WIDGET_RAIL_LIMIT = 12
-WIDGET_KEYS = {'id', 'product_id', 'category', 'source', 'widget_url', 'width', 'height', 'active', 'featured', 'collection', 'affiliate_url'}
+WIDGET_KEYS = {'id', 'product_id', 'category', 'source', 'widget_url', 'width', 'height', 'active', 'featured', 'collection', 'affiliate_url', 'audience'}
+# A category page can split its widgets by audience (a Women / Men toggle). Widgets without an audience count as women's.
+AUDIENCES = (('women', 'Women'), ('men', 'Men'))
+DEFAULT_AUDIENCE = 'women'
 COLLECTION_KEYS = {'id', 'category', 'title', 'suggestions'}
-CATEGORY_PAGE_KEYS = {'category', 'h1', 'intro', 'meta_title', 'meta_description', 'main_heading', 'explore_label'}
+CATEGORY_PAGE_KEYS = {'category', 'h1', 'intro', 'meta_title', 'meta_description', 'main_heading', 'explore_label', 'audience_toggle'}
 WIDGET_URL_CHARS = re.compile(r'[A-Za-z0-9._~:/?&=%+-]+')
 EMPTY_NOTE = 'Products will appear here once approved Nykaa catalogue items are added.'
 BRANDS_EMPTY_NOTE = 'Brands will appear here once approved Nykaa catalogue items are added.'
@@ -205,10 +208,14 @@ def validate_category_pages(data):
             problems.append(f'fashion category page {entry.get("category")!r}: unknown or duplicate category')
             continue
         bad = [k for k, limit in limits.items() if k in entry and (not isinstance(entry[k], str) or not entry[k].strip() or len(entry[k]) > limit)]
+        if 'audience_toggle' in entry and not isinstance(entry['audience_toggle'], bool):
+            bad.append('audience_toggle')
         if bad:
-            problems.append(f'fashion category page {slug}: {bad} must be non-empty text within the length limit')
+            problems.append(f'fashion category page {slug}: {bad} must be non-empty text within the length limit (audience_toggle must be true or false)')
             continue
         out[slug] = {k: entry[k].strip() for k in limits if k in entry}
+        if entry.get('audience_toggle'):
+            out[slug]['audience_toggle'] = True
     return out, problems
 
 
@@ -251,6 +258,9 @@ def validate_widgets(data):
         link = widget.get('affiliate_url')
         if link is not None and not approved_url(link, link_hosts):
             problems.append(f'fashion widget {wid}: affiliate_url requires https on an approved Nykaa product-link host (allowed_product_link_hosts)')
+        audience = widget.get('audience')
+        if audience is not None and audience not in dict(AUDIENCES):
+            problems.append(f'fashion widget {wid}: audience must be one of {sorted(dict(AUDIENCES))}')
         group = widget.get('collection')
         if group is not None and (not isinstance(group, str) or known.get(group) != widget['category']):
             problems.append(f'fashion widget {wid}: collection must be a defined collection of the same category')
@@ -359,7 +369,18 @@ def category_page(slug, title, items, collections, config, site_url=SITE_URL):
     description = config.get('meta_description') or f'{title} selected by SAT from Nykaa Fashion.'
     main = [item for item in items if not item.get('collection')]
     groups = []
-    if main:
+    if config.get('audience_toggle'):
+        tabs, panels = [], []
+        for key, name in AUDIENCES:
+            members = [item for item in main if item.get('audience', DEFAULT_AUDIENCE) == key]
+            current = ' aria-current="true"' if key == AUDIENCES[0][0] else ''
+            tabs.append(f'<a href="#{key}" data-audience-tab="{key}"{current}>{esc(name)} <span>{len(members)}</span></a>')
+            heading = f'{name}’s {title}'
+            inside = (widget_group(f'<h2 class="nykaa-results-title">{esc(heading)}</h2>', members, f'{heading} from Nykaa Fashion', title, site_url, page_path=url, grid=True)
+                      if members else f'<h2 class="nykaa-results-title">{esc(heading)}</h2><p class="fashion-empty-note nykaa-audience-empty">{esc(name)}’s picks will appear here once approved Nykaa catalogue items are added.</p>')
+            panels.append(f'<section class="nykaa-panel" id="{key}" data-audience-panel="{key}" aria-label="{esc(heading)}">{inside}</section>')
+        groups.append(f'<nav class="nykaa-audience" aria-label="Show {esc(title)} for">' + ''.join(tabs) + '</nav>' + ''.join(panels))
+    elif main:
         heading = config.get('main_heading', f'Search results for {title}')
         groups.append(widget_group(f'<h2 class="nykaa-results-title">{esc(heading)}</h2>', main, f'{heading} from Nykaa Fashion', title, site_url, page_path=url, grid=True))
     for collection in collections:

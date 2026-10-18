@@ -1,5 +1,33 @@
 (function () {
   'use strict';
+  // Women / Men toggle: without JavaScript both lists are shown one after the other.
+  var tabs = document.querySelectorAll('[data-audience-tab]');
+  var panels = document.querySelectorAll('[data-audience-panel]');
+  function showAudience(name) {
+    panels.forEach(function (panel) { panel.hidden = panel.dataset.audiencePanel !== name; });
+    tabs.forEach(function (tab) {
+      if (tab.dataset.audienceTab === name) tab.setAttribute('aria-current', 'true'); else tab.removeAttribute('aria-current');
+    });
+  }
+  function audienceFromHash() {
+    var id = location.hash.slice(1);
+    if (!id) return null;
+    var target = document.getElementById(id);
+    var panel = target && target.closest ? target.closest('[data-audience-panel]') : null;
+    if (panel) return panel.dataset.audiencePanel;
+    return document.querySelector('[data-audience-tab="' + id.replace(/[^a-z-]/g, '') + '"]') ? id : null;
+  }
+  if (tabs.length) {
+    showAudience(audienceFromHash() || tabs[0].dataset.audienceTab);
+    tabs.forEach(function (tab) {
+      tab.addEventListener('click', function (event) {
+        event.preventDefault();
+        showAudience(tab.dataset.audienceTab);
+        try { history.replaceState(null, '', '#' + tab.dataset.audienceTab); } catch (error) { /* the toggle still works */ }
+      });
+    });
+  }
+
   var rails = document.querySelectorAll('[data-widget-rail], [data-widget-grid]');
   if (!rails.length) return;
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -59,10 +87,42 @@
     }
   });
 
+  // Sorting aid for the site owner: add ?sort=1 to a category page to mark products as men's, then copy their ids.
+  if (/[?&]sort=1(&|$)/.test(location.search)) {
+    var marked = {};
+    var bar = document.createElement('div');
+    bar.className = 'nykaa-sortbar';
+    var label = document.createElement('span');
+    var copyAll = document.createElement('button');
+    copyAll.type = 'button'; copyAll.textContent = 'Copy men’s product ids';
+    bar.appendChild(label); bar.appendChild(copyAll); document.body.appendChild(bar);
+    var count = function () { var ids = Object.keys(marked); label.textContent = 'Marked as men: ' + ids.length; return ids; };
+    count();
+    document.querySelectorAll('.nykaa-product-shell').forEach(function (card) {
+      var mark = document.createElement('button');
+      mark.type = 'button'; mark.className = 'nykaa-mark'; mark.textContent = 'Mark as men'; mark.setAttribute('aria-pressed', 'false');
+      mark.addEventListener('click', function () {
+        var id = card.dataset.productId, on = !marked[id];
+        if (on) marked[id] = true; else delete marked[id];
+        card.classList.toggle('is-marked', on); mark.setAttribute('aria-pressed', String(on));
+        mark.textContent = on ? 'Marked as men' : 'Mark as men'; count();
+      });
+      card.appendChild(mark);
+    });
+    copyAll.addEventListener('click', function () {
+      var text = count().join(',');
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(function () { copyAll.textContent = 'Copied'; }, function () { window.prompt('Copy these ids', text); });
+      else window.prompt('Copy these ids', text);
+    });
+  }
+
   // A shared link (#pick-<id>) scrolls its card into view along the rail.
   function reveal() {
     var target = location.hash && document.getElementById(location.hash.slice(1));
-    if (target && target.classList.contains('nykaa-product-shell')) target.scrollIntoView({ inline: 'center', block: 'nearest' });
+    if (!target || !target.classList.contains('nykaa-product-shell')) return;
+    var panel = target.closest('[data-audience-panel]');
+    if (panel && panel.hidden) showAudience(panel.dataset.audiencePanel);
+    target.scrollIntoView({ inline: 'center', block: 'center' });
   }
   window.addEventListener('hashchange', reveal);
   window.addEventListener('load', reveal);

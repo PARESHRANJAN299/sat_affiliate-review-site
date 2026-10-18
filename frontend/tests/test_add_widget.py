@@ -71,6 +71,26 @@ class AddWidgetTests(unittest.TestCase):
         self.assertTrue(problems)
         self.assertEqual(self.path.read_text(), before)
 
+    def test_audience_is_recorded_only_when_given(self):
+        add_widget.add(snippet(31111111), category='westernwear', path=self.path, audience='men')
+        add_widget.add(snippet(32222222), category='westernwear', path=self.path)
+        items = {w['product_id']: w for w in self.widgets()}
+        self.assertEqual(items['31111111']['audience'], 'men')
+        self.assertNotIn('audience', items['32222222'])
+        self.assertEqual(fashion.validate_widgets(json.loads(self.path.read_text()))[1], [])
+
+    def test_set_audience_marks_listed_products_and_rejects_unknown_ids(self):
+        add_widget.add(snippet(41111111) + snippet(42222222) + snippet(43333333), category='westernwear', path=self.path)
+        changed, unknown = add_widget.set_audience(['41111111', ' 43333333'], 'men', self.path)
+        self.assertEqual((sorted(changed), unknown), (['41111111', '43333333'], []))
+        items = {w['product_id']: w for w in self.widgets()}
+        self.assertEqual([items[i].get('audience') for i in ('41111111', '42222222', '43333333')], ['men', None, 'men'])
+        before = self.path.read_text()
+        self.assertEqual(add_widget.set_audience(['42222222', '99999999'], 'men', self.path), ([], ['99999999']))
+        self.assertEqual(self.path.read_text(), before)
+        self.assertEqual(add_widget.set_audience(['41111111'], 'men', self.path)[0], [])  # already men: nothing to change
+        self.assertEqual(fashion.validate_widgets(json.loads(self.path.read_text()))[1], [])
+
     def test_dry_run_and_unknown_fields_untouched(self):
         before = self.path.read_text()
         added, _, problems = add_widget.add(snippet(99999999), path=self.path, dry_run=True)
