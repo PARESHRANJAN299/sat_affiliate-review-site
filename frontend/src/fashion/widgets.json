@@ -1,0 +1,41 @@
+{
+  "source": "Nykaa Fashion official affiliate product widgets (iframe). Only the exact widget URL from the Nykaa affiliate dashboard is stored; no product text, image or price is copied.",
+  "allowed_widget_host": "affiliate.nykaa.com",
+  "allowed_widget_path": "/v2/get_product_widget",
+  "allowed_affiliate_id": "PARESHRA-445235",
+  "widgets": [
+    {
+      "id": "nykaa-28560370",
+      "product_id": "28560370",
+      "category": "womens-kurtas",
+      "source": "nykaa-fashion",
+      "widget_url": "https://affiliate.nykaa.com/v2/get_product_widget?ad_id=6ad481f51bde18e19f3d2802&add_resources=True&affiliate_id=PARESHRA-445235&product_id=28560370&store=nykaa_fashion&text_color=000000&theme_variation=TEXT_AND_IMAGE&theme=affiliate&aff_link_type=affiliate%3Anap_dashboard%3Aproduct&hlp=hlpa",
+      "width": 280,
+      "height": 360,
+      "active": true,
+      "featured": true
+    },
+    {
+      "id": "nykaa-27826893",
+      "product_id": "27826893",
+      "category": "womens-kurtas",
+      "source": "nykaa-fashion",
+      "widget_url": "https://affiliate.nykaa.com/v2/get_product_widget?ad_id=6ad482d11bd6310c571ebb7e&add_resources=True&affiliate_id=PARESHRA-445235&product_id=27826893&store=nykaa_fashion&text_color=000000&theme_variation=TEXT_AND_IMAGE&theme=affiliate&aff_link_type=affiliate%3Anap_dashboard%3Aproduct&hlp=hlpa",
+      "width": 280,
+      "height": 360,
+      "active": true,
+      "featured": false
+    },
+    {
+      "id": "nykaa-25744750",
+      "product_id": "25744750",
+      "category": "womens-kurtas",
+      "source": "nykaa-fashion",
+      "widget_url": "https://affiliate.nykaa.com/v2/get_product_widget?ad_id=6ad483131bde18e19f3d2809&add_resources=True&affiliate_id=PARESHRA-445235&product_id=25744750&store=nykaa_fashion&text_color=000000&theme_variation=TEXT_AND_IMAGE&theme=affiliate&aff_link_type=affiliate%3Anap_dashboard%3Aproduct&hlp=hlpa",
+      "width": 280,
+      "height": 360,
+      "active": true,
+      "featured": false
+    }
+  ]
+}

@@ -156,6 +156,21 @@
 .fashion-section-luxe .fashion-frame { width: min(100%, 300px); border: 1px solid var(--f-line); outline: 14px solid var(--f-ivory); outline-offset: -15px; }
 .fashion-section-luxe .fashion-empty-note, .fashion-section-luxe .fashion-empty ul { margin-inline: auto; }
 
+/* Retailer-powered collections: SAT editorial image beside official Nykaa product widgets. Only the wrapper is styled; the iframe content is Nykaa's. */
+.fashion-widget-layout { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: clamp(24px, 5vw, 72px); align-items: start; }
+.fashion-widget-layout .fashion-frame { position: sticky; top: 96px; width: 100%; }
+.fashion-widget-area { min-width: 0; }
+.fashion-widget-note { margin: 0 0 20px; max-width: 62ch; font-size: 12px; line-height: 1.7; color: var(--f-muted); }
+.nykaa-widgets { display: grid; grid-template-columns: repeat(auto-fill, minmax(316px, 1fr)); gap: 20px; }
+.nykaa-product-shell { display: flex; justify-content: center; align-items: flex-start; width: 100%; min-height: 396px; padding: 18px; background: #fffdf8; border: 1px solid rgba(150, 120, 70, .16); border-radius: 18px; }
+.nykaa-product-shell iframe { display: block; border: 0; max-width: 100%; }
+@media (max-width: 899px) {
+  .fashion-widget-layout { grid-template-columns: minmax(0, 1fr); }
+  .fashion-widget-layout .fashion-frame { position: relative; top: auto; width: min(100%, 360px); }
+  .nykaa-widgets { grid-template-columns: minmax(0, 1fr); justify-items: center; }
+  .nykaa-product-shell { max-width: 340px; }
+}
+
 /* Featured Brands: understated, derived from product data; a clear fallback until real data exists. */
 .fashion-brands { border-top: 1px solid var(--f-line); padding: clamp(40px, 6vw, 72px) 0; }
 .fashion-brands ul { list-style: none; margin: 28px 0 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: clamp(24px, 6vw, 88px); }

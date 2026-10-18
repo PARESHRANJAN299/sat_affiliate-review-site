@@ -33,3 +33,11 @@ The mobile detail page has a large image, optional thumbnails, supplied facts, s
 - Image pipeline: remote images are only used from the exact hostnames in `approved_image_hosts`, which is empty until the permitted source is confirmed.
 - Accessors: `get_products`, `get_product_by_slug`, `get_products_by_category`, `get_products_by_brand`, `get_featured_products`, `get_related_products`, `get_brands`.
 - The landing page carries no affiliate sentence of its own (the sitewide footer disclosure covers it). TEMPORARY WORDING: `AFFILIATE_NOTE` on product pages is a placeholder, marked `data-disclosure="temporary"`; replace it when the final Nykaa-approved disclosure is confirmed.
+
+## Official Nykaa affiliate widgets (retailer-powered sections)
+
+- `src/fashion/widgets.json` holds one record per widget: `id`, `product_id`, `category`, `source`, `widget_url`, `width`, `height`, `active`, `featured`. `widget_url` is the exact `src` of the iframe from the Nykaa affiliate dashboard (all affiliate parameters unchanged). Never store iframe HTML: records with unsupported fields are rejected.
+- `fashion.validate_widgets()` only accepts `https://affiliate.nykaa.com/v2/get_product_widget` URLs that carry the approved `affiliate_id`, the record's own `product_id` and `store=nykaa_fashion`, with no extra characters. A bad record fails the build.
+- `widget_shell()` builds the iframe in code (lazy-loaded, titled, 280x360 by default). SAT styles only the wrapper `.nykaa-product-shell`; the card content (image, title, price) is Nykaa's, nothing is copied, scraped or re-typed.
+- A collection with active widgets renders them beside its SAT editorial image, with `WIDGET_AFFILIATE_NOTE` above them (easy-to-replace wording, marked `data-disclosure="temporary"`). Collections without widgets keep their empty state. To add a product: append a record to `widgets.json`.
+

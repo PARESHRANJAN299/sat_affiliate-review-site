@@ -4,11 +4,11 @@ import json
 import copy
 from pathlib import Path
 import re
-from urllib.parse import urlsplit, quote
+from urllib.parse import urlsplit, quote, parse_qs
 
 # (anchor, title, icon art, tagline, tips, layout). Layout picks the section composition in render_products().
 SECTIONS = [
-    ('womens-kurtas', 'Women’s Kurtas', 'kurtas-kurti-sets', 'Elegant styles for everyday and special occasions.', ['Compare fabric composition and care instructions.', 'Check the length, lining and size chart for the exact garment.'], 'feature'),
+    ('womens-kurtas', 'Women’s Kurtas', 'kurtas-kurti-sets', 'Elegant Indian styles selected for everyday and occasion wear.', ['Compare fabric composition and care instructions.', 'Check the length, lining and size chart for the exact garment.'], 'feature'),
     ('westernwear', 'Westernwear', 'casual-dresses', 'Modern pieces for everyday style.', ['Think about how each piece fits your existing wardrobe.', 'Compare fit, fabric, closures and care requirements.'], 'stagger'),
     ('indianwear', 'Indianwear', 'kurtas', 'Tradition with a personal touch.', ['Check what is included in the set before buying.', 'Compare fabric, lining and embellishment care.'], 'warm'),
     ('footwear', 'Footwear', 'sports-shoes', 'Comfort for every step.', ['Use the brand’s size chart and compare foot measurements.', 'Check sole material, fastening and the retailer’s return terms.'], 'rail'),
@@ -33,6 +33,11 @@ ART_ALT = {'ivory-kurta': 'Editorial image: a woman in an ivory floral kurta set
            'orange-dress': 'Editorial image: a woman in an orange pinafore dress over a white top, with white trainers.',
            'white-tee-a': 'Editorial image: a woman sitting cross-legged in a white tee and blush joggers.',
            'white-tee-b': 'Editorial image: a woman sitting cross-legged in a white tee, blush joggers and white trainers.'}
+# Easy-to-replace wording shown beside the first Nykaa widgets.
+WIDGET_AFFILIATE_NOTE = 'This section contains affiliate links. SAT may earn a commission from qualifying purchases at no extra cost to you.'
+EDIT_LABELS = {'womens-kurtas': 'THE KURTA EDIT'}
+WIDGET_KEYS = {'id', 'product_id', 'category', 'source', 'widget_url', 'width', 'height', 'active', 'featured'}
+WIDGET_URL_CHARS = re.compile(r'[A-Za-z0-9._~:/?&=%+-]+')
 EMPTY_NOTE = 'Products will appear here once approved Nykaa catalogue items are added.'
 BRANDS_EMPTY_NOTE = 'Brands will appear here once approved Nykaa catalogue items are added.'
 
@@ -144,6 +149,85 @@ def catalog(src):
         return [], [f'fashion data: cannot read product data ({exc})']
 
 
+def read_widgets(src):
+    path = Path(src) / 'fashion' / 'widgets.json'
+    return json.loads(path.read_text()) if path.is_file() else {'widgets': []}
+
+
+def validate_widgets(data):
+    """Validate official Nykaa affiliate widget records. Only an exact, allowlisted widget URL is accepted, never HTML."""
+    if not isinstance(data, dict) or not isinstance(data.get('widgets'), list):
+        return [], ['fashion widgets: root must be an object with a widgets list']
+    host, path, affiliate = data.get('allowed_widget_host'), data.get('allowed_widget_path'), data.get('allowed_affiliate_id')
+    if data['widgets'] and not all(isinstance(v, str) and v for v in (host, path, affiliate)):
+        return [], ['fashion widgets: allowed_widget_host, allowed_widget_path and allowed_affiliate_id are required']
+    problems, active, ids = [], [], set()
+    for record in data['widgets']:
+        before = len(problems)
+        if not isinstance(record, dict):
+            problems.append('fashion widgets: each widget must be an object')
+            continue
+        wid = record.get('id', '')
+        extra = sorted(set(record) - WIDGET_KEYS)
+        if extra:
+            problems.append(f'fashion widget {wid!r}: unsupported fields {extra} (store the widget URL, never HTML)')
+        if not isinstance(wid, str) or not re.fullmatch(r'[a-z0-9]+(?:-[a-z0-9]+)*', wid) or wid in ids:
+            problems.append(f'fashion widget {wid!r}: id must be unique lowercase words/numbers')
+        ids.add(str(wid))
+        if not isinstance(record.get('active'), bool) or not isinstance(record.get('featured'), bool):
+            problems.append(f'fashion widget {wid}: active and featured must be booleans')
+        if record.get('active') is not True:
+            continue
+        widget = copy.deepcopy(record)
+        if not isinstance(widget.get('product_id'), str) or not re.fullmatch(r'[0-9]{1,12}', widget['product_id']):
+            problems.append(f'fashion widget {wid}: product_id must be digits')
+        widget['category'] = category_slug(widget.get('category'))
+        if not widget['category']:
+            problems.append(f'fashion widget {wid}: unknown category')
+        url = widget.get('widget_url')
+        if not isinstance(url, str) or not WIDGET_URL_CHARS.fullmatch(url):
+            problems.append(f'fashion widget {wid}: widget_url has unsupported characters')
+        else:
+            parts = urlsplit(url)
+            query = parse_qs(parts.query, keep_blank_values=True)
+            if not (parts.scheme == 'https' and parts.hostname == host and parts.port in (None, 443) and not parts.username and not parts.fragment and parts.path == path):
+                problems.append(f'fashion widget {wid}: widget_url must be https://{host}{path}')
+            elif query.get('affiliate_id') != [affiliate] or query.get('product_id') != [widget.get('product_id')] or query.get('store') != ['nykaa_fashion']:
+                problems.append(f'fashion widget {wid}: widget_url must carry the approved affiliate_id, this product_id and store=nykaa_fashion')
+        for key, default in (('width', 280), ('height', 360)):
+            widget.setdefault(key, default)
+            if not isinstance(widget[key], int) or isinstance(widget[key], bool) or not 100 <= widget[key] <= 600:
+                problems.append(f'fashion widget {wid}: {key} must be a whole number from 100 to 600')
+        if len(problems) == before:
+            active.append(widget)
+    return sorted(active, key=lambda item: (not item['featured'], item['id'])), problems
+
+
+def widgets(src):
+    try:
+        return validate_widgets(read_widgets(src))
+    except (OSError, ValueError) as exc:
+        return [], [f'fashion widgets: cannot read widget data ({exc})']
+
+
+def get_widgets_by_category(items, category):
+    return [item for item in items if item['category'] == category]
+
+
+def widget_shell(widget):
+    """SAT wrapper around the official Nykaa iframe. The iframe URL is exactly the stored, validated widget_url; its content stays Nykaa's."""
+    return (f'<article class="nykaa-product-shell" data-product-id="{esc(widget["product_id"])}">'
+            f'<iframe src="{esc(widget["widget_url"])}" title="Nykaa Fashion product" width="{widget["width"]}" height="{widget["height"]}" loading="lazy" '
+            f'style="height:{widget["height"]}px;width:{widget["width"]}px;overflow:hidden;"></iframe></article>')
+
+
+def render_widgets(slug, items, icon_free=True):
+    frame = f'<figure class="fashion-frame fashion-tint-{slug}">{art_picture(slug, "(min-width: 900px) 40vw, 90vw")}</figure>'
+    return (f'<div class="fashion-widget-layout">{frame}<div class="fashion-widget-area">'
+            f'<p class="fashion-widget-note" data-disclosure="temporary">{esc(WIDGET_AFFILIATE_NOTE)}</p>'
+            f'<div class="nykaa-widgets">{"".join(widget_shell(item) for item in items)}</div></div></div>')
+
+
 def product_url(product):
     return '/fashion/products/' + product['slug'] + '/'
 
@@ -236,6 +320,7 @@ def product_page(product, products, site_url):
 
 def pages(src, icon, site_url):
     products, errors = catalog(src)
+    errors = errors + widgets(src)[1]
     landing, _ = page(src, icon)
     landing['canonical_always'] = True
     return [landing] + [product_page(product, products, site_url) for product in products], errors
@@ -276,6 +361,8 @@ TRUST_ICONS = (
 
 def page(src, icon):
     products, problems = catalog(src)
+    live_widgets, widget_problems = widgets(src)
+    problems = problems + widget_problems
     tiles, sections = [], []
     for index, (slug, title, art, description, tips, layout) in enumerate(SECTIONS, 1):
         matching = get_products_by_category(products, slug)
@@ -285,8 +372,14 @@ def page(src, icon):
             visual = art_picture(slug, '(min-width: 900px) 34vw, 62vw', priority=(index == 1))
         tiles.append(f'<a class="fashion-category fashion-category-{slug} fashion-tint-{slug}" href="#{slug}">{visual}'
                      f'<span class="fashion-category-label"><strong>{esc(title)}</strong><em>{esc(description)}</em><span class="fashion-category-arrow" aria-hidden="true">→</span></span></a>')
-        contents = render_products(layout, matching) if matching else render_empty(slug, tips, layout, icon)
-        sections.append(f'<section class="fashion-section fashion-section-{layout}" id="{slug}" aria-labelledby="{slug}-title"><header><p class="fashion-section-number">0{index}</p><h2 id="{slug}-title">{esc(title)}</h2><p>{esc(description)}</p></header>{contents}<a class="fashion-back" href="#fashion-categories">Back to styles ↑</a></section>')
+        here = get_widgets_by_category(live_widgets, slug)
+        if here:
+            contents = render_widgets(slug, here) + (render_products(layout, matching) if matching else '')
+        else:
+            contents = render_products(layout, matching) if matching else render_empty(slug, tips, layout, icon)
+        label = EDIT_LABELS.get(slug)
+        marker = f'<p class="sat-fashion-eyebrow">{esc(label)} <span aria-hidden="true"></span></p>' if here and label else f'<p class="fashion-section-number">0{index}</p>'
+        sections.append(f'<section class="fashion-section fashion-section-{layout}{" fashion-section-widgets" if here else ""}" id="{slug}" aria-labelledby="{slug}-title"><header>{marker}<h2 id="{slug}-title">{esc(title)}</h2><p>{esc(description)}</p></header>{contents}<a class="fashion-back" href="#fashion-categories">Back to styles ↑</a></section>')
     brands = get_brands(products)
     if brands:
         brands_html = ('<section class="fashion-brands" aria-labelledby="fashion-brands-title"><header><p class="fashion-section-number">BRANDS</p><h2 id="fashion-brands-title">Featured Brands</h2></header><ul>'
