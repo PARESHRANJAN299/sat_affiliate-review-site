@@ -69,8 +69,7 @@
       "width": 280,
       "height": 360,
       "active": true,
-      "featured": false,
-      "collection": "kurta-sets-search"
+      "featured": false
     },
     {
       "id": "nykaa-21706664",
@@ -81,23 +80,7 @@
       "width": 280,
       "height": 360,
       "active": true,
-      "featured": false,
-      "collection": "kurta-sets-search"
-    }
-  ],
-  "collections": [
-    {
-      "id": "kurta-sets-search",
-      "category": "womens-kurtas",
-      "title": "Search results for Women’s kurtas set",
-      "suggestions": [
-        "Pure cotton kurtas set for women",
-        "Pure cotton kurta set for women",
-        "Pure cotton kurta sets for women",
-        "Pure cotton kurtas sets for women",
-        "Pure cotton kurti set for women",
-        "Indian kurta set for women pure cotton"
-      ]
+      "featured": false
     }
   ],
   "category_pages": [

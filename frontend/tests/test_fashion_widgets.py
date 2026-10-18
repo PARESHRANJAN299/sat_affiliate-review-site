@@ -47,15 +47,11 @@ class WidgetTests(unittest.TestCase):
             self.assertIn('affiliate_id=PARESHRA-445235', item['widget_url'])
             self.assertIn('product_id=' + item['product_id'], item['widget_url'])
 
-    def test_production_collection_and_order(self):
+    def test_production_widgets_keep_file_order_and_have_no_leftover_collection(self):
         data = fashion.read_widgets(ROOT / 'src')
-        collections, problems = fashion.validate_collections(data)
+        items, problems = fashion.widgets(ROOT / 'src')
         self.assertEqual(problems, [])
-        search = next(c for c in collections if c['id'] == 'kurta-sets-search')
-        self.assertEqual(search['title'], 'Search results for Women’s kurtas set')
-        self.assertEqual(len(search['suggestions']), 6)
-        items, _ = fashion.widgets(ROOT / 'src')
-        self.assertEqual([i['product_id'] for i in items if i.get('collection') == 'kurta-sets-search'], ['27421822', '21706664'])
+        self.assertFalse(any('collection' in w for w in data['widgets']))
         listed = [w['product_id'] for w in data['widgets'] if w['active'] and not w['featured']]
         self.assertEqual([i['product_id'] for i in items if not i['featured']], listed)  # file order is kept
 
@@ -200,13 +196,17 @@ class WidgetPageTests(unittest.TestCase):
         self.assertIn('href="https://www.nykaafashion.example/p/28560370?aff=1&amp;x=2" target="_blank" rel="sponsored nofollow noopener"', body)
         self.assertIn('Get it on Nykaa', body)
 
-    def test_rail_scales_to_many_widgets(self):
-        many = [self.record(str(1000 + n), FIRST_URL.replace('28560370', str(1000 + n))) for n in range(50)]
-        page, problems = self.build(many)
+    def test_a_hundred_widgets_preview_on_landing_and_all_list_on_category_page(self):
+        many = [self.record(str(1000 + n), FIRST_URL.replace('28560370', str(1000 + n))) for n in range(100)]
+        pages, problems = self.build_pages(many, collections=())
         self.assertEqual(problems, [])
-        self.assertEqual(page['_body'].count('<iframe'), 50)
-        self.assertEqual(page['_body'].count('loading="lazy" style="height:360px'), 50)
-        self.assertEqual(page['js'], ['fashion-widgets'])
+        landing, category = pages[0], pages[1]
+        self.assertEqual(landing['_body'].count('<iframe'), fashion.WIDGET_RAIL_LIMIT)
+        self.assertEqual(category['_body'].count('<iframe'), 100)
+        self.assertEqual(category['_body'].count('loading="lazy" style="height:360px'), 100)
+        self.assertEqual(len(set(__import__('re').findall(r'id="(pick-\d+)"', category['_body']))), 100)
+        self.assertEqual(landing['js'], ['fashion-widgets'])
+        self.assertEqual(landing['_body'].count('class="nykaa-explore-link"'), 1)
 
     def build_pages(self, widgets, collections=(COLLECTION,), category_pages=None):
         directory = tempfile.TemporaryDirectory()

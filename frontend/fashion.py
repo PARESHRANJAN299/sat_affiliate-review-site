@@ -39,6 +39,8 @@ ART_ALT = {'ivory-kurta': 'Editorial image: a woman in an ivory floral kurta set
 # Easy-to-replace wording shown beside the first Nykaa widgets.
 WIDGET_AFFILIATE_NOTE = 'This section contains affiliate links. SAT may earn a commission from qualifying purchases at no extra cost to you.'
 EDIT_LABELS = {'womens-kurtas': 'THE KURTA EDIT'}
+# The /fashion/ rail is a short preview; the category page lists every widget.
+WIDGET_RAIL_LIMIT = 12
 WIDGET_KEYS = {'id', 'product_id', 'category', 'source', 'widget_url', 'width', 'height', 'active', 'featured', 'collection', 'affiliate_url'}
 COLLECTION_KEYS = {'id', 'category', 'title', 'suggestions'}
 CATEGORY_PAGE_KEYS = {'category', 'h1', 'intro', 'meta_title', 'meta_description', 'main_heading', 'explore_label'}
@@ -343,7 +345,7 @@ def render_widgets(slug, items, title='', site_url=SITE_URL, collections=(), exp
     official Nykaa widgets, with a single button to the full category page where every widget is listed."""
     banner = f'<figure class="fashion-widget-banner fashion-tint-{slug}">{art_picture(slug, "(min-width: 900px) 1232px, 100vw", stem=BANNER_STEMS.get(slug))}</figure>'
     note = f'<p class="fashion-widget-note" data-disclosure="temporary">{esc(WIDGET_AFFILIATE_NOTE)}</p>'
-    rail = [item for item in items if not item.get('collection')] or items
+    rail = ([item for item in items if not item.get('collection')] or items)[:WIDGET_RAIL_LIMIT]
     button = (f'<div class="nykaa-explore"><a class="nykaa-explore-link" href="{category_page_url(slug)}">{esc(explore_label or "Explore " + title)} '
               '<span aria-hidden="true">→</span></a></div>')
     return banner + widget_group(f'<div class="fashion-widget-bar">{note}{widget_controls()}</div>', rail, f'{title} picks from Nykaa Fashion', title, site_url, tail=button)

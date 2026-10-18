@@ -1,0 +1,86 @@
+"""The add_widget helper: reads pasted iframe snippets, keeps only the src URL, and writes nothing unless everything validates."""
+import json
+from pathlib import Path
+import shutil
+import sys
+import tempfile
+import unittest
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+import add_widget
+import fashion
+
+
+def snippet(pid, ad='6ad4aaaa', affiliate='PARESHRA-445235', style='height: 360px; width: 280px; overflow:hidden;'):
+    url = (f'https://affiliate.nykaa.com/v2/get_product_widget?ad_id={ad}&amp;add_resources=True&amp;affiliate_id={affiliate}&amp;product_id={pid}&amp;store=nykaa_fashion'
+           '&amp;text_color=000000&amp;theme_variation=TEXT_AND_IMAGE&amp;theme=affiliate&amp;aff_link_type=affiliate%3Anap_dashboard%3Aproduct&amp;hlp=hlpa')
+    return f'<iframe src="{url}" style="{style}" frameborder="0"></iframe>'
+
+
+class AddWidgetTests(unittest.TestCase):
+    def setUp(self):
+        directory = tempfile.TemporaryDirectory()
+        self.addCleanup(directory.cleanup)
+        self.path = Path(directory.name) / 'widgets.json'
+        shutil.copy(ROOT / 'src/fashion/widgets.json', self.path)
+        self.before = json.loads(self.path.read_text())
+
+    def widgets(self):
+        return json.loads(self.path.read_text())['widgets']
+
+    def test_adds_many_snippets_in_order_and_decodes_entities(self):
+        added, skipped, problems = add_widget.add(snippet(11111111) + ',\n' + snippet(22222222), path=self.path)
+        self.assertEqual((added, skipped, problems), (['11111111', '22222222'], [], []))
+        items = self.widgets()
+        self.assertEqual([w['product_id'] for w in items[-2:]], ['11111111', '22222222'])
+        self.assertNotIn('&amp;', items[-1]['widget_url'])
+        self.assertIn('affiliate_id=PARESHRA-445235&product_id=22222222&store=nykaa_fashion', items[-1]['widget_url'])
+        self.assertEqual((items[-1]['category'], items[-1]['active'], items[-1]['featured']), ('womens-kurtas', True, False))
+        self.assertEqual(fashion.validate_widgets(json.loads(self.path.read_text()))[1], [])
+
+    def test_bare_urls_and_size_from_style(self):
+        url = add_widget.extract(snippet(33333333))[0]
+        added, _, _ = add_widget.add(url + '\n', path=self.path)
+        self.assertEqual(added, ['33333333'])
+        self.assertEqual((self.widgets()[-1]['width'], self.widgets()[-1]['height']), (280, 360))
+        add_widget.add(snippet(44444444, style='height: 400px; width: 300px; overflow:hidden;'), path=self.path)
+        self.assertEqual((self.widgets()[-1]['width'], self.widgets()[-1]['height']), (300, 400))
+
+    def test_existing_products_are_skipped_not_duplicated(self):
+        add_widget.add(snippet(55555555), path=self.path)
+        count = len(self.widgets())
+        added, skipped, problems = add_widget.add(snippet(55555555), path=self.path)
+        self.assertEqual((added, skipped, problems), ([], ['55555555'], []))
+        self.assertEqual(len(self.widgets()), count)
+
+    def test_invalid_input_writes_nothing(self):
+        before = self.path.read_text()
+        for bad in (snippet(66666666, affiliate='SOMEONE-ELSE'), 'no widget here',
+                    '<iframe src="https://affiliate.nykaa.com/v2/other?affiliate_id=PARESHRA-445235&product_id=1&store=nykaa_fashion"></iframe>',
+                    '<iframe src="https://affiliate.nykaa.com/v2/get_product_widget?affiliate_id=PARESHRA-445235&store=nykaa_fashion"></iframe>'):
+            added, _, problems = add_widget.add(bad, path=self.path)
+            self.assertEqual(added, [], bad[:40])
+            self.assertTrue(problems, bad[:40])
+            self.assertEqual(self.path.read_text(), before)
+
+    def test_one_bad_record_blocks_the_whole_batch(self):
+        before = self.path.read_text()
+        added, _, problems = add_widget.add(snippet(77777777) + snippet(88888888, affiliate='SOMEONE-ELSE'), path=self.path)
+        self.assertEqual(added, [])
+        self.assertTrue(problems)
+        self.assertEqual(self.path.read_text(), before)
+
+    def test_dry_run_and_unknown_fields_untouched(self):
+        before = self.path.read_text()
+        added, _, problems = add_widget.add(snippet(99999999), path=self.path, dry_run=True)
+        self.assertEqual((added, problems), (['99999999'], []))
+        self.assertEqual(self.path.read_text(), before)
+        add_widget.add(snippet(99999999), path=self.path)
+        after = json.loads(self.path.read_text())
+        for key in ('allowed_widget_host', 'allowed_affiliate_id', 'category_pages', 'allowed_product_link_hosts'):
+            self.assertEqual(after.get(key), self.before.get(key))
+
+
+if __name__ == '__main__':
+    unittest.main()
