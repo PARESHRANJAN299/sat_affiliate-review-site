@@ -650,7 +650,7 @@ class BudgetDiscovery(unittest.TestCase):
         cards = re.findall(r'<a class="card card-primary lx-budget tier-(\d)" href="([^"]+)"[^>]*>.*?</a>', body, flags=re.S)
         self.assertEqual(len(cards), len(tiers))
         aff = self.shop.hub_affiliate()
-        expected = [(aff["url"] if aff and not t["has_page"] else t["href"]).replace("&", "&amp;") for t in tiers]   # Amazon unless the tier has its own published page
+        expected = [(self.shop.tier_affiliate(t, aff)["url"] if aff and not t["has_page"] else t["href"]).replace("&", "&amp;") for t in tiers]   # its own Amazon search unless the tier has a published page
         self.assertEqual([c[1] for c in cards], expected)
         self.assertEqual([int(c[0]) for c in cards], sorted(int(c[0]) for c in cards))          # the colour never steps back as the price rises
         self.assertEqual(cards[-1][0], "7")                                                     # Premium is the deepest tier
@@ -837,19 +837,54 @@ class HubAffiliateCards(unittest.TestCase):
         self.assertEqual(self.shop.hub_affiliate()["url"], self.URL)
 
     def test_every_budget_card_and_the_hero_open_the_link_in_a_new_tab(self):
-        import re, html
+        import re, html, urllib.parse
         body = self.shop.landing()["_body"]
         cards = self.cards(body)
         self.assertEqual(len(cards), len(self.shop.budget_discovery()))
+        base = urllib.parse.parse_qs(urllib.parse.urlsplit(self.URL).query)
         for href, rest in cards:
-            self.assertEqual(html.unescape(href), self.URL)                                  # never rebuilt or retagged
+            q = urllib.parse.parse_qs(urllib.parse.urlsplit(html.unescape(href)).query)
+            for keep in ("tag", "linkCode", "linkId", "ref_", "i"):
+                self.assertEqual(q[keep], base[keep], keep)                                   # the owner's tracking parameters are untouched
+            self.assertNotEqual(html.unescape(href), self.URL)                               # but the search is the card's own
             self.assertIn('target="_blank"', rest)
             self.assertIn('rel="sponsored nofollow noopener"', rest)
         hero = re.findall(r'<a class="lx-hero-link" href="([^"]+)"([^>]*)>', body)
         self.assertEqual(len(hero), 1)
-        self.assertEqual(html.unescape(hero[0][0]), self.URL)
-        self.assertIn("(paid link)", hero[0][1])                                             # the accessible name says it is paid
-        self.assertIn("(opens Amazon, paid link)", body)
+        self.assertEqual(html.unescape(hero[0][0]), self.URL)                                  # the hero uses the link exactly as supplied
+        self.assertIn("(paid link)", hero[0][1])
+        self.assertIn("(opens an Amazon search for", body)
+
+    def test_each_card_searches_amazon_for_its_own_price(self):
+        import html, urllib.parse
+        shop = self.shop
+        aff = shop.hub_affiliate()
+        for t in shop.budget_discovery():
+            link = shop.tier_affiliate(t, aff)
+            q = urllib.parse.parse_qs(urllib.parse.urlsplit(link["url"]).query)
+            if t["kind"] == "premium":
+                low = shop.budgets[shop.discovery_config()["premium_after"]]["max"]
+                self.assertEqual((q["k"][0], q["rh"][0]), (f"watches above {low}", f"p_36:{low * 100}-"), t["id"])      # Amazon prices are in paise
+            else:
+                top = shop.budgets[t["id"]]["max"]
+                self.assertEqual((q["k"][0], q["rh"][0]), (f"watches under {top}", f"p_36:-{top * 100}"), t["id"])
+        keys = {shop.tier_affiliate(t, aff)["url"] for t in shop.budget_discovery()}
+        self.assertEqual(len(keys), len(shop.budget_discovery()))                              # no two cards share a search
+
+    def test_search_wording_is_configurable_and_safe(self):
+        import urllib.parse
+        shop = self.shop
+        saved = shop.settings["hub_affiliate"]
+        self.addCleanup(lambda: shop.settings.__setitem__("hub_affiliate", saved))
+        t = next(x for x in shop.budget_discovery() if x["id"] == "under-2000")
+        shop.settings["hub_affiliate"] = dict(saved, keyword="best watch for under Rs {max}", price_filter=False)
+        q = urllib.parse.parse_qs(urllib.parse.urlsplit(shop.tier_affiliate(t, shop.hub_affiliate())["url"]).query)
+        self.assertEqual(q["k"], ["best watch for under Rs 2000"])
+        self.assertNotIn("rh", q)                                                             # the price limit can be switched off
+        shop.settings["hub_affiliate"] = {"url": "https://www.amazon.in/s?i=watches&tag=pareshsat-21"}   # a base link with no search words
+        q = urllib.parse.parse_qs(urllib.parse.urlsplit(shop.tier_affiliate(t, shop.hub_affiliate())["url"]).query)
+        self.assertEqual((q["k"], q["tag"]), (["watches under 2000"], ["pareshsat-21"]))
+        self.assertIsNone(shop.tier_affiliate(t, None))
 
     def test_nothing_on_these_cards_scrolls_or_filters_the_page(self):
         import re
@@ -871,7 +906,7 @@ class HubAffiliateCards(unittest.TestCase):
         own = [rest for href, rest in cards if href == "/watches/under-10000/"]
         self.assertEqual(len(own), 1)
         self.assertNotIn("target=", own[0])                                                    # an on-site link opens in the same tab
-        self.assertEqual(sum(1 for href, rest in cards if href.replace("&amp;", "&") == self.URL), len(shop.budget_discovery()) - 1)
+        self.assertEqual(sum(1 for href, rest in cards if href.startswith("https://www.amazon.in/s?")), len(shop.budget_discovery()) - 1)
 
     def test_plain_on_site_links_without_affiliate_mode_or_url(self):
         shop = self.shop
@@ -897,8 +932,9 @@ class HubAffiliateCards(unittest.TestCase):
         if not page.exists():
             self.skipTest("run build.py first")
         text = page.read_text(encoding="utf-8")
-        hub = [m for m in re.finditer(r'<a [^>]*href="([^"]*)"[^>]*>', text) if html.unescape(m.group(1)) == self.URL]
+        hub = [m for m in re.finditer(r'<a [^>]*href="([^"]*)"[^>]*>', text) if html.unescape(m.group(1)).startswith("https://www.amazon.in/s?k=") and ("lx-hero-link" in m.group(0) or "lx-budget" in m.group(0))]
         self.assertEqual(len(hub), 1 + len(self.shop.budget_discovery()))                    # the hero plus one per tier
+        self.assertEqual(sum(1 for m in hub if html.unescape(m.group(1)) == self.URL), 1)    # only the hero is the supplied link verbatim
         for m in hub:
             self.assertIn('rel="sponsored nofollow noopener"', m.group(0))
         self.assertEqual(len(re.findall(r'(?:lx-hero-link|lx-budget tier-\d)"[^>]*>(?:(?!</a>).)*</a><small class="paid-link">', text, flags=re.S)), 0)   # no visible "Paid link" tag on them

@@ -14,6 +14,7 @@ Standard library only (Python 3.9+).
 import hashlib
 import html
 import re
+import urllib.parse
 import collection
 import cards as ui
 import watch_data
@@ -838,6 +839,35 @@ f'<linearGradient id="g{uid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-
             return None
         return {"url": url, "label": str(cfg.get("label") or "Shop watches on Amazon").strip()}
 
+    def tier_affiliate(self, t, aff):
+        """The owner's Amazon link for one budget card: the supplied url with only the search words (k) and Amazon's price limit (rh) changed, so an Under 2,000
+        card searches for watches under 2,000 and shows only those. Everything else in the link (tag, linkCode, linkId, ref_, i) is kept as supplied.
+        Prices are in paise on Amazon (rh=p_36:-200000 means up to 2,000; rh=p_36:2000000- means 20,000 and above). Returns None without a base link."""
+        if not aff:
+            return None
+        cfg = self.settings.get("hub_affiliate") if isinstance(self.settings.get("hub_affiliate"), dict) else {}
+        premium = t["kind"] == "premium"
+        low = self.budgets[self.discovery_config()["premium_after"]]["max"] if premium and self.discovery_config()["premium_after"] in self.budgets else 0
+        high = int(t.get("max") or 0)
+        template = str(cfg.get("premium_keyword" if premium else "keyword") or ("watches above {min}" if premium else "watches under {max}"))
+        words = template.replace("{min}", str(low)).replace("{max}", str(high)).strip()
+        parts = urllib.parse.urlsplit(aff["url"])
+        pairs = [(k, v) for k, v in urllib.parse.parse_qsl(parts.query, keep_blank_values=True)]
+        swapped = False
+        out = []
+        for k, v in pairs:
+            if k == "k":
+                out.append((k, words)); swapped = True
+            elif k != "rh":
+                out.append((k, v))
+        if not swapped:
+            out.insert(0, ("k", words))
+        if cfg.get("price_filter", True) and (high or low):
+            out.append(("rh", f"p_36:{low * 100}-" if premium else f"p_36:-{high * 100}"))
+        link = urllib.parse.urlunsplit(parts._replace(query=urllib.parse.urlencode(out)))
+        what = f"watches above \u20b9{low:,}" if premium else f"watches under \u20b9{high:,}"
+        return {"url": link, "label": aff["label"], "search": what}
+
     def premium_heading(self):
         after = self.discovery_config()["premium_after"]
         return f"Premium Watches Above \u20b9{self.budgets[after]['max']:,}" if after in self.budgets else "Premium Watches"
@@ -1159,7 +1189,7 @@ f'<linearGradient id="g{uid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-
             else:
                 mine = [p for p in self.products if p.get("budget") == t["price_band"]] or [p for p in self.products if t["price_band"] in self.qualifies(p)]
             art = self.art_copy(mine[0], "b" + str(len(items))) if mine else ""
-            items.append(f'<li>{ui.budget_card(t, art, aff)}</li>')
+            items.append(f'<li>{ui.budget_card(t, art, self.tier_affiliate(t, aff))}</li>')
         return ('<section class="lx-sec lx-budgets" aria-labelledby="lx-budgets"><div class="lx-sec-head"><h2 id="lx-budgets">Shop by budget</h2></div>'
                 f'<ul class="lx-budget-row" data-count="{len(items)}">{"".join(items)}</ul></section>')
 

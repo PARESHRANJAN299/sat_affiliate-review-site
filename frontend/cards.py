@@ -44,7 +44,7 @@ def budget_card(t, art="", aff=None):
     that page. The accessible name is the visible text plus the full heading, and says when the card opens Amazon."""
     redirect = bool(aff) and not t.get("has_page")
     href, attrs = (aff["url"], " " + AFFILIATE_ATTRS) if redirect else (t["href"], "")
-    note = '<span class="visually-hidden"> (opens Amazon, paid link)</span>' if redirect else ""
+    note = f'<span class="visually-hidden"> (opens an Amazon search for {esc(aff.get("search") or "watches")}, paid link)</span>' if redirect else ""
     return (f'<a class="card card-primary lx-budget tier-{t["tier"]}" href="{esc(href)}"{attrs}><span class="b-under">{esc(t["eyebrow"])}</span>'
             f'<strong>{esc(t["amount"])}</strong><span class="b-cap">{watches_text(t["count"])}</span><span class="b-brand">{esc(t["brand_line"].upper())}</span>'
             f'<span class="card-go">Explore watches <i aria-hidden="true">&rarr;</i></span><span class="visually-hidden">: {esc(t.get("heading") or t["display_title"])}</span>{note}'
