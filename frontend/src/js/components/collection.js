@@ -10,7 +10,7 @@
     var sort = root.querySelector('[data-sort]');
     var active = root.querySelector('[data-active]');
     var gender = root.dataset.presetGender || '';
-    var segments = Array.from(root.querySelectorAll('[data-gender]'));
+    var segments = Array.from(root.querySelectorAll('button[data-gender]'));   // the Men/Women buttons only: a watch card also carries data-gender, and its heart or share icon must not toggle the filter
     var plate = root.querySelector('.gender-plate');
     var genderBoxes = boxes.filter(function (box) { return box.dataset.group === 'gender'; });
     var desktop = window.matchMedia('(min-width: 1000px)');

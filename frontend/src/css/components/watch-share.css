@@ -22,8 +22,12 @@
 
 /* a card on a product page (Alternatives) has no heart script, so the icon sits in the corner of the picture */
 .watch-pdp-wrap .watch-visual { position: relative; }
-.watch-pdp-wrap .watch-card .watch-fav { display: none; }
-.watch-pdp-wrap .watch-share--icon { top: 6px; }
+.watch-pdp-wrap .watch-visual .watch-tile, .watch-pdp-wrap .watch-visual .watch-media { width: 100%; box-sizing: border-box; }   /* the picture spans the card (it was a narrow tile on phones, which left the icon floating in white space) */
+.watch-pdp-wrap .watch-fav { position: absolute; top: 10px; right: 10px; z-index: 2; display: grid; place-items: center; width: 36px; height: 36px; padding: 0; border: 0; border-radius: 50%; background: rgba(255, 253, 248, .86); box-shadow: 0 6px 12px -8px rgba(0, 0, 0, .5); cursor: pointer; transition: transform .2s ease, background .2s ease; }
+.watch-pdp-wrap .watch-fav svg { width: 18px; height: 18px; fill: none; stroke: var(--ws-char, #2b2c2f); stroke-width: 1.7; stroke-linejoin: round; transition: fill .2s ease, stroke .2s ease; }
+.watch-pdp-wrap .watch-fav[aria-pressed="true"] svg { fill: var(--ws-gold, #a88646); stroke: var(--ws-gold, #a88646); }
+.watch-pdp-wrap .watch-fav:active { transform: scale(.92); }
+.watch-pdp-wrap .watch-fav:focus-visible { outline: 3px solid var(--ws-gold, #a88646); outline-offset: 2px; }
 
 /* the sheet: slides up from the bottom on a phone, a small centred dialog on a larger screen */
 html.watch-share-open { overflow: hidden; }

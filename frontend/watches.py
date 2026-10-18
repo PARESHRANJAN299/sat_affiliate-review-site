@@ -1607,4 +1607,7 @@ f'<linearGradient id="g{uid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-
             if "data-share-open" in meta.get("_body", ""):
                 meta["css"] = list(meta.get("css", [])) + (["watch-share"] if "watch-share" not in meta.get("css", []) else [])
                 meta["js"] = list(meta.get("js", [])) + (["watch-share"] if "watch-share" not in meta.get("js", []) else [])
+        for meta in out:   # a card's heart is remembered by collection.js; a page with hearts but without that script (a product page's Alternatives) loads the small watch-fav.js instead, so the heart is never dead and never handled twice
+            if 'data-fav="' in meta.get("_body", "") and "collection" not in meta.get("js", []) and "watch-fav" not in meta.get("js", []):
+                meta["js"] = list(meta.get("js", [])) + ["watch-fav"]
         return out

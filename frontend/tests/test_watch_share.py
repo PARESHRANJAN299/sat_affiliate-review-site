@@ -235,5 +235,74 @@ class ShareStyle(unittest.TestCase):
         self.assertNotRegex(CSS, r"\.watch-share-sheet \{[^}]*display: (?!none)")                 # display is only set on [open], so a closed sheet is never drawn
 
 
+COLLECTION_JS = (ROOT / "src" / "js" / "components" / "collection.js").read_text(encoding="utf-8")
+FAV_JS = (ROOT / "src" / "js" / "components" / "watch-fav.js").read_text(encoding="utf-8")
+LUXE_CSS = (ROOT / "src" / "css" / "components" / "watch-luxe.css").read_text(encoding="utf-8")
+
+
+class ShareDoesNotTouchTheFilters(unittest.TestCase):
+    """A card carries data-gender, so the Men/Women buttons must be picked by tag: otherwise a tap on a card's share icon or heart
+    bubbles to the card, toggles the gender filter and re-filters the list behind the sheet."""
+
+    def test_gender_buttons_are_selected_as_buttons_only(self):
+        self.assertIn("root.querySelectorAll('button[data-gender]')", COLLECTION_JS)
+        self.assertNotIn("querySelectorAll('[data-gender]')", COLLECTION_JS)
+
+    def test_every_generated_gender_control_is_a_button(self):
+        for source in ("collection.py",):
+            text = (ROOT / source).read_text(encoding="utf-8")
+            for found in re.finditer(r"<(\w+)[^<>]*data-gender=", text):
+                self.assertEqual(found.group(1), "button", source)
+
+    def test_cards_still_carry_data_gender_for_the_filter(self):
+        shop = watches.Watches(build.SRC, build.CONFIG)
+        self.assertIn("data-gender=", shop.card(shop.products[0]))
+
+
+class ProductPageHearts(unittest.TestCase):
+    """The Alternatives cards on a product page keep a working, styled heart (they used to be dead and unstyled) and the share icon sits below it."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.shop = watches.Watches(build.SRC, build.CONFIG)
+        cls.pages = {m["url"]: m for m in cls.shop.pages()}
+
+    def test_pages_with_hearts_have_exactly_one_script_that_remembers_them(self):
+        checked = 0
+        for url, meta in self.pages.items():
+            if 'data-fav="' not in meta.get("_body", ""):
+                continue
+            js = meta.get("js", [])
+            self.assertEqual(("collection" in js) + ("watch-fav" in js), 1, url)   # never none (dead heart), never both (toggled twice)
+            checked += 1
+        self.assertGreater(checked, 0)
+
+    def test_product_pages_with_alternatives_load_watch_fav(self):
+        found = [m for u, m in self.pages.items() if u.startswith("/watches/products/") and 'data-fav="' in m["_body"]]
+        self.assertTrue(found)
+        for meta in found:
+            self.assertIn("watch-fav", meta["js"])
+            self.assertNotIn("collection", meta["js"])
+
+    def test_watch_fav_uses_the_same_storage_key_as_collection(self):
+        self.assertIn("sat-saved-watches", FAV_JS)
+        self.assertIn("sat-saved-watches", COLLECTION_JS)
+        self.assertIn("catch", FAV_JS)                                                          # blocked storage must not break the page
+        self.assertNotIn("fetch(", FAV_JS)
+
+    def test_hearts_are_not_hidden_and_the_picture_spans_the_card(self):
+        self.assertNotRegex(CSS, r"\.watch-fav \{ display: none")
+        self.assertRegex(CSS, r"\.watch-pdp-wrap \.watch-fav \{[^}]*width: 36px; height: 36px")
+        self.assertRegex(CSS, r"\.watch-pdp-wrap \.watch-visual \.watch-tile[^{]*\{[^}]*width: 100%")
+        self.assertNotRegex(CSS, r"\.watch-pdp-wrap \.watch-share--icon \{ top: 6px")           # the icon uses the card default (below the heart)
+
+
+class MobileGutter(unittest.TestCase):
+    def test_scrolling_rows_bleed_by_the_same_gutter_as_the_page_below_360px(self):
+        store = (ROOT / "src" / "css" / "components" / "watch-store.css").read_text(encoding="utf-8")
+        self.assertIn("@media (max-width: 359px) { .watch-store-inner { padding: 0 12px; }", store)
+        self.assertRegex(LUXE_CSS, r"@media \(max-width: 359px\) \{ \.lx-budget-row, \.lx-brand-row \{ margin-left: -12px; margin-right: -12px;")
+
+
 if __name__ == "__main__":
     unittest.main()
