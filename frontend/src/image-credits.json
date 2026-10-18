@@ -1028,7 +1028,7 @@
     },
     {
       "file": "/images/fashion/models/purple-saree-1122.webp",
-      "use": "Purple saree: /fashion/ hero, Women’s Kurtas tile and section; SAT editorial artwork, not a retailer product image",
+      "use": "Purple saree: homepage Fashion block, Women’s Kurtas and Indianwear tiles and sections; SAT editorial artwork, not a retailer product image",
       "platform": "Supplied by the site owner as edited cutouts",
       "ai_generated": null,
       "source": "Owner-supplied model cutout; originating tool, licence and model-release details still to be recorded by the owner",
@@ -1040,7 +1040,7 @@
     },
     {
       "file": "/images/fashion/models/purple-saree-640.webp",
-      "use": "Purple saree: /fashion/ hero, Women’s Kurtas tile and section; SAT editorial artwork, not a retailer product image",
+      "use": "Purple saree: homepage Fashion block, Women’s Kurtas and Indianwear tiles and sections; SAT editorial artwork, not a retailer product image",
       "platform": "Supplied by the site owner as edited cutouts",
       "ai_generated": null,
       "source": "Owner-supplied model cutout; originating tool, licence and model-release details still to be recorded by the owner",
@@ -1052,7 +1052,7 @@
     },
     {
       "file": "/images/fashion/models/pink-dress-1122.webp",
-      "use": "Pink dress with black cardigan: Westernwear tile and section; SAT editorial artwork, not a retailer product image",
+      "use": "Pink dress with black cardigan: Westernwear tile and section, editorial banner; SAT editorial artwork, not a retailer product image",
       "platform": "Supplied by the site owner as edited cutouts",
       "ai_generated": null,
       "source": "Owner-supplied model cutout; originating tool, licence and model-release details still to be recorded by the owner",
@@ -1064,31 +1064,7 @@
     },
     {
       "file": "/images/fashion/models/pink-dress-640.webp",
-      "use": "Pink dress with black cardigan: Westernwear tile and section; SAT editorial artwork, not a retailer product image",
-      "platform": "Supplied by the site owner as edited cutouts",
-      "ai_generated": null,
-      "source": "Owner-supplied model cutout; originating tool, licence and model-release details still to be recorded by the owner",
-      "licence": "To be confirmed by the owner",
-      "date_added": "2026-10-18",
-      "proof": "Supplied by the site owner on 2026-10-18 with the instruction to use them as SAT editorial assets. Edge pixels cleaned and resized only.",
-      "status": "needs-confirmation",
-      "image_classification": "Owner-supplied editorial imagery (provenance pending)"
-    },
-    {
-      "file": "/images/fashion/models/orange-dress-1122.webp",
-      "use": "Orange pinafore dress: Indianwear tile and section, editorial banner; SAT editorial artwork, not a retailer product image",
-      "platform": "Supplied by the site owner as edited cutouts",
-      "ai_generated": null,
-      "source": "Owner-supplied model cutout; originating tool, licence and model-release details still to be recorded by the owner",
-      "licence": "To be confirmed by the owner",
-      "date_added": "2026-10-18",
-      "proof": "Supplied by the site owner on 2026-10-18 with the instruction to use them as SAT editorial assets. Edge pixels cleaned and resized only.",
-      "status": "needs-confirmation",
-      "image_classification": "Owner-supplied editorial imagery (provenance pending)"
-    },
-    {
-      "file": "/images/fashion/models/orange-dress-640.webp",
-      "use": "Orange pinafore dress: Indianwear tile and section, editorial banner; SAT editorial artwork, not a retailer product image",
+      "use": "Pink dress with black cardigan: Westernwear tile and section, editorial banner; SAT editorial artwork, not a retailer product image",
       "platform": "Supplied by the site owner as edited cutouts",
       "ai_generated": null,
       "source": "Owner-supplied model cutout; originating tool, licence and model-release details still to be recorded by the owner",

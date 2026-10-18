@@ -23,9 +23,8 @@ AFFILIATE_NOTE = 'SAT may earn a commission if you purchase through this link, a
 EDITORIAL_DIR = '/images/fashion/editorial/'
 MODEL_DIR = '/images/fashion/models/'
 # SAT editorial artwork per collection (owner-supplied model cutouts); None falls back to original SVG art. Never retailer imagery.
-ART = {'womens-kurtas': 'purple-saree', 'westernwear': 'pink-dress', 'indianwear': 'orange-dress', 'footwear': 'white-tee-b', 'active-sports': 'white-tee-a', 'bags': None}
-ART_ALT = {'purple-saree': 'Editorial image: a woman seated on a stool in a purple saree with an embroidered blouse.', 'pink-dress': 'Editorial image: a woman in a pink ribbed dress with a black cardigan, holding a quilted black bag.',
-           'orange-dress': 'Editorial image: a woman in an orange pinafore dress over a white top, with white trainers.', 'white-tee-a': 'Editorial image: a woman sitting cross-legged in a white tee and blush joggers.',
+ART = {'womens-kurtas': 'purple-saree', 'westernwear': 'pink-dress', 'indianwear': 'purple-saree', 'footwear': 'white-tee-b', 'active-sports': 'white-tee-a', 'bags': None}
+ART_ALT = {'purple-saree': 'Editorial image: a woman seated on a stool in a purple saree with an embroidered blouse.', 'pink-dress': 'Editorial image: a woman in a pink ribbed dress with a black cardigan, holding a quilted black bag.', 'white-tee-a': 'Editorial image: a woman sitting cross-legged in a white tee and blush joggers.',
            'white-tee-b': 'Editorial image: a woman sitting cross-legged in a white tee, blush joggers and white trainers.'}
 EMPTY_NOTE = 'Products will appear here once approved Nykaa catalogue items are added.'
 BRANDS_EMPTY_NOTE = 'Brands will appear here once approved Nykaa catalogue items are added.'
@@ -279,7 +278,7 @@ def page(src, icon):
         brands_html = (f'<section class="fashion-brands fashion-brands-empty" aria-labelledby="fashion-brands-title"><header><p class="fashion-section-number">BRANDS</p><h2 id="fashion-brands-title">Featured Brands</h2></header><p class="fashion-empty-note">{BRANDS_EMPTY_NOTE}</p></section>')
     banner = ('<section class="fashion-banner" aria-labelledby="fashion-banner-title"><div class="fashion-banner-copy"><h2 id="fashion-banner-title">Everyday fashion<br>for your everyday life.</h2><p>Style. Confidence. You.</p>'
               '<a class="fashion-banner-cta" href="#fashion-categories">Explore Looks <span aria-hidden="true">→</span></a></div>'
-              f'<figure class="fashion-banner-art"><picture><source media="(max-width: 719px)" srcset="{MODEL_DIR}white-tee-b-640.webp"><img class="fashion-art" src="{MODEL_DIR}orange-dress-640.webp" srcset="{MODEL_DIR}orange-dress-640.webp 640w, {MODEL_DIR}orange-dress-1122.webp 1122w" sizes="(min-width: 900px) 40vw, 100vw" alt="{esc(ART_ALT["orange-dress"])}" width="1122" height="1402" loading="lazy" decoding="async"></picture></figure></section>')
+              f'<figure class="fashion-banner-art"><picture><source media="(max-width: 719px)" srcset="{MODEL_DIR}white-tee-b-640.webp"><img class="fashion-art" src="{MODEL_DIR}pink-dress-640.webp" srcset="{MODEL_DIR}pink-dress-640.webp 640w, {MODEL_DIR}pink-dress-1122.webp 1122w" sizes="(min-width: 900px) 40vw, 100vw" alt="{esc(ART_ALT["pink-dress"])}" width="1122" height="1402" loading="lazy" decoding="async"></picture></figure></section>')
     trust = ('<section class="fashion-trust" aria-label="Why SAT"><ul>'
              f'<li>{TRUST_ICONS[0]}<span>A little research.<br>A better choice.</span></li><li>{TRUST_ICONS[1]}<span>Curated from trusted retailers.</span></li><li>{TRUST_ICONS[2]}<span>Styles for every part of your life.</span></li></ul></section>')
     body = ('<div class="container fashion-page">'

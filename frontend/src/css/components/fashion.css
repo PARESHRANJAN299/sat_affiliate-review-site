@@ -11,14 +11,17 @@
 /* SAT editorial artwork: cutouts sit on a tinted ground and are positioned with per-collection variables. */
 .fashion-tint-womens-kurtas { --t1: #efdfc6; --t2: #d9b88c; }
 .fashion-tint-westernwear { --t1: #efe5de; --t2: #d8c3b6; }
-.fashion-tint-indianwear { --t1: #edd3ba; --t2: #d3a27c; }
-.fashion-tint-footwear { --t1: #ebe4d8; --t2: #d0c3b0; --aw: 230%; }
-.fashion-tint-active-sports { --t1: #e3e7da; --t2: #bdc6af; --aw: 135%; }
+.fashion-tint-indianwear { --t1: #edd3ba; --t2: #d3a27c; --aw: 150%; }
+.fashion-tint-footwear { --t1: #ebe4d8; --t2: #d0c3b0; --aw: 260%; }
+.fashion-tint-active-sports { --t1: #e3e7da; --t2: #bdc6af; }
 .fashion-tint-bags { --t1: #e3d6c1; --t2: #c9b79c; }
 [class*="fashion-tint-"] { background: linear-gradient(160deg, var(--t1), var(--t2)); }
 .fashion-frame, .fashion-category, .fashion-banner-art { position: relative; overflow: hidden; }
 .fashion-art { position: absolute; left: 50%; top: 0; width: var(--aw, 100%); max-width: none; height: auto; transform: translateX(-50%); }
 .fashion-tint-footwear .fashion-art { top: auto; bottom: 0; left: -12%; transform: none; }
+/* Active & Sports shows the whole photograph, shoes included. */
+.fashion-tint-active-sports .fashion-art { width: auto; height: 100%; }
+.fashion-category-active-sports .fashion-art { top: auto; bottom: 84px; height: calc(100% - 84px); }
 .fashion-tint-bags .fashion-art { left: 0; width: 100%; height: 100%; transform: none; object-fit: cover; }
 .fashion-photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .fashion-frame { margin: 0; aspect-ratio: 4 / 5; width: min(100%, 440px); }
@@ -45,7 +48,7 @@
 .fashion-category:has(.fashion-photo) .fashion-category-label em { color: #f4ead3; }
 .fashion-category:has(.fashion-photo) .fashion-category-arrow { border-color: #ffffffb3; }
 @media (min-width: 900px) {
-  .fashion-categories { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); grid-auto-rows: clamp(220px, 21vw, 290px); gap: 16px; margin: 0; padding: 0; overflow: visible; }
+  .fashion-categories { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); --row: clamp(220px, 21vw, 290px); grid-template-rows: var(--row) var(--row) calc(var(--row) * 1.4); gap: 16px; margin: 0; padding: 0; overflow: visible; }
   .fashion-category { flex: none; aspect-ratio: auto; }
   .fashion-category-womens-kurtas { grid-column: 1 / 6; grid-row: 1 / 3; }
   .fashion-category-westernwear { grid-column: 6 / 13; grid-row: 1; }
@@ -140,7 +143,7 @@
 .fashion-rail-slots i:nth-of-type(3) { background: #f6f3ec; }
 .fashion-empty-rail ul { max-width: none; display: grid; grid-template-columns: 1fr 1fr; column-gap: 40px; }
 .fashion-section-energetic .fashion-empty { grid-template-columns: minmax(0, 6fr) minmax(0, 4fr); }
-.fashion-section-energetic .fashion-frame { --aw: 150%; order: 2; aspect-ratio: 1; border-radius: 50%; justify-self: center; width: min(100%, 380px); }
+.fashion-section-energetic .fashion-frame { order: 2; justify-self: center; width: min(100%, 380px); }
 .fashion-section-energetic .fashion-empty-note { color: #f3efe6; }
 .fashion-section-energetic .fashion-empty li { border-color: #3a3e3a; color: #ddd7c9; }
 .fashion-section-luxe .fashion-empty { grid-template-columns: minmax(0, 1fr); justify-items: center; text-align: center; gap: 28px; }
