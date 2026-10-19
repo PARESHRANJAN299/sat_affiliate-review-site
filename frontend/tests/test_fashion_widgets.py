@@ -48,11 +48,13 @@ class WidgetTests(unittest.TestCase):
             self.assertIn('affiliate_id=PARESHRA-445235', item['widget_url'])
             self.assertIn('product_id=' + item['product_id'], item['widget_url'])
 
-    def test_production_widgets_keep_file_order_and_only_nike_uses_a_collection(self):
+    def test_production_widgets_keep_file_order_and_titled_lists_stay_within_their_brand(self):
         data = fashion.read_widgets(ROOT / 'src')
         items, problems = fashion.widgets(ROOT / 'src')
         self.assertEqual(problems, [])
-        self.assertTrue(all(w['collection'] == 'nike-shoes' for w in data['widgets'] if 'collection' in w))  # only the Nike list is in use
+        used = {w['collection']: w.get('brand') for w in data['widgets'] if 'collection' in w}
+        self.assertEqual(used, {'nike-shoes': 'nike', 'puma-sports-shoes': 'puma'})  # each titled list belongs to one brand
+        self.assertTrue(all(w['brand'] == {'nike-shoes': 'nike', 'puma-sports-shoes': 'puma'}[w['collection']] for w in data['widgets'] if 'collection' in w))
         listed = [w['product_id'] for w in data['widgets'] if w['active'] and not w['featured']]
         self.assertEqual([i['product_id'] for i in items if not i['featured']], listed)  # file order is kept
 
