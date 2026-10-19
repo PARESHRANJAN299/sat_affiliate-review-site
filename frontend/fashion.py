@@ -374,7 +374,7 @@ def titled_lists(head, members, label, title, site_url, collections, page_path='
 def audience_split(slug, title, items, site_url, page_path='/fashion/', prefix=None, collections=()):
     """A Women / Men toggle inside a category panel, one list per audience (widgets without an audience count as women's)."""
     counts = {key: sum(1 for item in items if item.get('audience', DEFAULT_AUDIENCE) == key) for key, _ in AUDIENCES}
-    first = next((key for key, _ in AUDIENCES if counts[key]), AUDIENCES[0][0])  # open on the first list that has products
+    first = max(AUDIENCES, key=lambda audience: counts[audience[0]])[0]  # open on the list with the most products (the first one on a tie)
     tabs, panels = [], []
     for key, name in AUDIENCES:
         members = [item for item in items if item.get('audience', DEFAULT_AUDIENCE) == key]

@@ -247,6 +247,13 @@ class WidgetPageTests(unittest.TestCase):
         self.assertIn('data-audience-tab="men" aria-current="true">Men <span>1</span>', body)
         self.assertNotIn('data-audience-tab="women" aria-current', body)
 
+    def test_toggle_opens_on_the_audience_with_the_most_products(self):
+        settings = [{'category': 'footwear', 'audience_toggle': True}]
+        mostly_men = [self.widget(str(n), 'footwear', audience='men') for n in range(5)] + [self.widget('9', 'footwear', audience='women')]
+        self.assertIn('data-audience-tab="men" aria-current="true">Men <span>5</span>', self.build(mostly_men, settings)[0]['_body'])
+        tie = [self.widget('1', 'footwear', audience='men'), self.widget('2', 'footwear', audience='women')]
+        self.assertIn('data-audience-tab="women" aria-current="true"', self.build(tie, settings)[0]['_body'])  # the first tab wins a tie
+
     def test_empty_audience_shows_a_note_not_fake_products(self):
         body = self.build([self.widget('111', 'westernwear')], [{'category': 'westernwear', 'audience_toggle': True}])[0]['_body']
         men = body.split('data-audience-panel="men"')[1].split('</section>')[0]
