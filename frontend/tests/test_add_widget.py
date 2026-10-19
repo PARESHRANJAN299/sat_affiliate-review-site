@@ -116,6 +116,15 @@ class AddWidgetTests(unittest.TestCase):
         order = [w['product_id'] for w in live if w['category'] == 'womens-kurtas']
         self.assertLess(order.index('72222222'), order.index('71111111'))  # the front card comes before products added earlier
 
+    def test_set_front_moves_an_existing_product_after_the_current_front_cards(self):
+        for pid in (81111111, 82222222, 83333333, 84444444):
+            add_widget.add(snippet(pid), path=self.path)
+        add_widget.set_fields(['82222222'], path=self.path, front=True)
+        add_widget.set_fields(['84444444', '81111111'], path=self.path, front=True)
+        live = [w['product_id'] for w in fashion.validate_widgets(json.loads(self.path.read_text()))[0] if w['product_id'] in ('81111111', '82222222', '83333333', '84444444')]
+        self.assertEqual(live, ['82222222', '84444444', '81111111', '83333333'])  # front cards first, in the order they were sent
+        self.assertEqual(add_widget.set_fields(['99999999'], path=self.path, front=True), ([], ['99999999']))
+
     def test_dry_run_and_unknown_fields_untouched(self):
         before = self.path.read_text()
         added, _, problems = add_widget.add(snippet(99999999), path=self.path, dry_run=True)

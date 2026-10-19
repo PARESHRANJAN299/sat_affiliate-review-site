@@ -84,7 +84,7 @@ def add(text, category='womens-kurtas', path=DEFAULT_FILE, dry_run=False, audien
     return [r['product_id'] for r in records], skipped, []
 
 
-def set_fields(ids, audience=None, brand=None, path=DEFAULT_FILE):
+def set_fields(ids, audience=None, brand=None, path=DEFAULT_FILE, front=False):
     """Mark already-listed products as women's or men's and/or give them a brand option. Returns (changed, unknown_ids).
     Writes only when every id is listed and the result passes the same checks as the build."""
     path = Path(path)
@@ -105,6 +105,16 @@ def set_fields(ids, audience=None, brand=None, path=DEFAULT_FILE):
             widget['brand'] = brand
         if widget != before:
             changed.append(widget['product_id'])
+    if front:  # join the front group: featured, placed after the current front cards, in the order the ids were given
+        for pid in wanted:
+            widget = next(w for w in data['widgets'] if w['product_id'] == pid)
+            data['widgets'].remove(widget)
+            was = widget.get('featured')
+            widget['featured'] = True
+            last = max((i for i, w in enumerate(data['widgets']) if w.get('featured')), default=-1)
+            data['widgets'].insert(last + 1, widget)
+            if not was and pid not in changed:
+                changed.append(pid)
     problems = fashion.validate_widgets(data)[1]
     if problems:
         raise ValueError('; '.join(problems))
@@ -129,10 +139,10 @@ def main(argv=None):
     parser.add_argument('--dry-run', action='store_true', help='check and report without writing')
     args = parser.parse_args(argv)
     if args.set:
-        if not (args.audience or args.brand):
-            print('--set needs --audience women|men and/or --brand <id>')
+        if not (args.audience or args.brand or args.front):
+            print('--set needs --audience women|men, --brand <id> and/or --front')
             return 1
-        changed, unknown = set_fields(re.split(r'[\\s,]+', args.set), args.audience, args.brand, args.file)
+        changed, unknown = set_fields(re.split(r'[\\s,]+', args.set), args.audience, args.brand, args.file, args.front)
         if unknown:
             print('Nothing was written. Not listed:', ', '.join(unknown))
             return 1

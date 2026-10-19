@@ -1310,19 +1310,6 @@
       "audience": "women"
     },
     {
-      "id": "nykaa-23854951",
-      "product_id": "23854951",
-      "category": "footwear",
-      "source": "nykaa-fashion",
-      "widget_url": "https://affiliate.nykaa.com/v2/get_product_widget?ad_id=6ad5c4131bd6310c571ebdfa&add_resources=True&affiliate_id=PARESHRA-445235&product_id=23854951&store=nykaa_fashion&text_color=000000&theme_variation=TEXT_AND_IMAGE&theme=affiliate&aff_link_type=affiliate%3Anap_dashboard%3Aproduct&hlp=hlpa",
-      "width": 280,
-      "height": 360,
-      "active": true,
-      "featured": false,
-      "audience": "men",
-      "brand": "us-polo"
-    },
-    {
       "id": "nykaa-23483099",
       "product_id": "23483099",
       "category": "footwear",
@@ -1861,6 +1848,32 @@
       "category": "footwear",
       "source": "nykaa-fashion",
       "widget_url": "https://affiliate.nykaa.com/v2/get_product_widget?ad_id=6ad5d043ff1995200437b342&add_resources=True&affiliate_id=PARESHRA-445235&product_id=19152991&store=nykaa_fashion&text_color=000000&theme_variation=TEXT_AND_IMAGE&theme=affiliate&aff_link_type=affiliate%3Anap_dashboard%3Aproduct&hlp=hlpa",
+      "width": 280,
+      "height": 360,
+      "active": true,
+      "featured": true,
+      "audience": "men",
+      "brand": "us-polo"
+    },
+    {
+      "id": "nykaa-24180475",
+      "product_id": "24180475",
+      "category": "footwear",
+      "source": "nykaa-fashion",
+      "widget_url": "https://affiliate.nykaa.com/v2/get_product_widget?ad_id=6ad5d0a35d277d75ddaaee54&add_resources=True&affiliate_id=PARESHRA-445235&product_id=24180475&store=nykaa_fashion&text_color=000000&theme_variation=TEXT_AND_IMAGE&theme=affiliate&aff_link_type=affiliate%3Anap_dashboard%3Aproduct&hlp=hlpa",
+      "width": 280,
+      "height": 360,
+      "active": true,
+      "featured": true,
+      "audience": "men",
+      "brand": "us-polo"
+    },
+    {
+      "id": "nykaa-23854951",
+      "product_id": "23854951",
+      "category": "footwear",
+      "source": "nykaa-fashion",
+      "widget_url": "https://affiliate.nykaa.com/v2/get_product_widget?ad_id=6ad5c4131bd6310c571ebdfa&add_resources=True&affiliate_id=PARESHRA-445235&product_id=23854951&store=nykaa_fashion&text_color=000000&theme_variation=TEXT_AND_IMAGE&theme=affiliate&aff_link_type=affiliate%3Anap_dashboard%3Aproduct&hlp=hlpa",
       "width": 280,
       "height": 360,
       "active": true,
