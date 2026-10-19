@@ -1317,7 +1317,27 @@
     },
     {
       "category": "footwear",
-      "audience_toggle": true
+      "audience_toggle": true,
+      "groups": [
+        {
+          "id": "us-polo",
+          "label": "U.S. Polo Assn.",
+          "note": "Sneakers"
+        },
+        {
+          "id": "nike",
+          "label": "Nike"
+        },
+        {
+          "id": "puma",
+          "label": "Puma"
+        },
+        {
+          "id": "indian-affordable",
+          "label": "Affordable Indian brands",
+          "note": "Campus, Sparx and Bata"
+        }
+      ]
     },
     {
       "category": "indianwear",

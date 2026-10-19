@@ -91,6 +91,21 @@ class AddWidgetTests(unittest.TestCase):
         self.assertEqual(add_widget.set_audience(['41111111'], 'men', self.path)[0], [])  # already men: nothing to change
         self.assertEqual(fashion.validate_widgets(json.loads(self.path.read_text()))[1], [])
 
+    def test_brand_is_required_for_footwear_and_can_be_set_later(self):
+        before = self.path.read_text()
+        added, _, problems = add_widget.add(snippet(61111111), category='footwear', path=self.path, audience='men')
+        self.assertEqual(added, [])
+        self.assertTrue(problems)
+        self.assertEqual(self.path.read_text(), before)
+        added, _, problems = add_widget.add(snippet(61111111), category='footwear', path=self.path, audience='men', brand='nike')
+        self.assertEqual((added, problems), (['61111111'], []))
+        self.assertEqual(add_widget.add(snippet(62222222), category='footwear', path=self.path, audience='men', brand='adidas')[0], [])
+        changed, unknown = add_widget.set_fields(['61111111'], brand='puma', path=self.path)
+        self.assertEqual((changed, unknown), (['61111111'], []))
+        self.assertEqual({w['product_id']: w.get('brand') for w in self.widgets()}['61111111'], 'puma')
+        self.assertTrue(all('brand' not in w for w in self.widgets() if w['category'] != 'footwear'))
+        self.assertEqual(add_widget.add(snippet(63333333), category='westernwear', path=self.path, brand='nike')[0], [])  # no options in this category
+
     def test_dry_run_and_unknown_fields_untouched(self):
         before = self.path.read_text()
         added, _, problems = add_widget.add(snippet(99999999), path=self.path, dry_run=True)

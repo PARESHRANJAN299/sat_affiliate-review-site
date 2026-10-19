@@ -40,12 +40,13 @@ ART_ALT = {'footwear-detail': 'Editorial image: close-up of white velcro trainer
 # Easy-to-replace wording shown beside the first Nykaa widgets.
 WIDGET_AFFILIATE_NOTE = 'This section contains affiliate links. SAT may earn a commission from qualifying purchases at no extra cost to you.'
 EDIT_LABELS = {'womens-kurtas': 'THE KURTA EDIT', 'westernwear': 'THE WESTERN EDIT', 'footwear': 'THE FOOTWEAR EDIT', 'indianwear': 'THE INDIAN EDIT', 'active-sports': 'THE ACTIVE EDIT', 'bags': 'THE BAG EDIT'}
-WIDGET_KEYS = {'id', 'product_id', 'category', 'source', 'widget_url', 'width', 'height', 'active', 'featured', 'collection', 'affiliate_url', 'audience'}
+WIDGET_KEYS = {'id', 'product_id', 'category', 'source', 'widget_url', 'width', 'height', 'active', 'featured', 'collection', 'affiliate_url', 'audience', 'brand'}
 # A category page can split its widgets by audience (a Women / Men toggle). Widgets without an audience count as women's.
 AUDIENCES = (('women', 'Women'), ('men', 'Men'))
 DEFAULT_AUDIENCE = 'women'
 COLLECTION_KEYS = {'id', 'category', 'title', 'suggestions'}
-CATEGORY_PAGE_KEYS = {'category', 'audience_toggle'}
+CATEGORY_PAGE_KEYS = {'category', 'audience_toggle', 'groups'}
+GROUP_KEYS = {'id', 'label', 'note'}
 WIDGET_URL_CHARS = re.compile(r'[A-Za-z0-9._~:/?&=%+-]+')
 EMPTY_NOTE = 'Products will appear here once approved Nykaa catalogue items are added.'
 BRANDS_EMPTY_NOTE = 'Brands will appear here once approved Nykaa catalogue items are added.'
@@ -208,7 +209,23 @@ def validate_category_pages(data):
         if 'audience_toggle' in entry and not isinstance(entry['audience_toggle'], bool):
             problems.append(f'fashion category setting {slug}: audience_toggle must be true or false')
             continue
-        out[slug] = {'audience_toggle': True} if entry.get('audience_toggle') else {}
+        setting = {'audience_toggle': True} if entry.get('audience_toggle') else {}
+        if 'groups' in entry:
+            groups, ids = entry['groups'], set()
+            valid = isinstance(groups, list) and 2 <= len(groups) <= 8
+            for group in (groups if valid else []):
+                gid = group.get('id') if isinstance(group, dict) else None
+                note = group.get('note', '') if isinstance(group, dict) else None
+                if (not isinstance(group, dict) or set(group) - GROUP_KEYS or not isinstance(gid, str) or not re.fullmatch(r'[a-z0-9]+(?:-[a-z0-9]+)*', gid) or gid in ids
+                        or not isinstance(group.get('label'), str) or not group['label'].strip() or len(group['label']) > 60 or not isinstance(note, str) or len(note) > 90):
+                    valid = False
+                    break
+                ids.add(gid)
+            if not valid:
+                problems.append(f'fashion category setting {slug}: groups must be 2 to 8 entries with a unique lowercase id, a label (up to 60 characters) and an optional note')
+                continue
+            setting['groups'] = [{'id': g['id'], 'label': g['label'].strip(), 'note': g.get('note', '').strip()} for g in groups]
+        out[slug] = setting
     return out, problems
 
 
@@ -220,7 +237,8 @@ def validate_widgets(data):
     if data['widgets'] and not all(isinstance(v, str) and v for v in (host, path, affiliate)):
         return [], ['fashion widgets: allowed_widget_host, allowed_widget_path and allowed_affiliate_id are required']
     collections, problems = validate_collections(data)
-    problems = problems + validate_category_pages(data)[1]
+    settings, setting_problems = validate_category_pages(data)
+    problems = problems + setting_problems
     link_hosts = data.get('allowed_product_link_hosts', [])
     if not isinstance(link_hosts, list) or any(not isinstance(h, str) or not re.fullmatch(r'[a-z0-9.-]+', h) for h in link_hosts):
         return [], ['fashion widgets: allowed_product_link_hosts must be exact lowercase hostnames']
@@ -251,6 +269,12 @@ def validate_widgets(data):
         link = widget.get('affiliate_url')
         if link is not None and not approved_url(link, link_hosts):
             problems.append(f'fashion widget {wid}: affiliate_url requires https on an approved Nykaa product-link host (allowed_product_link_hosts)')
+        group_ids = [g['id'] for g in settings.get(widget['category'], {}).get('groups', [])]
+        brand = widget.get('brand')
+        if group_ids and brand not in group_ids:
+            problems.append(f'fashion widget {wid}: this category is split into groups, so brand must be one of {group_ids}')
+        elif not group_ids and brand is not None:
+            problems.append(f'fashion widget {wid}: brand is only allowed in a category that defines groups')
         audience = widget.get('audience')
         if audience is not None and audience not in dict(AUDIENCES):
             problems.append(f'fashion widget {wid}: audience must be one of {sorted(dict(AUDIENCES))}')
@@ -328,7 +352,7 @@ def widget_group(head, items, label, title, site_url, page_path='/fashion/'):
             + ''.join(widget_shell(item, title, site_url, page_path) for item in items) + '</div><p class="visually-hidden" role="status" data-widget-status></p></div>')
 
 
-def audience_split(slug, title, items, site_url, page_path='/fashion/'):
+def audience_split(slug, title, items, site_url, page_path='/fashion/', prefix=None):
     """A Women / Men toggle inside a category panel, one list per audience (widgets without an audience count as women's)."""
     counts = {key: sum(1 for item in items if item.get('audience', DEFAULT_AUDIENCE) == key) for key, _ in AUDIENCES}
     first = next((key for key, _ in AUDIENCES if counts[key]), AUDIENCES[0][0])  # open on the first list that has products
@@ -336,7 +360,7 @@ def audience_split(slug, title, items, site_url, page_path='/fashion/'):
     for key, name in AUDIENCES:
         members = [item for item in items if item.get('audience', DEFAULT_AUDIENCE) == key]
         current = ' aria-current="true"' if key == first else ''
-        panel_id = f'{slug}-{key}'
+        panel_id = f'{prefix or slug}-{key}'
         tabs.append(f'<a href="#{panel_id}" data-audience-tab="{key}"{current}>{esc(name)} <span>{len(members)}</span></a>')
         heading = f'{name}’s {title}'
         head = f'<h3 class="nykaa-results-title">{esc(heading)}</h3>'
@@ -346,12 +370,36 @@ def audience_split(slug, title, items, site_url, page_path='/fashion/'):
     return f'<div data-audience-group><nav class="nykaa-audience" aria-label="Show {esc(title)} for">' + ''.join(tabs) + '</nav>' + ''.join(panels) + '</div>'
 
 
+def brand_split(slug, title, items, groups, site_url, audience_toggle=False):
+    """Brand options inside a category panel (for example U.S. Polo Assn., Nike, Puma, Affordable Indian brands). Each option shows only its own
+    products, with the Women / Men toggle inside it where the category has one. Opens on the first option that has products."""
+    counts = {g['id']: sum(1 for item in items if item.get('brand') == g['id']) for g in groups}
+    first = next((g['id'] for g in groups if counts[g['id']]), groups[0]['id'])
+    tabs, panels = [], []
+    for g in groups:
+        members = [item for item in items if item.get('brand') == g['id']]
+        current = ' aria-current="true"' if g['id'] == first else ''
+        tabs.append(f'<a href="#{slug}-{g["id"]}" data-brand-tab="{g["id"]}"{current}>{esc(g["label"])} <span>{len(members)}</span></a>')
+        line = f'<p class="nykaa-brand-line"><strong>{esc(g["label"])}</strong>' + (f' <span>{esc(g["note"])}</span>' if g['note'] else '') + '</p>'
+        if not members:
+            inside = f'{line}<p class="fashion-empty-note nykaa-audience-empty">{esc(g["label"])} picks will appear here once approved Nykaa catalogue items are added.</p>'
+        elif audience_toggle:
+            inside = line + audience_split(slug, title, members, site_url, prefix=f'{slug}-{g["id"]}')
+        else:
+            inside = line + widget_group('', members, f'{g["label"]} from Nykaa Fashion', title, site_url)
+        panels.append(f'<section class="nykaa-brandpanel" id="{slug}-{g["id"]}" data-brand-panel="{g["id"]}" aria-label="{esc(g["label"])}">{inside}</section>')
+    return f'<div data-brand-set><nav class="nykaa-brands-nav" aria-label="Choose a {esc(title)} brand">' + ''.join(tabs) + '</nav>' + ''.join(panels) + '</div>'
+
+
 def render_widgets(slug, items, title='', site_url=SITE_URL, config=None):
     """A collection's panel on /fashion/: a wide SAT editorial banner, the replaceable affiliate note and EVERY official Nykaa widget of the
-    collection (split into Women / Men lists where the category is set up that way). There is no separate page per category."""
+    collection, split by brand option and/or Women / Men where the category is set up that way. There is no separate page per category."""
+    config = config or {}
     banner = f'<figure class="fashion-widget-banner fashion-tint-{slug}">{art_picture(slug, "(min-width: 900px) 1232px, 100vw", stem=BANNER_STEMS.get(slug))}</figure>'
     note = f'<p class="fashion-widget-note" data-disclosure="temporary">{esc(WIDGET_AFFILIATE_NOTE)}</p>'
-    if (config or {}).get('audience_toggle'):
+    if config.get('groups'):
+        listing = brand_split(slug, title, items, config['groups'], site_url, bool(config.get('audience_toggle')))
+    elif config.get('audience_toggle'):
         listing = audience_split(slug, title, items, site_url)
     else:
         listing = widget_group('', items, f'{title} picks from Nykaa Fashion', title, site_url)
@@ -527,6 +575,8 @@ def page(src, icon, site_url=SITE_URL):
             contents = render_widgets(slug, here, title, site_url, page_configs.get(slug, {}))
         else:
             contents = render_products(layout, matching) if matching else render_empty(slug, tips, layout, icon)
+            if page_configs.get(slug, {}).get('groups'):  # the brand options are visible even before the first product is added
+                contents += brand_split(slug, title, [], page_configs[slug]['groups'], site_url, bool(page_configs[slug].get('audience_toggle')))
         label = EDIT_LABELS.get(slug)
         marker = f'<p class="sat-fashion-eyebrow">{esc(label)} <span aria-hidden="true"></span></p>' if here and label else ''
         sections.append(f'<section class="fashion-section fashion-section-{layout}{" fashion-section-widgets" if here else ""}" id="{slug}" data-category-panel="{slug}" aria-labelledby="{slug}-title">'

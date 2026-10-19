@@ -270,7 +270,8 @@ class WidgetPageTests(unittest.TestCase):
     def test_production_settings_and_labels(self):
         settings = fashion.category_page_config(ROOT / 'src')
         self.assertEqual(sorted(settings), sorted(slug for slug, *_ in fashion.SECTIONS if slug != 'womens-kurtas'))
-        self.assertTrue(all(value == {'audience_toggle': True} for value in settings.values()))
+        self.assertTrue(all(value.get('audience_toggle') for value in settings.values()))
+        self.assertEqual(sorted(slug for slug, value in settings.items() if value.get('groups')), ['footwear'])  # only Footwear has brand options
         data = fashion.read_widgets(ROOT / 'src')
         western = [w for w in data['widgets'] if w['category'] == 'westernwear']
         self.assertTrue(western)
@@ -282,7 +283,7 @@ class WidgetPageTests(unittest.TestCase):
     def test_every_category_is_set_up_the_same_way(self):
         for slug, label in {'indianwear': 'THE INDIAN EDIT', 'active-sports': 'THE ACTIVE EDIT', 'bags': 'THE BAG EDIT', 'footwear': 'THE FOOTWEAR EDIT'}.items():
             with self.subTest(slug=slug):
-                src = self.source([self.widget('555', slug, audience='men')])
+                src = self.source([self.widget('555', slug, audience='men', **({'brand': 'nike'} if slug == 'footwear' else {}))])
                 data = json.loads((src / 'fashion/widgets.json').read_text())
                 data['category_pages'] = fashion.read_widgets(ROOT / 'src')['category_pages']
                 (src / 'fashion/widgets.json').write_text(json.dumps(data))
@@ -294,6 +295,65 @@ class WidgetPageTests(unittest.TestCase):
                 self.assertIn('data-audience-tab="men" aria-current="true">Men <span>1</span>', section)
                 self.assertNotIn('Explore', section)
                 self.assertTrue(pages[0]['noindex'])
+
+    GROUPS = [{'id': 'us-polo', 'label': 'U.S. Polo Assn.', 'note': 'Sneakers'}, {'id': 'nike', 'label': 'Nike'}, {'id': 'puma', 'label': 'Puma'},
+              {'id': 'indian-affordable', 'label': 'Affordable Indian brands', 'note': 'Campus, Sparx and Bata'}]
+
+    def footwear(self, pid, brand, **extra):
+        return self.widget(pid, 'footwear', brand=brand, audience='men', **extra)
+
+    def test_brand_options_split_a_category_and_work_with_the_women_men_toggle(self):
+        widgets = [self.footwear('1', 'us-polo'), self.footwear('2', 'us-polo'), self.footwear('3', 'nike'), self.footwear('4', 'indian-affordable')]
+        settings = [{'category': 'footwear', 'audience_toggle': True, 'groups': self.GROUPS}]
+        page, problems = self.build(widgets, settings)
+        self.assertEqual(problems, [])
+        panel = self.panel(page['_body'], 'footwear')
+        self.assertEqual(panel.count('data-brand-set'), 1)
+        self.assertEqual(re.findall(r'data-brand-tab="([\w-]+)"[^>]*>([^<]+) <span>(\d+)', panel),
+                         [('us-polo', 'U.S. Polo Assn.', '2'), ('nike', 'Nike', '1'), ('puma', 'Puma', '0'), ('indian-affordable', 'Affordable Indian brands', '1')])
+        self.assertIn('data-brand-tab="us-polo" aria-current="true"', panel)  # opens on the first option with products
+        polo = panel.split('data-brand-panel="us-polo"')[1].split('data-brand-panel="nike"')[0]
+        self.assertEqual(polo.count('class="nykaa-product-shell"'), 2)
+        self.assertIn('id="pick-1"', polo)
+        self.assertNotIn('id="pick-3"', polo)
+        self.assertIn('data-audience-tab="men" aria-current="true">Men <span>2</span>', polo)
+        self.assertIn('Sneakers', polo)
+        puma = panel.split('data-brand-panel="puma"')[1].split('data-brand-panel="indian-affordable"')[0]
+        self.assertNotIn('nykaa-product-shell', puma)
+        self.assertIn('Puma picks will appear here once approved Nykaa catalogue items are added.', puma)
+        ids = re.findall(r'<section class="nykaa-panel" id="([\w-]+)"', panel)
+        self.assertEqual(len(ids), len(set(ids)))  # each brand has its own Women / Men panel ids
+
+    def test_brand_options_opens_on_the_first_option_that_has_products_and_shows_when_empty(self):
+        settings = [{'category': 'footwear', 'groups': self.GROUPS}]
+        body = self.build([self.footwear('9', 'puma')], settings)[0]['_body']
+        self.assertIn('data-brand-tab="puma" aria-current="true"', body)
+        empty = self.build(None, settings)[0]['_body']  # no widgets at all: the options still show, each empty
+        self.assertEqual(empty.count('data-brand-tab='), 0)  # settings come from widgets.json, none here
+        src = self.source([], settings)
+        shown = fashion.page(src, lambda *args: '')[0]['_body']
+        footwear = self.panel(shown, 'footwear')
+        self.assertEqual(footwear.count('data-brand-tab='), 4)
+        self.assertEqual(footwear.count('nykaa-product-shell'), 0)
+        self.assertIn(fashion.EMPTY_NOTE, footwear)
+
+    def test_brand_rules(self):
+        groups = {'category': 'footwear', 'groups': self.GROUPS}
+        data = lambda *w, setting=groups: {**base(list(w)), 'category_pages': [setting]}
+        self.assertEqual(fashion.validate_widgets(data(self.footwear('1', 'nike')))[1], [])
+        self.assertTrue(fashion.validate_widgets(data(self.widget('1', 'footwear')))[1])               # a grouped category needs a brand
+        self.assertTrue(fashion.validate_widgets(data(self.footwear('1', 'adidas')))[1])               # unknown brand option
+        self.assertTrue(fashion.validate_widgets({**base([self.widget('1', 'bags', brand='nike')]), 'category_pages': [groups]})[1])  # brand on another category
+        for bad in ({'category': 'footwear', 'groups': [self.GROUPS[0]]}, {'category': 'footwear', 'groups': 'x'},
+                    {'category': 'footwear', 'groups': [self.GROUPS[0], self.GROUPS[0]]}, {'category': 'footwear', 'groups': [{'id': 'A', 'label': 'x'}, self.GROUPS[1]]},
+                    {'category': 'footwear', 'groups': [{'id': 'a', 'label': ''}, self.GROUPS[1]]}, {'category': 'footwear', 'groups': [{**self.GROUPS[0], 'html': '<b>'}, self.GROUPS[1]]}):
+            self.assertTrue(fashion.validate_widgets({**base([self.record()]), 'category_pages': [bad]})[1], bad)
+
+    def test_production_footwear_offers_the_four_agreed_options(self):
+        groups = fashion.category_page_config(ROOT / 'src')['footwear']['groups']
+        self.assertEqual([g['id'] for g in groups], ['us-polo', 'nike', 'puma', 'indian-affordable'])
+        self.assertEqual([g['label'] for g in groups], ['U.S. Polo Assn.', 'Nike', 'Puma', 'Affordable Indian brands'])
+        self.assertTrue(all(g['id'] not in ('', None) for g in groups))
 
     def test_disclosure_appears_only_with_widgets(self):
         with_widgets, _ = self.build([self.record()])

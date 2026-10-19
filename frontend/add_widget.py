@@ -6,6 +6,7 @@ Paste one or many iframe snippets (or bare widget URLs) from the Nykaa affiliate
     pbpaste | python3 frontend/add_widget.py  # macOS: straight from the clipboard
     python3 frontend/add_widget.py --category womens-kurtas --dry-run < snippets.txt
     pbpaste | python3 frontend/add_widget.py --category westernwear --audience men
+    pbpaste | python3 frontend/add_widget.py --category footwear --audience men --brand nike   # brand ids: us-polo, nike, puma, indian-affordable
 
 Only the iframe's src URL is kept, unchanged. Everything is checked with the same rules as the site build
 (host, path, affiliate id, product id); nothing is written unless every record is valid. Products already listed are skipped.
@@ -46,7 +47,7 @@ def size_of(text, url, key, default):
     return default
 
 
-def build_records(text, category, existing_ids, audience=None):
+def build_records(text, category, existing_ids, audience=None, brand=None):
     records, skipped, problems = [], [], []
     for url in extract(text):
         ids = parse_qs(urlsplit(url).query).get('product_id', [])
@@ -60,16 +61,16 @@ def build_records(text, category, existing_ids, audience=None):
         existing_ids.add(product_id)
         records.append({'id': f'nykaa-{product_id}', 'product_id': product_id, 'category': category, 'source': 'nykaa-fashion', 'widget_url': url,
                         'width': size_of(text, url, 'width', 280), 'height': size_of(text, url, 'height', 360), 'active': True, 'featured': False,
-                        **({'audience': audience} if audience else {})})
+                        **({'audience': audience} if audience else {}), **({'brand': brand} if brand else {})})
     return records, skipped, problems
 
 
-def add(text, category='womens-kurtas', path=DEFAULT_FILE, dry_run=False, audience=None):
+def add(text, category='womens-kurtas', path=DEFAULT_FILE, dry_run=False, audience=None, brand=None):
     """Returns (added, skipped, problems). Writes only when there are no problems and not dry_run."""
     path = Path(path)
     data = json.loads(path.read_text())
     existing = {w.get('product_id') for w in data['widgets']}
-    records, skipped, problems = build_records(text, category, existing, audience)
+    records, skipped, problems = build_records(text, category, existing, audience, brand)
     if not records and not problems:
         return [], skipped, ['no new widget URLs found'] if not skipped else []
     candidate = {**data, 'widgets': data['widgets'] + records}
@@ -83,8 +84,9 @@ def add(text, category='womens-kurtas', path=DEFAULT_FILE, dry_run=False, audien
     return [r['product_id'] for r in records], skipped, []
 
 
-def set_audience(ids, audience, path=DEFAULT_FILE):
-    """Mark already-listed products as women's or men's. Returns (changed, unknown_ids). Writes only when every id is listed."""
+def set_fields(ids, audience=None, brand=None, path=DEFAULT_FILE):
+    """Mark already-listed products as women's or men's and/or give them a brand option. Returns (changed, unknown_ids).
+    Writes only when every id is listed and the result passes the same checks as the build."""
     path = Path(path)
     data = json.loads(path.read_text())
     wanted = list(dict.fromkeys(str(i).strip() for i in ids if str(i).strip()))
@@ -94,8 +96,14 @@ def set_audience(ids, audience, path=DEFAULT_FILE):
         return [], unknown
     changed = []
     for widget in data['widgets']:
-        if widget['product_id'] in wanted and widget.get('audience') != audience:
+        if widget['product_id'] not in wanted:
+            continue
+        before = dict(widget)
+        if audience:
             widget['audience'] = audience
+        if brand:
+            widget['brand'] = brand
+        if widget != before:
             changed.append(widget['product_id'])
     problems = fashion.validate_widgets(data)[1]
     if problems:
@@ -106,26 +114,31 @@ def set_audience(ids, audience, path=DEFAULT_FILE):
     return changed, []
 
 
+def set_audience(ids, audience, path=DEFAULT_FILE):
+    return set_fields(ids, audience=audience, path=path)
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__.split('\n')[0])
     parser.add_argument('--category', default='womens-kurtas', help='collection to add to (default: womens-kurtas)')
     parser.add_argument('--audience', choices=[key for key, _ in fashion.AUDIENCES], help='women or men (for categories with a Women / Men toggle, such as westernwear)')
+    parser.add_argument('--brand', help='brand option id for a category that has brand options (footwear: us-polo, nike, puma, indian-affordable)')
     parser.add_argument('--file', default=str(DEFAULT_FILE), help='widgets.json to update')
     parser.add_argument('--set', metavar='IDS', help='instead of adding: mark these comma-separated product ids with --audience (copied from the ?sort=1 page)')
     parser.add_argument('--dry-run', action='store_true', help='check and report without writing')
     args = parser.parse_args(argv)
     if args.set:
-        if not args.audience:
-            print('--set needs --audience women or --audience men')
+        if not (args.audience or args.brand):
+            print('--set needs --audience women|men and/or --brand <id>')
             return 1
-        changed, unknown = set_audience(re.split(r'[\\s,]+', args.set), args.audience, args.file)
+        changed, unknown = set_fields(re.split(r'[\\s,]+', args.set), args.audience, args.brand, args.file)
         if unknown:
             print('Nothing was written. Not listed:', ', '.join(unknown))
             return 1
-        print(f'Marked {len(changed)} product(s) as {args.audience}.')
+        print(f'Updated {len(changed)} product(s).')
         return 0
     text = sys.stdin.read()
-    added, skipped, problems = add(text, fashion.category_slug(args.category) or args.category, args.file, args.dry_run, args.audience)
+    added, skipped, problems = add(text, fashion.category_slug(args.category) or args.category, args.file, args.dry_run, args.audience, args.brand)
     if problems:
         print('Nothing was written:', *problems, sep='\n  - ')
         return 1

@@ -38,6 +38,22 @@
     window.addEventListener('hashchange', function () { var name = categoryFromHash(); if (name) showCategory(name); });
   }
 
+  // Brand options inside a category panel (Footwear): each option shows only its own products.
+  document.querySelectorAll('[data-brand-set]').forEach(function (set) {
+    var tabs = set.querySelectorAll('[data-brand-tab]');
+    var panels = set.querySelectorAll('[data-brand-panel]');
+    set.showBrand = function (name) {
+      panels.forEach(function (panel) { panel.hidden = panel.dataset.brandPanel !== name; });
+      tabs.forEach(function (tab) {
+        if (tab.dataset.brandTab === name) tab.setAttribute('aria-current', 'true'); else tab.removeAttribute('aria-current');
+      });
+    };
+    set.showBrand((set.querySelector('[data-brand-tab][aria-current]') || tabs[0]).dataset.brandTab);
+    tabs.forEach(function (tab) {
+      tab.addEventListener('click', function (event) { event.preventDefault(); set.showBrand(tab.dataset.brandTab); });
+    });
+  });
+
   // Women / Men toggle inside a category panel: each toggle works on its own list. Without JavaScript both lists show one after the other.
   document.querySelectorAll('[data-audience-group]').forEach(function (group) {
     var tabs = group.querySelectorAll('[data-audience-tab]');
@@ -148,6 +164,9 @@
     if (!target || !target.classList.contains('nykaa-product-shell')) return;
     var cat = target.closest('[data-category-panel]');
     if (cat && cat.hidden) showCategory(cat.dataset.categoryPanel);
+    var brand = target.closest('[data-brand-panel]');
+    var brandSet = target.closest('[data-brand-set]');
+    if (brand && brand.hidden && brandSet && brandSet.showBrand) brandSet.showBrand(brand.dataset.brandPanel);
     var audience = target.closest('[data-audience-panel]');
     var group = target.closest('[data-audience-group]');
     if (audience && audience.hidden && group && group.showAudience) group.showAudience(audience.dataset.audiencePanel);
