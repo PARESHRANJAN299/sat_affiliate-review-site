@@ -48,11 +48,11 @@ class WidgetTests(unittest.TestCase):
             self.assertIn('affiliate_id=PARESHRA-445235', item['widget_url'])
             self.assertIn('product_id=' + item['product_id'], item['widget_url'])
 
-    def test_production_widgets_keep_file_order_and_have_no_leftover_collection(self):
+    def test_production_widgets_keep_file_order_and_only_nike_uses_a_collection(self):
         data = fashion.read_widgets(ROOT / 'src')
         items, problems = fashion.widgets(ROOT / 'src')
         self.assertEqual(problems, [])
-        self.assertFalse(any('collection' in w for w in data['widgets']))
+        self.assertTrue(all(w['collection'] == 'nike-shoes' for w in data['widgets'] if 'collection' in w))  # only the Nike list is in use
         listed = [w['product_id'] for w in data['widgets'] if w['active'] and not w['featured']]
         self.assertEqual([i['product_id'] for i in items if not i['featured']], listed)  # file order is kept
 
@@ -284,7 +284,7 @@ class WidgetPageTests(unittest.TestCase):
     def test_every_category_is_set_up_the_same_way(self):
         for slug, label in {'indianwear': 'THE INDIAN EDIT', 'active-sports': 'THE ACTIVE EDIT', 'bags': 'THE BAG EDIT', 'footwear': 'THE FOOTWEAR EDIT'}.items():
             with self.subTest(slug=slug):
-                src = self.source([self.widget('555', slug, audience='men', **({'brand': 'nike'} if slug == 'footwear' else {}))])
+                src = self.source([self.widget('555', slug, audience='men', **({'brand': 'us-polo'} if slug == 'footwear' else {}))])
                 data = json.loads((src / 'fashion/widgets.json').read_text())
                 data['category_pages'] = fashion.read_widgets(ROOT / 'src')['category_pages']
                 (src / 'fashion/widgets.json').write_text(json.dumps(data))
@@ -304,7 +304,7 @@ class WidgetPageTests(unittest.TestCase):
               {'id': 'indian-affordable', 'label': 'Affordable Indian brands', 'note': 'Campus, Sparx and Bata'}]
 
     def footwear(self, pid, brand, **extra):
-        return self.widget(pid, 'footwear', brand=brand, audience='men', **extra)
+        return self.widget(pid, 'footwear', **{'brand': brand, 'audience': 'men', **extra})
 
     def test_brand_options_split_a_category_and_work_with_the_women_men_toggle(self):
         widgets = [self.footwear('1', 'us-polo'), self.footwear('2', 'us-polo'), self.footwear('3', 'nike'), self.footwear('4', 'indian-affordable')]
@@ -352,6 +352,53 @@ class WidgetPageTests(unittest.TestCase):
                     {'category': 'footwear', 'groups': [self.GROUPS[0], self.GROUPS[0]]}, {'category': 'footwear', 'groups': [{'id': 'A', 'label': 'x'}, self.GROUPS[1]]},
                     {'category': 'footwear', 'groups': [{'id': 'a', 'label': ''}, self.GROUPS[1]]}, {'category': 'footwear', 'groups': [{**self.GROUPS[0], 'html': '<b>'}, self.GROUPS[1]]}):
             self.assertTrue(fashion.validate_widgets({**base([self.record()]), 'category_pages': [bad]})[1], bad)
+
+    def test_a_brand_option_can_have_its_own_women_men_toggle(self):
+        groups = [{**g, 'audience_toggle': g['id'] == 'nike'} for g in self.GROUPS]
+        widgets = [self.footwear('1', 'us-polo'), self.footwear('2', 'nike'), self.footwear('3', 'nike', audience='women')]
+        page, problems = self.build(widgets, [{'category': 'footwear', 'groups': groups}])
+        self.assertEqual(problems, [])
+        panel = self.panel(page['_body'], 'footwear')
+        nike = panel.split('data-brand-panel="nike"')[1].split('data-brand-panel="puma"')[0]
+        polo = panel.split('data-brand-panel="us-polo"')[1].split('data-brand-panel="nike"')[0]
+        self.assertIn('data-audience-tab="women" aria-current="true">Women <span>1</span>', nike)  # opens on the first list that has products
+        self.assertIn('data-audience-tab="men">Men <span>1</span>', nike)
+        self.assertNotIn('data-audience', polo)  # U.S. Polo Assn. stays one list
+        self.assertEqual(polo.count('class="nykaa-product-shell"'), 1)
+        self.assertTrue(fashion.validate_widgets({**base([self.record()]), 'category_pages': [{'category': 'footwear', 'groups': [{**groups[0], 'audience_toggle': 'yes'}, groups[1]]}]})[1])
+
+    def test_production_nike_has_a_women_men_toggle_and_us_polo_does_not(self):
+        groups = {g['id']: g for g in fashion.category_page_config(ROOT / 'src')['footwear']['groups']}
+        self.assertTrue(groups['nike']['audience_toggle'])
+        self.assertFalse(groups['us-polo']['audience_toggle'])
+
+    def test_nike_products_sit_in_a_titled_search_results_list(self):
+        collections = [{'id': 'nike-shoes', 'category': 'footwear', 'title': 'Search results for Nike Shoes', 'suggestions': []}]
+        groups = [{**g, 'audience_toggle': g['id'] == 'nike'} for g in self.GROUPS]
+        widgets = [self.footwear('1', 'nike', collection='nike-shoes'), self.footwear('2', 'nike', collection='nike-shoes'), self.footwear('3', 'nike'), self.footwear('4', 'us-polo')]
+        src = self.source(widgets, [{'category': 'footwear', 'groups': groups}])
+        data = json.loads((src / 'fashion/widgets.json').read_text())
+        data['collections'] = collections
+        (src / 'fashion/widgets.json').write_text(json.dumps(data))
+        pages, problems = fashion.pages(src, lambda *args: '', 'https://sat.net.in')
+        self.assertEqual(problems, [])
+        panel = self.panel(pages[0]['_body'], 'footwear')
+        nike = panel.split('data-brand-panel="nike"')[1].split('data-brand-panel="puma"')[0]
+        polo = panel.split('data-brand-panel="us-polo"')[1].split('data-brand-panel="nike"')[0]
+        self.assertEqual(nike.count('>Search results for Nike Shoes<'), 1)  # one visible heading
+        titled = nike.split('>Search results for Nike Shoes<')[1]
+        self.assertEqual(titled.count('class="nykaa-product-shell"'), 3)  # the two titled products, then the untitled one after them
+        self.assertLess(titled.index('id="pick-2"'), titled.index('id="pick-3"'))
+        self.assertNotIn('Search results', polo)
+        bad = self.source([self.footwear('1', 'nike', collection='missing')], [{'category': 'footwear', 'groups': groups}])
+        self.assertTrue(fashion.validate_widgets(json.loads((bad / 'fashion/widgets.json').read_text()))[1])
+
+    def test_production_nike_list_is_titled(self):
+        data = fashion.read_widgets(ROOT / 'src')
+        self.assertIn(('nike-shoes', 'Search results for Nike Shoes'), [(c['id'], c['title']) for c in data['collections']])
+        nike = [w for w in data['widgets'] if w.get('brand') == 'nike']
+        self.assertTrue(nike)
+        self.assertTrue(all(w.get('collection') == 'nike-shoes' for w in nike))
 
     def test_production_footwear_offers_the_four_agreed_options(self):
         groups = fashion.category_page_config(ROOT / 'src')['footwear']['groups']

@@ -46,7 +46,7 @@ AUDIENCES = (('women', 'Women'), ('men', 'Men'))
 DEFAULT_AUDIENCE = 'women'
 COLLECTION_KEYS = {'id', 'category', 'title', 'suggestions'}
 CATEGORY_PAGE_KEYS = {'category', 'audience_toggle', 'groups'}
-GROUP_KEYS = {'id', 'label', 'note'}
+GROUP_KEYS = {'id', 'label', 'note', 'audience_toggle'}
 WIDGET_URL_CHARS = re.compile(r'[A-Za-z0-9._~:/?&=%+-]+')
 EMPTY_NOTE = 'Products will appear here once approved Nykaa catalogue items are added.'
 BRANDS_EMPTY_NOTE = 'Brands will appear here once approved Nykaa catalogue items are added.'
@@ -217,14 +217,15 @@ def validate_category_pages(data):
                 gid = group.get('id') if isinstance(group, dict) else None
                 note = group.get('note', '') if isinstance(group, dict) else None
                 if (not isinstance(group, dict) or set(group) - GROUP_KEYS or not isinstance(gid, str) or not re.fullmatch(r'[a-z0-9]+(?:-[a-z0-9]+)*', gid) or gid in ids
-                        or not isinstance(group.get('label'), str) or not group['label'].strip() or len(group['label']) > 60 or not isinstance(note, str) or len(note) > 90):
+                        or not isinstance(group.get('label'), str) or not group['label'].strip() or len(group['label']) > 60 or not isinstance(note, str) or len(note) > 90
+                        or not isinstance(group.get('audience_toggle', False), bool)):
                     valid = False
                     break
                 ids.add(gid)
             if not valid:
                 problems.append(f'fashion category setting {slug}: groups must be 2 to 8 entries with a unique lowercase id, a label (up to 60 characters) and an optional note')
                 continue
-            setting['groups'] = [{'id': g['id'], 'label': g['label'].strip(), 'note': g.get('note', '').strip()} for g in groups]
+            setting['groups'] = [{'id': g['id'], 'label': g['label'].strip(), 'note': g.get('note', '').strip(), 'audience_toggle': bool(g.get('audience_toggle'))} for g in groups]
         out[slug] = setting
     return out, problems
 
@@ -352,7 +353,25 @@ def widget_group(head, items, label, title, site_url, page_path='/fashion/'):
             + ''.join(widget_shell(item, title, site_url, page_path) for item in items) + '</div><p class="visually-hidden" role="status" data-widget-status></p></div>')
 
 
-def audience_split(slug, title, items, site_url, page_path='/fashion/', prefix=None):
+def titled_lists(head, members, label, title, site_url, collections, page_path='/fashion/'):
+    """Products of one panel. Products that belong to a named collection (for example "Search results for Nike Shoes") are listed under that
+    collection's title, in the order the collections are defined; products without one follow in a plain list. With no collections in use this is
+    exactly the plain grid."""
+    used = [(c, [m for m in members if m.get('collection') == c['id']]) for c in collections]
+    used = [(c, items) for c, items in used if items]
+    if not used:
+        return widget_group(head, members, label, title, site_url, page_path)
+    tag = 'h4' if head else 'h3'
+    parts = [head] if head else []
+    for c, items in used:
+        parts.append(widget_group(f'<{tag} class="nykaa-results-title nykaa-collection-title">{esc(c["title"])}</{tag}>', items, f'{c["title"]} from Nykaa Fashion', title, site_url, page_path))
+    rest = [m for m in members if not m.get('collection')]
+    if rest:
+        parts.append(widget_group('', rest, label, title, site_url, page_path))
+    return ''.join(parts)
+
+
+def audience_split(slug, title, items, site_url, page_path='/fashion/', prefix=None, collections=()):
     """A Women / Men toggle inside a category panel, one list per audience (widgets without an audience count as women's)."""
     counts = {key: sum(1 for item in items if item.get('audience', DEFAULT_AUDIENCE) == key) for key, _ in AUDIENCES}
     first = next((key for key, _ in AUDIENCES if counts[key]), AUDIENCES[0][0])  # open on the first list that has products
@@ -364,13 +383,14 @@ def audience_split(slug, title, items, site_url, page_path='/fashion/', prefix=N
         tabs.append(f'<a href="#{panel_id}" data-audience-tab="{key}"{current}>{esc(name)} <span>{len(members)}</span></a>')
         heading = f'{name}’s {title}'
         head = f'<h3 class="nykaa-results-title">{esc(heading)}</h3>'
-        inside = (widget_group(head, members, f'{heading} from Nykaa Fashion', title, site_url, page_path) if members else
+        inside = (titled_lists(head, members, f'{heading} from Nykaa Fashion', title, site_url, collections, page_path) if members else
                   f'{head}<p class="fashion-empty-note nykaa-audience-empty">{esc(name)}’s picks will appear here once approved Nykaa catalogue items are added.</p>')
         panels.append(f'<section class="nykaa-panel" id="{panel_id}" data-audience-panel="{key}" aria-label="{esc(heading)}">{inside}</section>')
     return f'<div data-audience-group><nav class="nykaa-audience" aria-label="Show {esc(title)} for">' + ''.join(tabs) + '</nav>' + ''.join(panels) + '</div>'
 
 
-def brand_split(slug, title, items, groups, site_url, audience_toggle=False):
+def brand_split(slug, title, items, groups, site_url, audience_toggle=False, collections=()):
+    """audience_toggle is the category default; an option can switch its own Women / Men toggle on (its 'audience_toggle')."""
     """Brand options inside a category panel (for example U.S. Polo Assn., Nike, Puma, Affordable Indian brands). Each option shows only its own
     products, with the Women / Men toggle inside it where the category has one. Opens on the first option that has products."""
     counts = {g['id']: sum(1 for item in items if item.get('brand') == g['id']) for g in groups}
@@ -383,26 +403,26 @@ def brand_split(slug, title, items, groups, site_url, audience_toggle=False):
         line = f'<p class="nykaa-brand-line"><strong>{esc(g["label"])}</strong>' + (f' <span>{esc(g["note"])}</span>' if g['note'] else '') + '</p>'
         if not members:
             inside = f'{line}<p class="fashion-empty-note nykaa-audience-empty">{esc(g["label"])} picks will appear here once approved Nykaa catalogue items are added.</p>'
-        elif audience_toggle:
-            inside = line + audience_split(slug, title, members, site_url, prefix=f'{slug}-{g["id"]}')
+        elif audience_toggle or g.get('audience_toggle'):
+            inside = line + audience_split(slug, title, members, site_url, prefix=f'{slug}-{g["id"]}', collections=collections)
         else:
-            inside = line + widget_group('', members, f'{g["label"]} from Nykaa Fashion', title, site_url)
+            inside = line + titled_lists('', members, f'{g["label"]} from Nykaa Fashion', title, site_url, collections)
         panels.append(f'<section class="nykaa-brandpanel" id="{slug}-{g["id"]}" data-brand-panel="{g["id"]}" aria-label="{esc(g["label"])}">{inside}</section>')
     return f'<div data-brand-set><nav class="nykaa-brands-nav" aria-label="Choose a {esc(title)} brand">' + ''.join(tabs) + '</nav>' + ''.join(panels) + '</div>'
 
 
-def render_widgets(slug, items, title='', site_url=SITE_URL, config=None):
+def render_widgets(slug, items, title='', site_url=SITE_URL, config=None, collections=()):
     """A collection's panel on /fashion/: a wide SAT editorial banner, the replaceable affiliate note and EVERY official Nykaa widget of the
     collection, split by brand option and/or Women / Men where the category is set up that way. There is no separate page per category."""
     config = config or {}
     banner = f'<figure class="fashion-widget-banner fashion-tint-{slug}">{art_picture(slug, "(min-width: 900px) 1232px, 100vw", stem=BANNER_STEMS.get(slug))}</figure>'
     note = f'<p class="fashion-widget-note" data-disclosure="temporary">{esc(WIDGET_AFFILIATE_NOTE)}</p>'
     if config.get('groups'):
-        listing = brand_split(slug, title, items, config['groups'], site_url, bool(config.get('audience_toggle')))
+        listing = brand_split(slug, title, items, config['groups'], site_url, bool(config.get('audience_toggle')), collections)
     elif config.get('audience_toggle'):
-        listing = audience_split(slug, title, items, site_url)
+        listing = audience_split(slug, title, items, site_url, collections=collections)
     else:
-        listing = widget_group('', items, f'{title} picks from Nykaa Fashion', title, site_url)
+        listing = titled_lists('', items, f'{title} picks from Nykaa Fashion', title, site_url, collections)
     return banner + note + listing
 
 
@@ -572,7 +592,7 @@ def page(src, icon, site_url=SITE_URL):
         tabs.append(f'<a href="#{slug}" data-category-tab="{slug}"{current}>{esc(title)}</a>')
         here = get_widgets_by_category(live_widgets, slug)
         if here:
-            contents = render_widgets(slug, here, title, site_url, page_configs.get(slug, {}))
+            contents = render_widgets(slug, here, title, site_url, page_configs.get(slug, {}), [c for c in live_collections if c['category'] == slug])
         else:
             contents = render_products(layout, matching) if matching else render_empty(slug, tips, layout, icon)
             if page_configs.get(slug, {}).get('groups'):  # the brand options are visible even before the first product is added
