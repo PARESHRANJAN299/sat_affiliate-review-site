@@ -7,7 +7,7 @@
 
 /* Category switcher: one collection at a time. */
 .fashion-switch-head { padding: clamp(4px, 1vw, 12px) 0 clamp(10px, 1.5vw, 16px); }
-.fashion-switch-head h1 { margin: 0; font: 400 clamp(2.4rem, 5.4vw, 4.6rem)/1.02 var(--font-display); letter-spacing: -.04em; }
+.fashion-switch-head h1 { margin: 0; font: 400 clamp(1.9rem, 3.6vw, 3rem)/1.1 var(--font-display); letter-spacing: -.03em; }
 .fashion-switch { display: flex; gap: clamp(22px, 3.4vw, 44px); overflow-x: auto; scroll-snap-type: x proximity; margin: 0 calc(-1 * var(--fpad)); padding: 0 var(--fpad); border-bottom: 1px solid var(--f-line); scrollbar-width: none; scroll-padding: 0 var(--fpad); scroll-margin-top: 80px; }
 .fashion-switch::-webkit-scrollbar { display: none; }
 .fashion-switch a { flex: none; display: inline-flex; align-items: center; min-height: 56px; padding: 0 2px; border: 0; border-radius: 0; background: transparent; box-shadow: inset 0 -2px 0 transparent; color: var(--f-muted); font-size: 12px; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; text-decoration: none; white-space: nowrap; scroll-snap-align: start; transition: color .2s, box-shadow .2s; }
@@ -106,7 +106,7 @@
 .fashion-section-luxe .fashion-empty-note, .fashion-section-luxe .fashion-empty ul { margin-inline: auto; }
 
 /* Retailer-powered collections: a SAT editorial banner, then a left-to-right rail of official Nykaa product widgets. Only the wrapper is styled; the iframe content is Nykaa's. */
-.fashion-widget-banner { margin: 0 0 14px; width: 100%; aspect-ratio: 21 / 8; }
+.fashion-widget-banner { margin: 0 0 14px; width: 100%; aspect-ratio: 21 / 8; border-radius: 3px; box-shadow: 0 28px 50px -34px rgba(60, 45, 20, .55); }
 .fashion-widget-banner .fashion-art { left: 0; width: 100%; height: 100%; transform: none; object-fit: cover; object-position: 72% 12%; }
 /* Single-figure banners (Indianwear, Active & Sports, Bags): the whole picture, centred on the tinted ground. */
 .fashion-widget-banner.fashion-tint-indianwear .fashion-art, .fashion-widget-banner.fashion-tint-active-sports .fashion-art, .fashion-widget-banner.fashion-tint-bags .fashion-art { left: 50%; width: auto; height: 100%; transform: translateX(-50%); object-fit: contain; }
@@ -163,7 +163,7 @@
 .nykaa-audience-empty { margin-top: 4px; }
 @media (max-width: 719px) { .nykaa-audience { display: flex; } .nykaa-audience a { flex: 1; padding: 0 12px; } }
 .nykaa-results-title { margin: 0 0 16px; padding-bottom: 12px; border-bottom: 1px solid var(--f-line); font: 400 clamp(1.5rem, 3vw, 2.2rem)/1.2 var(--font-display); letter-spacing: -.025em; }
-.nykaa-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(296px, 1fr)); gap: 22px 18px; justify-items: center; }
+.nykaa-grid { display: grid; grid-template-columns: repeat(auto-fill, 296px); gap: 24px 22px; justify-content: start; }
 .nykaa-grid .nykaa-product-shell { flex: none; width: 100%; max-width: 296px; }
 .nykaa-get { display: flex; align-items: center; justify-content: center; gap: 12px; width: 100%; min-height: 46px; padding: 12px 18px; background: var(--f-ink); border: 1px solid var(--f-ink); border-radius: 999px; color: #fff; font-size: 13px; font-weight: 600; letter-spacing: .02em; text-decoration: none; transition: background .2s; }
 .nykaa-get:hover { background: #3a3832; color: #fff; text-decoration: none; }

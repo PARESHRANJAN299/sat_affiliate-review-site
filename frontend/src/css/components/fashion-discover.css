@@ -6,11 +6,11 @@
 /* Discover Your Style: asymmetric editorial mosaic (swipe cards on small screens). */
 .fashion-categories { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; margin: 0 calc(-1 * var(--fpad)); padding: 0 var(--fpad) 14px; scroll-padding-left: var(--fpad); scrollbar-width: none; }
 .fashion-categories::-webkit-scrollbar { display: none; }
-.fashion-category { flex: 0 0 min(64vw, 300px); aspect-ratio: 4 / 5; scroll-snap-align: start; display: block; color: var(--f-ink); text-decoration: none; }
+.fashion-category { flex: 0 0 min(64vw, 300px); aspect-ratio: 4 / 5; scroll-snap-align: start; display: block; color: var(--f-ink); text-decoration: none; border-radius: 3px; box-shadow: 0 26px 40px -30px rgba(60, 45, 20, .6); }
 .fashion-category:hover { color: var(--f-ink); text-decoration: none; }
 .fashion-category .fashion-art, .fashion-category .fashion-photo { transition: transform .7s ease; }
 .fashion-category:hover .fashion-art { transform: translateX(-50%) scale(1.03); }
-.fashion-category:hover .fashion-photo, .fashion-category-footwear:hover .fashion-art { transform: scale(1.03); }
+.fashion-category:hover .fashion-photo, .fashion-category-footwear:hover .fashion-art, .fashion-category-womens-kurtas:hover .fashion-art, .fashion-category-bags:hover .fashion-art { transform: scale(1.03); }
 .fashion-category-label { position: absolute; inset: auto 0 0; display: flex; flex-direction: column; gap: 4px; padding: 64px 56px 18px 18px; background: linear-gradient(0deg, var(--t2) 0%, var(--t2) 22%, transparent 100%); }
 .fashion-category-label strong { font: 400 clamp(1.4rem, 2.2vw, 2rem)/1.08 var(--font-display); letter-spacing: -.03em; }
 .fashion-category-label em { font-style: normal; font-size: 13px; line-height: 1.45; color: #3d3b34; }

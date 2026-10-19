@@ -565,7 +565,7 @@ def discover_tiles(products, prefix='/fashion/'):
         if matching:
             visual = f'<img class="fashion-photo" src="{esc(matching[0]["image_url"])}" alt="" loading="lazy" decoding="async" width="800" height="1000">'
         else:
-            visual = art_picture(slug, '(min-width: 900px) 34vw, 62vw')
+            visual = art_picture(slug, '(min-width: 900px) 42vw, 70vw')
         tiles.append(f'<a class="fashion-category fashion-category-{slug} fashion-tint-{slug}" href="{prefix}#{slug}">{visual}'
                      f'<span class="fashion-category-label"><strong>{esc(title)}</strong><em>{esc(description)}</em><span class="fashion-category-arrow" aria-hidden="true">→</span></span></a>')
     return ''.join(tiles)
