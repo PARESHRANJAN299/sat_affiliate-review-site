@@ -248,3 +248,17 @@
   .fashion-category .fashion-art, .fashion-category .fashion-photo, .fashion-product img { transition: none; }
   .fashion-category:hover .fashion-art, .fashion-category:hover .fashion-photo { transform: none; }
 }
+
+/* Premium layout on wide screens: the category intro sits beside its banner. */
+@media (min-width: 1000px) {
+  .fashion-section-widgets { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); grid-template-rows: auto auto; column-gap: clamp(32px, 4vw, 64px); align-items: center; text-align: left; }
+  .fashion-section-widgets > header { grid-column: 1; grid-row: 1; align-self: end; margin: 0; }
+  .fashion-section-widgets > .fashion-widget-banner { grid-column: 2; grid-row: 1 / span 2; margin: 0; aspect-ratio: 16 / 10; }
+  .fashion-section-widgets > .fashion-widget-note { grid-column: 1; grid-row: 2; align-self: start; margin: 22px 0 0; padding-top: 18px; border-top: 1px solid var(--f-line); }
+  .fashion-section-widgets > :not(header):not(.fashion-widget-banner):not(.fashion-widget-note) { grid-column: 1 / -1; margin-top: clamp(28px, 3.4vw, 44px); }
+  .fashion-section-widgets .sat-fashion-eyebrow { margin-bottom: 20px; }
+}
+@media (min-width: 1000px) {
+  .fashion-widget-banner.fashion-tint-westernwear .fashion-art { left: 40%; width: 46%; }
+  .fashion-widget-banner.fashion-tint-westernwear .fashion-art + .fashion-art { left: 68%; }
+}
