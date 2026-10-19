@@ -31,8 +31,8 @@
   .fashion-category-active-sports { grid-column: 5 / 9; grid-row: 3; }
   .fashion-category-bags { grid-column: 9 / 13; grid-row: 3; }
   .fashion-category-indianwear .fashion-art { left: auto; right: 3%; width: 52%; transform: none; }
-  .fashion-category-westernwear .fashion-art { left: auto; right: 32%; width: 38%; transform: none; }
-  .fashion-category-westernwear .fashion-art + .fashion-art { right: 7%; }
+  .fashion-category-westernwear .fashion-art { left: auto; right: 36%; width: 34%; transform: none; }
+  .fashion-category-westernwear .fashion-art + .fashion-art { right: 6%; }
   .fashion-category-westernwear:hover .fashion-art, .fashion-category-indianwear:hover .fashion-art { transform: scale(1.03); }
   .fashion-category-westernwear:not(:has(.fashion-photo)) .fashion-category-label, .fashion-category-indianwear:not(:has(.fashion-photo)) .fashion-category-label { right: 50%; background: none; padding-right: 0; }
 }

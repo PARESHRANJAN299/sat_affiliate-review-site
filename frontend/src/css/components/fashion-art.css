@@ -10,8 +10,8 @@
 .fashion-tint-womens-kurtas { --t1: #efdfc6; --t2: #d9b88c; }
 .fashion-tint-westernwear { --t1: #efe5de; --t2: #d8c3b6; }
 /* Westernwear shows two models side by side. */
-.fashion-tint-westernwear .fashion-art { width: 78%; left: 27%; }
-.fashion-tint-westernwear .fashion-art + .fashion-art { left: 62%; }
+.fashion-tint-westernwear .fashion-art { width: 78%; left: 25%; }
+.fashion-tint-westernwear .fashion-art + .fashion-art { left: 58%; }
 .fashion-tint-indianwear { --t1: #edd3ba; --t2: #d3a27c; --aw: 150%; }
 .fashion-tint-footwear { --t1: #ebe4d8; --t2: #d0c3b0; --aw: 260%; }
 .fashion-tint-active-sports { --t1: #e3e7da; --t2: #bdc6af; }
