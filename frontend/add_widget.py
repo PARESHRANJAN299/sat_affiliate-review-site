@@ -65,15 +65,18 @@ def build_records(text, category, existing_ids, audience=None, brand=None, front
     return records, skipped, problems
 
 
-def add(text, category='womens-kurtas', path=DEFAULT_FILE, dry_run=False, audience=None, brand=None, front=False, collection=None):
+def add(text, category='womens-kurtas', path=DEFAULT_FILE, dry_run=False, audience=None, brand=None, front=False, collection=None, first=False):
     """Returns (added, skipped, problems). Writes only when there are no problems and not dry_run."""
     path = Path(path)
     data = json.loads(path.read_text())
     existing = {w.get('product_id') for w in data['widgets']}
-    records, skipped, problems = build_records(text, category, existing, audience, brand, front, collection)
+    records, skipped, problems = build_records(text, category, existing, audience, brand, front or first, collection)
     if not records and not problems:
         return [], skipped, ['no new widget URLs found'] if not skipped else []
-    candidate = {**data, 'widgets': data['widgets'] + records}
+    widgets = list(data['widgets'])
+    spot = next((i for i, w in enumerate(widgets) if w.get('featured')), len(widgets)) if first else len(widgets)  # --first: ahead of every current front card
+    widgets[spot:spot] = records
+    candidate = {**data, 'widgets': widgets}
     problems += fashion.validate_widgets(candidate)[1]
     if problems:
         return [], skipped, problems
@@ -136,6 +139,7 @@ def main(argv=None):
     parser.add_argument('--audience', choices=[key for key, _ in fashion.AUDIENCES], help='women or men (for categories with a Women / Men toggle, such as westernwear)')
     parser.add_argument('--brand', help='brand option id for a category that has brand options (footwear: us-polo, nike, puma, indian-affordable)')
     parser.add_argument('--collection', help='titled list inside the category (defined in widgets.json collections), for example nike-shoes')
+    parser.add_argument('--first', action='store_true', help='put these products at the very top, ahead of the other front cards')
     parser.add_argument('--front', action='store_true', help='show these products first in their list (marks them featured)')
     parser.add_argument('--file', default=str(DEFAULT_FILE), help='widgets.json to update')
     parser.add_argument('--set', metavar='IDS', help='instead of adding: mark these comma-separated product ids with --audience (copied from the ?sort=1 page)')
@@ -152,7 +156,7 @@ def main(argv=None):
         print(f'Updated {len(changed)} product(s).')
         return 0
     text = sys.stdin.read()
-    added, skipped, problems = add(text, fashion.category_slug(args.category) or args.category, args.file, args.dry_run, args.audience, args.brand, args.front, args.collection)
+    added, skipped, problems = add(text, fashion.category_slug(args.category) or args.category, args.file, args.dry_run, args.audience, args.brand, args.front, args.collection, args.first)
     if problems:
         print('Nothing was written:', *problems, sep='\n  - ')
         return 1

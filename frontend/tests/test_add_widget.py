@@ -125,6 +125,14 @@ class AddWidgetTests(unittest.TestCase):
         self.assertEqual(live, ['82222222', '84444444', '81111111', '83333333'])  # front cards first, in the order they were sent
         self.assertEqual(add_widget.set_fields(['99999999'], path=self.path, front=True), ([], ['99999999']))
 
+    def test_first_puts_new_products_ahead_of_existing_front_cards(self):
+        add_widget.add(snippet(91111111), path=self.path, front=True)
+        add_widget.add(snippet(92222222), path=self.path)
+        add_widget.add(snippet(93333333), path=self.path, first=True)
+        live = [w['product_id'] for w in fashion.validate_widgets(json.loads(self.path.read_text()))[0] if w['product_id'] in ('91111111', '92222222', '93333333')]
+        self.assertEqual(live, ['93333333', '91111111', '92222222'])
+        self.assertTrue(next(w for w in self.widgets() if w['product_id'] == '93333333')['featured'])
+
     def test_dry_run_and_unknown_fields_untouched(self):
         before = self.path.read_text()
         added, _, problems = add_widget.add(snippet(99999999), path=self.path, dry_run=True)
