@@ -1325,6 +1325,30 @@
       "image_classification": "Derived illustrative artwork",
       "confirmed_by": "Inherited from the source image record(s)",
       "confirmed_on": "2026-10-18"
+    },
+    {
+      "file": "/images/fashion/models/footwear-detail-700.webp",
+      "use": "Footwear tile and empty-state picture: native-resolution sneaker close-up cropped from the owner-supplied white-tee photo; SAT editorial artwork, not a retailer product image",
+      "platform": "Derivative of /images/fashion/models/white-tee-b-1122.webp",
+      "ai_generated": null,
+      "source": "Crop of the owner-supplied model cutout; no new content",
+      "licence": "Same basis as the white-tee-b model images (provenance still to be recorded by the owner)",
+      "date_added": "2026-10-19",
+      "proof": "Cropped from an owner-supplied image on 2026-10-19 so the Footwear tile is sharp.",
+      "status": "needs-confirmation",
+      "image_classification": "Owner-supplied editorial imagery (provenance pending)"
+    },
+    {
+      "file": "/images/fashion/models/footwear-detail-480.webp",
+      "use": "Footwear tile and empty-state picture: native-resolution sneaker close-up cropped from the owner-supplied white-tee photo; SAT editorial artwork, not a retailer product image",
+      "platform": "Derivative of /images/fashion/models/white-tee-b-1122.webp",
+      "ai_generated": null,
+      "source": "Crop of the owner-supplied model cutout; no new content",
+      "licence": "Same basis as the white-tee-b model images (provenance still to be recorded by the owner)",
+      "date_added": "2026-10-19",
+      "proof": "Cropped from an owner-supplied image on 2026-10-19 so the Footwear tile is sharp.",
+      "status": "needs-confirmation",
+      "image_classification": "Owner-supplied editorial imagery (provenance pending)"
     }
   ],
   "governance": {

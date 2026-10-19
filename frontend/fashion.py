@@ -24,13 +24,14 @@ EDITORIAL_DIR = '/images/fashion/editorial/'
 MODEL_DIR = '/images/fashion/models/'
 # SAT editorial artwork per collection (owner-supplied images); no stems means the original SVG fallback. Never retailer imagery.
 ART = {'womens-kurtas': ('ivory-kurta',), 'westernwear': ('pink-dress', 'orange-dress'), 'indianwear': ('purple-saree',),
-       'footwear': ('white-tee-b',), 'active-sports': ('white-tee-a',), 'bags': ()}
+       'footwear': ('footwear-detail',), 'active-sports': ('white-tee-a',), 'bags': ()}
 # Cutouts are 1122x1402 WebP; the ivory kurta photograph is a portrait JPEG crop. (extension, small width, large width, large height)
-ART_FILES = {'ivory-kurta': ('jpg', 640, 836, 1024), 'ivory-banner': ('jpg', 828, 1536, 832)}
+ART_FILES = {'ivory-kurta': ('jpg', 640, 836, 1024), 'ivory-banner': ('jpg', 828, 1536, 832), 'footwear-detail': ('webp', 480, 700, 442)}
 # Wide banner photograph used above a collection's widget rail.
-BANNER_STEMS = {'womens-kurtas': 'ivory-banner'}
+BANNER_STEMS = {'womens-kurtas': 'ivory-banner', 'footwear': 'white-tee-b'}
 SITE_URL = 'https://sat.net.in'
-ART_ALT = {'ivory-kurta': 'Editorial image: a woman in an ivory floral kurta set with a dupatta, seated on sandstone steps.',
+ART_ALT = {'footwear-detail': 'Editorial image: close-up of white velcro trainers worn with blush joggers.',
+           'ivory-kurta': 'Editorial image: a woman in an ivory floral kurta set with a dupatta, seated on sandstone steps.',
            'purple-saree': 'Editorial image: a woman seated on a stool in a purple saree with an embroidered blouse.',
            'pink-dress': 'Editorial image: a woman in a pink ribbed dress with a black cardigan, holding a quilted black bag.',
            'orange-dress': 'Editorial image: a woman in an orange pinafore dress over a white top, with white trainers.',
