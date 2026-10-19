@@ -53,8 +53,9 @@ class WidgetTests(unittest.TestCase):
         items, problems = fashion.widgets(ROOT / 'src')
         self.assertEqual(problems, [])
         used = {w['collection']: w.get('brand') for w in data['widgets'] if 'collection' in w}
-        self.assertEqual(used, {'nike-shoes': 'nike', 'puma-sports-shoes': 'puma'})  # each titled list belongs to one brand
-        self.assertTrue(all(w['brand'] == {'nike-shoes': 'nike', 'puma-sports-shoes': 'puma'}[w['collection']] for w in data['widgets'] if 'collection' in w))
+        owners = {'nike-shoes': 'nike', 'puma-sports-shoes': 'puma', 'puma-unisex-shoes': 'puma'}
+        self.assertEqual(used, owners)  # each titled list belongs to one brand
+        self.assertTrue(all(w['brand'] == owners[w['collection']] for w in data['widgets'] if 'collection' in w))
         listed = [w['product_id'] for w in data['widgets'] if w['active'] and not w['featured']]
         self.assertEqual([i['product_id'] for i in items if not i['featured']], listed)  # file order is kept
 
