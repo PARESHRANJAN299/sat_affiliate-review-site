@@ -3052,6 +3052,32 @@
       "featured": false,
       "brand": "puma",
       "collection": "puma-unisex-shoes"
+    },
+    {
+      "id": "nykaa-26060094",
+      "product_id": "26060094",
+      "category": "footwear",
+      "source": "nykaa-fashion",
+      "widget_url": "https://affiliate.nykaa.com/v2/get_product_widget?ad_id=6ad5e84d9ab9ac7d711ed789&add_resources=True&affiliate_id=PARESHRA-445235&product_id=26060094&store=nykaa_fashion&text_color=000000&theme_variation=TEXT_AND_IMAGE&theme=affiliate&aff_link_type=affiliate%3Anap_dashboard%3Aproduct&hlp=hlpa",
+      "width": 280,
+      "height": 360,
+      "active": true,
+      "featured": false,
+      "brand": "puma",
+      "collection": "puma-unisex-shoes"
+    },
+    {
+      "id": "nykaa-19759516",
+      "product_id": "19759516",
+      "category": "footwear",
+      "source": "nykaa-fashion",
+      "widget_url": "https://affiliate.nykaa.com/v2/get_product_widget?ad_id=6ad5e87cb36031503d552e6a&add_resources=True&affiliate_id=PARESHRA-445235&product_id=19759516&store=nykaa_fashion&text_color=000000&theme_variation=TEXT_AND_IMAGE&theme=affiliate&aff_link_type=affiliate%3Anap_dashboard%3Aproduct&hlp=hlpa",
+      "width": 280,
+      "height": 360,
+      "active": true,
+      "featured": false,
+      "brand": "puma",
+      "collection": "puma-unisex-shoes"
     }
   ],
   "category_pages": [
