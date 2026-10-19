@@ -270,7 +270,8 @@ class WidgetPageTests(unittest.TestCase):
     def test_production_settings_and_labels(self):
         settings = fashion.category_page_config(ROOT / 'src')
         self.assertEqual(sorted(settings), sorted(slug for slug, *_ in fashion.SECTIONS if slug != 'womens-kurtas'))
-        self.assertTrue(all(value.get('audience_toggle') for value in settings.values()))
+        self.assertTrue(all(value.get('audience_toggle') for slug, value in settings.items() if slug != 'footwear'))
+        self.assertFalse(settings['footwear'].get('audience_toggle'))  # all Footwear products of a brand sit in one list
         self.assertEqual(sorted(slug for slug, value in settings.items() if value.get('groups')), ['footwear'])  # only Footwear has brand options
         data = fashion.read_widgets(ROOT / 'src')
         western = [w for w in data['widgets'] if w['category'] == 'westernwear']
@@ -292,7 +293,10 @@ class WidgetPageTests(unittest.TestCase):
                 section = self.panel(pages[0]['_body'], slug)
                 self.assertIn(label, section)
                 self.assertIn(f'fashion-widget-banner fashion-tint-{slug}', section)
-                self.assertIn('data-audience-tab="men" aria-current="true">Men <span>1</span>', section)
+                if slug == 'footwear':
+                    self.assertNotIn('data-audience', section)
+                else:
+                    self.assertIn('data-audience-tab="men" aria-current="true">Men <span>1</span>', section)
                 self.assertNotIn('Explore', section)
                 self.assertTrue(pages[0]['noindex'])
 
