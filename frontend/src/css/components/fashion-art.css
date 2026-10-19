@@ -12,7 +12,7 @@
 /* Westernwear shows two models side by side. */
 .fashion-tint-westernwear .fashion-art { width: 78%; left: 25%; }
 .fashion-tint-westernwear .fashion-art + .fashion-art { left: 58%; }
-.fashion-tint-indianwear { --t1: #edd3ba; --t2: #d3a27c; --aw: 150%; }
+.fashion-tint-indianwear { --t1: #edd3ba; --t2: #d3a27c; --aw: 128%; }
 .fashion-tint-footwear { --t1: #ebe4d8; --t2: #d0c3b0; }
 .fashion-tint-active-sports { --t1: #e3e7da; --t2: #bdc6af; }
 .fashion-tint-bags { --t1: #e3d6c1; --t2: #c9b79c; }

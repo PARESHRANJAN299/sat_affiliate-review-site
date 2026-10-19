@@ -140,7 +140,7 @@ class FashionTests(unittest.TestCase):
                 self.assertIn(f'/images/fashion/editorial/{slug}.svg', body)
         self.assertEqual(fashion.ART['womens-kurtas'], ('ivory-kurta',))
         self.assertEqual(fashion.ART['westernwear'], ('pink-dress', 'orange-dress-pillar'))
-        self.assertEqual(fashion.ART['indianwear'], ('purple-saree',))
+        self.assertEqual(fashion.ART['indianwear'], ('purple-saree-support',))
         landing, *product_pages = fashion.pages(self.src, lambda *args: '', 'https://sat.net.in')[0]
         self.assertEqual(product_pages, [])
 
