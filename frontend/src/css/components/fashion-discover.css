@@ -1,21 +1,21 @@
 /* Discover Your Style: asymmetric editorial mosaic (swipe cards on small screens). Used on the home page. */
 .fashion-discover { padding: clamp(36px, 5vw, 64px) 0 0; color: var(--f-ink); }
-.fashion-discover > h2 { font: 400 clamp(2rem, 4vw, 3.2rem)/1.1 var(--font-display); letter-spacing: -.03em; margin: 0 0 clamp(20px, 3vw, 36px); }
+.fashion-discover > h2 { display: inline-block; font: 400 clamp(2.1rem, 4.4vw, 3.6rem)/1.08 var(--font-display); letter-spacing: -.04em; margin: 0 0 clamp(22px, 3vw, 38px); padding-bottom: 12px; border-bottom: 1px solid var(--f-gold); }
 .fashion-discover a:focus-visible { outline: 3px solid var(--f-gold-ink); outline-offset: 3px; }
 .fashion-category-active-sports .fashion-art { top: auto; bottom: 84px; height: calc(100% - 84px); }
 /* Discover Your Style: asymmetric editorial mosaic (swipe cards on small screens). */
 .fashion-categories { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; margin: 0 calc(-1 * var(--fpad)); padding: 0 var(--fpad) 14px; scroll-padding-left: var(--fpad); scrollbar-width: none; }
 .fashion-categories::-webkit-scrollbar { display: none; }
-.fashion-category { flex: 0 0 min(64vw, 300px); aspect-ratio: 4 / 5; scroll-snap-align: start; display: block; color: var(--f-ink); text-decoration: none; }
+.fashion-category { flex: 0 0 min(64vw, 300px); aspect-ratio: 4 / 5; scroll-snap-align: start; display: block; color: var(--f-ink); text-decoration: none; border-radius: 3px; box-shadow: 0 26px 40px -30px rgba(60, 45, 20, .6); }
 .fashion-category:hover { color: var(--f-ink); text-decoration: none; }
 .fashion-category .fashion-art, .fashion-category .fashion-photo { transition: transform .7s ease; }
 .fashion-category:hover .fashion-art { transform: translateX(-50%) scale(1.03); }
 .fashion-category:hover .fashion-photo, .fashion-category-footwear:hover .fashion-art { transform: scale(1.03); }
 .fashion-category-label { position: absolute; inset: auto 0 0; display: flex; flex-direction: column; gap: 4px; padding: 64px 56px 18px 18px; background: linear-gradient(0deg, var(--t2) 0%, var(--t2) 22%, transparent 100%); }
-.fashion-category-label strong { font: 400 clamp(1.3rem, 2vw, 1.8rem)/1.1 var(--font-display); letter-spacing: -.02em; }
+.fashion-category-label strong { font: 400 clamp(1.4rem, 2.2vw, 2rem)/1.08 var(--font-display); letter-spacing: -.03em; }
 .fashion-category-label em { font-style: normal; font-size: 13px; line-height: 1.45; color: #3d3b34; }
-.fashion-category-arrow { position: absolute; right: 16px; bottom: 16px; display: grid; place-items: center; width: 34px; height: 34px; border: 1px solid #1d1d1b66; border-radius: 50%; font-size: 15px; transition: background .25s, color .25s; }
-.fashion-category:hover .fashion-category-arrow { background: var(--f-ink); color: #fff; }
+.fashion-category-arrow { position: absolute; right: 16px; bottom: 16px; display: grid; place-items: center; width: 38px; height: 38px; border: 1px solid #1d1d1b8c; border-radius: 50%; background: #ffffff59; font-size: 15px; transition: background .25s, color .25s, transform .25s; }
+.fashion-category:hover .fashion-category-arrow { background: var(--f-ink); color: #fff; transform: translateX(3px); }
 /* Real product photographs need a scrim under the label instead of the tinted fade. */
 .fashion-category:has(.fashion-photo) { color: #fff; }
 .fashion-category:has(.fashion-photo) .fashion-category-label { background: linear-gradient(0deg, #14130fb8, #14130f00); }
