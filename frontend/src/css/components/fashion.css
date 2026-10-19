@@ -124,10 +124,10 @@
 .fashion-widget-banner.fashion-tint-westernwear .fashion-art + .fashion-art { left: 60%; }
 .fashion-widget-note { margin: 0 0 12px; max-width: 62ch; font-size: 12px; line-height: 1.7; color: var(--f-muted); }
 .nykaa-group + .nykaa-group { margin-top: clamp(32px, 5vw, 56px); }
-.nykaa-product-shell { flex: 0 0 296px; display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 10px 8px 6px; scroll-snap-align: start; scroll-margin-top: 110px; background: #fff; border: 1px solid #ece4d3; border-radius: 6px; box-shadow: 0 1px 2px rgba(60, 45, 20, .05), 0 18px 30px -24px rgba(60, 45, 20, .32); transition: transform .3s ease, box-shadow .3s ease, border-color .3s; }
+.nykaa-product-shell { flex: 0 0 296px; display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 8px 7px 2px; scroll-snap-align: start; scroll-margin-top: 110px; background: #fff; border: 1px solid #ece4d3; border-radius: 6px; box-shadow: 0 1px 2px rgba(60, 45, 20, .05), 0 18px 30px -24px rgba(60, 45, 20, .32); transition: transform .3s ease, box-shadow .3s ease, border-color .3s; }
 .nykaa-product-shell:hover { transform: translateY(-3px); border-color: #dccfb4; box-shadow: 0 2px 4px rgba(60, 45, 20, .06), 0 26px 38px -24px rgba(60, 45, 20, .42); }
 .nykaa-product-shell:target { border-color: var(--f-gold); box-shadow: 0 0 0 2px #a98a4f55; }
-.nykaa-product-shell iframe { display: block; border: 0; max-width: 100%; }
+.nykaa-product-shell iframe { display: block; flex: none; border: 0; max-width: 100%; }
 /* /fashion/<category>/: every widget as search-style results. */
 /* Brand options inside a category panel (Footwear). */
 .nykaa-brands-nav { display: flex; gap: 8px; overflow-x: auto; margin: 4px calc(-1 * var(--fpad)) 14px; padding: 2px var(--fpad) 6px; scrollbar-width: none; scroll-snap-type: x proximity; scroll-padding: 0 var(--fpad); }
@@ -163,8 +163,8 @@
 .nykaa-audience-empty { margin-top: 4px; }
 @media (max-width: 719px) { .nykaa-audience { display: flex; } .nykaa-audience a { flex: 1; padding: 0 12px; } }
 .nykaa-results-title { margin: 0 0 16px; padding-bottom: 12px; border-bottom: 1px solid var(--f-line); font: 400 clamp(1.5rem, 3vw, 2.2rem)/1.2 var(--font-display); letter-spacing: -.025em; }
-.nykaa-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(296px, 1fr)); gap: 24px 20px; justify-items: center; }
-.nykaa-grid .nykaa-product-shell { flex: none; width: 100%; max-width: 330px; }
+.nykaa-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(296px, 1fr)); gap: 22px 18px; justify-items: center; }
+.nykaa-grid .nykaa-product-shell { flex: none; width: 100%; max-width: 296px; }
 .nykaa-get { display: flex; align-items: center; justify-content: center; gap: 12px; width: 100%; min-height: 46px; padding: 12px 18px; background: var(--f-ink); border: 1px solid var(--f-ink); border-radius: 999px; color: #fff; font-size: 13px; font-weight: 600; letter-spacing: .02em; text-decoration: none; transition: background .2s; }
 .nykaa-get:hover { background: #3a3832; color: #fff; text-decoration: none; }
 .nykaa-get:focus-visible { outline: 3px solid var(--f-gold-ink); outline-offset: 3px; }
@@ -182,7 +182,7 @@
   .fashion-widget-banner.fashion-tint-westernwear .fashion-art + .fashion-art { left: 72%; }
   .nykaa-product-shell { flex-basis: min(86vw, 312px); }
   .nykaa-grid { grid-template-columns: minmax(0, 1fr); }
-  .nykaa-grid .nykaa-product-shell { max-width: 340px; }
+  .nykaa-grid .nykaa-product-shell { max-width: 296px; }
 }
 
 /* Featured Brands: understated, derived from product data; a clear fallback until real data exists. */
