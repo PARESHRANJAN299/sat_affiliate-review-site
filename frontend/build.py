@@ -362,7 +362,7 @@ def home_collage():
                 cat = cats.get(wall.get(name))
                 if cat and aff:   # the picture opens an Amazon search for what it shows, in a new tab, and does nothing on the page
                     parts.append(f'<a class="tile" href="{esc(amazon(name, cat))}" target="_blank" rel="sponsored nofollow noopener" data-no-paid-label="1" '
-                                 f'data-cat="{esc(cat["name"])} on Amazon" tabindex="-1">{img}</a>')
+                                 f'data-cat="{esc(cat["name"])} on Amazon" data-label="Shop {esc(cat["name"].lower())} on Amazon \u2197" data-go="\u2197" tabindex="-1">{img}</a>')
                 elif cat:
                     parts.append(f'<a class="tile" href="{esc(cat["url"])}" data-cat="{esc(cat["name"])}" tabindex="-1">{img}</a>')
                 else:

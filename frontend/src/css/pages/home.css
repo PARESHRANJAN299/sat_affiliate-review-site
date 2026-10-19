@@ -49,11 +49,23 @@
   background: rgba(7, 11, 20, .78); color: #fff; font-size: .78rem; font-weight: 700; line-height: 1.2; text-align: center;
   opacity: 0; transform: translateY(8px); transition: opacity .25s ease, transform .25s ease; pointer-events: none;
 }
+/* an Amazon picture says so: a small arrow badge is always visible (phones have no hover), and on hover the picture lifts and says where it goes */
+.home-collage a.tile { transition: transform .25s ease, box-shadow .25s ease; }
+.home-collage a.tile[data-label]::after { content: attr(data-label); }
+.home-collage a.tile[target="_blank"]::before {
+  content: attr(data-go); position: absolute; top: 8px; right: 8px; z-index: 2; width: 26px; height: 26px; border-radius: 50%;
+  background: rgba(10, 15, 28, .8); border: 1px solid rgba(231, 201, 135, .75); color: #fff; font: 700 15px/24px system-ui, sans-serif; text-align: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, .35); pointer-events: none; transition: background .2s ease, color .2s ease, transform .2s ease;
+}
 @media (hover: hover) {
+  .home-collage a.tile:hover { transform: translateY(-4px); box-shadow: 0 22px 38px rgba(0, 0, 0, .5); }
   .home-collage a.tile:hover img { transform: scale(1.08); filter: brightness(1.18) saturate(1.1); }
   .home-collage a.tile:hover::after { opacity: 1; transform: none; }
+  .home-collage a.tile[target="_blank"]:hover::before { background: #e7c987; color: #10131a; transform: scale(1.1); }
   .home-row:hover .home-track { animation-play-state: paused; }
 }
+@media (max-width: 719px) { .home-collage a.tile[target="_blank"]::before { top: 6px; right: 6px; width: 24px; height: 24px; font-size: 14px; line-height: 22px; background: #e7c987; border-color: #fff4d6; color: #10131a; } }
+@media (prefers-reduced-motion: reduce) { .home-collage a.tile { transition: none; } .home-collage a.tile:hover { transform: none; } }
 @media (min-width: 1000px) {
   .home-hero::before { background:
     radial-gradient(ellipse 46% 78% at 50% 50%, rgba(8, 13, 26, .94), rgba(8, 13, 26, .55) 72%, rgba(8, 13, 26, .15)),

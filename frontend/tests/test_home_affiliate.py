@@ -126,3 +126,19 @@ class HomeCategoryTiles(unittest.TestCase):
         self.assertNotIn("overflow-x", phone)
         lux = (ROOT / "src" / "css" / "layout" / "mobile-luxury.css").read_text(encoding="utf-8")
         self.assertNotIn("home-cat-strip", lux)
+
+
+class TileAffordance(unittest.TestCase):
+    """Collage pictures that open Amazon say so: every one carries data-shop (hover label) and the CSS adds an always-visible arrow badge."""
+
+    def test_tiles_carry_the_shop_label_and_css_adds_the_badge(self):
+        page = (ROOT / "dist" / "index.html").read_text(encoding="utf-8")
+        tiles = re.findall(r'<a class="tile" href="https://www\.amazon\.in/s\?[^"]+"[^>]*>', page)
+        self.assertGreater(len(tiles), 50)
+        for t in tiles:
+            self.assertRegex(t, r'data-label="Shop [a-z][a-z &;]+ on Amazon \u2197" data-go="\u2197"')
+            self.assertIn('data-cat="', t)
+        css = (ROOT / "src" / "css" / "pages" / "home.css").read_text(encoding="utf-8")
+        self.assertIn('a.tile[target="_blank"]::before', css)
+        self.assertIn("content: attr(data-label)", css)
+        self.assertIn("content: attr(data-go)", css)
