@@ -2088,6 +2088,62 @@
       "audience": "men",
       "brand": "nike",
       "collection": "nike-shoes"
+    },
+    {
+      "id": "nykaa-25125582",
+      "product_id": "25125582",
+      "category": "footwear",
+      "source": "nykaa-fashion",
+      "widget_url": "https://affiliate.nykaa.com/v2/get_product_widget?ad_id=6ad5e1885593a5b8d678fe57&add_resources=True&affiliate_id=PARESHRA-445235&product_id=25125582&store=nykaa_fashion&text_color=000000&theme_variation=TEXT_AND_IMAGE&theme=affiliate&aff_link_type=affiliate%3Anap_dashboard%3Aproduct&hlp=hlpa",
+      "width": 280,
+      "height": 360,
+      "active": true,
+      "featured": false,
+      "audience": "men",
+      "brand": "nike",
+      "collection": "nike-shoes"
+    },
+    {
+      "id": "nykaa-26274477",
+      "product_id": "26274477",
+      "category": "footwear",
+      "source": "nykaa-fashion",
+      "widget_url": "https://affiliate.nykaa.com/v2/get_product_widget?ad_id=6ad5e1adcd34ac061ac62175&add_resources=True&affiliate_id=PARESHRA-445235&product_id=26274477&store=nykaa_fashion&text_color=000000&theme_variation=TEXT_AND_IMAGE&theme=affiliate&aff_link_type=affiliate%3Anap_dashboard%3Aproduct&hlp=hlpa",
+      "width": 280,
+      "height": 360,
+      "active": true,
+      "featured": false,
+      "audience": "men",
+      "brand": "nike",
+      "collection": "nike-shoes"
+    },
+    {
+      "id": "nykaa-26067395",
+      "product_id": "26067395",
+      "category": "footwear",
+      "source": "nykaa-fashion",
+      "widget_url": "https://affiliate.nykaa.com/v2/get_product_widget?ad_id=6ad5e244bd97db408ef5f8f9&add_resources=True&affiliate_id=PARESHRA-445235&product_id=26067395&store=nykaa_fashion&text_color=000000&theme_variation=TEXT_AND_IMAGE&theme=affiliate&aff_link_type=affiliate%3Anap_dashboard%3Aproduct&hlp=hlpa",
+      "width": 280,
+      "height": 360,
+      "active": true,
+      "featured": false,
+      "audience": "men",
+      "brand": "nike",
+      "collection": "nike-shoes"
+    },
+    {
+      "id": "nykaa-27858459",
+      "product_id": "27858459",
+      "category": "footwear",
+      "source": "nykaa-fashion",
+      "widget_url": "https://affiliate.nykaa.com/v2/get_product_widget?ad_id=6ad5e1f4bd97db408ef5f8f8&add_resources=True&affiliate_id=PARESHRA-445235&product_id=27858459&store=nykaa_fashion&text_color=000000&theme_variation=TEXT_AND_IMAGE&theme=affiliate&aff_link_type=affiliate%3Anap_dashboard%3Aproduct&hlp=hlpa",
+      "width": 280,
+      "height": 360,
+      "active": true,
+      "featured": false,
+      "audience": "women",
+      "brand": "nike",
+      "collection": "nike-shoes"
     }
   ],
   "category_pages": [
