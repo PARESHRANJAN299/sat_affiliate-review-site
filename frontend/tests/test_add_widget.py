@@ -106,6 +106,16 @@ class AddWidgetTests(unittest.TestCase):
         self.assertTrue(all('brand' not in w for w in self.widgets() if w['category'] != 'footwear'))
         self.assertEqual(add_widget.add(snippet(63333333), category='westernwear', path=self.path, brand='nike')[0], [])  # no options in this category
 
+    def test_front_marks_new_products_featured_and_they_sort_first(self):
+        add_widget.add(snippet(71111111), path=self.path)
+        add_widget.add(snippet(72222222), path=self.path, front=True)
+        items = {w['product_id']: w for w in self.widgets()}
+        self.assertTrue(items['72222222']['featured'])
+        self.assertFalse(items['71111111']['featured'])
+        live = fashion.widgets(self.path.parent.parent)[0] if False else fashion.validate_widgets(json.loads(self.path.read_text()))[0]
+        order = [w['product_id'] for w in live if w['category'] == 'womens-kurtas']
+        self.assertLess(order.index('72222222'), order.index('71111111'))  # the front card comes before products added earlier
+
     def test_dry_run_and_unknown_fields_untouched(self):
         before = self.path.read_text()
         added, _, problems = add_widget.add(snippet(99999999), path=self.path, dry_run=True)

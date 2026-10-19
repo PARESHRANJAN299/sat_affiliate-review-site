@@ -47,7 +47,7 @@ def size_of(text, url, key, default):
     return default
 
 
-def build_records(text, category, existing_ids, audience=None, brand=None):
+def build_records(text, category, existing_ids, audience=None, brand=None, front=False):
     records, skipped, problems = [], [], []
     for url in extract(text):
         ids = parse_qs(urlsplit(url).query).get('product_id', [])
@@ -60,17 +60,17 @@ def build_records(text, category, existing_ids, audience=None, brand=None):
             continue
         existing_ids.add(product_id)
         records.append({'id': f'nykaa-{product_id}', 'product_id': product_id, 'category': category, 'source': 'nykaa-fashion', 'widget_url': url,
-                        'width': size_of(text, url, 'width', 280), 'height': size_of(text, url, 'height', 360), 'active': True, 'featured': False,
+                        'width': size_of(text, url, 'width', 280), 'height': size_of(text, url, 'height', 360), 'active': True, 'featured': bool(front),
                         **({'audience': audience} if audience else {}), **({'brand': brand} if brand else {})})
     return records, skipped, problems
 
 
-def add(text, category='womens-kurtas', path=DEFAULT_FILE, dry_run=False, audience=None, brand=None):
+def add(text, category='womens-kurtas', path=DEFAULT_FILE, dry_run=False, audience=None, brand=None, front=False):
     """Returns (added, skipped, problems). Writes only when there are no problems and not dry_run."""
     path = Path(path)
     data = json.loads(path.read_text())
     existing = {w.get('product_id') for w in data['widgets']}
-    records, skipped, problems = build_records(text, category, existing, audience, brand)
+    records, skipped, problems = build_records(text, category, existing, audience, brand, front)
     if not records and not problems:
         return [], skipped, ['no new widget URLs found'] if not skipped else []
     candidate = {**data, 'widgets': data['widgets'] + records}
@@ -123,6 +123,7 @@ def main(argv=None):
     parser.add_argument('--category', default='womens-kurtas', help='collection to add to (default: womens-kurtas)')
     parser.add_argument('--audience', choices=[key for key, _ in fashion.AUDIENCES], help='women or men (for categories with a Women / Men toggle, such as westernwear)')
     parser.add_argument('--brand', help='brand option id for a category that has brand options (footwear: us-polo, nike, puma, indian-affordable)')
+    parser.add_argument('--front', action='store_true', help='show these products first in their list (marks them featured)')
     parser.add_argument('--file', default=str(DEFAULT_FILE), help='widgets.json to update')
     parser.add_argument('--set', metavar='IDS', help='instead of adding: mark these comma-separated product ids with --audience (copied from the ?sort=1 page)')
     parser.add_argument('--dry-run', action='store_true', help='check and report without writing')
@@ -138,7 +139,7 @@ def main(argv=None):
         print(f'Updated {len(changed)} product(s).')
         return 0
     text = sys.stdin.read()
-    added, skipped, problems = add(text, fashion.category_slug(args.category) or args.category, args.file, args.dry_run, args.audience, args.brand)
+    added, skipped, problems = add(text, fashion.category_slug(args.category) or args.category, args.file, args.dry_run, args.audience, args.brand, args.front)
     if problems:
         print('Nothing was written:', *problems, sep='\n  - ')
         return 1
