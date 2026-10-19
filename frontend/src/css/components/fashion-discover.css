@@ -6,7 +6,7 @@
 /* Discover Your Style: asymmetric editorial mosaic (swipe cards on small screens). */
 .fashion-categories { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; margin: 0 calc(-1 * var(--fpad)); padding: 0 var(--fpad) 14px; scroll-padding-left: var(--fpad); scrollbar-width: none; }
 .fashion-categories::-webkit-scrollbar { display: none; }
-.fashion-category { flex: 0 0 min(64vw, 300px); aspect-ratio: 4 / 5; scroll-snap-align: start; display: block; color: var(--f-ink); text-decoration: none; border-radius: 3px; box-shadow: 0 26px 40px -30px rgba(60, 45, 20, .6); }
+.fashion-category { flex: 0 0 min(64vw, 300px); aspect-ratio: 4 / 5; scroll-snap-align: start; display: block; color: var(--f-ink); text-decoration: none; }
 .fashion-category:hover { color: var(--f-ink); text-decoration: none; }
 .fashion-category .fashion-art, .fashion-category .fashion-photo { transition: transform .7s ease; }
 .fashion-category:hover .fashion-art { transform: translateX(-50%) scale(1.03); }

@@ -106,7 +106,7 @@
 .fashion-section-luxe .fashion-empty-note, .fashion-section-luxe .fashion-empty ul { margin-inline: auto; }
 
 /* Retailer-powered collections: a SAT editorial banner, then a left-to-right rail of official Nykaa product widgets. Only the wrapper is styled; the iframe content is Nykaa's. */
-.fashion-widget-banner { margin: 0 0 14px; width: 100%; aspect-ratio: 21 / 8; border-radius: 3px; box-shadow: 0 28px 50px -34px rgba(60, 45, 20, .55); }
+.fashion-widget-banner { margin: 0 0 14px; width: 100%; aspect-ratio: 21 / 8; }
 .fashion-widget-banner .fashion-art { left: 0; width: 100%; height: 100%; transform: none; object-fit: cover; object-position: 72% 12%; }
 /* Single-figure banners (Indianwear, Active & Sports, Bags): the whole picture, centred on the tinted ground. */
 .fashion-widget-banner.fashion-tint-indianwear .fashion-art, .fashion-widget-banner.fashion-tint-active-sports .fashion-art, .fashion-widget-banner.fashion-tint-bags .fashion-art { left: 50%; width: auto; height: 100%; transform: translateX(-50%); object-fit: contain; }
@@ -175,7 +175,7 @@
 .nykaa-share [hidden] { display: none !important; }
 .nykaa-share-input { width: 100%; min-width: 0; padding: 10px; font-size: 13px; border: 1px solid var(--f-line); border-radius: 8px; }
 @media (max-width: 719px) {
-  .fashion-widget-banner { aspect-ratio: 4 / 3; margin: 0 calc(-1 * var(--fpad)) 18px; width: auto; border-radius: 0; box-shadow: none; }
+  .fashion-widget-banner { aspect-ratio: 4 / 3; margin: 0 calc(-1 * var(--fpad)) 18px; width: auto; }
   .fashion-widget-banner .fashion-art { object-position: 80% 20%; }
   .fashion-widget-banner.fashion-tint-footwear .fashion-art { object-position: 50% 94%; }
   .fashion-widget-banner.fashion-tint-westernwear .fashion-art { left: 30%; width: 50%; }
