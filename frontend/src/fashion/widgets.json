@@ -1477,6 +1477,58 @@
       "featured": false,
       "audience": "men",
       "brand": "us-polo"
+    },
+    {
+      "id": "nykaa-27576601",
+      "product_id": "27576601",
+      "category": "footwear",
+      "source": "nykaa-fashion",
+      "widget_url": "https://affiliate.nykaa.com/v2/get_product_widget?ad_id=6ad5cd671bd6310c571ebe15&add_resources=True&affiliate_id=PARESHRA-445235&product_id=27576601&store=nykaa_fashion&text_color=000000&theme_variation=TEXT_AND_IMAGE&theme=affiliate&aff_link_type=affiliate%3Anap_dashboard%3Aproduct&hlp=hlpa",
+      "width": 280,
+      "height": 360,
+      "active": true,
+      "featured": false,
+      "audience": "men",
+      "brand": "us-polo"
+    },
+    {
+      "id": "nykaa-20667030",
+      "product_id": "20667030",
+      "category": "footwear",
+      "source": "nykaa-fashion",
+      "widget_url": "https://affiliate.nykaa.com/v2/get_product_widget?ad_id=6ad5cd7e1bd6310c571ebe16&add_resources=True&affiliate_id=PARESHRA-445235&product_id=20667030&store=nykaa_fashion&text_color=000000&theme_variation=TEXT_AND_IMAGE&theme=affiliate&aff_link_type=affiliate%3Anap_dashboard%3Aproduct&hlp=hlpa",
+      "width": 280,
+      "height": 360,
+      "active": true,
+      "featured": false,
+      "audience": "men",
+      "brand": "us-polo"
+    },
+    {
+      "id": "nykaa-24077805",
+      "product_id": "24077805",
+      "category": "footwear",
+      "source": "nykaa-fashion",
+      "widget_url": "https://affiliate.nykaa.com/v2/get_product_widget?ad_id=6ad5cd931bd6310c571ebe17&add_resources=True&affiliate_id=PARESHRA-445235&product_id=24077805&store=nykaa_fashion&text_color=000000&theme_variation=TEXT_AND_IMAGE&theme=affiliate&aff_link_type=affiliate%3Anap_dashboard%3Aproduct&hlp=hlpa",
+      "width": 280,
+      "height": 360,
+      "active": true,
+      "featured": false,
+      "audience": "men",
+      "brand": "us-polo"
+    },
+    {
+      "id": "nykaa-23555187",
+      "product_id": "23555187",
+      "category": "footwear",
+      "source": "nykaa-fashion",
+      "widget_url": "https://affiliate.nykaa.com/v2/get_product_widget?ad_id=6ad5cdaf5fa67ed743960873&add_resources=True&affiliate_id=PARESHRA-445235&product_id=23555187&store=nykaa_fashion&text_color=000000&theme_variation=TEXT_AND_IMAGE&theme=affiliate&aff_link_type=affiliate%3Anap_dashboard%3Aproduct&hlp=hlpa",
+      "width": 280,
+      "height": 360,
+      "active": true,
+      "featured": false,
+      "audience": "men",
+      "brand": "us-polo"
     }
   ],
   "category_pages": [
