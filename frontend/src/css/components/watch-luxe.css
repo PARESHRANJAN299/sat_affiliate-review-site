@@ -286,3 +286,12 @@
 .lx-hero-link:focus-visible { outline: 3px solid #d8c08a; outline-offset: -6px; }
 .lx-hero-text { pointer-events: none; }
 .lx-hero-text .gender-plate, .lx-hero-text button, .lx-hero-text a { pointer-events: auto; }
+
+/* quick filter tiles (Budget, Brand, Style, More filters): the owner's blue, white text */
+.qa { background: #0066cc; border-color: #0066cc; color: #fff; box-shadow: 0 12px 24px -16px rgba(0, 102, 204, .75); transition: transform .2s ease, border-color .2s ease, background .2s ease; }
+.qa-ico { background: rgba(255, 255, 255, .18); }
+.qa-ico svg { stroke: #fff; }
+.qa-t em { color: rgba(255, 255, 255, .92); }
+.qa-chev { border-right-color: #fff; border-top-color: #fff; opacity: .9; }
+@media (hover: hover) { .qa:hover { background: #0057ad; border-color: #0057ad; } }
+.qa:active { background: #004a94; }
