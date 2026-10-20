@@ -39,6 +39,11 @@ ART_ALT = {'footwear-detail': 'Editorial image: close-up of white velcro trainer
            'white-tee-b': 'Editorial image: a woman sitting cross-legged in a white tee, blush joggers and white trainers.'}
 # Easy-to-replace wording shown beside the first Nykaa widgets.
 WIDGET_AFFILIATE_NOTE = 'This section contains affiliate links. SAT may earn a commission from qualifying purchases at no extra cost to you.'
+# Watches are not a /fashion/ tab: SAT's own Watches page (/watches/) shows these Nykaa cards at its top, and the home tile opens that page.
+EXTRA_CATEGORIES = {'watches': 'Watches'}
+WATCH_PAGE = '/watches/'
+WATCH_PHOTO = '/images/categories/watches.jpg'
+WATCH_TAGLINE = 'Discover classic and analog watches by budget, brand, style and fit.'
 EDIT_LABELS = {'womens-kurtas': 'THE KURTA EDIT', 'westernwear': 'THE WESTERN EDIT', 'footwear': 'THE FOOTWEAR EDIT', 'indianwear': 'THE INDIAN EDIT', 'active-sports': 'THE ACTIVE EDIT', 'bags': 'THE BAG EDIT'}
 WIDGET_KEYS = {'id', 'product_id', 'category', 'source', 'widget_url', 'width', 'height', 'active', 'featured', 'collection', 'affiliate_url', 'audience', 'brand'}
 # A category page can split its widgets by audience (a Women / Men toggle). Widgets without an audience count as women's.
@@ -100,7 +105,8 @@ def category_slug(value):
     if not isinstance(value, str):
         return ''
     normalized = re.sub(r'[^a-z0-9]', '', value.lower())
-    return next((slug for slug, title, *_ in SECTIONS if normalized in (re.sub(r'[^a-z0-9]', '', slug), re.sub(r'[^a-z0-9]', '', title.lower()))), '')
+    found = next((slug for slug, title, *_ in SECTIONS if normalized in (re.sub(r'[^a-z0-9]', '', slug), re.sub(r'[^a-z0-9]', '', title.lower()))), '')
+    return found or next((slug for slug in EXTRA_CATEGORIES if normalized == slug), '')
 
 
 def validate(data):
@@ -568,7 +574,21 @@ def discover_tiles(products, prefix='/fashion/'):
             visual = art_picture(slug, '(min-width: 900px) 42vw, 70vw')
         tiles.append(f'<a class="fashion-category fashion-category-{slug} fashion-tint-{slug}" href="{prefix}#{slug}">{visual}'
                      f'<span class="fashion-category-label"><strong>{esc(title)}</strong><em>{esc(description)}</em><span class="fashion-category-arrow" aria-hidden="true">→</span></span></a>')
+    tiles.append(f'<a class="fashion-category fashion-category-watches fashion-tint-watches" href="{WATCH_PAGE}"><img class="fashion-photo" src="{WATCH_PHOTO}" alt="" loading="lazy" decoding="async" width="608" height="456">'
+                 f'<span class="fashion-category-label"><strong>Watches</strong><em>{esc(WATCH_TAGLINE)}</em><span class="fashion-category-arrow" aria-hidden="true">→</span></span></a>')
     return ''.join(tiles)
+
+
+def watch_picks_html(src):
+    """The Nykaa watch cards shown at the top of SAT's Watches page. Empty when there are none."""
+    live, _ = widgets(src)
+    picks = get_widgets_by_category(live, 'watches')
+    if not picks:
+        return ''
+    cards = ''.join(f'<article class="wp-card" role="listitem" id="{widget_id(w)}"><iframe src="{esc(w["widget_url"])}" title="Nykaa Fashion watch" width="{w["width"]}" height="{w["height"]}" loading="lazy" '
+                    f'style="height:{w["height"]}px;width:{w["width"]}px;overflow:hidden;"></iframe></article>' for w in picks)
+    return ('<section class="lx-sec wp-picks" aria-labelledby="wp-picks-title"><div class="lx-sec-head"><h2 id="wp-picks-title">Watches on Nykaa Fashion</h2></div>'
+            f'<p class="wp-note">{esc(WIDGET_AFFILIATE_NOTE)}</p><div class="wp-rail" role="list" aria-label="Watches from Nykaa Fashion">{cards}</div></section>')
 
 
 def discover_html(src, prefix='/fashion/'):

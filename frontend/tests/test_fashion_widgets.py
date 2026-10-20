@@ -40,7 +40,7 @@ class WidgetTests(unittest.TestCase):
         items, problems = fashion.widgets(ROOT / 'src')
         self.assertEqual(problems, [])
         self.assertGreaterEqual(len(items), 3)
-        self.assertTrue({item['category'] for item in items} <= {slug for slug, *_ in fashion.SECTIONS})
+        self.assertTrue({item['category'] for item in items} <= {slug for slug, *_ in fashion.SECTIONS} | set(fashion.EXTRA_CATEGORIES))
         self.assertIn('womens-kurtas', {item['category'] for item in items})
         first = next(item for item in items if item['product_id'] == '28560370')
         self.assertEqual(first['widget_url'], FIRST_URL)
@@ -435,6 +435,30 @@ class WidgetPageTests(unittest.TestCase):
         self.assertTrue(problems)
         self.assertEqual(page['_body'].count('<iframe'), 0)
 
+
+
+
+class WatchPicksTests(unittest.TestCase):
+    SRC = Path(__file__).resolve().parent.parent / 'src'
+
+    def test_watches_is_a_known_category_but_not_a_fashion_tab(self):
+        self.assertEqual(fashion.category_slug('watches'), 'watches')
+        self.assertNotIn('watches', [slug for slug, *_ in fashion.SECTIONS])
+
+    def test_home_tile_opens_the_watches_page(self):
+        tiles = fashion.discover_tiles([])
+        self.assertIn('class="fashion-category fashion-category-watches fashion-tint-watches" href="/watches/"', tiles)
+        self.assertTrue(tiles.rstrip().endswith('</a>') and tiles.rfind('fashion-category-watches') > tiles.rfind('fashion-category-bags'))
+
+    def test_watch_cards_use_only_the_validated_widget_urls_and_lead_with_the_chosen_first_card(self):
+        html = fashion.watch_picks_html(self.SRC)
+        self.assertIn('Watches on Nykaa Fashion', html)
+        self.assertEqual(html.count('<iframe'), html.count('affiliate.nykaa.com/v2/get_product_widget'))
+        self.assertLess(html.index('pick-23482204'), html.index('pick-21128979'))
+
+    def test_fashion_page_does_not_show_the_watch_cards(self):
+        page = fashion.page(self.SRC, 'icon')
+        self.assertNotIn('pick-23482204', page if isinstance(page, str) else str(page))
 
 if __name__ == '__main__':
     unittest.main()

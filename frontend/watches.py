@@ -16,6 +16,7 @@ import html
 import re
 import urllib.parse
 import collection
+import fashion
 import cards as ui
 import watch_data
 import json
@@ -64,6 +65,7 @@ def read_json(path):
 class Watches:
     def __init__(self, src, site_config):
         base = Path(src) / "watches"
+        self.src = src
         self.config = read_json(base / "config.json")
         self.merchants = read_json(base / "merchants.json")
         self.settings = read_json(base / "settings.json") if (base / "settings.json").exists() else {}
@@ -1326,7 +1328,7 @@ f'<linearGradient id="g{uid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-
                 f'<div class="lx-hero-art" aria-hidden="true"><div class="lx-hero-watch">{self.art_copy(art_for, "h")}</div>'
                 f'<dl class="lx-stats"><div><dt>{gcount["men"]}</dt><dd>Men\'s watches</dd></div><div><dt>{gcount["women"]}</dt><dd>Women\'s watches</dd></div></dl></div></header>')
         footline = f'<p class="lx-foot">{reviewed}</p>' if reviewed else ""
-        top = (hero + self.quick_row(steps, active, any(self.styles)) + quick_row + (self.budget_cards(self.budget_discovery(), aff) + self.brand_tiles(active, aff) if hub else ""))
+        top = (hero + (fashion.watch_picks_html(self.src) if hub else "") + self.quick_row(steps, active, any(self.styles)) + quick_row + (self.budget_cards(self.budget_discovery(), aff) + self.brand_tiles(active, aff) if hub else ""))
         hub_top, hub_bottom = hub or ("", "")
         note = ('<p class="watch-affiliate-note">Amazon links on this page are affiliate links. As an Amazon Associate I earn from qualifying purchases. '
                 '<a href="/affiliate-disclosure/">How we earn</a></p>') if any(self.merchant_links(p) for p in shown) else ""
@@ -1365,7 +1367,7 @@ f'<linearGradient id="g{uid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-
         elif gender and not (brand or style or budget or premium) and not hub:
             meta["title"] = f'{self.genders[gender]["label"]} Watches in India: Compare by Budget and Brand'
         meta["ld_items"] = [(f'{self.brands[p["brand"]]["name"]} {p["model"]}', self.review_url(p)) for p in shown[:30]]
-        meta["css"] += ["collection", "watch-store", "price-slider", "watch-luxe", "watch-sheet"]
+        meta["css"] += ["collection", "watch-store", "price-slider"] + (["watch-picks"] if hub else []) + ["watch-luxe", "watch-sheet"]
         meta["js"] = ["collection", "watch-tilt"]
         return meta
 

@@ -1,0 +1,8 @@
+/* Nykaa Fashion watch cards at the top of the Watches page. The card contents are Nykaa's; SAT only frames them. */
+.wp-picks { margin: 22px 0 8px; }
+.wp-note { margin: 0 0 12px; max-width: 62ch; font-size: 12px; line-height: 1.7; color: #66645b; }
+.wp-rail { display: flex; gap: 16px; overflow-x: auto; scroll-snap-type: x proximity; padding: 4px 2px 16px; scrollbar-width: thin; scrollbar-color: #a98a4f transparent; }
+.wp-card { flex: 0 0 296px; display: flex; justify-content: center; padding: 8px 7px; scroll-snap-align: start; background: #fff; border: 1px solid #ece4d3; border-radius: 6px; box-shadow: 0 1px 2px rgba(60, 45, 20, .05), 0 18px 30px -24px rgba(60, 45, 20, .32); }
+.wp-card iframe { display: block; flex: none; width: 280px; height: 360px; border: 0; }
+.wp-rail:focus-visible { outline: 3px solid #6f5524; outline-offset: 4px; }
+@media (max-width: 719px) { .wp-rail { margin: 0 -16px; padding-left: 16px; padding-right: 16px; scroll-padding-left: 16px; } }

@@ -6,6 +6,17 @@
   "allowed_product_link_hosts": [],
   "widgets": [
     {
+      "id": "nykaa-23482204",
+      "product_id": "23482204",
+      "category": "watches",
+      "source": "nykaa-fashion",
+      "widget_url": "https://affiliate.nykaa.com/v2/get_product_widget?ad_id=6ad6ef4fc87f76984d3ec17a&add_resources=True&affiliate_id=PARESHRA-445235&product_id=23482204&store=nykaa_fashion&text_color=000000&theme_variation=TEXT_AND_IMAGE&theme=affiliate&aff_link_type=affiliate%3Anap_dashboard%3Aproduct&hlp=hlpa",
+      "width": 280,
+      "height": 360,
+      "active": true,
+      "featured": true
+    },
+    {
       "id": "nykaa-27315415",
       "product_id": "27315415",
       "category": "footwear",
@@ -3245,6 +3256,193 @@
       "audience": "women",
       "brand": "puma",
       "collection": "puma-girls-shoes"
+    },
+    {
+      "id": "nykaa-21128979",
+      "product_id": "21128979",
+      "category": "watches",
+      "source": "nykaa-fashion",
+      "widget_url": "https://affiliate.nykaa.com/v2/get_product_widget?ad_id=6ad6efffb36031503d552f50&add_resources=True&affiliate_id=PARESHRA-445235&product_id=21128979&store=nykaa_fashion&text_color=000000&theme_variation=TEXT_AND_IMAGE&theme=affiliate&aff_link_type=affiliate%3Anap_dashboard%3Aproduct&hlp=hlpa",
+      "width": 280,
+      "height": 360,
+      "active": true,
+      "featured": false
+    },
+    {
+      "id": "nykaa-28802074",
+      "product_id": "28802074",
+      "category": "watches",
+      "source": "nykaa-fashion",
+      "widget_url": "https://affiliate.nykaa.com/v2/get_product_widget?ad_id=6ad6f019ddd5ed2e54fedfc6&add_resources=True&affiliate_id=PARESHRA-445235&product_id=28802074&store=nykaa_fashion&text_color=000000&theme_variation=TEXT_AND_IMAGE&theme=affiliate&aff_link_type=affiliate%3Anap_dashboard%3Aproduct&hlp=hlpa",
+      "width": 280,
+      "height": 360,
+      "active": true,
+      "featured": false
+    },
+    {
+      "id": "nykaa-21128984",
+      "product_id": "21128984",
+      "category": "watches",
+      "source": "nykaa-fashion",
+      "widget_url": "https://affiliate.nykaa.com/v2/get_product_widget?ad_id=6ad6f024ddd5ed2e54fedfc7&add_resources=True&affiliate_id=PARESHRA-445235&product_id=21128984&store=nykaa_fashion&text_color=000000&theme_variation=TEXT_AND_IMAGE&theme=affiliate&aff_link_type=affiliate%3Anap_dashboard%3Aproduct&hlp=hlpa",
+      "width": 280,
+      "height": 360,
+      "active": true,
+      "featured": false
+    },
+    {
+      "id": "nykaa-26358890",
+      "product_id": "26358890",
+      "category": "watches",
+      "source": "nykaa-fashion",
+      "widget_url": "https://affiliate.nykaa.com/v2/get_product_widget?ad_id=6ad6f033d4deffcea1364057&add_resources=True&affiliate_id=PARESHRA-445235&product_id=26358890&store=nykaa_fashion&text_color=000000&theme_variation=TEXT_AND_IMAGE&theme=affiliate&aff_link_type=affiliate%3Anap_dashboard%3Aproduct&hlp=hlpa",
+      "width": 280,
+      "height": 360,
+      "active": true,
+      "featured": false
+    },
+    {
+      "id": "nykaa-22983911",
+      "product_id": "22983911",
+      "category": "watches",
+      "source": "nykaa-fashion",
+      "widget_url": "https://affiliate.nykaa.com/v2/get_product_widget?ad_id=6ad6f04e9ab9ac7d711ed949&add_resources=True&affiliate_id=PARESHRA-445235&product_id=22983911&store=nykaa_fashion&text_color=000000&theme_variation=TEXT_AND_IMAGE&theme=affiliate&aff_link_type=affiliate%3Anap_dashboard%3Aproduct&hlp=hlpa",
+      "width": 280,
+      "height": 360,
+      "active": true,
+      "featured": false
+    },
+    {
+      "id": "nykaa-26358909",
+      "product_id": "26358909",
+      "category": "watches",
+      "source": "nykaa-fashion",
+      "widget_url": "https://affiliate.nykaa.com/v2/get_product_widget?ad_id=6ad6f05afb2e932617b24d17&add_resources=True&affiliate_id=PARESHRA-445235&product_id=26358909&store=nykaa_fashion&text_color=000000&theme_variation=TEXT_AND_IMAGE&theme=affiliate&aff_link_type=affiliate%3Anap_dashboard%3Aproduct&hlp=hlpa",
+      "width": 280,
+      "height": 360,
+      "active": true,
+      "featured": false
+    },
+    {
+      "id": "nykaa-21128996",
+      "product_id": "21128996",
+      "category": "watches",
+      "source": "nykaa-fashion",
+      "widget_url": "https://affiliate.nykaa.com/v2/get_product_widget?ad_id=6ad6f06763c48034c5daa613&add_resources=True&affiliate_id=PARESHRA-445235&product_id=21128996&store=nykaa_fashion&text_color=000000&theme_variation=TEXT_AND_IMAGE&theme=affiliate&aff_link_type=affiliate%3Anap_dashboard%3Aproduct&hlp=hlpa",
+      "width": 280,
+      "height": 360,
+      "active": true,
+      "featured": false
+    },
+    {
+      "id": "nykaa-26358897",
+      "product_id": "26358897",
+      "category": "watches",
+      "source": "nykaa-fashion",
+      "widget_url": "https://affiliate.nykaa.com/v2/get_product_widget?ad_id=6ad6f073c87f76984d3ec186&add_resources=True&affiliate_id=PARESHRA-445235&product_id=26358897&store=nykaa_fashion&text_color=000000&theme_variation=TEXT_AND_IMAGE&theme=affiliate&aff_link_type=affiliate%3Anap_dashboard%3Aproduct&hlp=hlpa",
+      "width": 280,
+      "height": 360,
+      "active": true,
+      "featured": false
+    },
+    {
+      "id": "nykaa-21128995",
+      "product_id": "21128995",
+      "category": "watches",
+      "source": "nykaa-fashion",
+      "widget_url": "https://affiliate.nykaa.com/v2/get_product_widget?ad_id=6ad6f0801a6be77c7c13e5b3&add_resources=True&affiliate_id=PARESHRA-445235&product_id=21128995&store=nykaa_fashion&text_color=000000&theme_variation=TEXT_AND_IMAGE&theme=affiliate&aff_link_type=affiliate%3Anap_dashboard%3Aproduct&hlp=hlpa",
+      "width": 280,
+      "height": 360,
+      "active": true,
+      "featured": false
+    },
+    {
+      "id": "nykaa-26358867",
+      "product_id": "26358867",
+      "category": "watches",
+      "source": "nykaa-fashion",
+      "widget_url": "https://affiliate.nykaa.com/v2/get_product_widget?ad_id=6ad6f091fe69039627140b3e&add_resources=True&affiliate_id=PARESHRA-445235&product_id=26358867&store=nykaa_fashion&text_color=000000&theme_variation=TEXT_AND_IMAGE&theme=affiliate&aff_link_type=affiliate%3Anap_dashboard%3Aproduct&hlp=hlpa",
+      "width": 280,
+      "height": 360,
+      "active": true,
+      "featured": false
+    },
+    {
+      "id": "nykaa-22983910",
+      "product_id": "22983910",
+      "category": "watches",
+      "source": "nykaa-fashion",
+      "widget_url": "https://affiliate.nykaa.com/v2/get_product_widget?ad_id=6ad6f0a0c87f76984d3ec187&add_resources=True&affiliate_id=PARESHRA-445235&product_id=22983910&store=nykaa_fashion&text_color=000000&theme_variation=TEXT_AND_IMAGE&theme=affiliate&aff_link_type=affiliate%3Anap_dashboard%3Aproduct&hlp=hlpa",
+      "width": 280,
+      "height": 360,
+      "active": true,
+      "featured": false
+    },
+    {
+      "id": "nykaa-21128997",
+      "product_id": "21128997",
+      "category": "watches",
+      "source": "nykaa-fashion",
+      "widget_url": "https://affiliate.nykaa.com/v2/get_product_widget?ad_id=6ad6f0ad4e4310c24e55d2c5&add_resources=True&affiliate_id=PARESHRA-445235&product_id=21128997&store=nykaa_fashion&text_color=000000&theme_variation=TEXT_AND_IMAGE&theme=affiliate&aff_link_type=affiliate%3Anap_dashboard%3Aproduct&hlp=hlpa",
+      "width": 280,
+      "height": 360,
+      "active": true,
+      "featured": false
+    },
+    {
+      "id": "nykaa-26358889",
+      "product_id": "26358889",
+      "category": "watches",
+      "source": "nykaa-fashion",
+      "widget_url": "https://affiliate.nykaa.com/v2/get_product_widget?ad_id=6ad6f0c21a6be77c7c13e5b5&add_resources=True&affiliate_id=PARESHRA-445235&product_id=26358889&store=nykaa_fashion&text_color=000000&theme_variation=TEXT_AND_IMAGE&theme=affiliate&aff_link_type=affiliate%3Anap_dashboard%3Aproduct&hlp=hlpa",
+      "width": 280,
+      "height": 360,
+      "active": true,
+      "featured": false
+    },
+    {
+      "id": "nykaa-24237018",
+      "product_id": "24237018",
+      "category": "watches",
+      "source": "nykaa-fashion",
+      "widget_url": "https://affiliate.nykaa.com/v2/get_product_widget?ad_id=6ad6f0d5d4deffcea1364059&add_resources=True&affiliate_id=PARESHRA-445235&product_id=24237018&store=nykaa_fashion&text_color=000000&theme_variation=TEXT_AND_IMAGE&theme=affiliate&aff_link_type=affiliate%3Anap_dashboard%3Aproduct&hlp=hlpa",
+      "width": 280,
+      "height": 360,
+      "active": true,
+      "featured": false
+    },
+    {
+      "id": "nykaa-26358876",
+      "product_id": "26358876",
+      "category": "watches",
+      "source": "nykaa-fashion",
+      "widget_url": "https://affiliate.nykaa.com/v2/get_product_widget?ad_id=6ad6f0f61a6be77c7c13e5b7&add_resources=True&affiliate_id=PARESHRA-445235&product_id=26358876&store=nykaa_fashion&text_color=000000&theme_variation=TEXT_AND_IMAGE&theme=affiliate&aff_link_type=affiliate%3Anap_dashboard%3Aproduct&hlp=hlpa",
+      "width": 280,
+      "height": 360,
+      "active": true,
+      "featured": false
+    },
+    {
+      "id": "nykaa-24237014",
+      "product_id": "24237014",
+      "category": "watches",
+      "source": "nykaa-fashion",
+      "widget_url": "https://affiliate.nykaa.com/v2/get_product_widget?ad_id=6ad6f11463c48034c5daa614&add_resources=True&affiliate_id=PARESHRA-445235&product_id=24237014&store=nykaa_fashion&text_color=000000&theme_variation=TEXT_AND_IMAGE&theme=affiliate&aff_link_type=affiliate%3Anap_dashboard%3Aproduct&hlp=hlpa",
+      "width": 280,
+      "height": 360,
+      "active": true,
+      "featured": false
+    },
+    {
+      "id": "nykaa-22983877",
+      "product_id": "22983877",
+      "category": "watches",
+      "source": "nykaa-fashion",
+      "widget_url": "https://affiliate.nykaa.com/v2/get_product_widget?ad_id=6ad6f160d4deffcea136405c&add_resources=True&affiliate_id=PARESHRA-445235&product_id=22983877&store=nykaa_fashion&text_color=000000&theme_variation=TEXT_AND_IMAGE&theme=affiliate&aff_link_type=affiliate%3Anap_dashboard%3Aproduct&hlp=hlpa",
+      "width": 280,
+      "height": 360,
+      "active": true,
+      "featured": false
     }
   ],
   "category_pages": [

@@ -119,7 +119,7 @@ class FashionTests(unittest.TestCase):
         html = fashion.discover_html(self.src)
         self.assertIn('<img class="fashion-photo" src="https://approved-images.example/image.jpg"', html)
         self.assertIn('/images/fashion/models/pink-dress-640.webp', html)
-        self.assertEqual(html.count('class="fashion-category fashion-category-'), len(fashion.SECTIONS))
+        self.assertEqual(html.count('class="fashion-category fashion-category-'), len(fashion.SECTIONS) + 1)  # plus the Watches tile
         for slug, *_ in fashion.SECTIONS:
             self.assertIn(f'href="/fashion/#{slug}"', html)
         self.assertIn('<h2 id="fashion-discover-title">Discover Your Style</h2>', html)
