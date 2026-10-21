@@ -760,12 +760,13 @@ def category_collection(cat, products=None):
     products = load_products(cat["slug"]) if products is None else products
     items = []
     families = {f["slug"]: f for f in cat["families"]}
-    if products:
+    def product_item(p, filters):
+        family = families[p["family"]]
+        return {"name": p["name"], "label": p["brand"], "description": p.get("best_for") or " ".join(p.get("pros", [])[:2]),
+                "url": family_url(cat, family) + "#r-" + p["id"], "action": "View details", "image": p.get("image"), "filters": filters(family), "product": p}
+    if products and cat["slug"] != "sports-fitness":
         for p in products:
-            family = families[p["family"]]
-            filters = {"brand": p["brand"], "type": family["name"], "audience": p.get("audience", []), "budget": p.get("price_band", "")}
-            items.append({"name": p["name"], "label": p["brand"], "description": p.get("best_for") or " ".join(p.get("pros", [])[:2]),
-                          "url": family_url(cat, family) + "#r-" + p["id"], "action": "View details", "image": p.get("image"), "filters": filters, "product": p})
+            items.append(product_item(p, lambda family, p=p: {"brand": p["brand"], "type": family["name"], "audience": p.get("audience", []), "budget": p.get("price_band", "")}))
         title, noun, plural = "Explore products", "product", "products"
         specs = [("brand", "Brand"), ("type", "Product type"), ("audience", "For whom"), ("budget", "Budget guide")]
     elif cat["slug"] == "sports-fitness":
@@ -779,6 +780,8 @@ def category_collection(cat, products=None):
                 filters = {"brand": brand, "type": guide["tag"]}
                 items.append({"name": pick["name"], "label": guide["tag"], "description": pick["verdict"], "filters": filters,
                               "url": "/" + slugify(guide["tag"]).replace("_", "-") + "/" + guide["slug"] + "/#" + slugify_heading(pick["name"], set()), "action": "Read recommendation"})
+        for p in products or []:   # product files sit beside the guide recommendations; adding a product never replaces them
+            items.append(product_item(p, lambda family, p=p: {"brand": p["brand"], "type": family["name"]}))
         title, noun, plural = "Explore guide recommendations", "recommendation", "recommendations"
         specs = [("type", "Activity"), ("brand", "Brand")]
     else:

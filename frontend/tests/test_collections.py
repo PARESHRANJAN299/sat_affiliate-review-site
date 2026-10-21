@@ -59,7 +59,8 @@ class CollectionTests(unittest.TestCase):
             self.assertNotIn('Sample product', rendered)
             self.assertNotIn('Coming soon', rendered)
             if category['slug'] == 'sports-fitness':
-                expected = sum(len(json.loads(path.read_text())['picks']) for path in (build.SRC / 'guides').glob('*/guide.json'))
+                expected = (sum(len(json.loads(path.read_text())['picks']) for path in (build.SRC / 'guides').glob('*/guide.json'))
+                            + len(list((build.SRC / 'products' / 'sports-fitness').glob('*.json'))))   # guide picks plus the product files
                 self.assertEqual(rendered.count('<article '), expected)
             else:
                 self.assertEqual(rendered.count('<article '), len(category['families']))
