@@ -793,11 +793,13 @@ def category_collection(cat, products=None):
         family = families[p["family"]]
         return {"name": p["name"], "label": p["brand"], "description": p.get("best_for") or " ".join(p.get("pros", [])[:2]),
                 "url": family_url(cat, family) + "#r-" + p["id"], "action": "View details", "image": p.get("image"), "filters": filters(family), "product": p}
-    if products and cat["slug"] != "sports-fitness":
+    if products:   # only products that have a retailer link from the owner are listed; the older guide picks (no Amazon or Nykaa link) are not
         for p in products:
             items.append(product_item(p, lambda family, p=p: {"brand": p["brand"], "type": family["name"], "audience": p.get("audience", []), "budget": p.get("price_band", "")}))
         title, noun, plural = "Explore products", "product", "products"
         specs = [("brand", "Brand"), ("type", "Product type"), ("audience", "For whom"), ("budget", "Budget guide")]
+        if cat["slug"] == "sports-fitness":   # this page is a guide page: no rupee band labels here (the product-type pages show the bands)
+            specs = [("brand", "Brand"), ("type", "Product type")]
     elif cat["slug"] == "sports-fitness":
         for path in sorted((SRC / "guides").glob("*/guide.json")):
             guide = json.loads(read(path))
@@ -809,8 +811,6 @@ def category_collection(cat, products=None):
                 filters = {"brand": brand, "type": guide["tag"]}
                 items.append({"name": pick["name"], "label": guide["tag"], "description": pick["verdict"], "filters": filters,
                               "url": "/" + slugify(guide["tag"]).replace("_", "-") + "/" + guide["slug"] + "/#" + slugify_heading(pick["name"], set()), "action": "Read recommendation"})
-        for p in products or []:   # product files sit beside the guide recommendations; adding a product never replaces them
-            items.append(product_item(p, lambda family, p=p: {"brand": p["brand"], "type": family["name"]}))
         title, noun, plural = "Explore guide recommendations", "recommendation", "recommendations"
         specs = [("type", "Activity"), ("brand", "Brand")]
     else:
@@ -999,10 +999,18 @@ def family_pages():
             + "\n".join(blocks) +
             '\n  </div>\n</section>')
         listed = load_products(cat["slug"])
-        picks = sum(len(json.loads(read(g))["picks"]) for g in sorted((SRC / "guides").glob("*/guide.json")) if json.loads(read(g)).get("published")) if cat["slug"] == "sports-fitness" else 0
         if cat["slug"] == "sports-fitness" and listed:
+            kinds = []
+            for p in listed:
+                nm = next(f["name"] for f in cat["families"] if f["slug"] == p["family"]).lower()
+                if nm not in kinds:
+                    kinds.append(nm)
+            kind_text = ", ".join(kinds[:-1]) + " and " + kinds[-1] if len(kinds) > 1 else kinds[0]
+            brands_n = len({p["brand"] for p in listed})
             main_title = f'{cat["name"]} Buying Guides and Products for India'
-            main_desc = f'Compare {len(listed)} fitness products and {picks} guide recommendations for India, from dumbbells to cricket gear, with details as the sellers list them.'
+            main_desc = f'Compare {len(listed)} {kind_text} from {brands_n} brands, as the sellers list them, with sports and fitness buying guides for India.'
+            if len(main_desc) > 158:
+                main_desc = f'Compare {len(listed)} fitness products from {brands_n} brands, as the sellers list them, with sports and fitness buying guides for India.'
         else:
             main_title = f'{cat["name"]} Buying Guides for India'
             main_desc = f'Browse sports and fitness product types, from {cat["families"][0]["name"].lower()} to {cat["families"][-1]["name"].lower()}. Buying guides for Indian shoppers.'

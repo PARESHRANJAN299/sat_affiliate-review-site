@@ -51,13 +51,15 @@ class SportsSeo(unittest.TestCase):
         self.assertEqual(re.search(r"<title>(.*?)</title>", h).group(1), "Sports &amp; Fitness Buying Guides and Products for India — SAT")
         d = re.search(r'name="description" content="([^"]*)"', h).group(1)
         self.assertTrue(110 <= len(d) <= 160, (len(d), d))
-        self.assertRegex(d, r"^Compare \d+ fitness products and \d+ guide recommendations")
+        self.assertRegex(d, r"^Compare \d+ .+ from \d+ brands, as the sellers list them")
 
-    def test_the_existing_guide_recommendations_are_still_listed(self):
-        picks = sum(len(json.loads(p.read_text(encoding="utf-8"))["picks"]) for p in (ROOT / "src" / "guides").glob("*/guide.json"))
+    def test_only_products_with_a_retailer_link_are_listed(self):
+        """The older guide picks have no Amazon or Nykaa link from the owner, so the listing shows only the product files."""
         products = len(list((ROOT / "src" / "products" / "sports-fitness").glob("*.json")))
-        self.assertEqual(page("/sports-fitness/").count("<article "), picks + products)
-
+        h = page("/sports-fitness/")
+        self.assertEqual(h.count("<article "), products)
+        self.assertNotIn("Read recommendation", h)
+        self.assertIn("Buying guides", h)   # the guide articles themselves stay on the page
 
 
 class DumbbellNykaaCards(unittest.TestCase):
