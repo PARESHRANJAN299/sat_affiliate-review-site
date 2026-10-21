@@ -1031,12 +1031,13 @@ def family_pages():
             related = "".join(f'<li><a href="{esc(e["url"])}">{esc(e["name"])}</a></li>' for e in others)
             product_section = family_products_html(cat, f, products) if products else ("" if guides else published_guides_help())
             page_title = f["h1"] if products else f["name"] + " Buying Advice"
+            picks = fashion.dumbbell_picks_html(SRC) if (cat["slug"] == "sports-fitness" and f["slug"] == "dumbbells") else ""   # Nykaa cards first, then the guide and the products
             body = (
                 '<section class="section">\n  <div class="container content-page family-page">\n'
                 '    {{breadcrumb}}\n'
                 f'    <p class="family-kicker">{esc(sec_names.get(f["section"], ""))}</p>\n'
                 f'    <h1>{esc(page_title)}</h1>\n    <p class="lead">{esc(family_intro(f, products, guides))}</p>\n'
-                + guide_cards_html(guides)
+                + picks + guide_cards_html(guides)
                 + product_section +
                 f'    <h2>Buying guide</h2>\n    <ul class="family-tips">{tips}</ul>\n'
                 f'    <h2>Common questions</h2>\n{faqs}\n'
@@ -1049,7 +1050,7 @@ def family_pages():
                 "url": url, "title": page_title, "description": family_meta(f, products),
                 "ld_items": [(p["name"], url + "#r-" + p["id"]) for p in products[:30]],
                 "css": ["buttons", "breadcrumb", "content-page", "faq", "watches", "families"]
-                       + (["compare-table", "product-block", "product-listing"] if products else []),
+                       + (["compare-table", "product-block", "product-listing"] if products else []) + (["watch-picks"] if picks else []),
                 "js": ["product-listing"] if products else [], "noindex": len(products) < 3,
                 "breadcrumbs": [["Shop by Category", "/products/"], [cat["name"], cat["url"]], [f["name"], url]],
                 "updated": "2026-10-16", "_slug": f'{cat["slug"]}-{f["section"]}-{f["slug"]}', "_body": body})

@@ -40,7 +40,7 @@ ART_ALT = {'footwear-detail': 'Editorial image: close-up of white velcro trainer
 # Easy-to-replace wording shown beside the first Nykaa widgets.
 WIDGET_AFFILIATE_NOTE = 'This section contains affiliate links. SAT may earn a commission from qualifying purchases at no extra cost to you.'
 # Watches are not a /fashion/ tab: SAT's own Watches page (/watches/) shows these Nykaa cards at its top, and the home tile opens that page.
-EXTRA_CATEGORIES = {'watches': 'Watches'}
+EXTRA_CATEGORIES = {'watches': 'Watches', 'dumbbells': 'Dumbbells'}   # SAT pages that show Nykaa cards: /watches/ and the Dumbbells page
 WATCH_PAGE = '/watches/'
 WATCH_PHOTO = '/images/categories/watches.jpg'
 WATCH_TAGLINE = 'Discover classic and analog watches by budget, brand, style and fit.'
@@ -579,16 +579,28 @@ def discover_tiles(products, prefix='/fashion/'):
     return ''.join(tiles)
 
 
-def watch_picks_html(src):
-    """The Nykaa watch cards shown at the top of SAT's Watches page. Empty when there are none."""
+def picks_html(src, category, heading, label, item_title, ident='wp', eager=False):
+    """Nykaa cards for one category as a card rail at the top of a SAT page. Empty when there are none. eager=True loads every card at once (a short rail at the
+    top of the page), otherwise they load as they scroll into view."""
     live, _ = widgets(src)
-    picks = get_widgets_by_category(live, 'watches')
+    picks = get_widgets_by_category(live, category)
     if not picks:
         return ''
-    cards = ''.join(f'<article class="wp-card" role="listitem" id="{widget_id(w)}"><iframe src="{esc(w["widget_url"])}" title="Nykaa Fashion watch" width="{w["width"]}" height="{w["height"]}" loading="lazy" '
+    mode = 'eager' if eager else 'lazy'
+    cards = ''.join(f'<article class="wp-card" role="listitem" id="{widget_id(w)}"><iframe src="{esc(w["widget_url"])}" title="{esc(item_title)}" width="{w["width"]}" height="{w["height"]}" loading="{mode}" '
                     f'style="height:{w["height"]}px;width:{w["width"]}px;overflow:hidden;"></iframe></article>' for w in picks)
-    return ('<section class="lx-sec wp-picks" aria-labelledby="wp-picks-title"><div class="lx-sec-head"><h2 id="wp-picks-title">Watches on Nykaa Fashion</h2></div>'
-            f'<p class="wp-note">{esc(WIDGET_AFFILIATE_NOTE)}</p><div class="wp-rail" role="list" aria-label="Watches from Nykaa Fashion">{cards}</div></section>')
+    return (f'<section class="lx-sec wp-picks" aria-labelledby="{ident}-picks-title"><div class="lx-sec-head"><h2 id="{ident}-picks-title">{esc(heading)}</h2></div>'
+            f'<p class="wp-note">{esc(WIDGET_AFFILIATE_NOTE)}</p><div class="wp-rail" role="list" aria-label="{esc(label)}">{cards}</div></section>')
+
+
+def watch_picks_html(src):
+    """The Nykaa watch cards shown at the top of SAT's Watches page. Empty when there are none."""
+    return picks_html(src, 'watches', 'Watches on Nykaa Fashion', 'Watches from Nykaa Fashion', 'Nykaa Fashion watch')
+
+
+def dumbbell_picks_html(src):
+    """The Nykaa dumbbell cards shown at the top of SAT's Dumbbells page, all loaded at once."""
+    return picks_html(src, 'dumbbells', 'Dumbbells on Nykaa Fashion', 'Dumbbells from Nykaa Fashion', 'Nykaa Fashion dumbbell', ident='dp', eager=True)
 
 
 def discover_html(src, prefix='/fashion/'):

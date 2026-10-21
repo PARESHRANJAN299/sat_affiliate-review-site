@@ -3443,6 +3443,39 @@
       "height": 360,
       "active": true,
       "featured": false
+    },
+    {
+      "id": "nykaa-13948986",
+      "product_id": "13948986",
+      "category": "dumbbells",
+      "source": "nykaa-fashion",
+      "widget_url": "https://affiliate.nykaa.com/v2/get_product_widget?ad_id=6ad8fb70ddd5ed2e54fee329&add_resources=True&affiliate_id=PARESHRA-445235&product_id=13948986&store=nykaa_fashion&text_color=000000&theme_variation=TEXT_AND_IMAGE&theme=affiliate&aff_link_type=affiliate%3Anap_dashboard%3Aproduct&hlp=hlpa",
+      "width": 280,
+      "height": 360,
+      "active": true,
+      "featured": false
+    },
+    {
+      "id": "nykaa-8933769",
+      "product_id": "8933769",
+      "category": "dumbbells",
+      "source": "nykaa-fashion",
+      "widget_url": "https://affiliate.nykaa.com/v2/get_product_widget?ad_id=6ad8fbce1c61f62150d5ef18&add_resources=True&affiliate_id=PARESHRA-445235&product_id=8933769&store=nykaa_fashion&text_color=000000&theme_variation=TEXT_AND_IMAGE&theme=affiliate&aff_link_type=affiliate%3Anap_dashboard%3Aproduct&hlp=hlpa",
+      "width": 280,
+      "height": 360,
+      "active": true,
+      "featured": false
+    },
+    {
+      "id": "nykaa-1984440",
+      "product_id": "1984440",
+      "category": "dumbbells",
+      "source": "nykaa-fashion",
+      "widget_url": "https://affiliate.nykaa.com/v2/get_product_widget?ad_id=6ad8fbeade4c11942ca31118&add_resources=True&affiliate_id=PARESHRA-445235&product_id=1984440&store=nykaa_fashion&text_color=000000&theme_variation=TEXT_AND_IMAGE&theme=affiliate&aff_link_type=affiliate%3Anap_dashboard%3Aproduct&hlp=hlpa",
+      "width": 280,
+      "height": 360,
+      "active": true,
+      "featured": false
     }
   ],
   "category_pages": [

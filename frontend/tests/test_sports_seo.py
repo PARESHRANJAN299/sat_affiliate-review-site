@@ -59,5 +59,31 @@ class SportsSeo(unittest.TestCase):
         self.assertEqual(page("/sports-fitness/").count("<article "), picks + products)
 
 
+
+class DumbbellNykaaCards(unittest.TestCase):
+    """The three official Nykaa dumbbell cards sit first on the Dumbbells page, load at once, and are the exact widget URLs."""
+
+    def test_cards_come_before_the_guide_and_products_and_load_eagerly(self):
+        h = page("/sports-fitness/fitness/dumbbells/")
+        lead, picks, guide, products = (h.index('<p class="lead">'), h.index('<section class="lx-sec wp-picks"'), h.index("Our buying guide"), h.index("All 10 products"))
+        self.assertTrue(lead < picks < guide < products)
+        frames = re.findall(r'<iframe src="(https://affiliate\.nykaa\.com/v2/get_product_widget\?[^"]+)"[^>]*loading="(\w+)"', h)
+        self.assertEqual(len(frames), 3)
+        self.assertEqual({m for _, m in frames}, {"eager"})
+        for pid in ("13948986", "8933769", "1984440"):
+            self.assertTrue(any(f"product_id={pid}&amp;" in u or f"product_id={pid}&" in u for u, _ in frames), pid)
+        for u, _ in frames:
+            self.assertIn("affiliate_id=PARESHRA-445235", u)
+        self.assertIn("This section contains affiliate links", h)
+
+    def test_the_watches_rail_is_unchanged_and_other_pages_have_no_dumbbell_cards(self):
+        hub = page("/watches/")
+        self.assertIn('id="wp-picks-title">Watches on Nykaa Fashion<', hub)
+        self.assertNotIn("dp-picks-title", hub)
+        self.assertNotIn("wp-picks", page("/sports-fitness/fitness/kettlebells/").split("</style>")[-1])
+
+
+
+
 if __name__ == "__main__":
     unittest.main()
