@@ -682,6 +682,35 @@ def live_intro(text, has_products):
     return re.sub(r"\s*This page will (list|show)[^.]*\.", "", text).strip() or text
 
 
+PICKS_SENTENCE = "We add specific product picks only after reading the maker's own page."
+
+
+def family_intro(f, products, guides):
+    """The page introduction. Once a product type lists products from seller listings, the old promise about reading the maker's own page would be untrue,
+    so it is replaced by what the page really does."""
+    text = live_intro(f["intro"], bool(products) or bool(guides))
+    if products:
+        text = text.replace(PICKS_SENTENCE, "The products below come from seller listings on Amazon: details are as the sellers list them, and SAT has not tested them.")
+    return text
+
+
+def family_meta(f, products):
+    """A specific meta description for a product type that lists products: count, brands and what can be compared (no prices, ratings or offers)."""
+    if len(products) < 3:   # a page with fewer than three products stays out of Google; keep its original description
+        return f["meta"]
+    brands = []
+    for p in products:
+        if p["brand"] not in brands:
+            brands.append(p["brand"])
+    names = ", ".join(brands[:3]) + (f" and {len(brands) - 3} more brands" if len(brands) > 3 else "")
+    if len(brands) <= 3:
+        names = ", ".join(brands[:-1]) + (" and " if len(brands) > 1 else "") + brands[-1]
+    noun = f["name"].lower()
+    n = len(products)
+    text = f"Compare {n} {noun} from {names} by material and size, as the seller listings state them, with a buying guide and answers to common questions."
+    return text if len(text) <= 158 else f"Compare {n} {noun} from {len(brands)} brands by material and size, as the seller listings state them, with a buying guide and common questions."
+
+
 def published_guides_help():
     """Give informational pages a useful next step without implying they contain picks."""
     return ('<aside class="family-guides"><h2>Explore our published guides</h2>'
@@ -969,9 +998,19 @@ def family_pages():
             + ('    <section class="family-guides" id="guides"><h2>Buying guides</h2>\n    {{articles_sports_fitness}}\n    </section>\n' if cat["slug"] == "sports-fitness" else "")
             + "\n".join(blocks) +
             '\n  </div>\n</section>')
+        listed = load_products(cat["slug"])
+        picks = sum(len(json.loads(read(g))["picks"]) for g in sorted((SRC / "guides").glob("*/guide.json")) if json.loads(read(g)).get("published")) if cat["slug"] == "sports-fitness" else 0
+        if cat["slug"] == "sports-fitness" and listed:
+            main_title = f'{cat["name"]} Buying Guides and Products for India'
+            main_desc = f'Compare {len(listed)} fitness products and {picks} guide recommendations for India, from dumbbells to cricket gear, with details as the sellers list them.'
+        else:
+            main_title = f'{cat["name"]} Buying Guides for India'
+            main_desc = f'Browse sports and fitness product types, from {cat["families"][0]["name"].lower()} to {cat["families"][-1]["name"].lower()}. Buying guides for Indian shoppers.'
+        fam_names = {f["slug"]: f["name"] for f in cat["families"]}
         pages.append({
-            "url": cat["url"], "title": f'{cat["name"]} Buying Guides for India',
-            "description": f'Browse sports and fitness product types, from {cat["families"][0]["name"].lower()} to {cat["families"][-1]["name"].lower()}. Buying guides for Indian shoppers.',
+            "url": cat["url"], "title": main_title,
+            "description": main_desc,
+            "ld_items": [(p["name"], family_url(cat, next(f for f in cat["families"] if f["slug"] == p["family"])) + "#r-" + p["id"]) for p in listed[:30]],
             "css": ["buttons", "breadcrumb", "content-page", "category-directory", "families", "cat-banner", "collection"] + (["cards"] if cat["slug"] == "sports-fitness" else []), "js": ["cat-banner", "collection"],
             "breadcrumbs": [["Shop by Category", "/products/"], [cat["name"], cat["url"]]],
             "updated": "2026-10-16", "_slug": cat["slug"], "_body": body})
@@ -996,7 +1035,7 @@ def family_pages():
                 '<section class="section">\n  <div class="container content-page family-page">\n'
                 '    {{breadcrumb}}\n'
                 f'    <p class="family-kicker">{esc(sec_names.get(f["section"], ""))}</p>\n'
-                f'    <h1>{esc(page_title)}</h1>\n    <p class="lead">{esc(live_intro(f["intro"], bool(products) or bool(guides)))}</p>\n'
+                f'    <h1>{esc(page_title)}</h1>\n    <p class="lead">{esc(family_intro(f, products, guides))}</p>\n'
                 + guide_cards_html(guides)
                 + product_section +
                 f'    <h2>Buying guide</h2>\n    <ul class="family-tips">{tips}</ul>\n'
@@ -1007,7 +1046,8 @@ def family_pages():
                 f'<p><strong>Affiliate disclosure.</strong> {esc(affiliate_text)} <a href="/affiliate-disclosure/">Read the full disclosure</a>.</p></aside>\n'
                 '  </div>\n</section>')
             pages.append({
-                "url": url, "title": page_title, "description": f["meta"],
+                "url": url, "title": page_title, "description": family_meta(f, products),
+                "ld_items": [(p["name"], url + "#r-" + p["id"]) for p in products[:30]],
                 "css": ["buttons", "breadcrumb", "content-page", "faq", "watches", "families"]
                        + (["compare-table", "product-block", "product-listing"] if products else []),
                 "js": ["product-listing"] if products else [], "noindex": len(products) < 3,
