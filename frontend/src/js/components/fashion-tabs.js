@@ -88,7 +88,7 @@
     useEffect(function () {
       function onHash() {
         var id = idFromHash();
-        if (id) setActive(id);
+        if (id) { byUser.current = true; setActive(id); }  // a link such as #footwear elsewhere on the page opens that list from its top
       }
       window.addEventListener('hashchange', onHash);
       return function () { window.removeEventListener('hashchange', onHash); };

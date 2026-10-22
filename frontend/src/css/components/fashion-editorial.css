@@ -1,0 +1,71 @@
+/* Bottom of /fashion/: editorial sections around the owner's own photographs (layout brief from the owner, 2026-10-22).
+   Palette: ivory #F4F0E8, white #FBFAF7, black #101010, charcoal #282725, muted gold #B28A48, warm grey #8A857B. Bands run the full width behind a contained layout. */
+.ed-world, .ed-watches, .ed-story, .ed-men { position: relative; --band: #f4f0e8; background: var(--band); box-shadow: 0 0 0 100vmax var(--band); clip-path: inset(0 -100vmax); color: #101010; }
+.ed-world { margin-top: clamp(28px, 4vw, 56px); padding: clamp(40px, 6vw, 88px) 0; }
+.ed-watches { --band: #fbfaf7; padding: clamp(36px, 5vw, 72px) 0; }
+.ed-story { --band: #ebe5d8; padding: clamp(40px, 6vw, 96px) 0 0; overflow: hidden; }
+.ed-men { --band: #f4f0e8; padding: clamp(36px, 5vw, 72px) 0; }
+.ed-kicker { margin: 0 0 14px; font-size: 11px; font-weight: 700; letter-spacing: .24em; text-transform: uppercase; color: #8a6a32; }
+.ed-world h2, .ed-watches h2, .ed-story h2, .ed-men h2 { margin: 0 0 clamp(18px, 2.4vw, 28px); font: 400 clamp(2.6rem, 6.4vw, 6rem)/.98 var(--font-display); letter-spacing: -.04em; }
+.ed-btn { display: inline-flex; align-items: center; gap: 14px; min-height: 48px; padding: 0 28px; background: #101010; border: 1px solid #101010; color: #fff; font-size: 12px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; text-decoration: none; transition: background .3s, color .3s; }
+.ed-btn:hover { background: transparent; color: #101010; text-decoration: none; }
+.ed-btn:focus-visible, .ed-tile:focus-visible, .ed-chips a:focus-visible, .ed-list a:focus-visible { outline: 3px solid #b28a48; outline-offset: 3px; }
+.ed-person { display: block; max-width: none; height: auto; }
+
+/* Find your world: asymmetric tiles. */
+.ed-world-grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); grid-template-rows: clamp(220px, 21vw, 300px) clamp(220px, 21vw, 300px) clamp(260px, 29vw, 420px); gap: 16px; }
+.ed-tile { position: relative; display: block; overflow: hidden; color: #101010; text-decoration: none; background: linear-gradient(160deg, var(--t1), var(--t2)); }
+.ed-tile:hover { color: #101010; text-decoration: none; }
+.ed-tile-fashion { --t1: #eee3d1; --t2: #d8c3a2; grid-column: 1 / 8; grid-row: 1 / 3; }
+.ed-tile-watches { --t1: #d9d0c1; --t2: #bfb29c; grid-column: 8 / 13; grid-row: 1; }
+.ed-tile-fitness { --t1: #e3e7da; --t2: #bdc6af; grid-column: 8 / 13; grid-row: 2; }
+.ed-tile-life { --t1: #e9e4da; --t2: #cfc7b8; grid-column: 1 / 13; grid-row: 3; }
+.ed-tile .ed-person, .ed-tile .ed-photo { position: absolute; transition: transform 1.1s ease; }
+.ed-tile-fashion .ed-person { right: 8%; bottom: 0; height: 96%; width: auto; }
+.ed-tile-fitness .ed-person { right: 8%; bottom: 0; height: 100%; width: auto; }
+.ed-tile-life .ed-person { right: 10%; bottom: 0; height: 100%; width: auto; }
+.ed-tile-watches .ed-photo { inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.ed-tile:hover .ed-person, .ed-tile:hover .ed-photo { transform: scale(1.03); }
+.ed-tile-label { position: absolute; left: clamp(18px, 2.4vw, 32px); bottom: clamp(16px, 2.2vw, 28px); display: flex; flex-direction: column; gap: 8px; }
+.ed-tile-label strong { font: 400 clamp(1.8rem, 3.4vw, 3rem)/1 var(--font-display); letter-spacing: -.03em; }
+.ed-tile-label span { font-size: 11px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; }
+.ed-tile-label i { font-style: normal; display: inline-block; transition: transform .3s; }
+.ed-tile:hover .ed-tile-label i { transform: translateX(4px); }
+.ed-tile-watches .ed-tile-label { color: #fff; text-shadow: 0 1px 12px #0008; }
+
+/* Watches: simple, with the detailed filters kept inside /watches/. */
+.ed-watches { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(28px, 5vw, 80px); align-items: center; }
+.ed-chips { list-style: none; display: flex; flex-wrap: wrap; gap: 10px; margin: 0 0 clamp(22px, 3vw, 32px); padding: 0; }
+.ed-chips a { display: inline-flex; align-items: center; min-height: 44px; padding: 0 20px; border: 1px solid #d8d1c2; border-radius: 999px; color: #101010; font-size: 12px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; text-decoration: none; transition: border-color .25s, background .25s; }
+.ed-chips a:hover { border-color: #b28a48; background: #f4f0e8; color: #101010; text-decoration: none; }
+.ed-watches-art { margin: 0; }
+.ed-watches-art img { display: block; width: 100%; height: auto; aspect-ratio: 4 / 3; object-fit: cover; }
+
+/* Lifestyle story: plenty of space around the people. */
+.ed-story { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: clamp(24px, 5vw, 80px); align-items: end; }
+.ed-story-copy { align-self: center; padding-bottom: clamp(36px, 6vw, 96px); }
+.ed-story-copy p:not(.ed-kicker) { margin: 0 0 clamp(22px, 3vw, 32px); max-width: 34ch; font-size: clamp(1rem, 1.5vw, 1.2rem); line-height: 1.7; color: #3d3a33; }
+.ed-story-art .ed-person { width: 100%; height: auto; }
+
+/* Everyday edit. */
+.ed-men { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: clamp(24px, 5vw, 80px); align-items: center; }
+.ed-men-art { display: flex; justify-content: center; }
+.ed-men-art .ed-person { width: min(100%, 460px); height: auto; }
+.ed-list { list-style: none; margin: 0 0 clamp(22px, 3vw, 34px); padding: 0; max-width: 360px; }
+.ed-list li { border-top: 1px solid #d8d1c2; }
+.ed-list li:last-child { border-bottom: 1px solid #d8d1c2; }
+.ed-list a { display: flex; align-items: center; min-height: 56px; font: 400 clamp(1.4rem, 2.2vw, 1.9rem)/1.1 var(--font-display); letter-spacing: -.02em; color: #101010; text-decoration: none; }
+.ed-list a:hover { color: #8a6a32; text-decoration: none; }
+
+@media (max-width: 899px) {
+  .ed-world-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: auto; grid-auto-rows: clamp(190px, 46vw, 260px); gap: 12px; }
+  .ed-tile-fashion { grid-column: 1 / 3; grid-row: auto; height: clamp(360px, 100vw, 480px); }
+  .ed-tile-watches, .ed-tile-fitness { grid-column: auto; grid-row: auto; }
+  .ed-tile-life { grid-column: 1 / 3; grid-row: auto; }
+  .ed-tile-fashion .ed-person { right: 6%; }
+  .ed-tile-fitness .ed-person { right: 2%; height: 90%; }
+  .ed-watches, .ed-story, .ed-men { grid-template-columns: minmax(0, 1fr); }
+  .ed-story-copy { padding-bottom: 8px; }
+  .ed-men-art { order: 2; }
+}
+@media (prefers-reduced-motion: reduce) { .ed-btn, .ed-chips a, .ed-tile .ed-person, .ed-tile .ed-photo, .ed-tile-label i { transition: none; } .ed-tile:hover .ed-person, .ed-tile:hover .ed-photo { transform: none; } }

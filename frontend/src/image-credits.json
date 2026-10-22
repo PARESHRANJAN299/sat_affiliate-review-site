@@ -1362,6 +1362,102 @@
       "proof": "Derivative of a record with confirmed status; cropped on 2026-10-22 for the home Fashion chip.",
       "status": "confirmed",
       "image_classification": "AI-generated illustrative imagery"
+    },
+    {
+      "file": "/images/fashion/people/saree-purple-480.webp",
+      "use": "Fashion tile on /fashion/ (cleaned cutout of a woman in a purple saree); personal photograph, not a retailer product image",
+      "platform": "Owner's own photograph, background removed by the owner and supplied on 2026-10-22",
+      "ai_generated": null,
+      "source": "Resized copy of the owner-supplied cutout, cropped to the figure; no other edits",
+      "licence": "Owner-supplied (provenance and the consent of every person shown still to be confirmed by the owner)",
+      "date_added": "2026-10-22",
+      "proof": "Supplied by the owner on 2026-10-22. Shows identifiable people: the owner should confirm they agree to the photographs being used on the site.",
+      "status": "needs-confirmation",
+      "image_classification": "Owner-supplied editorial imagery (provenance pending)"
+    },
+    {
+      "file": "/images/fashion/people/saree-purple-960.webp",
+      "use": "Fashion tile on /fashion/ (cleaned cutout of a woman in a purple saree); personal photograph, not a retailer product image",
+      "platform": "Owner's own photograph, background removed by the owner and supplied on 2026-10-22",
+      "ai_generated": null,
+      "source": "Resized copy of the owner-supplied cutout, cropped to the figure; no other edits",
+      "licence": "Owner-supplied (provenance and the consent of every person shown still to be confirmed by the owner)",
+      "date_added": "2026-10-22",
+      "proof": "Supplied by the owner on 2026-10-22. Shows identifiable people: the owner should confirm they agree to the photographs being used on the site.",
+      "status": "needs-confirmation",
+      "image_classification": "Owner-supplied editorial imagery (provenance pending)"
+    },
+    {
+      "file": "/images/fashion/people/couple-bench-640.webp",
+      "use": "Lifestyle story on /fashion/ (cleaned cutout of two people seated on a bench); personal photograph, not a retailer product image",
+      "platform": "Owner's own photograph, background removed by the owner and supplied on 2026-10-22",
+      "ai_generated": null,
+      "source": "Resized copy of the owner-supplied cutout, cropped to the figure; no other edits",
+      "licence": "Owner-supplied (provenance and the consent of every person shown still to be confirmed by the owner)",
+      "date_added": "2026-10-22",
+      "proof": "Supplied by the owner on 2026-10-22. Shows identifiable people: the owner should confirm they agree to the photographs being used on the site.",
+      "status": "needs-confirmation",
+      "image_classification": "Owner-supplied editorial imagery (provenance pending)"
+    },
+    {
+      "file": "/images/fashion/people/couple-bench-1280.webp",
+      "use": "Lifestyle story on /fashion/ (cleaned cutout of two people seated on a bench); personal photograph, not a retailer product image",
+      "platform": "Owner's own photograph, background removed by the owner and supplied on 2026-10-22",
+      "ai_generated": null,
+      "source": "Resized copy of the owner-supplied cutout, cropped to the figure; no other edits",
+      "licence": "Owner-supplied (provenance and the consent of every person shown still to be confirmed by the owner)",
+      "date_added": "2026-10-22",
+      "proof": "Supplied by the owner on 2026-10-22. Shows identifiable people: the owner should confirm they agree to the photographs being used on the site.",
+      "status": "needs-confirmation",
+      "image_classification": "Owner-supplied editorial imagery (provenance pending)"
+    },
+    {
+      "file": "/images/fashion/people/man-standing-480.webp",
+      "use": "Lifestyle tile on /fashion/ (cleaned cutout of a man standing); personal photograph, not a retailer product image",
+      "platform": "Owner's own photograph, background removed by the owner and supplied on 2026-10-22",
+      "ai_generated": null,
+      "source": "Resized copy of the owner-supplied cutout, cropped to the figure; no other edits",
+      "licence": "Owner-supplied (provenance and the consent of every person shown still to be confirmed by the owner)",
+      "date_added": "2026-10-22",
+      "proof": "Supplied by the owner on 2026-10-22. Shows identifiable people: the owner should confirm they agree to the photographs being used on the site.",
+      "status": "needs-confirmation",
+      "image_classification": "Owner-supplied editorial imagery (provenance pending)"
+    },
+    {
+      "file": "/images/fashion/people/man-standing-960.webp",
+      "use": "Lifestyle tile on /fashion/ (cleaned cutout of a man standing); personal photograph, not a retailer product image",
+      "platform": "Owner's own photograph, background removed by the owner and supplied on 2026-10-22",
+      "ai_generated": null,
+      "source": "Resized copy of the owner-supplied cutout, cropped to the figure; no other edits",
+      "licence": "Owner-supplied (provenance and the consent of every person shown still to be confirmed by the owner)",
+      "date_added": "2026-10-22",
+      "proof": "Supplied by the owner on 2026-10-22. Shows identifiable people: the owner should confirm they agree to the photographs being used on the site.",
+      "status": "needs-confirmation",
+      "image_classification": "Owner-supplied editorial imagery (provenance pending)"
+    },
+    {
+      "file": "/images/fashion/people/man-bench-480.webp",
+      "use": "Everyday edit on /fashion/ (cleaned cutout of a man seated on a bench); personal photograph, not a retailer product image",
+      "platform": "Owner's own photograph, background removed by the owner and supplied on 2026-10-22",
+      "ai_generated": null,
+      "source": "Resized copy of the owner-supplied cutout, cropped to the figure; no other edits",
+      "licence": "Owner-supplied (provenance and the consent of every person shown still to be confirmed by the owner)",
+      "date_added": "2026-10-22",
+      "proof": "Supplied by the owner on 2026-10-22. Shows identifiable people: the owner should confirm they agree to the photographs being used on the site.",
+      "status": "needs-confirmation",
+      "image_classification": "Owner-supplied editorial imagery (provenance pending)"
+    },
+    {
+      "file": "/images/fashion/people/man-bench-960.webp",
+      "use": "Everyday edit on /fashion/ (cleaned cutout of a man seated on a bench); personal photograph, not a retailer product image",
+      "platform": "Owner's own photograph, background removed by the owner and supplied on 2026-10-22",
+      "ai_generated": null,
+      "source": "Resized copy of the owner-supplied cutout, cropped to the figure; no other edits",
+      "licence": "Owner-supplied (provenance and the consent of every person shown still to be confirmed by the owner)",
+      "date_added": "2026-10-22",
+      "proof": "Supplied by the owner on 2026-10-22. Shows identifiable people: the owner should confirm they agree to the photographs being used on the site.",
+      "status": "needs-confirmation",
+      "image_classification": "Owner-supplied editorial imagery (provenance pending)"
     }
   ],
   "governance": {

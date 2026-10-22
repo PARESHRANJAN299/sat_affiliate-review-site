@@ -148,7 +148,7 @@ class FashionTests(unittest.TestCase):
         self.save()
         body = fashion.page(self.src, lambda *args: '')[0]['_body']
         order = ['Discover Your Style', 'data-category-tab="womens-kurtas"', 'data-category-tab="bags"', 'id="womens-kurtas"', 'id="bags"',
-                 'Featured Brands', 'Everyday fashion', 'Style. Confidence. You.', 'Explore Looks', 'A little research.']
+                 'Featured Brands', 'Find your world.', 'Watches selected for every style.', 'Things worth', 'Simple choices.', 'A little research.']
         positions = [body.index(text) for text in order]
         self.assertEqual(positions, sorted(positions))
         self.assertIn(fashion.BRANDS_EMPTY_NOTE, body)
@@ -156,7 +156,7 @@ class FashionTests(unittest.TestCase):
         self.assertEqual(body.count('data-category-tab='), len(fashion.SECTIONS))
         self.assertEqual(body.count('data-category-panel='), len(fashion.SECTIONS))
         self.assertEqual(body.count('data-category-tab="womens-kurtas" aria-current="true"'), 1)  # nothing listed yet: opens on the first collection
-        self.assertEqual(body.count('href="#fashion-categories"'), 1)  # the banner button returns to the switcher
+        self.assertEqual(body.count('href="#fashion-categories"'), 1)  # the Fashion tile returns to the switcher
         self.assertNotIn('Back to styles', body)
         for removed in ('fashion-hero', 'THE SAT FASHION EDIT', 'Curated style', 'class="fashion-categories"', 'fashion-category-label'):
             self.assertNotIn(removed, body)  # no hero and no mosaic on this page any more
@@ -249,6 +249,32 @@ class ReactTabsTests(unittest.TestCase):
         self.assertIn('window.__fashionTabsReact = true', tabs_js)
         self.assertIn('!window.__fashionTabsReact', widgets_js)
         self.assertNotIn('dangerouslySetInnerHTML', tabs_js)
+
+
+
+class EditorialTests(unittest.TestCase):
+    ROOT = Path(__file__).resolve().parent.parent
+
+    def test_editorial_sections_use_the_owner_wording_and_make_no_retailer_promises(self):
+        html = fashion.editorial_html()
+        for text in ('Find your world.', 'Time, considered.', 'Watches selected for every style.', 'Made for real life', 'SAT brings fashion, fitness, watches and everyday discoveries into one considered place.',
+                     'Simple choices.', 'Everyday edit'):
+            self.assertIn(text, html)
+        for promise in ('Free shipping', 'Easy returns', 'Secure payment', 'Fast delivery', 'GAZU'):
+            self.assertNotIn(promise.lower(), html.lower())
+
+    def test_every_link_goes_to_a_real_page_or_tab_and_every_photo_has_a_credit(self):
+        import re
+        html = fashion.editorial_html()
+        pages = {'/watches/', '/sports-fitness/', '/products/', '/about/', '/watches/men/', '/watches/women/', '/watches/under-5000/', '/watches/under-20000/'}
+        for href in re.findall(r'href="([^"#][^"]*)"', html):
+            self.assertIn(href, pages, href)
+            self.assertTrue((self.ROOT / 'dist' / href.strip('/') / 'index.html').exists() or not (self.ROOT / 'dist').exists(), href)
+        credits = {r['file'] for r in json.loads((self.ROOT / 'src' / 'image-credits.json').read_text())['images']}
+        for stem, (small, big, height, alt) in fashion.PEOPLE.items():
+            for size in (small, big):
+                self.assertTrue((self.ROOT / 'src' / 'static' / 'images' / 'fashion' / 'people' / f'{stem}-{size}.webp').exists())
+                self.assertIn(f'/images/fashion/people/{stem}-{size}.webp', credits)
 
 if __name__ == '__main__':
     unittest.main()

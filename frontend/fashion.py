@@ -612,6 +612,46 @@ def discover_html(src, prefix='/fashion/'):
             '<nav class="fashion-categories" aria-label="Fashion collections">' + discover_tiles(products, prefix) + '</nav></section>')
 
 
+PEOPLE_DIR = '/images/fashion/people/'
+# (stem, small width, large width, large height): the owner's cleaned cutouts (transparent WebP, cropped to the figure).
+PEOPLE = {'saree-purple': (480, 960, 1316, 'A woman standing in a purple saree with an embroidered blouse, holding a phone.'),
+          'couple-bench': (640, 1280, 1085, 'A woman in a cream printed kurta set and a man in a white shirt and jeans sitting side by side on a bench.'),
+          'man-standing': (480, 960, 1359, 'A man in a white linen shirt, cap and dark cargo trousers standing with his back partly turned.'),
+          'man-bench': (480, 960, 1248, 'A man in a white shirt, jeans and white trainers sitting on an ornate park bench.')}
+
+
+def person(stem, sizes):
+    small, big, height, alt = PEOPLE[stem]
+    width = big
+    return (f'<img class="ed-person" src="{PEOPLE_DIR}{stem}-{small}.webp" srcset="{PEOPLE_DIR}{stem}-{small}.webp {small}w, {PEOPLE_DIR}{stem}-{big}.webp {big}w" sizes="{sizes}" '
+            f'alt="{esc(alt)}" width="{width}" height="{height}" loading="lazy" decoding="async">')
+
+
+def editorial_html():
+    """Bottom of /fashion/: editorial sections built around the owner's own photographs (layout brief supplied by the owner on 2026-10-22).
+    No retailer promises (delivery, returns, payment) because SAT is not the retailer."""
+    world = ('<section class="ed-world" aria-labelledby="ed-world-title"><p class="ed-kicker">Discover</p><h2 id="ed-world-title">Find your world.</h2><div class="ed-world-grid">'
+             f'<a class="ed-tile ed-tile-fashion" href="#fashion-categories">{person("saree-purple", "(min-width: 900px) 30vw, 70vw")}<span class="ed-tile-label"><strong>Fashion</strong><span>Explore <i aria-hidden="true">→</i></span></span></a>'
+             '<a class="ed-tile ed-tile-watches" href="/watches/"><img class="ed-photo" src="/images/categories/watches.jpg" alt="" width="608" height="456" loading="lazy" decoding="async">'
+             '<span class="ed-tile-label"><strong>Watches</strong><span>Explore <i aria-hidden="true">→</i></span></span></a>'
+             f'<a class="ed-tile ed-tile-fitness" href="/sports-fitness/"><img class="ed-person" src="{MODEL_DIR}white-tee-a-640.webp" alt="" width="640" height="800" loading="lazy" decoding="async">'
+             '<span class="ed-tile-label"><strong>Fitness</strong><span>Explore <i aria-hidden="true">→</i></span></span></a>'
+             f'<a class="ed-tile ed-tile-life" href="/products/">{person("man-standing", "(min-width: 900px) 24vw, 50vw")}<span class="ed-tile-label"><strong>Lifestyle</strong><span>Explore <i aria-hidden="true">→</i></span></span></a>'
+             '</div></section>')
+    watches = ('<section class="ed-watches" aria-labelledby="ed-watches-title"><div class="ed-watches-copy"><p class="ed-kicker">Time, considered.</p><h2 id="ed-watches-title">Watches selected for every style.</h2>'
+               '<ul class="ed-chips"><li><a href="/watches/men/">Men</a></li><li><a href="/watches/women/">Women</a></li><li><a href="/watches/under-5000/">Under ₹5,000</a></li><li><a href="/watches/under-20000/">Under ₹20,000</a></li></ul>'
+               '<a class="ed-btn" href="/watches/">Explore watches <span aria-hidden="true">→</span></a></div>'
+               '<figure class="ed-watches-art"><img src="/images/categories/watches.jpg" alt="Four classic wristwatches with leather and steel straps resting on stone blocks." width="608" height="456" loading="lazy" decoding="async"></figure></section>')
+    story = ('<section class="ed-story" aria-labelledby="ed-story-title"><div class="ed-story-copy"><p class="ed-kicker">Made for real life</p><h2 id="ed-story-title">Things worth<br>bringing into yours.</h2>'
+             '<p>SAT brings fashion, fitness, watches and everyday discoveries into one considered place.</p><a class="ed-btn" href="/about/">Discover SAT <span aria-hidden="true">→</span></a></div>'
+             f'<div class="ed-story-art">{person("couple-bench", "(min-width: 900px) 46vw, 92vw")}</div></section>')
+    men = ('<section class="ed-men" aria-labelledby="ed-men-title"><div class="ed-men-art">' + person("man-bench", "(min-width: 900px) 34vw, 80vw") + '</div>'
+           '<div class="ed-men-copy"><p class="ed-kicker">Everyday edit</p><h2 id="ed-men-title">Simple choices.<br>Better style.</h2>'
+           '<ul class="ed-list"><li><a href="#footwear" data-ed-tab="footwear">Fashion</a></li><li><a href="/watches/men/">Watches</a></li><li><a href="/sports-fitness/">Fitness</a></li></ul>'
+           '<a class="ed-btn" href="/products/">Explore <span aria-hidden="true">→</span></a></div></section>')
+    return world + watches + story + men
+
+
 def page(src, icon, site_url=SITE_URL):
     products, problems = catalog(src)
     live_widgets, widget_problems = widgets(src)
@@ -641,14 +681,12 @@ def page(src, icon, site_url=SITE_URL):
                        + ''.join(f'<li><strong>{esc(name)}</strong><span>{count} {"style" if count == 1 else "styles"}</span></li>' for name, count in brands) + '</ul></section>')
     else:
         brands_html = (f'<section class="fashion-brands fashion-brands-empty" aria-labelledby="fashion-brands-title"><header><p class="fashion-section-number">BRANDS</p><h2 id="fashion-brands-title">Featured Brands</h2></header><p class="fashion-empty-note">{BRANDS_EMPTY_NOTE}</p></section>')
-    banner = ('<section class="fashion-banner" aria-labelledby="fashion-banner-title"><div class="fashion-banner-copy"><h2 id="fashion-banner-title">Everyday fashion<br>for your everyday life.</h2><p>Style. Confidence. You.</p>'
-              '<a class="fashion-banner-cta" href="#fashion-categories">Explore Looks <span aria-hidden="true">→</span></a></div>'
-              f'<figure class="fashion-banner-art"><picture><source media="(max-width: 719px)" srcset="{MODEL_DIR}white-tee-b-640.webp"><img class="fashion-art" src="{MODEL_DIR}pink-dress-640.webp" srcset="{MODEL_DIR}pink-dress-640.webp 640w, {MODEL_DIR}pink-dress-1122.webp 1122w" sizes="(min-width: 900px) 40vw, 100vw" alt="{esc(ART_ALT["pink-dress"])}" width="1122" height="1402" loading="lazy" decoding="async"></picture></figure></section>')
+    banner = editorial_html()
     trust = ('<section class="fashion-trust" aria-label="Why SAT"><ul>'
              f'<li>{TRUST_ICONS[0]}<span>A little research.<br>A better choice.</span></li><li>{TRUST_ICONS[1]}<span>Curated from trusted retailers.</span></li><li>{TRUST_ICONS[2]}<span>Styles for every part of your life.</span></li></ul></section>')
     body = ('<div class="container fashion-page"><header class="fashion-switch-head"><h1>Discover Your Style</h1></header>'
             '<nav class="fashion-switch" id="fashion-categories" aria-label="Choose a fashion category">' + ''.join(tabs) + '</nav>'
             + ''.join(sections) + brands_html + banner + trust + '</div>' + REACT_SCRIPTS)
     return {'url': '/fashion/', 'title': 'The SAT Fashion Edit', 'description': 'Explore women’s kurtas, westernwear, Indianwear, footwear, active and sportswear, and bags with the SAT Fashion Edit.',
-            'css': ['buttons', 'breadcrumb', 'fashion-gateway', 'fashion-art', 'fashion'], 'js': ['fashion-tabs', 'fashion-widgets'], 'noindex': True,
+            'css': ['buttons', 'breadcrumb', 'fashion-gateway', 'fashion-art', 'fashion', 'fashion-editorial'], 'js': ['fashion-tabs', 'fashion-widgets'], 'noindex': True,
             'breadcrumbs': [['Fashion Edit', '/fashion/']], 'updated': '2026-10-18', '_slug': 'fashion', '_body': body}, problems
