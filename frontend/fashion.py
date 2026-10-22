@@ -646,10 +646,11 @@ def editorial_html(fashion_page=''):
     story = ('<section class="ed-story" aria-labelledby="ed-story-title"><div class="ed-story-copy"><p class="ed-kicker">Made for real life</p><h2 id="ed-story-title">Things worth<br>bringing into yours.</h2>'
              '<p>SAT brings fashion, fitness, watches and everyday discoveries into one considered place.</p><a class="ed-btn" href="/about/">Discover SAT <span aria-hidden="true">→</span></a></div>'
              f'<div class="ed-story-art">{person("couple-bench", "(min-width: 900px) 46vw, 92vw")}</div></section>')
-    men = ('<section class="ed-men" aria-labelledby="ed-men-title"><div class="ed-men-art">' + person("man-bench", "(min-width: 900px) 34vw, 80vw") + '</div>'
-           '<div class="ed-men-copy"><p class="ed-kicker">Everyday edit</p><h2 id="ed-men-title">Simple choices.<br>Better style.</h2>'
-           f'<ul class="ed-list"><li><a href="{fashion_page}#footwear">Fashion</a></li><li><a href="/watches/men/">Watches</a></li><li><a href="/sports-fitness/">Fitness</a></li></ul>'
-           '<a class="ed-btn" href="/products/">Explore <span aria-hidden="true">→</span></a></div></section>')
+    men = ('<section class="ed-men" aria-labelledby="ed-men-title"><div class="ed-men-copy"><p class="ed-kicker">Everyday edit<span class="ed-rule" aria-hidden="true"></span></p><h2 id="ed-men-title">Simple choices.<br>Better style.</h2>'
+           f'<ul class="ed-list"><li><a href="{fashion_page}#footwear">Fashion <i aria-hidden="true">→</i></a></li><li><a href="/watches/men/">Watches <i aria-hidden="true">→</i></a></li>'
+           '<li><a href="/sports-fitness/">Fitness <i aria-hidden="true">→</i></a></li></ul>'
+           '<a class="ed-btn" href="/products/">Explore <span aria-hidden="true">→</span></a></div>'
+           '<div class="ed-men-art">' + person("man-bench", "(min-width: 900px) 34vw, 80vw") + '</div></section>')
     return world + watches + story + men
 
 

@@ -69,3 +69,23 @@
   .ed-men-art { order: 2; }
 }
 @media (prefers-reduced-motion: reduce) { .ed-btn, .ed-chips a, .ed-tile .ed-person, .ed-tile .ed-photo, .ed-tile-label i { transition: none; } .ed-tile:hover .ed-person, .ed-tile:hover .ed-photo { transform: none; } }
+
+/* Everyday edit: a dark, moody band (premium menswear look). Text left, the man right under a soft spotlight. */
+.ed-men { --band: #1b1a18; color: #f3efe6; grid-template-columns: minmax(0, 6fr) minmax(0, 5fr); padding: clamp(44px, 6vw, 96px) 0; background-image: radial-gradient(ellipse 36% 80% at 72% 52%, rgba(120, 110, 94, .42), rgba(27, 26, 24, 0) 100%); }
+.ed-men-copy { order: 1; }
+.ed-men-art { order: 2; position: relative; }
+.ed-men-art .ed-person { position: relative; width: min(100%, 470px); filter: drop-shadow(0 30px 40px rgba(0, 0, 0, .55)); }
+.ed-men .ed-kicker { display: flex; align-items: center; gap: 16px; color: #cdb27c; letter-spacing: .34em; }
+.ed-rule { flex: 0 0 56px; height: 1px; background: #cdb27c; opacity: .7; }
+.ed-men h2 { font-size: clamp(2.6rem, 6vw, 5.6rem); line-height: 1.02; color: #f6f2ea; }
+.ed-men h2::first-line { font-style: italic; font-weight: 400; color: #e3cf9c; }
+.ed-men .ed-list { max-width: 420px; }
+.ed-men .ed-list li { border-color: rgba(243, 239, 230, .2); }
+.ed-men .ed-list a { justify-content: space-between; color: #f3efe6; letter-spacing: .01em; }
+.ed-men .ed-list a i { font-style: normal; font-size: 1rem; color: #cdb27c; opacity: .8; transition: transform .3s; }
+.ed-men .ed-list a:hover { color: #e3cf9c; }
+.ed-men .ed-list a:hover i { transform: translateX(5px); }
+.ed-men .ed-btn { background: transparent; border-color: #e3cf9c; color: #f3efe6; letter-spacing: .22em; }
+.ed-men .ed-btn:hover { background: #e3cf9c; color: #1b1a18; }
+.ed-men .ed-list a:focus-visible, .ed-men .ed-btn:focus-visible { outline-color: #e3cf9c; }
+@media (max-width: 899px) { .ed-men { grid-template-columns: minmax(0, 1fr); background-image: radial-gradient(ellipse 80% 40% at 50% 78%, rgba(120, 110, 94, .42), rgba(27, 26, 24, 0) 70%); } .ed-men-copy { order: 1; } .ed-men-art { order: 2; } }
