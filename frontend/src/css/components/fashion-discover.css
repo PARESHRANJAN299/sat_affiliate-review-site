@@ -6,23 +6,23 @@
 /* Discover Your Style: asymmetric editorial mosaic (swipe cards on small screens). */
 .fashion-categories { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; margin: 0 calc(-1 * var(--fpad)); padding: 0 var(--fpad) 14px; scroll-padding-left: var(--fpad); scrollbar-width: none; }
 .fashion-categories::-webkit-scrollbar { display: none; }
-.fashion-category { flex: 0 0 min(64vw, 300px); aspect-ratio: 4 / 5; scroll-snap-align: start; display: block; color: var(--f-ink); text-decoration: none; border-radius: 3px; box-shadow: 0 26px 40px -30px rgba(60, 45, 20, .6); }
+.fashion-category { flex: 0 0 min(64vw, 300px); aspect-ratio: 4 / 5; scroll-snap-align: start; display: block; color: var(--f-ink); text-decoration: none; border-radius: 3px; box-shadow: 0 16px 30px -26px rgba(60, 45, 20, .4); }
 .fashion-category:hover { color: var(--f-ink); text-decoration: none; }
-.fashion-category .fashion-art, .fashion-category .fashion-photo { transition: transform .7s ease; }
+.fashion-category .fashion-art, .fashion-category .fashion-photo { transition: transform 1.1s ease; }
 .fashion-category:hover .fashion-art { transform: translateX(-50%) scale(1.03); }
-.fashion-category:hover .fashion-photo, .fashion-category-footwear:hover .fashion-art, .fashion-category-womens-kurtas:hover .fashion-art, .fashion-category-bags:hover .fashion-art { transform: scale(1.03); }
+.fashion-category:hover .fashion-photo, .fashion-category-footwear:hover .fashion-art, .fashion-category-womens-kurtas:hover .fashion-art, .fashion-category-bags:hover .fashion-art { transform: scale(1.02); }
 .fashion-category-label { position: absolute; inset: auto 0 0; display: flex; flex-direction: column; gap: 4px; padding: 64px 56px 18px 18px; background: linear-gradient(0deg, var(--t2) 0%, var(--t2) 22%, transparent 100%); }
 .fashion-category-label strong { font: 400 clamp(1.4rem, 2.2vw, 2rem)/1.08 var(--font-display); letter-spacing: -.03em; }
 .fashion-category-label em { font-style: normal; font-size: 13px; line-height: 1.45; color: #3d3b34; }
-.fashion-category-arrow { position: absolute; right: 16px; bottom: 16px; display: grid; place-items: center; width: 38px; height: 38px; border: 1px solid #1d1d1b8c; border-radius: 50%; background: #ffffff59; font-size: 15px; transition: background .25s, color .25s, transform .25s; }
-.fashion-category:hover .fashion-category-arrow { background: var(--f-ink); color: #fff; transform: translateX(3px); }
+.fashion-category-arrow { position: absolute; right: 16px; bottom: 16px; display: grid; place-items: center; width: 38px; height: 38px; border: 1px solid #2f2d2955; border-radius: 50%; background: #ffffff73; font-size: 15px; transition: background .25s, color .25s, transform .25s; }
+.fashion-category:hover .fashion-category-arrow { background: #fffdf8; color: var(--f-ink); transform: translateX(3px); }
 /* Real product photographs need a scrim under the label instead of the tinted fade. */
 .fashion-category:has(.fashion-photo) { color: #fff; }
-.fashion-category:has(.fashion-photo) .fashion-category-label { background: linear-gradient(0deg, #14130fb8, #14130f00); }
+.fashion-category:has(.fashion-photo) .fashion-category-label { background: linear-gradient(0deg, #14130f9e, #14130f00); }
 .fashion-category:has(.fashion-photo) .fashion-category-label em { color: #f4ead3; }
 .fashion-category:has(.fashion-photo) .fashion-category-arrow { border-color: #ffffffb3; }
 @media (min-width: 900px) {
-  .fashion-categories { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); --row: clamp(220px, 21vw, 290px); grid-template-rows: var(--row) var(--row) calc(var(--row) * 1.4); gap: 16px; margin: 0; padding: 0; overflow: visible; }
+  .fashion-categories { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); --row: clamp(220px, 21vw, 290px); grid-template-rows: var(--row) var(--row) calc(var(--row) * 1.4); gap: 20px; margin: 0; padding: 0; overflow: visible; }
   .fashion-category { flex: none; aspect-ratio: auto; }
   .fashion-category-womens-kurtas { grid-column: 1 / 6; grid-row: 1 / 3; }
   .fashion-category-westernwear { grid-column: 6 / 13; grid-row: 1; }

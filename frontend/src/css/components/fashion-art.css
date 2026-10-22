@@ -1,7 +1,7 @@
 /* Shared by the home mosaic and the fashion pages: design tokens, tints and SAT editorial artwork. */
 /* SAT Fashion Edit landing page. Tokens are scoped to the fashion pages so the rest of SAT is unaffected. */
 .fashion-page, .fashion-detail, .fashion-discover {
-  --f-ivory: #f7f3ea; --f-sand: #efe8da; --f-ink: #1d1d1b; --f-muted: #66645b; --f-line: #e3dac8; --f-gold: #a98a4f; --f-gold-ink: #6f5524;
+  --f-ivory: #f7f3ea; --f-sand: #efe8da; --f-ink: #2f2d29; --f-muted: #66645b; --f-line: #e3dac8; --f-gold: #a98a4f; --f-gold-ink: #6f5524;
   --fpad: clamp(16px, 4vw, 24px);
   color: var(--f-ink);
 }
