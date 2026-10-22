@@ -1885,12 +1885,12 @@ SEARCH_SKIP = {"/", "/contact/", "/privacy-policy/", "/terms/", "/copyright/", "
                "/search/", "/watches/preview/", "/404/"}
 SEARCH_PAGES = {"/about/", "/how-we-pick/", "/products/"}
 SEARCH_KEYWORDS = {
-    "popular": ["watch under 2000", "women watch under 3000", "men watch under 5000", "badminton racket", "yoga mat",
+    "popular": ["watch under 2000", "women watch under 3000", "men watch under 5000", "yoga mat",
                 "dumbbells", "running shoes", "sunscreen", "air fryer", "pressure cooker", "men t-shirts", "kurti sets"],
     "watches": ["watch under 2000", "women watch under 3000", "men watch under 5000", "men watch under 10000",
                 "analog watch", "titan watch", "casio watch", "fastrack watch", "leather strap watch",
                 "metal strap watch", "formal watch", "minimal watch"],
-    "sports-fitness": ["badminton racket", "cricket bat", "football", "sports shoes", "sports bag", "dumbbells",
+    "sports-fitness": ["cricket bat", "football", "sports shoes", "sports bag", "dumbbells",
                        "resistance bands", "yoga mat", "skipping rope", "gym gloves", "foam roller", "shaker bottle"],
     "beauty-personal-care": ["skin care", "hair care", "makeup", "men grooming", "bath body", "sunscreen"],
     "home-kitchen": ["pressure cooker", "mixer grinder", "cookware set", "air fryer", "electric kettle", "storage containers",

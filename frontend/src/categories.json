@@ -27,48 +27,6 @@
       "families": [
         {
           "section": "sports",
-          "slug": "badminton-rackets",
-          "name": "Badminton Rackets",
-          "description": "Light, balanced rackets for beginners and regular players.",
-          "h1": "Best Badminton Racket Under ₹2,000 in India",
-          "keyword": "best badminton racket under 2000 in India",
-          "meta": "How to choose a badminton racket under ₹2,000 in India: weight, balance and strings explained.",
-          "intro": "Choosing a badminton racket under ₹2,000 comes down to weight, balance and how often you play. This page is buying advice. We add specific product picks only after reading the maker's own page.",
-          "supporting": [
-            "badminton racket for beginners",
-            "best Yonex racket under 2000"
-          ],
-          "tips": [
-            [
-              "Weight",
-              "Rackets are marked 3U, 4U and so on. A lighter 4U racket is quicker to swing and easier on the wrist, so many players start there."
-            ],
-            [
-              "Balance",
-              "A head-heavy racket adds power to clears and smashes. A head-light racket is quicker in defence. A balanced racket suits most beginners."
-            ],
-            [
-              "Strings",
-              "Check the maximum string tension printed on the frame and never go above it. Beginners are usually better off with a racket that already has strings fitted."
-            ]
-          ],
-          "faqs": [
-            {
-              "q": "Which badminton racket is best for a beginner?",
-              "a": "A light, balanced racket with strings already fitted is a safe start. Avoid very stiff, head-heavy rackets until your technique is steady."
-            },
-            {
-              "q": "Should I buy a racket set or a single racket?",
-              "a": "A set suits first-time casual play. If you plan to play regularly, a single better racket is usually the better value."
-            }
-          ],
-          "guides": [
-            "best-badminton-rackets",
-            "best-badminton-shuttlecocks"
-          ]
-        },
-        {
-          "section": "sports",
           "slug": "cricket-bats",
           "name": "Cricket Bats",
           "description": "Bats for tennis-ball and leather-ball cricket, for beginners and club players.",
