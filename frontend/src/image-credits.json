@@ -1458,6 +1458,54 @@
       "proof": "Supplied by the owner on 2026-10-22. Shows identifiable people: the owner should confirm they agree to the photographs being used on the site.",
       "status": "needs-confirmation",
       "image_classification": "Owner-supplied editorial imagery (provenance pending)"
+    },
+    {
+      "file": "/images/home-edit/waterfall-640.webp",
+      "use": "Home hero carousel, slide 1 (owner photograph: man by a waterfall); personal photograph, not a retailer product image",
+      "platform": "Owner's own camera photograph, supplied in the chat on 2026-10-22",
+      "ai_generated": false,
+      "source": "Resized copy of the owner-supplied photograph (Red Fort: cropped to remove a side strip); no other edits",
+      "licence": "Owner-supplied (provenance and consent of every person shown still to be confirmed by the owner)",
+      "date_added": "2026-10-22",
+      "proof": "Supplied by the owner on 2026-10-22. The Red Fort photo also shows bystanders in the background.",
+      "status": "needs-confirmation",
+      "image_classification": "Owner-supplied editorial imagery (provenance pending)"
+    },
+    {
+      "file": "/images/home-edit/waterfall-960.webp",
+      "use": "Home hero carousel, slide 1 (owner photograph: man by a waterfall); personal photograph, not a retailer product image",
+      "platform": "Owner's own camera photograph, supplied in the chat on 2026-10-22",
+      "ai_generated": false,
+      "source": "Resized copy of the owner-supplied photograph (Red Fort: cropped to remove a side strip); no other edits",
+      "licence": "Owner-supplied (provenance and consent of every person shown still to be confirmed by the owner)",
+      "date_added": "2026-10-22",
+      "proof": "Supplied by the owner on 2026-10-22. The Red Fort photo also shows bystanders in the background.",
+      "status": "needs-confirmation",
+      "image_classification": "Owner-supplied editorial imagery (provenance pending)"
+    },
+    {
+      "file": "/images/home-edit/redfort-670.webp",
+      "use": "Home hero carousel, slide 2 (owner photograph: man at the Red Fort wall, seen from behind); personal photograph, not a retailer product image",
+      "platform": "Owner's own camera photograph, supplied in the chat on 2026-10-22",
+      "ai_generated": false,
+      "source": "Resized copy of the owner-supplied photograph (Red Fort: cropped to remove a side strip); no other edits",
+      "licence": "Owner-supplied (provenance and consent of every person shown still to be confirmed by the owner)",
+      "date_added": "2026-10-22",
+      "proof": "Supplied by the owner on 2026-10-22. The Red Fort photo also shows bystanders in the background.",
+      "status": "needs-confirmation",
+      "image_classification": "Owner-supplied editorial imagery (provenance pending)"
+    },
+    {
+      "file": "/images/home-edit/redfort-1010.webp",
+      "use": "Home hero carousel, slide 2 (owner photograph: man at the Red Fort wall, seen from behind); personal photograph, not a retailer product image",
+      "platform": "Owner's own camera photograph, supplied in the chat on 2026-10-22",
+      "ai_generated": false,
+      "source": "Resized copy of the owner-supplied photograph (Red Fort: cropped to remove a side strip); no other edits",
+      "licence": "Owner-supplied (provenance and consent of every person shown still to be confirmed by the owner)",
+      "date_added": "2026-10-22",
+      "proof": "Supplied by the owner on 2026-10-22. The Red Fort photo also shows bystanders in the background.",
+      "status": "needs-confirmation",
+      "image_classification": "Owner-supplied editorial imagery (provenance pending)"
     }
   ],
   "governance": {

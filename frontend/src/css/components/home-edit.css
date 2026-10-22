@@ -1,0 +1,45 @@
+/* The SAT Edit carousel on the home page. Three slides on photo backgrounds: ivory split, dark split, ivory cutout. The first slide is plain HTML; React adds the rest. */
+.he { margin-top: clamp(28px, 4vw, 56px); }
+.he-stage { position: relative; overflow: hidden; min-height: clamp(520px, 50vw, 640px); background: #f4f0e8; color: #101010; border-radius: 4px; touch-action: pan-y; transition: color .6s; }
+.he-stage.he-on-dark { color: #f6f1e7; }
+.he-slide { position: absolute; inset: 0; display: flex; align-items: center; background: #f4f0e8; color: #101010; opacity: 0; visibility: hidden; transition: opacity .9s ease, visibility .9s; }
+.he-slide.is-active { opacity: 1; visibility: visible; }
+.he-photo { position: absolute; top: 0; right: 0; width: 62%; height: 100%; object-fit: cover; object-position: 50% 86%; max-width: none; }
+.he-split .he-photo { -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 36%); mask-image: linear-gradient(90deg, transparent 0, #000 36%); }
+.he-dark { background: #17130f; color: #f6f1e7; }
+.he-dark .he-photo { width: 58%; object-position: 50% 30%; filter: saturate(.92) brightness(.94); -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 40%); mask-image: linear-gradient(90deg, transparent 0, #000 40%); }
+.he-shade { display: none; }
+.he-dark .he-shade { display: block; position: absolute; inset: 0; background: linear-gradient(0deg, rgba(23, 19, 15, .5), rgba(23, 19, 15, 0) 42%); pointer-events: none; }
+.he-ivory { background: linear-gradient(160deg, #f1e8d8, #dcc9a8); }
+.he-ivory .he-photo.he-cutout { top: auto; bottom: 0; right: 9%; width: auto; height: 94%; object-fit: contain; -webkit-mask-image: none; mask-image: none; }
+.he-copy { position: relative; z-index: 2; max-width: 760px; padding: 0 clamp(24px, 5vw, 72px); }
+.he-kicker { display: flex; align-items: center; gap: 14px; margin: 0 0 22px; font-size: 11px; font-weight: 700; letter-spacing: .26em; text-transform: uppercase; }
+.he-kicker span { width: 36px; height: 1px; background: currentColor; opacity: .7; }
+.he h2 { margin: 0 0 18px; font-family: inherit; font-weight: 800; font-size: clamp(3rem, 5.6vw, 5.4rem); line-height: .94; white-space: nowrap; letter-spacing: -.035em; text-transform: uppercase; color: inherit; }
+.he-sub { margin: 0 0 22px; max-width: 30ch; font-size: clamp(1rem, 1.5vw, 1.3rem); line-height: 1.5; opacity: .88; }
+.he-tags { list-style: none; display: flex; flex-wrap: wrap; gap: 6px 0; margin: 0 0 28px; padding: 0; font-size: 13px; letter-spacing: .1em; }
+.he-tags li { padding-right: 16px; }
+.he-tags li + li { padding-left: 16px; border-left: 1px solid rgba(16, 16, 16, .35); }
+.he-btn { display: inline-flex; align-items: center; gap: 14px; min-height: 48px; padding: 0 28px; background: #101010; border: 1px solid #101010; color: #fff; font-size: 12px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; text-decoration: none; transition: background .3s, color .3s; }
+.he-btn:hover { background: transparent; color: #101010; text-decoration: none; }
+.he-dark .he-btn { background: #f6f1e7; border-color: #f6f1e7; color: #17130f; }
+.he-dark .he-btn:hover { background: transparent; color: #f6f1e7; }
+.he-btn:focus-visible, .he-dot:focus-visible, .he-arrow:focus-visible { outline: 3px solid #b28a48; outline-offset: 3px; }
+.he-ui { position: absolute; left: clamp(24px, 5vw, 72px); right: clamp(24px, 5vw, 72px); bottom: 18px; z-index: 5; display: flex; align-items: center; justify-content: space-between; }
+.he-dots { display: flex; gap: 6px; }
+.he-dot { min-width: 44px; min-height: 44px; padding: 0 6px; background: none; border: 0; border-bottom: 2px solid transparent; color: inherit; font: inherit; font-size: 12px; letter-spacing: .14em; opacity: .55; cursor: pointer; transition: opacity .3s, border-color .3s; }
+.he-dot[aria-current="true"] { opacity: 1; font-weight: 700; border-bottom-color: currentColor; }
+.he-arrows { display: flex; gap: 8px; }
+.he-arrow { width: 44px; height: 44px; border: 1px solid currentColor; border-radius: 50%; background: transparent; color: inherit; font: inherit; font-size: 16px; opacity: .75; cursor: pointer; transition: opacity .3s, background .3s; }
+.he-arrow:hover { opacity: 1; background: rgba(128, 128, 128, .18); }
+@media (max-width: 899px) {
+  .he-stage { min-height: clamp(620px, 150vw, 720px); }
+  .he-slide { align-items: flex-end; padding-bottom: 76px; }
+  .he-photo, .he-dark .he-photo { top: 0; width: 100%; height: 66%; object-position: 50% 62%; -webkit-mask-image: linear-gradient(180deg, #000 52%, transparent 100%); mask-image: linear-gradient(180deg, #000 52%, transparent 100%); }
+  .he-dark .he-shade { background: linear-gradient(0deg, #17130f 30%, rgba(23, 19, 15, 0) 70%); }
+  .he-ivory .he-photo.he-cutout { top: 2%; bottom: auto; right: 50%; width: auto; height: 44%; transform: translateX(50%); }
+  .he-copy { padding: 0 20px; }
+  .he h2 { font-size: clamp(2.8rem, 13.5vw, 4rem); white-space: normal; }
+  .he-ui { left: 12px; right: 12px; bottom: 10px; }
+}
+@media (prefers-reduced-motion: reduce) { .he-slide, .he-stage, .he-btn, .he-dot, .he-arrow { transition: none; } }

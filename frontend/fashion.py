@@ -627,11 +627,12 @@ def person(stem, sizes):
             f'alt="{esc(alt)}" width="{width}" height="{height}" loading="lazy" decoding="async">')
 
 
-def editorial_html():
+def editorial_html(fashion_page=''):
     """Bottom of /fashion/: editorial sections built around the owner's own photographs (layout brief supplied by the owner on 2026-10-22).
     No retailer promises (delivery, returns, payment) because SAT is not the retailer."""
+    fashion_href = fashion_page or '#fashion-categories'
     world = ('<section class="ed-world" aria-labelledby="ed-world-title"><p class="ed-kicker">Discover</p><h2 id="ed-world-title">Find your world.</h2><div class="ed-world-grid">'
-             f'<a class="ed-tile ed-tile-fashion" href="#fashion-categories">{person("saree-purple", "(min-width: 900px) 30vw, 70vw")}<span class="ed-tile-label"><strong>Fashion</strong><span>Explore <i aria-hidden="true">→</i></span></span></a>'
+             f'<a class="ed-tile ed-tile-fashion" href="{fashion_href}">{person("saree-purple", "(min-width: 900px) 30vw, 70vw")}<span class="ed-tile-label"><strong>Fashion</strong><span>Explore <i aria-hidden="true">→</i></span></span></a>'
              '<a class="ed-tile ed-tile-watches" href="/watches/"><img class="ed-photo" src="/images/categories/watches.jpg" alt="" width="608" height="456" loading="lazy" decoding="async">'
              '<span class="ed-tile-label"><strong>Watches</strong><span>Explore <i aria-hidden="true">→</i></span></span></a>'
              f'<a class="ed-tile ed-tile-fitness" href="/sports-fitness/"><img class="ed-person" src="{MODEL_DIR}white-tee-a-640.webp" alt="" width="640" height="800" loading="lazy" decoding="async">'
@@ -647,9 +648,46 @@ def editorial_html():
              f'<div class="ed-story-art">{person("couple-bench", "(min-width: 900px) 46vw, 92vw")}</div></section>')
     men = ('<section class="ed-men" aria-labelledby="ed-men-title"><div class="ed-men-art">' + person("man-bench", "(min-width: 900px) 34vw, 80vw") + '</div>'
            '<div class="ed-men-copy"><p class="ed-kicker">Everyday edit</p><h2 id="ed-men-title">Simple choices.<br>Better style.</h2>'
-           '<ul class="ed-list"><li><a href="#footwear" data-ed-tab="footwear">Fashion</a></li><li><a href="/watches/men/">Watches</a></li><li><a href="/sports-fitness/">Fitness</a></li></ul>'
+           f'<ul class="ed-list"><li><a href="{fashion_page}#footwear">Fashion</a></li><li><a href="/watches/men/">Watches</a></li><li><a href="/sports-fitness/">Fitness</a></li></ul>'
            '<a class="ed-btn" href="/products/">Explore <span aria-hidden="true">→</span></a></div></section>')
     return world + watches + story + men
+
+
+HOME_EDIT_DIR = '/images/home-edit/'
+# Hero carousel on the home page ("The SAT Edit"). One source for the static first slide and for the React carousel (home-edit.js reads the same JSON).
+HOME_EDIT_SLIDES = (
+    {'id': 'everyday', 'style': 'split', 'kicker': 'The SAT Edit', 'title': ['Style for', 'everyday life'], 'sub': 'Discover products worth choosing.',
+     'tags': ['Fashion', 'Watches', 'Fitness', 'Lifestyle'], 'cta': 'Explore SAT', 'href': '/products/',
+     'image': {'src': HOME_EDIT_DIR + 'waterfall-960.webp', 'srcset': f'{HOME_EDIT_DIR}waterfall-640.webp 640w, {HOME_EDIT_DIR}waterfall-960.webp 960w', 'width': 960, 'height': 1280,
+               'alt': 'A man in an orange long-sleeve tee and black trousers standing on rocks, looking up at a tall waterfall.'}},
+    {'id': 'calm', 'style': 'dark', 'kicker': 'Soft colours', 'title': ['Quiet colours,', 'calm days.'], 'sub': 'Easy styles in gentle tones for every day.',
+     'tags': [], 'cta': 'Explore fashion', 'href': '/fashion/',
+     'image': {'src': HOME_EDIT_DIR + 'redfort-1010.webp', 'srcset': f'{HOME_EDIT_DIR}redfort-670.webp 670w, {HOME_EDIT_DIR}redfort-1010.webp 1010w', 'width': 1010, 'height': 1600,
+               'alt': 'A man in a white linen shirt and dark trousers seen from behind, looking up at a red sandstone fort wall with a green tree.'}},
+    {'id': 'you', 'style': 'ivory', 'kicker': 'Fashion', 'title': ['Style that', 'feels like you.'], 'sub': 'Kurtas, westernwear, Indianwear, footwear and more.',
+     'tags': [], 'cta': 'Explore fashion', 'href': '/fashion/', 'cutout': True,
+     'image': {'src': PEOPLE_DIR + 'saree-purple-960.webp', 'srcset': f'{PEOPLE_DIR}saree-purple-480.webp 480w, {PEOPLE_DIR}saree-purple-960.webp 960w', 'width': 960, 'height': 1316,
+               'alt': 'A woman standing in a purple saree with an embroidered blouse, holding a phone.'}},
+)
+
+
+def home_edit_slide(slide, first=False):
+    image = slide['image']
+    tags = ''.join(f'<li>{esc(tag)}</li>' for tag in slide['tags'])
+    title = '<br>'.join(esc(line) for line in slide['title'])
+    return (f'<article class="he-slide he-{slide["style"]}{" is-active" if first else ""}" role="group" aria-roledescription="slide" data-slide="{slide["id"]}">'
+            f'<img class="he-photo{" he-cutout" if slide.get("cutout") else ""}" src="{image["src"]}" srcset="{image["srcset"]}" sizes="(min-width: 900px) 60vw, 100vw" alt="{esc(image["alt"])}" '
+            f'width="{image["width"]}" height="{image["height"]}" loading="{"eager" if first else "lazy"}" decoding="async">'
+            f'<span class="he-shade" aria-hidden="true"></span><div class="he-copy"><p class="he-kicker"><span aria-hidden="true"></span>{esc(slide["kicker"])}</p>'
+            f'<h2>{title}</h2><p class="he-sub">{esc(slide["sub"])}</p>' + (f'<ul class="he-tags">{tags}</ul>' if tags else '') +
+            f'<a class="he-btn" href="{esc(slide["href"])}">{esc(slide["cta"])} <span aria-hidden="true">→</span></a></div></article>')
+
+
+def home_edit_html():
+    """Home page: the SAT Edit hero carousel (React, loaded when it nears the viewport; the first slide is plain HTML) and the editorial sections."""
+    data = json.dumps(list(HOME_EDIT_SLIDES), ensure_ascii=False).replace('</', '<\\/')
+    return ('<section class="he" id="sat-edit" data-he aria-roledescription="carousel" aria-label="The SAT Edit"><div class="he-stage">'
+            + home_edit_slide(HOME_EDIT_SLIDES[0], True) + f'</div><script type="application/json" id="he-data">{data}</script></section>' + editorial_html('/fashion/'))
 
 
 def page(src, icon, site_url=SITE_URL):
@@ -681,12 +719,14 @@ def page(src, icon, site_url=SITE_URL):
                        + ''.join(f'<li><strong>{esc(name)}</strong><span>{count} {"style" if count == 1 else "styles"}</span></li>' for name, count in brands) + '</ul></section>')
     else:
         brands_html = (f'<section class="fashion-brands fashion-brands-empty" aria-labelledby="fashion-brands-title"><header><p class="fashion-section-number">BRANDS</p><h2 id="fashion-brands-title">Featured Brands</h2></header><p class="fashion-empty-note">{BRANDS_EMPTY_NOTE}</p></section>')
-    banner = editorial_html()
+    banner = ('<section class="fashion-banner" aria-labelledby="fashion-banner-title"><div class="fashion-banner-copy"><h2 id="fashion-banner-title">Everyday fashion<br>for your everyday life.</h2><p>Style. Confidence. You.</p>'
+              '<a class="fashion-banner-cta" href="#fashion-categories">Explore Looks <span aria-hidden="true">→</span></a></div>'
+              f'<figure class="fashion-banner-art"><picture><source media="(max-width: 719px)" srcset="{MODEL_DIR}white-tee-b-640.webp"><img class="fashion-art" src="{MODEL_DIR}pink-dress-640.webp" srcset="{MODEL_DIR}pink-dress-640.webp 640w, {MODEL_DIR}pink-dress-1122.webp 1122w" sizes="(min-width: 900px) 40vw, 100vw" alt="{esc(ART_ALT["pink-dress"])}" width="1122" height="1402" loading="lazy" decoding="async"></picture></figure></section>')
     trust = ('<section class="fashion-trust" aria-label="Why SAT"><ul>'
              f'<li>{TRUST_ICONS[0]}<span>A little research.<br>A better choice.</span></li><li>{TRUST_ICONS[1]}<span>Curated from trusted retailers.</span></li><li>{TRUST_ICONS[2]}<span>Styles for every part of your life.</span></li></ul></section>')
     body = ('<div class="container fashion-page"><header class="fashion-switch-head"><h1>Discover Your Style</h1></header>'
             '<nav class="fashion-switch" id="fashion-categories" aria-label="Choose a fashion category">' + ''.join(tabs) + '</nav>'
             + ''.join(sections) + brands_html + banner + trust + '</div>' + REACT_SCRIPTS)
     return {'url': '/fashion/', 'title': 'The SAT Fashion Edit', 'description': 'Explore women’s kurtas, westernwear, Indianwear, footwear, active and sportswear, and bags with the SAT Fashion Edit.',
-            'css': ['buttons', 'breadcrumb', 'fashion-gateway', 'fashion-art', 'fashion', 'fashion-editorial'], 'js': ['fashion-tabs', 'fashion-widgets'], 'noindex': True,
+            'css': ['buttons', 'breadcrumb', 'fashion-gateway', 'fashion-art', 'fashion'], 'js': ['fashion-tabs', 'fashion-widgets'], 'noindex': True,
             'breadcrumbs': [['Fashion Edit', '/fashion/']], 'updated': '2026-10-18', '_slug': 'fashion', '_body': body}, problems

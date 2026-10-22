@@ -148,7 +148,7 @@ class FashionTests(unittest.TestCase):
         self.save()
         body = fashion.page(self.src, lambda *args: '')[0]['_body']
         order = ['Discover Your Style', 'data-category-tab="womens-kurtas"', 'data-category-tab="bags"', 'id="womens-kurtas"', 'id="bags"',
-                 'Featured Brands', 'Find your world.', 'Watches selected for every style.', 'Things worth', 'Simple choices.', 'A little research.']
+                 'Featured Brands', 'Everyday fashion', 'Style. Confidence. You.', 'Explore Looks', 'A little research.']
         positions = [body.index(text) for text in order]
         self.assertEqual(positions, sorted(positions))
         self.assertIn(fashion.BRANDS_EMPTY_NOTE, body)
@@ -156,7 +156,7 @@ class FashionTests(unittest.TestCase):
         self.assertEqual(body.count('data-category-tab='), len(fashion.SECTIONS))
         self.assertEqual(body.count('data-category-panel='), len(fashion.SECTIONS))
         self.assertEqual(body.count('data-category-tab="womens-kurtas" aria-current="true"'), 1)  # nothing listed yet: opens on the first collection
-        self.assertEqual(body.count('href="#fashion-categories"'), 1)  # the Fashion tile returns to the switcher
+        self.assertEqual(body.count('href="#fashion-categories"'), 1)  # the banner button returns to the switcher
         self.assertNotIn('Back to styles', body)
         for removed in ('fashion-hero', 'THE SAT FASHION EDIT', 'Curated style', 'class="fashion-categories"', 'fashion-category-label'):
             self.assertNotIn(removed, body)  # no hero and no mosaic on this page any more
@@ -275,6 +275,33 @@ class EditorialTests(unittest.TestCase):
             for size in (small, big):
                 self.assertTrue((self.ROOT / 'src' / 'static' / 'images' / 'fashion' / 'people' / f'{stem}-{size}.webp').exists())
                 self.assertIn(f'/images/fashion/people/{stem}-{size}.webp', credits)
+
+
+
+class HomeEditTests(unittest.TestCase):
+    ROOT = Path(__file__).resolve().parent.parent
+
+    def test_home_block_has_a_plain_first_slide_json_for_react_and_working_links(self):
+        html = fashion.home_edit_html()
+        self.assertEqual(html.count('class="he-slide'), 1)  # only the first slide is plain HTML; React adds the rest
+        self.assertIn('STYLE FOR'.title() if False else 'Style for', html)
+        data = json.loads(html.split('id="he-data">')[1].split('</script>')[0])
+        self.assertEqual([slide['id'] for slide in data], ['everyday', 'calm', 'you'])
+        for slide in data:
+            self.assertIn(slide['href'], ('/products/', '/fashion/'))
+            self.assertTrue(slide['image']['alt'])
+        self.assertIn('href="/fashion/#footwear"', html)  # editorial links point at /fashion/ from the home page
+        self.assertNotIn('free shipping', html.lower())
+
+    def test_home_images_exist_with_credits_and_fashion_page_has_no_editorial_block(self):
+        credits = {r['file'] for r in json.loads((self.ROOT / 'src' / 'image-credits.json').read_text())['images']}
+        for slide in fashion.HOME_EDIT_SLIDES:
+            for part in slide['image']['srcset'].split(','):
+                path = part.split()[0]
+                self.assertTrue((self.ROOT / 'src' / 'static' / path.lstrip('/')).exists(), path)
+                self.assertIn(path, credits)
+        body = fashion.page(self.ROOT / 'src', lambda *args: '')[0]['_body']
+        self.assertNotIn('ed-world', body)
 
 if __name__ == '__main__':
     unittest.main()

@@ -7,12 +7,15 @@
     "buttons",
     "fashion-gateway",
     "fashion-art",
-    "fashion-discover"
+    "fashion-discover",
+    "fashion-editorial",
+    "home-edit"
   ],
   "page_css": "home",
   "js": [
     "home-video",
-    "home-scroll"
+    "home-scroll",
+    "home-edit"
   ],
   "og_type": "website",
   "schema": "home",
