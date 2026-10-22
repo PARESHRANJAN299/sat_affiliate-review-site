@@ -30,6 +30,8 @@ ART_FILES = {'ivory-kurta': ('jpg', 640, 836, 1024), 'ivory-banner': ('jpg', 828
 # Wide banner photograph used above a collection's widget rail.
 BANNER_STEMS = {'womens-kurtas': 'ivory-banner', 'footwear': 'white-tee-b'}
 SITE_URL = 'https://sat.net.in'
+# React 18.3.1 production builds, self-hosted (MIT). They run before the page bundle (all deferred, in document order); fashion-tabs.js uses them for the category tabs.
+REACT_SCRIPTS = '<script src="/vendor/react-18.3.1.production.min.js" defer></script><script src="/vendor/react-dom-18.3.1.production.min.js" defer></script>'
 ART_ALT = {'footwear-detail': 'Editorial image: close-up of white velcro trainers worn with blush joggers.',
            'ivory-kurta': 'Editorial image: a woman in an ivory floral kurta set with a dupatta, seated on sandstone steps.',
            'purple-saree-support': 'Editorial image: a woman seated on a stool in a purple saree with an embroidered blouse, her elbow resting on a stone pedestal.',
@@ -646,7 +648,7 @@ def page(src, icon, site_url=SITE_URL):
              f'<li>{TRUST_ICONS[0]}<span>A little research.<br>A better choice.</span></li><li>{TRUST_ICONS[1]}<span>Curated from trusted retailers.</span></li><li>{TRUST_ICONS[2]}<span>Styles for every part of your life.</span></li></ul></section>')
     body = ('<div class="container fashion-page"><header class="fashion-switch-head"><h1>Discover Your Style</h1></header>'
             '<nav class="fashion-switch" id="fashion-categories" aria-label="Choose a fashion category">' + ''.join(tabs) + '</nav>'
-            + ''.join(sections) + brands_html + banner + trust + '</div>')
+            + ''.join(sections) + brands_html + banner + trust + '</div>' + REACT_SCRIPTS)
     return {'url': '/fashion/', 'title': 'The SAT Fashion Edit', 'description': 'Explore women’s kurtas, westernwear, Indianwear, footwear, active and sportswear, and bags with the SAT Fashion Edit.',
-            'css': ['buttons', 'breadcrumb', 'fashion-gateway', 'fashion-art', 'fashion'], 'js': ['fashion-widgets'], 'noindex': True,
+            'css': ['buttons', 'breadcrumb', 'fashion-gateway', 'fashion-art', 'fashion'], 'js': ['fashion-tabs', 'fashion-widgets'], 'noindex': True,
             'breadcrumbs': [['Fashion Edit', '/fashion/']], 'updated': '2026-10-18', '_slug': 'fashion', '_body': body}, problems

@@ -17,7 +17,7 @@
     var panel = target && target.closest ? target.closest('[data-category-panel]') : null;
     return panel ? panel.dataset.categoryPanel : null;
   }
-  if (catTabs.length) {
+  if (catTabs.length && !window.__fashionTabsReact) {  // fashion-tabs.js (React) runs first and takes over; this is the fallback without React
     var firstCat = document.querySelector('[data-category-tab][aria-current]') || catTabs[0];
     var fromHash = categoryFromHash();
     showCategory(fromHash || firstCat.dataset.categoryTab);

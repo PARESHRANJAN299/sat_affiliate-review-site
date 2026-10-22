@@ -55,3 +55,13 @@ The mobile detail page has a large image, optional thumbnails, supplied facts, s
 - A brand option can have its own Women / Men toggle: add `"audience_toggle": true` to that option in `groups` (Nike has it; U.S. Polo Assn., Puma and the Indian-brands group show one list). Products still need `--audience men|women`; everything sent so far is men's.
 - Titled lists inside a panel: `collections` in `widgets.json` (`id`, `category`, `title`) give a category named lists, and a widget with `"collection": "<id>"` is listed under that title (for example Nike: "Search results for Nike Shoes"). Lists appear in the order the collections are defined, then products without one. Add with `--collection nike-shoes`; more Nike lists can be defined later. Collections have no suggestion keywords for now.
 - `--first` puts new products at the very top, ahead of the other front cards (`--front` places them after the existing front cards).
+
+## Category tabs (React)
+
+The category tab bar on `/fashion/` is a React component (`src/js/components/fashion-tabs.js`), added on 2026-10-22 at the owner's request (the original brief said no React; this is the one place it is used). React 18.3.1 is self-hosted in `src/static/vendor/` (the official production builds, unmodified, checksums pinned in `tests/test_fashion.py`) and loaded with `defer` ahead of the page bundle. There is no build step and no JSX: the component uses `React.createElement`.
+
+- The server still prints plain `#category` links and every category panel. React replaces only the tab bar and shows one panel at a time (the others stay in the page, their Nykaa cards are lazy-loaded).
+- Features: sticky under the SAT menu bar (its height is measured), a sliding gold marker, product counts per tab, fade edges and auto-centring of the active tab on phones, arrow / Home / End keys (ARIA tablist), the hash follows the tab, and a visitor deep in a long list lands at the top of the new one.
+- Fallback: if React does not load, `fashion-widgets.js` keeps its original switcher (it steps aside only when `window.__fashionTabsReact` is set).
+- Upgrading React: replace both files with the new official builds, rename them, update `REACT_SCRIPTS` in `fashion.py` and the checksums in the test.
+

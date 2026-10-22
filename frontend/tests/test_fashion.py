@@ -222,5 +222,33 @@ class FashionTests(unittest.TestCase):
         self.assertTrue(any('booleans' in error for error in errors))
 
 
+
+
+class ReactTabsTests(unittest.TestCase):
+    ROOT = Path(__file__).resolve().parent.parent
+    SHA256 = {'react-18.3.1.production.min.js': 'd949f1c3687aedadcedac85261865f29b17cd273997e7f6b2bfc53b2f9d4c4dd',
+              'react-dom-18.3.1.production.min.js': '35f4f974f4b2bcd44da73963347f8952e341f83909e4498227d4e26b98f66f0d'}
+
+    def test_react_is_self_hosted_unmodified_and_loaded_before_the_page_bundle(self):
+        import hashlib
+        for name, digest in self.SHA256.items():
+            data = (self.ROOT / 'src' / 'static' / 'vendor' / name).read_bytes()
+            self.assertEqual(hashlib.sha256(data).hexdigest(), digest, name)  # the official 18.3.1 build, unchanged
+        body = fashion.page(self.ROOT / 'src', lambda *args: '')[0]['_body']
+        react, dom = body.index('/vendor/react-18.3.1.production.min.js'), body.index('/vendor/react-dom-18.3.1.production.min.js')
+        self.assertLess(react, dom)
+        self.assertEqual(body.count('<script'), 2)
+        self.assertNotIn('cdn', body.lower())
+        self.assertEqual(fashion.page(self.ROOT / 'src', lambda *args: '')[0]['js'], ['fashion-tabs', 'fashion-widgets'])
+
+    def test_plain_links_remain_as_the_fallback_and_the_old_switcher_steps_aside(self):
+        body = fashion.page(self.ROOT / 'src', lambda *args: '')[0]['_body']
+        self.assertEqual(body.count('data-category-tab='), len(fashion.SECTIONS))
+        tabs_js = (self.ROOT / 'src' / 'js' / 'components' / 'fashion-tabs.js').read_text()
+        widgets_js = (self.ROOT / 'src' / 'js' / 'components' / 'fashion-widgets.js').read_text()
+        self.assertIn('window.__fashionTabsReact = true', tabs_js)
+        self.assertIn('!window.__fashionTabsReact', widgets_js)
+        self.assertNotIn('dangerouslySetInnerHTML', tabs_js)
+
 if __name__ == '__main__':
     unittest.main()

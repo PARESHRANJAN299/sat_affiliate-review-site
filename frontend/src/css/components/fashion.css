@@ -264,3 +264,21 @@
 
 /* The SAT menu bar stays in view on /fashion/ (on phones it normally slides away while scrolling down), so visitors always see the menu. */
 html:has(.fashion-page) header.site-header.js-smart.is-hidden { transform: none; }
+
+/* Category tabs, React version (fashion-tabs.js). Without scripts the plain links above remain. The bar sticks under the SAT menu bar and slides a gold marker. */
+.fashion-switch.is-react { position: sticky; top: var(--ft-top, 64px); z-index: 25; display: block; overflow: visible; margin: 0 calc(-1 * var(--fpad)); padding: 0 var(--fpad); background: rgba(250, 249, 246, .94); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
+.ft-scroller { overflow-x: auto; scrollbar-width: none; scroll-snap-type: x proximity; }
+.ft-scroller::-webkit-scrollbar { display: none; }
+.ft-scroller.has-end:not(.has-start) { -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 36px), transparent); mask-image: linear-gradient(90deg, #000 calc(100% - 36px), transparent); }
+.ft-scroller.has-start:not(.has-end) { -webkit-mask-image: linear-gradient(90deg, transparent, #000 36px); mask-image: linear-gradient(90deg, transparent, #000 36px); }
+.ft-scroller.has-start.has-end { -webkit-mask-image: linear-gradient(90deg, transparent, #000 36px, #000 calc(100% - 36px), transparent); mask-image: linear-gradient(90deg, transparent, #000 36px, #000 calc(100% - 36px), transparent); }
+.ft-list { position: relative; display: flex; gap: clamp(22px, 3.4vw, 44px); width: max-content; min-width: 100%; }
+.ft-tab { flex: none; display: inline-flex; align-items: center; gap: 8px; min-height: 56px; padding: 0 2px; color: var(--f-muted); font-size: 12px; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; text-decoration: none; white-space: nowrap; scroll-snap-align: center; transition: color .2s; }
+.ft-tab:hover { color: var(--f-ink); text-decoration: none; }
+.ft-tab[aria-selected="true"] { color: var(--f-ink); }
+.ft-tab:focus-visible { outline: 3px solid var(--f-gold-ink); outline-offset: -3px; }
+.ft-count { font-size: 11px; font-weight: 500; letter-spacing: .02em; color: var(--f-gold-ink); }
+.ft-ind { position: absolute; left: 0; bottom: 0; width: var(--w, 0); height: 2px; background: var(--f-gold); transform: translateX(var(--x, 0)); transition: transform .38s cubic-bezier(.2, .8, .2, 1), width .38s cubic-bezier(.2, .8, .2, 1); pointer-events: none; }
+.fashion-section.is-entering { animation: ft-in .45s ease both; }
+@keyframes ft-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .ft-ind, .ft-tab { transition: none; } .fashion-section.is-entering { animation: none; } }
