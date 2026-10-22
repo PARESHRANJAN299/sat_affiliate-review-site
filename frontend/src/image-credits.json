@@ -1349,6 +1349,19 @@
       "proof": "Cropped from an owner-supplied image on 2026-10-19 so the Footwear tile is sharp.",
       "status": "needs-confirmation",
       "image_classification": "Owner-supplied editorial imagery (provenance pending)"
+    },
+    {
+      "file": "/images/categories/fashion-thumb.jpg",
+      "use": "Round Fashion thumbnail in the home page Shop by Category row: square crop of the ivory kurta editorial photograph; SAT editorial artwork, not a retailer product image",
+      "platform": "Derivative of /images/fashion/models/ivory-kurta-836.jpg",
+      "ai_generated": true,
+      "source": "Cropped and resized copy of the confirmed AI-generated editorial visual; no new content",
+      "licence": "Same basis as /images/fashion/sat-editorial-ivory.jpg",
+      "licence_page": "https://openai.com/policies/terms-of-use",
+      "date_added": "2026-10-22",
+      "proof": "Derivative of a record with confirmed status; cropped on 2026-10-22 for the home Fashion chip.",
+      "status": "confirmed",
+      "image_classification": "AI-generated illustrative imagery"
     }
   ],
   "governance": {

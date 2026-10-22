@@ -1097,6 +1097,11 @@ def home_category_strip():
                      f'<span class="home-cat-pic" aria-hidden="true">{pic}</span>'
                      f'<span class="home-cat-name">{esc(c["name"])}</span>'
                      f'<span class="home-cat-go" aria-hidden="true"><svg class="ic"><use href="#i-arrow"/></svg></span></a></li>')
+    # Fashion Edit (/fashion/) is not one of the five product categories, so it is added here rather than in categories.json.
+    items.append('<li><a class="home-cat" href="/fashion/" style="--hue:18">'
+                 '<span class="home-cat-pic" aria-hidden="true"><img src="/images/categories/fashion-thumb.jpg" alt="" width="48" height="48" loading="lazy"></span>'
+                 '<span class="home-cat-name">Fashion</span>'
+                 '<span class="home-cat-go" aria-hidden="true"><svg class="ic"><use href="#i-arrow"/></svg></span></a></li>')
     return '<ul class="home-cat-strip">' + "".join(items) + '</ul>'
 
 

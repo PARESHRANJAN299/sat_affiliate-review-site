@@ -93,8 +93,8 @@
 .home-categories .home-section-head { margin-bottom: 10px; }
 .home-categories .home-section-head h2 { font-size: 1.05rem; }
 .home-categories .home-text-link { min-height: 36px; }
-/* category tiles: five even cards on desktop, a 2-up grid that fits the screen on phones (no sideways scrolling) */
-.home-cat-strip { list-style: none; margin: 0; padding: 4px 0 6px; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; }
+/* category tiles: six even cards on desktop, a 2-up grid that fits the screen on phones (no sideways scrolling) */
+.home-cat-strip { list-style: none; margin: 0; padding: 4px 0 6px; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 12px; }
 .home-cat-strip > li { display: flex; min-width: 0; }
 .home-cat { --hue: 215; flex: 1; display: flex; align-items: center; gap: 12px; min-height: 72px; padding: 10px 12px 10px 10px; color: var(--color-text); background: linear-gradient(180deg, #fff 0%, #fdfaf4 100%); border: 1px solid var(--color-border); border-radius: 16px; box-shadow: 0 1px 2px rgba(40, 28, 10, 0.05), 0 10px 22px -16px rgba(60, 40, 10, 0.35); text-decoration: none; -webkit-tap-highlight-color: transparent; transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease; }
 .home-cat:hover { text-decoration: none; transform: translateY(-3px); border-color: hsl(var(--hue) 50% 62%); box-shadow: 0 2px 4px rgba(40, 28, 10, 0.05), 0 16px 28px -14px hsla(var(--hue), 55%, 28%, 0.4); }

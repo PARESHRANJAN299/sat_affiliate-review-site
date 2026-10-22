@@ -110,13 +110,14 @@ if __name__ == "__main__":
 
 
 class HomeCategoryTiles(unittest.TestCase):
-    """The home 'Shop by Category' strip: five tiles that fit on a phone without sideways scrolling."""
+    """The home 'Shop by Category' strip: six tiles (five product categories plus Fashion) that fit on a phone without sideways scrolling."""
 
     def test_tiles_are_markup_links_with_arrow(self):
         page = (ROOT / "dist" / "index.html").read_text(encoding="utf-8")
         tiles = re.findall(r'<a class="home-cat" href="([^"]+)"', page)
-        self.assertEqual(len(tiles), 5)
-        self.assertEqual(page.count('class="home-cat-go"'), 5)
+        self.assertEqual(len(tiles), 6)
+        self.assertEqual(tiles[-1], '/fashion/')  # the Fashion Edit chip comes last
+        self.assertEqual(page.count('class="home-cat-go"'), 6)
 
     def test_phone_layout_is_a_grid_not_a_scroller(self):
         css = (ROOT / "src" / "css" / "pages" / "home.css").read_text(encoding="utf-8")
