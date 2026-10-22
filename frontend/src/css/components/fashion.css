@@ -261,3 +261,6 @@
   .fashion-widget-banner.fashion-tint-westernwear .fashion-art { left: 40%; width: 46%; }
   .fashion-widget-banner.fashion-tint-westernwear .fashion-art + .fashion-art { left: 68%; }
 }
+
+/* The SAT menu bar stays in view on /fashion/ (on phones it normally slides away while scrolling down), so visitors always see the menu. */
+html:has(.fashion-page) header.site-header.js-smart.is-hidden { transform: none; }
