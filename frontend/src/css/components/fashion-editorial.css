@@ -94,14 +94,3 @@
 .ed-men-art { align-items: flex-end; justify-content: center; }
 .ed-men-art .ed-person.ed-stand { width: 52%; height: auto; position: relative; z-index: 2; margin-right: -10%; filter: drop-shadow(0 0 1px rgba(255, 255, 255, .55)) drop-shadow(0 26px 30px rgba(0, 0, 0, .55)); }
 .ed-men-art .ed-person.ed-bench { width: 58%; }
-
-/* Furniture ad card: a soft blob behind the product picture (placeholder sofa drawing until the owner's sofa picture is added), copy and a button. No prices or discounts. */
-.ed-furn { padding: clamp(28px, 4vw, 56px) 0; background: #f4f0e8; box-shadow: 0 0 0 100vmax #f4f0e8; clip-path: inset(0 -100vmax); }
-.ed-furn-card { display: grid; grid-template-columns: minmax(0, 6fr) minmax(0, 5fr); align-items: center; gap: clamp(20px, 4vw, 64px); padding: clamp(24px, 4vw, 56px); background: #e9dcc5; color: #101010; border-radius: 4px; overflow: hidden; }
-.ed-furn-art { position: relative; display: grid; place-items: center; min-height: clamp(220px, 28vw, 380px); }
-.ed-furn-blob { position: absolute; inset: 4% 6%; background: #fbf7ee; border-radius: 58% 42% 55% 45% / 48% 56% 44% 52%; }
-.ed-sofa { position: relative; width: min(78%, 420px); height: auto; color: #6a5a45; }
-.ed-furn-copy { text-align: left; }
-.ed-furn-copy h2 { margin: 0 0 14px; font: 400 clamp(2.2rem, 4.8vw, 4.2rem)/1 var(--font-display); letter-spacing: -.035em; }
-.ed-furn-copy p:not(.ed-kicker) { margin: 0 0 clamp(18px, 2.4vw, 28px); max-width: 32ch; font-size: clamp(1rem, 1.4vw, 1.15rem); line-height: 1.6; color: #3d3a33; }
-@media (max-width: 899px) { .ed-furn-card { grid-template-columns: minmax(0, 1fr); } .ed-furn-art { min-height: 220px; } }
