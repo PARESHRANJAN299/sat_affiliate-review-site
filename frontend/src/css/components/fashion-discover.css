@@ -37,3 +37,18 @@
   .fashion-category-westernwear:hover .fashion-art, .fashion-category-indianwear:hover .fashion-art { transform: scale(1.03); }
   .fashion-category-westernwear:not(:has(.fashion-photo)) .fashion-category-label, .fashion-category-indianwear:not(:has(.fashion-photo)) .fashion-category-label { right: 50%; background: none; padding-right: 0; }
 }
+
+/* A second cutout beside the tile's own picture. */
+.fashion-category .fashion-art.fashion-art-extra { left: auto; right: 4%; top: auto; bottom: 0; width: auto; height: 62%; transform: none; }
+.fashion-category-westernwear .fashion-art:not(.fashion-art-extra) { width: 52%; left: 4%; }
+.fashion-category-westernwear .fashion-art + .fashion-art:not(.fashion-art-extra) { left: 30%; }
+.fashion-category-westernwear .fashion-art.fashion-art-extra { height: 54%; right: 3%; }
+.fashion-category:hover .fashion-art.fashion-art-extra { transform: scale(1.02); }
+@media (min-width: 900px) {
+  .fashion-category-indianwear .fashion-art:not(.fashion-art-extra) { left: auto; right: 36%; width: auto; height: 94%; top: auto; bottom: 0; transform: none; }
+  .fashion-category-indianwear .fashion-art.fashion-art-extra { right: 6%; height: 92%; }
+  .fashion-category-westernwear .fashion-art:not(.fashion-art-extra) { left: auto; right: 46%; width: 21%; top: auto; bottom: 0; transform: none; }
+  .fashion-category-westernwear .fashion-art + .fashion-art:not(.fashion-art-extra) { left: auto; right: 25%; }
+  .fashion-category-westernwear .fashion-art.fashion-art-extra { right: 4%; height: 92%; }
+  .fashion-category-indianwear:hover .fashion-art:not(.fashion-art-extra), .fashion-category-westernwear:hover .fashion-art:not(.fashion-art-extra) { transform: scale(1.02); }
+}

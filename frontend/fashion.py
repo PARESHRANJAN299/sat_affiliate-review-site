@@ -565,6 +565,10 @@ TRUST_ICONS = (
 )
 
 
+# A second owner cutout shown beside the collection's own picture on the home tile (same tile, no extra height).
+TILE_EXTRA = {'indianwear': 'saree-purple', 'westernwear': 'man-standing'}
+
+
 def discover_tiles(products, prefix='/fashion/'):
     """The Discover Your Style tiles: SAT editorial artwork (or an approved product photo) per collection, each opening that collection."""
     tiles = []
@@ -574,6 +578,9 @@ def discover_tiles(products, prefix='/fashion/'):
             visual = f'<img class="fashion-photo" src="{esc(matching[0]["image_url"])}" alt="" loading="lazy" decoding="async" width="800" height="1000">'
         else:
             visual = art_picture(slug, '(min-width: 900px) 42vw, 70vw')
+        extra = TILE_EXTRA.get(slug)
+        if extra and not matching:  # a second person inside the same tile (two figures, one picture)
+            visual += f'<img class="fashion-art fashion-art-extra" src="{PEOPLE_DIR}{extra}-480.webp" srcset="{PEOPLE_DIR}{extra}-480.webp 480w, {PEOPLE_DIR}{extra}-960.webp 960w" sizes="(min-width: 900px) 20vw, 40vw" alt="" width="{PEOPLE[extra][1]}" height="{PEOPLE[extra][2]}" loading="lazy" decoding="async">'
         tiles.append(f'<a class="fashion-category fashion-category-{slug} fashion-tint-{slug}" href="{prefix}#{slug}">{visual}'
                      f'<span class="fashion-category-label"><strong>{esc(title)}</strong><em>{esc(description)}</em><span class="fashion-category-arrow" aria-hidden="true">→</span></span></a>')
     tiles.append(f'<a class="fashion-category fashion-category-watches fashion-tint-watches" href="{WATCH_PAGE}"><img class="fashion-photo" src="{WATCH_PHOTO}" alt="" loading="lazy" decoding="async" width="608" height="456">'
@@ -651,7 +658,7 @@ def editorial_html(fashion_page=''):
            '<li><a href="/sports-fitness/">Fitness <i aria-hidden="true">→</i></a></li></ul>'
            '<a class="ed-btn" href="/products/">Explore <span aria-hidden="true">→</span></a></div>'
            '<div class="ed-men-art">' + person("man-bench", "(min-width: 900px) 34vw, 80vw") + '</div></section>')
-    return world + watches + story + men
+    return watches + story + men  # (the old "Find your world" tiles repeated Discover Your Style, so they are not shown)
 
 
 HOME_EDIT_DIR = '/images/home-edit/'

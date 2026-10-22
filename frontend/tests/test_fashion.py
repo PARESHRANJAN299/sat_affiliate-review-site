@@ -257,7 +257,7 @@ class EditorialTests(unittest.TestCase):
 
     def test_editorial_sections_use_the_owner_wording_and_make_no_retailer_promises(self):
         html = fashion.editorial_html()
-        for text in ('Find your world.', 'Time, considered.', 'Watches selected for every style.', 'Made for real life', 'SAT brings fashion, fitness, watches and everyday discoveries into one considered place.',
+        for text in ('Time, considered.', 'Watches selected for every style.', 'Made for real life', 'SAT brings fashion, fitness, watches and everyday discoveries into one considered place.',
                      'Simple choices.', 'Everyday edit'):
             self.assertIn(text, html)
         for promise in ('Free shipping', 'Easy returns', 'Secure payment', 'Fast delivery', 'GAZU'):
@@ -291,6 +291,7 @@ class HomeEditTests(unittest.TestCase):
             self.assertIn(slide['href'], ('/products/', '/fashion/'))
             self.assertTrue(slide['image']['alt'])
         self.assertIn('href="/fashion/#footwear"', html)  # editorial links point at /fashion/ from the home page
+        self.assertNotIn('Find your world', html)  # it repeated Discover Your Style
         self.assertNotIn('free shipping', html.lower())
 
     def test_home_images_exist_with_credits_and_fashion_page_has_no_editorial_block(self):
