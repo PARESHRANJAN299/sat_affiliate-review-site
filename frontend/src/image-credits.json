@@ -1388,30 +1388,6 @@
       "image_classification": "Owner-supplied editorial imagery (provenance pending)"
     },
     {
-      "file": "/images/fashion/people/couple-bench-640.webp",
-      "use": "Lifestyle story on /fashion/ (cleaned cutout of two people seated on a bench); personal photograph, not a retailer product image",
-      "platform": "Owner's own photograph, background removed by the owner and supplied on 2026-10-22",
-      "ai_generated": null,
-      "source": "Resized copy of the owner-supplied cutout, cropped to the figure; no other edits",
-      "licence": "Owner-supplied (provenance and the consent of every person shown still to be confirmed by the owner)",
-      "date_added": "2026-10-22",
-      "proof": "Supplied by the owner on 2026-10-22. Shows identifiable people: the owner should confirm they agree to the photographs being used on the site.",
-      "status": "needs-confirmation",
-      "image_classification": "Owner-supplied editorial imagery (provenance pending)"
-    },
-    {
-      "file": "/images/fashion/people/couple-bench-1280.webp",
-      "use": "Lifestyle story on /fashion/ (cleaned cutout of two people seated on a bench); personal photograph, not a retailer product image",
-      "platform": "Owner's own photograph, background removed by the owner and supplied on 2026-10-22",
-      "ai_generated": null,
-      "source": "Resized copy of the owner-supplied cutout, cropped to the figure; no other edits",
-      "licence": "Owner-supplied (provenance and the consent of every person shown still to be confirmed by the owner)",
-      "date_added": "2026-10-22",
-      "proof": "Supplied by the owner on 2026-10-22. Shows identifiable people: the owner should confirm they agree to the photographs being used on the site.",
-      "status": "needs-confirmation",
-      "image_classification": "Owner-supplied editorial imagery (provenance pending)"
-    },
-    {
       "file": "/images/fashion/people/man-standing-480.webp",
       "use": "Lifestyle tile on /fashion/ (cleaned cutout of a man standing); personal photograph, not a retailer product image",
       "platform": "Owner's own photograph, background removed by the owner and supplied on 2026-10-22",
@@ -1504,6 +1480,30 @@
       "licence": "Owner-supplied (provenance and consent of every person shown still to be confirmed by the owner)",
       "date_added": "2026-10-22",
       "proof": "Supplied by the owner on 2026-10-22. The Red Fort photo also shows bystanders in the background.",
+      "status": "needs-confirmation",
+      "image_classification": "Owner-supplied editorial imagery (provenance pending)"
+    },
+    {
+      "file": "/images/fashion/people/couple-bench-w-640.webp",
+      "use": "Made for real life (home): the couple cutout with the man's shoes recoloured white at the owner's request; personal photograph, not a retailer product image",
+      "platform": "Owner's own photograph, background removed by the owner",
+      "ai_generated": null,
+      "source": "Resized copy of couple-bench with the two grey shoes recoloured white (socks and everything else unchanged)",
+      "licence": "Owner-supplied (provenance and consent of every person shown still to be confirmed by the owner)",
+      "date_added": "2026-10-22",
+      "proof": "Edit requested by the owner on 2026-10-22.",
+      "status": "needs-confirmation",
+      "image_classification": "Owner-supplied editorial imagery (provenance pending)"
+    },
+    {
+      "file": "/images/fashion/people/couple-bench-w-1280.webp",
+      "use": "Made for real life (home): the couple cutout with the man's shoes recoloured white at the owner's request; personal photograph, not a retailer product image",
+      "platform": "Owner's own photograph, background removed by the owner",
+      "ai_generated": null,
+      "source": "Resized copy of couple-bench with the two grey shoes recoloured white (socks and everything else unchanged)",
+      "licence": "Owner-supplied (provenance and consent of every person shown still to be confirmed by the owner)",
+      "date_added": "2026-10-22",
+      "proof": "Edit requested by the owner on 2026-10-22.",
       "status": "needs-confirmation",
       "image_classification": "Owner-supplied editorial imagery (provenance pending)"
     }

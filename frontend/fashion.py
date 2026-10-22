@@ -620,9 +620,13 @@ def discover_html(src, prefix='/fashion/'):
 
 
 PEOPLE_DIR = '/images/fashion/people/'
+# Furniture ad card (design placeholder): the line-drawn sofa is replaced by the owner's sofa picture, and products are added behind the card, later.
+FURNITURE_ART = ('<svg class="ed-sofa" viewBox="0 0 320 170" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">'
+                 '<path d="M46 74a22 22 0 0 1 22-22h184a22 22 0 0 1 22 22v34H46z"/><path d="M26 92a18 18 0 0 1 36 0v40a10 10 0 0 1-10 10H36a10 10 0 0 1-10-10zM258 92a18 18 0 0 1 36 0v40a10 10 0 0 1-10 10h-16a10 10 0 0 1-10-10z"/>'
+                 '<path d="M62 108h196v34H62zM64 142v14M256 142v14"/></svg>')
 # (stem, small width, large width, large height): the owner's cleaned cutouts (transparent WebP, cropped to the figure).
 PEOPLE = {'saree-purple': (480, 960, 1316, 'A woman standing in a purple saree with an embroidered blouse, holding a phone.'),
-          'couple-bench': (640, 1280, 1085, 'A woman in a cream printed kurta set and a man in a white shirt and jeans sitting side by side on a bench.'),
+          'couple-bench-w': (640, 1280, 1085, 'A woman in a cream printed kurta set and a man in a white shirt and jeans sitting side by side on a bench.'),
           'man-standing': (480, 960, 1359, 'A man in a white linen shirt, cap and dark cargo trousers standing with his back partly turned.'),
           'man-bench': (480, 960, 1248, 'A man in a white shirt, jeans and white trainers sitting on an ornate park bench.')}
 
@@ -652,13 +656,16 @@ def editorial_html(fashion_page=''):
                '<figure class="ed-watches-art"><img src="/images/categories/watches.jpg" alt="Four classic wristwatches with leather and steel straps resting on stone blocks." width="608" height="456" loading="lazy" decoding="async"></figure></section>')
     story = ('<section class="ed-story" aria-labelledby="ed-story-title"><div class="ed-story-copy"><p class="ed-kicker">Made for real life</p><h2 id="ed-story-title">Things worth<br>bringing into yours.</h2>'
              '<p>SAT brings fashion, fitness, watches and everyday discoveries into one considered place.</p><a class="ed-btn" href="/about/">Discover SAT <span aria-hidden="true">→</span></a></div>'
-             f'<div class="ed-story-art">{person("couple-bench", "(min-width: 900px) 46vw, 92vw")}</div></section>')
+             f'<div class="ed-story-art">{person("couple-bench-w", "(min-width: 900px) 46vw, 92vw")}</div></section>')
+    furniture = ('<section class="ed-furn" aria-labelledby="ed-furn-title"><div class="ed-furn-card"><div class="ed-furn-art" aria-hidden="true"><span class="ed-furn-blob"></span>' + FURNITURE_ART + '</div>'
+                 '<div class="ed-furn-copy"><p class="ed-kicker">Interior furniture</p><h2 id="ed-furn-title">Comfort for<br>every room.</h2><p>Sofas, chairs and lamps picked for calm, lived-in homes.</p>'
+                 '<a class="ed-btn" href="/home-kitchen/">Explore home <span aria-hidden="true">→</span></a></div></div></section>')
     men = ('<section class="ed-men" aria-labelledby="ed-men-title"><div class="ed-men-copy"><p class="ed-kicker">Everyday edit<span class="ed-rule" aria-hidden="true"></span></p><h2 id="ed-men-title">Simple choices.<br>Better style.</h2>'
            f'<ul class="ed-list"><li><a href="{fashion_page}#footwear">Fashion <i aria-hidden="true">→</i></a></li><li><a href="/watches/men/">Watches <i aria-hidden="true">→</i></a></li>'
            '<li><a href="/sports-fitness/">Fitness <i aria-hidden="true">→</i></a></li></ul>'
            '<a class="ed-btn" href="/products/">Explore <span aria-hidden="true">→</span></a></div>'
            '<div class="ed-men-art">' + person("man-standing", "(min-width: 900px) 20vw, 40vw", " ed-stand") + person("man-bench", "(min-width: 900px) 30vw, 60vw", " ed-bench") + '</div></section>')
-    return story + men  # (the Time, considered watches section and the old Find your world tiles are not shown)  # (the old "Find your world" tiles repeated Discover Your Style, so they are not shown)
+    return story + furniture + men  # (the Time, considered watches section and the old Find your world tiles are not shown)  # (the old "Find your world" tiles repeated Discover Your Style, so they are not shown)
 
 
 HOME_EDIT_DIR = '/images/home-edit/'

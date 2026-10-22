@@ -266,7 +266,7 @@ class EditorialTests(unittest.TestCase):
     def test_every_link_goes_to_a_real_page_or_tab_and_every_photo_has_a_credit(self):
         import re
         html = fashion.editorial_html()
-        pages = {'/sports-fitness/', '/products/', '/about/', '/watches/men/'}
+        pages = {'/sports-fitness/', '/products/', '/about/', '/watches/men/', '/home-kitchen/'}
         for href in re.findall(r'href="([^"#][^"]*)"', html):
             self.assertIn(href, pages, href)
             self.assertTrue((self.ROOT / 'dist' / href.strip('/') / 'index.html').exists() or not (self.ROOT / 'dist').exists(), href)
