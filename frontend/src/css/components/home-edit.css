@@ -4,10 +4,10 @@
 .he-stage.he-on-dark { color: #f6f1e7; }
 .he-slide { position: absolute; inset: 0; display: flex; align-items: center; background: #f4f0e8; color: #101010; opacity: 0; visibility: hidden; transition: opacity .9s ease, visibility .9s; }
 .he-slide.is-active { opacity: 1; visibility: visible; }
-.he-photo { position: absolute; top: 0; right: 0; width: 62%; height: 100%; object-fit: cover; object-position: 50% 86%; max-width: none; }
-.he-split .he-photo { -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 36%); mask-image: linear-gradient(90deg, transparent 0, #000 36%); }
+.he-photo { position: absolute; top: 0; right: 0; width: auto; max-width: 62%; height: 100%; object-fit: contain; object-position: right center; }   /* the whole photo shows: these are tall portraits, so they sit full height on the right instead of being cropped by a wide box */
+.he-split .he-photo { -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 14%); mask-image: linear-gradient(90deg, transparent 0, #000 14%); }
 .he-dark { background: #17130f; color: #f6f1e7; }
-.he-dark .he-photo { width: 58%; object-position: 50% 30%; filter: saturate(.92) brightness(.94); -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 40%); mask-image: linear-gradient(90deg, transparent 0, #000 40%); }
+.he-dark .he-photo { max-width: 58%; object-position: right center; filter: saturate(.92) brightness(.94); -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 14%); mask-image: linear-gradient(90deg, transparent 0, #000 14%); }
 .he-shade { display: none; }
 .he-dark .he-shade { display: block; position: absolute; inset: 0; background: linear-gradient(0deg, rgba(23, 19, 15, .5), rgba(23, 19, 15, 0) 42%); pointer-events: none; }
 .he-ivory { background: linear-gradient(160deg, #f1e8d8, #dcc9a8); }
@@ -35,7 +35,7 @@
 @media (max-width: 899px) {
   .he-stage { min-height: clamp(620px, 150vw, 720px); }
   .he-slide { align-items: flex-end; padding-bottom: 76px; }
-  .he-photo, .he-dark .he-photo { top: 0; width: 100%; height: 66%; object-position: 50% 62%; -webkit-mask-image: linear-gradient(180deg, #000 52%, transparent 100%); mask-image: linear-gradient(180deg, #000 52%, transparent 100%); }
+  .he-photo, .he-dark .he-photo { top: 0; right: 0; width: 100%; max-width: none; height: 66%; object-fit: cover; object-position: 50% 62%; -webkit-mask-image: linear-gradient(180deg, #000 52%, transparent 100%); mask-image: linear-gradient(180deg, #000 52%, transparent 100%); }   /* phones: the photo fills the width above the text, as before */
   .he-dark .he-shade { background: linear-gradient(0deg, #17130f 30%, rgba(23, 19, 15, 0) 70%); }
   .he-ivory .he-photo.he-cutout { top: 2%; bottom: auto; right: 50%; width: auto; height: 44%; transform: translateX(50%); }
   .he-copy { padding: 0 20px; }
