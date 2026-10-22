@@ -282,3 +282,14 @@ html:has(.fashion-page) header.site-header.js-smart.is-hidden { transform: none;
 .fashion-section.is-entering { animation: ft-in .45s ease both; }
 @keyframes ft-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
 @media (prefers-reduced-motion: reduce) { .ft-ind, .ft-tab { transition: none; } .fashion-section.is-entering { animation: none; } }
+
+/* Category switch at the bottom of the lists (fashion-tabs.js). */
+.ft-more { margin: clamp(30px, 4vw, 52px) 0 clamp(26px, 3vw, 40px); padding-top: clamp(22px, 3vw, 32px); border-top: 1px solid var(--f-line); }
+.ft-more-title { margin: 0 0 14px; font-size: 11px; font-weight: 700; letter-spacing: .22em; text-transform: uppercase; color: var(--f-gold-ink); }
+.ft-more-list { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 10px; }
+.ft-more-btn { display: inline-flex; align-items: center; gap: 10px; min-height: 48px; padding: 0 22px; border: 1px solid var(--f-line); border-radius: 999px; background: #fffdf8; color: var(--f-ink); font-size: 12px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; text-decoration: none; transition: border-color .25s, background .25s; }
+.ft-more-btn:hover { border-color: var(--f-gold); background: var(--f-sand); color: var(--f-ink); text-decoration: none; }
+.ft-more-btn:focus-visible { outline: 3px solid var(--f-gold-ink); outline-offset: 3px; }
+.ft-more-label { flex: 1; }
+@media (max-width: 719px) { .ft-more-list { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; } .ft-more-btn { display: flex; width: 100%; border-radius: 14px; padding: 0 18px; } }
+@media (prefers-reduced-motion: reduce) { .ft-more-btn { transition: none; } }

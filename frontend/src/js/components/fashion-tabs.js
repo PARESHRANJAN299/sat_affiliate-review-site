@@ -15,6 +15,11 @@
   });
   if (!tabs.length) return;
   window.__fashionTabsReact = true;
+  // A second switch at the bottom of the lists: after a long scroll, other categories are one tap away (no need to go back up).
+  var lastPanel = panels[tabs[tabs.length - 1].id] || panels[Object.keys(panels).pop()];
+  var moreHost = document.createElement('div');
+  moreHost.className = 'ft-more';
+  if (lastPanel && lastPanel.parentNode) lastPanel.parentNode.insertBefore(moreHost, lastPanel.nextSibling);
 
   var h = React.createElement, useState = React.useState, useEffect = React.useEffect, useLayoutEffect = React.useLayoutEffect, useRef = React.useRef;
   var reduce = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
@@ -112,7 +117,13 @@
       if (box) setEdges({ start: box.scrollLeft > 4, end: box.scrollLeft + box.clientWidth < box.scrollWidth - 4 });
     }
 
-    return h('div', { className: 'ft-bar' },
+    var more = h('nav', { 'aria-label': 'More fashion categories' },
+      h('p', { className: 'ft-more-title' }, 'More styles'),
+      h('ul', { className: 'ft-more-list' }, tabs.filter(function (tab) { return tab.id !== active; }).map(function (tab) {
+        return h('li', { key: tab.id }, h('a', { className: 'ft-more-btn', href: '#' + tab.id, onClick: function (event) { event.preventDefault(); choose(tab.id); } },
+          h('span', { className: 'ft-more-label' }, tab.label), tab.count ? h('span', { className: 'ft-count' }, tab.count) : null, h('span', { 'aria-hidden': 'true' }, '\u2192')));
+      })));
+    return h(React.Fragment, null, ReactDOM.createPortal(more, moreHost), h('div', { className: 'ft-bar' },
       h('div', { className: 'ft-scroller' + (edges.start ? ' has-start' : '') + (edges.end ? ' has-end' : ''), ref: scroller, onScroll: onScroll },
         h('div', { className: 'ft-list', role: 'tablist', 'aria-label': 'Fashion categories', onKeyDown: onKey },
           tabs.map(function (tab) {
@@ -123,7 +134,7 @@
               onClick: function (event) { event.preventDefault(); choose(tab.id); }
             }, tab.label, tab.count ? h('span', { className: 'ft-count' }, tab.count) : null);
           }),
-          h('i', { className: 'ft-ind', 'aria-hidden': 'true', style: { '--x': indicator.x + 'px', '--w': indicator.w + 'px' } }))));
+          h('i', { className: 'ft-ind', 'aria-hidden': 'true', style: { '--x': indicator.x + 'px', '--w': indicator.w + 'px' } })))));
   }
 
   nav.classList.add('is-react');
