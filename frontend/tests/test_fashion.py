@@ -257,7 +257,7 @@ class EditorialTests(unittest.TestCase):
 
     def test_editorial_sections_use_the_owner_wording_and_make_no_retailer_promises(self):
         html = fashion.editorial_html()
-        for text in ('Time, considered.', 'Watches selected for every style.', 'Made for real life', 'SAT brings fashion, fitness, watches and everyday discoveries into one considered place.',
+        for text in ('Made for real life', 'SAT brings fashion, fitness, watches and everyday discoveries into one considered place.',
                      'Simple choices.', 'Everyday edit'):
             self.assertIn(text, html)
         for promise in ('Free shipping', 'Easy returns', 'Secure payment', 'Fast delivery', 'GAZU'):
@@ -266,7 +266,7 @@ class EditorialTests(unittest.TestCase):
     def test_every_link_goes_to_a_real_page_or_tab_and_every_photo_has_a_credit(self):
         import re
         html = fashion.editorial_html()
-        pages = {'/watches/', '/sports-fitness/', '/products/', '/about/', '/watches/men/', '/watches/women/', '/watches/under-5000/', '/watches/under-20000/'}
+        pages = {'/sports-fitness/', '/products/', '/about/', '/watches/men/'}
         for href in re.findall(r'href="([^"#][^"]*)"', html):
             self.assertIn(href, pages, href)
             self.assertTrue((self.ROOT / 'dist' / href.strip('/') / 'index.html').exists() or not (self.ROOT / 'dist').exists(), href)
@@ -286,12 +286,14 @@ class HomeEditTests(unittest.TestCase):
         self.assertEqual(html.count('class="he-slide'), 1)  # only the first slide is plain HTML; React adds the rest
         self.assertIn('STYLE FOR'.title() if False else 'Style for', html)
         data = json.loads(html.split('id="he-data">')[1].split('</script>')[0])
-        self.assertEqual([slide['id'] for slide in data], ['everyday', 'calm', 'you'])
+        self.assertEqual([slide['id'] for slide in data], ['everyday', 'calm'])
         for slide in data:
             self.assertIn(slide['href'], ('/products/', '/fashion/'))
             self.assertTrue(slide['image']['alt'])
         self.assertIn('href="/fashion/#footwear"', html)  # editorial links point at /fashion/ from the home page
         self.assertNotIn('Find your world', html)  # it repeated Discover Your Style
+        self.assertNotIn('Time, considered', html)  # removed at the owner's request
+        self.assertNotIn('Style that', html)
         self.assertNotIn('free shipping', html.lower())
 
     def test_home_images_exist_with_credits_and_fashion_page_has_no_editorial_block(self):

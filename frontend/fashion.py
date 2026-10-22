@@ -658,7 +658,7 @@ def editorial_html(fashion_page=''):
            '<li><a href="/sports-fitness/">Fitness <i aria-hidden="true">→</i></a></li></ul>'
            '<a class="ed-btn" href="/products/">Explore <span aria-hidden="true">→</span></a></div>'
            '<div class="ed-men-art">' + person("man-bench", "(min-width: 900px) 34vw, 80vw") + '</div></section>')
-    return watches + story + men  # (the old "Find your world" tiles repeated Discover Your Style, so they are not shown)
+    return story + men  # (the Time, considered watches section and the old Find your world tiles are not shown)  # (the old "Find your world" tiles repeated Discover Your Style, so they are not shown)
 
 
 HOME_EDIT_DIR = '/images/home-edit/'
@@ -672,10 +672,6 @@ HOME_EDIT_SLIDES = (
      'tags': [], 'cta': 'Explore fashion', 'href': '/fashion/',
      'image': {'src': HOME_EDIT_DIR + 'redfort-1010.webp', 'srcset': f'{HOME_EDIT_DIR}redfort-670.webp 670w, {HOME_EDIT_DIR}redfort-1010.webp 1010w', 'width': 1010, 'height': 1600,
                'alt': 'A man in a white linen shirt and dark trousers seen from behind, looking up at a red sandstone fort wall with a green tree.'}},
-    {'id': 'you', 'style': 'ivory', 'kicker': 'Fashion', 'title': ['Style that', 'feels like you.'], 'sub': 'Kurtas, westernwear, Indianwear, footwear and more.',
-     'tags': [], 'cta': 'Explore fashion', 'href': '/fashion/', 'cutout': True,
-     'image': {'src': PEOPLE_DIR + 'saree-purple-960.webp', 'srcset': f'{PEOPLE_DIR}saree-purple-480.webp 480w, {PEOPLE_DIR}saree-purple-960.webp 960w', 'width': 960, 'height': 1316,
-               'alt': 'A woman standing in a purple saree with an embroidered blouse, holding a phone.'}},
 )
 
 
