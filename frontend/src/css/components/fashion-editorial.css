@@ -89,3 +89,8 @@
 .ed-men .ed-btn:hover { background: #e3cf9c; color: #1b1a18; }
 .ed-men .ed-list a:focus-visible, .ed-men .ed-btn:focus-visible { outline-color: #e3cf9c; }
 @media (max-width: 899px) { .ed-men { grid-template-columns: minmax(0, 1fr); background-image: radial-gradient(ellipse 80% 40% at 50% 78%, rgba(120, 110, 94, .42), rgba(27, 26, 24, 0) 70%); } .ed-men-copy { order: 1; } .ed-men-art { order: 2; } }
+
+/* Two men in the Everyday edit band: the standing man beside the man on the bench, with a faint rim light on the dark ground. */
+.ed-men-art { align-items: flex-end; justify-content: center; }
+.ed-men-art .ed-person.ed-stand { width: 52%; height: auto; position: relative; z-index: 2; margin-right: -10%; filter: drop-shadow(0 0 1px rgba(255, 255, 255, .55)) drop-shadow(0 26px 30px rgba(0, 0, 0, .55)); }
+.ed-men-art .ed-person.ed-bench { width: 58%; }

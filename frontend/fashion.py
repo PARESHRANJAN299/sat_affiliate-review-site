@@ -566,7 +566,7 @@ TRUST_ICONS = (
 
 
 # A second owner cutout shown beside the collection's own picture on the home tile (same tile, no extra height).
-TILE_EXTRA = {'indianwear': 'saree-purple', 'westernwear': 'man-standing'}
+TILE_EXTRA = {'indianwear': 'saree-purple'}
 
 
 def discover_tiles(products, prefix='/fashion/'):
@@ -627,10 +627,10 @@ PEOPLE = {'saree-purple': (480, 960, 1316, 'A woman standing in a purple saree w
           'man-bench': (480, 960, 1248, 'A man in a white shirt, jeans and white trainers sitting on an ornate park bench.')}
 
 
-def person(stem, sizes):
+def person(stem, sizes, cls=''):
     small, big, height, alt = PEOPLE[stem]
     width = big
-    return (f'<img class="ed-person" src="{PEOPLE_DIR}{stem}-{small}.webp" srcset="{PEOPLE_DIR}{stem}-{small}.webp {small}w, {PEOPLE_DIR}{stem}-{big}.webp {big}w" sizes="{sizes}" '
+    return (f'<img class="ed-person{cls}" src="{PEOPLE_DIR}{stem}-{small}.webp" srcset="{PEOPLE_DIR}{stem}-{small}.webp {small}w, {PEOPLE_DIR}{stem}-{big}.webp {big}w" sizes="{sizes}" '
             f'alt="{esc(alt)}" width="{width}" height="{height}" loading="lazy" decoding="async">')
 
 
@@ -657,7 +657,7 @@ def editorial_html(fashion_page=''):
            f'<ul class="ed-list"><li><a href="{fashion_page}#footwear">Fashion <i aria-hidden="true">→</i></a></li><li><a href="/watches/men/">Watches <i aria-hidden="true">→</i></a></li>'
            '<li><a href="/sports-fitness/">Fitness <i aria-hidden="true">→</i></a></li></ul>'
            '<a class="ed-btn" href="/products/">Explore <span aria-hidden="true">→</span></a></div>'
-           '<div class="ed-men-art">' + person("man-bench", "(min-width: 900px) 34vw, 80vw") + '</div></section>')
+           '<div class="ed-men-art">' + person("man-standing", "(min-width: 900px) 20vw, 40vw", " ed-stand") + person("man-bench", "(min-width: 900px) 30vw, 60vw", " ed-bench") + '</div></section>')
     return story + men  # (the Time, considered watches section and the old Find your world tiles are not shown)  # (the old "Find your world" tiles repeated Discover Your Style, so they are not shown)
 
 
