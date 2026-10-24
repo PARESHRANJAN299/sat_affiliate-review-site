@@ -1,0 +1,16 @@
+{
+  "branch": "homepage-fashion-approved",
+  "status": "Implemented locally; not committed, pushed or published",
+  "base_commit": "ed9f8fe",
+  "preserved_internal_pages": 258,
+  "changed_existing_internal_pages": [],
+  "sitemap_identical": true,
+  "header_and_menus_source_unchanged": true,
+  "hero_and_category_markup_identical": true,
+  "new_route": "/fashion/",
+  "fashion_noindex": true,
+  "published_nykaa_products": 0,
+  "approved_nykaa_image_hosts": [],
+  "approved_nykaa_affiliate_hosts": [],
+  "checks": "69 unit tests passed; build: 260 pages, zero errors; governance: zero failures"
+}

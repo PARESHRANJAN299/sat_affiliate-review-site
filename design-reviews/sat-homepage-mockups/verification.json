@@ -1,0 +1,38 @@
+{
+  "mode": "Approval mockups only \u2014 not pushed or published",
+  "production_snapshot": "ed9f8fe",
+  "protected_sections_sha256": {
+    "hero": "9becf4a5495bd744faba385041b2348bed596ed205d0c8d89451c41b984b5f05",
+    "categories": "997ddf3f88f4138196abc6b223ca5cacf2cfee07268b296581b8086843b2a493",
+    "header": "7c44914c793bc4f91cbb7473b59ec6e8bd69ec91d26c156e701ca52fd990d842"
+  },
+  "protected_sections_identical": true,
+  "page_count": 259,
+  "changed_preview_pages": [
+    "index.html"
+  ],
+  "unchanged_internal_pages": 258,
+  "sitemap_unchanged": true,
+  "section_order": [
+    "Existing header",
+    "Existing hero",
+    "Existing Shop by Category (five categories)",
+    "New SAT Fashion Edit gateway \u2192 /fashion/",
+    "Minimal SAT trust strip",
+    "Existing footer"
+  ],
+  "removed_homepage_presentations": [
+    "home-watches (including Men/Women and all watch-budget links)",
+    "home-guides (all ten visible sports buying-guide links)",
+    "Previous lower approach paragraph replaced with a minimal trust strip"
+  ],
+  "fashion_image": "Original AI-generated editorial preview artwork, not a Nykaa product image",
+  "fashion_destination_plan": [
+    "/fashion/#womens-kurtas",
+    "/fashion/#westernwear",
+    "/fashion/#indianwear",
+    "/fashion/#footwear",
+    "/fashion/#active-sports",
+    "/fashion/#bags"
+  ]
+}

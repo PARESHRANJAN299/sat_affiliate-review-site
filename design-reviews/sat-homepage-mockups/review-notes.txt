@@ -1,0 +1,43 @@
+SAT homepage approval mockups — 18 October 2026
+
+Status: preview only. No repository source has been edited, pushed or published.
+Production snapshot: ed9f8fe.
+
+Exact section order:
+1. Existing SAT header/navigation — unchanged.
+2. Existing "We research what matters to you." hero — unchanged, including imagery, CTAs and colours.
+3. Existing five-category Shop by Category strip — unchanged.
+4. New SAT Fashion Edit editorial gateway, linking to /fashion/.
+5. Minimal "A little research. A better choice." strip with Compare clearly / Curated discovery / Buy directly from retailers.
+6. Existing footer — unchanged.
+
+Homepage presentation removed in the mockup:
+- Watches / Explore watches / Men’s and Women’s watches / watch-budget links.
+- Buying guides and its ten visible sports-guide links (badminton, cricket, home gym, running, yoga and recovery).
+- The previous lower approach paragraph is replaced with the minimal trust strip.
+
+Preservation:
+All 258 underlying internal HTML pages in the production snapshot remain byte-for-byte unchanged. The sitemap is unchanged. No Watches hub, watch collection, product, category, sports or buying-guide route is deleted or edited. The Watches mega menu is unchanged. Nykaa Fashion is not added as a sixth global category.
+
+After approval, the new /fashion/ destination will contain these six internal sections:
+/fashion/#womens-kurtas
+/fashion/#westernwear
+/fashion/#indianwear
+/fashion/#footwear
+/fashion/#active-sports
+/fashion/#bags
+
+Data requirement for that later implementation:
+Active products will be rendered from dynamic records containing id, brand, title, category, image_url, affiliate_url, active and featured. Approved Nykaa product imagery and affiliate URLs are required for real listings. The CTA will be "View on Nykaa →", target="_blank", rel="sponsored nofollow noopener". No sample prices, discounts, ratings, review counts or bestseller badges will be published.
+
+Mockup image:
+The Fashion Edit photograph is original AI-generated editorial visual. It is not a Nykaa product image or an assertion that the depicted outfit is sold by Nykaa. Created using the built-in image-generation tool, not a CLI/API workflow.
+Original generated image:
+/Users/datapoem/.codex/generated_images/01a13f1b-cb0a-7a32-813c-f13e26032d72/exec-705596e2-39a4-46d8-8e7b-627eb7ab4bfc.png
+
+Final image-generation prompt:
+Use case: photorealistic-natural. Asset type: original editorial fashion photograph for a preview-only homepage gateway, not a product listing. Create a premium Indian fashion editorial photograph, landscape composition. A fictional adult Indian woman in her late twenties wears an elegant ivory kurta and softly draped dupatta with understated delicate muted floral embroidery. She sits naturally on warm sandstone steps in an airy courtyard, refined relaxed posture, authentic skin texture, dark softly wavy hair, warm directional afternoon daylight and subtle leaf shadows. Quiet luxury, warm cream, sandstone, olive foliage and restrained champagne accents. Frame the subject on the right half with upper body, outfit fabric and seated silhouette visible; keep the scene spacious and the left side calm architectural sandstone. This is a generic editorial scene, no identifiable real person and no specific retailer product. No text, logos, watermark, brand marks, price graphics or website UI. Photography, not illustration.
+
+Approval is required before implementation, pushing or publishing, as requested in the attached brief.
+
+Screenshot presentation: mobile-homepage.png is a full-page layout mockup, so the existing fixed bottom navigation is shown at the bottom of the full canvas. mobile-first-screen.png shows its real fixed position in a phone viewport. This capture adjustment does not modify production or mockup source.

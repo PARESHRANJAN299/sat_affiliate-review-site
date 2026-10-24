@@ -1,0 +1,15 @@
+SAT Fashion product architecture — local review
+
+Implementation checkout: /private/tmp/sat-affiliate-image-update
+Branch: homepage-fashion-approved
+Published after owner approval on 18 October 2026. Commit edf6e24; Cloudflare deployment successful. All 111 integrated tests passed, and live homepage/Fashion/Watches/sitemap return HTTP 200. Private /admin/ returns 404.
+
+Flow: /fashion/ category → product card → /fashion/products/<slug>/ → stored Nykaa affiliate URL.
+
+Screenshots use clearly labelled layout-only fixtures in an isolated copy outside the repository. The editorial image is not a Nykaa product photograph. The real catalogue remains empty until approved image sources, affiliate URLs and factual product information are supplied.
+
+Private editor: run python3 frontend/fashion_admin.py from the checkout, then open http://127.0.0.1:8790/admin/. Saves write individual JSON records and rebuild local pages. This is a local editor, not an online backend; publishing remains a separate step. Source host approvals are configured in frontend/src/fashion/catalog.json.
+
+New Fashion pages remain noindex for pre-launch review. Existing internal pages, menus and sitemap are preserved. No cart, checkout, invented prices, discounts, ratings or reviews.
+
+Validation details: verification.json. Desktop and mobile screenshots are in this folder.

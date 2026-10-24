@@ -1,0 +1,34 @@
+SAT homepage implementation — ready for pre-push review
+
+Status: implemented locally on branch homepage-fashion-approved. No commit, push or publication has been made.
+
+Homepage order:
+Existing header → existing hero → unchanged five-category Shop by Category → Fashion Edit promotional gateway → minimal trust strip → existing footer.
+
+Only the homepage Watches/budget block and Buying Guides block were removed. The gateway remains one editorial banner with one CTA to /fashion/, not a product grid.
+
+The existing header/mega menu source, hero markup and category markup are unchanged. All 258 underlying HTML pages are byte-for-byte identical to the production snapshot (ed9f8fe), and sitemap.xml is byte-for-byte identical.
+
+The new /fashion/ route includes Women’s Kurtas, Westernwear, Indianwear, Footwear, Active & Sports and Bags. The six visual links navigate to the corresponding internal anchors. These are not new global SAT categories.
+
+No Nykaa product images, product records, prices, ratings, discounts, badges or outbound affiliate links have been enabled. The editorial visual is the approved original AI-generated mockup image, saved in frontend/src/static/images/fashion/sat-editorial-ivory.jpg. It is explicitly identified as editorial artwork on /fashion/.
+
+The product renderer reads frontend/src/fashion/catalog.json. Actual records require approved image and affiliate hosts. The catalogue starts empty. Noindex remains enabled for /fashion/ so the existing sitemap stays unchanged until real approved content is ready and indexing is separately reviewed.
+
+Validation:
+- 260-page build: zero errors.
+- 69 regression/unit tests passed, including six Fashion data tests.
+- Governance: zero failures; existing founder-image provenance metadata warning remains.
+- Desktop and mobile browser checks passed.
+- All six Fashion anchor links passed.
+- No overflow at 320, 390, 768, 1024, 1440 and 1920 pixels.
+- Header, hero and category dimensions match the unchanged baseline.
+
+Screenshots:
+desktop-homepage.png / mobile-homepage.png
+desktop-fashion.png / mobile-fashion.png
+mobile-first-screen.png
+
+Full-page mobile screenshots park the existing fixed bottom navigation at the bottom of the tall image for presentation. The first-screen capture shows its actual fixed position; production navigation code is unchanged.
+
+Waiting for screenshot review before any push or publication, as requested.

@@ -1,0 +1,22 @@
+{
+  "existing_internal_pages_identical": 258,
+  "changed_existing_internal_pages": [],
+  "sitemap_identical": true,
+  "real_catalogue_products": 0,
+  "private_editor_excluded_from_public_build": true,
+  "unit_tests_passed": 111,
+  "browser_checks": "Product navigation, gallery, saved items, copy/share, related products, sticky CTA, responsive widths, isolated admin save/rebuild",
+  "published": true,
+  "branch": "homepage-fashion-approved",
+  "new_routes_indexing": "noindex pending content review",
+  "commit": "edf6e24",
+  "preserved_against": "eefcb0c",
+  "cloudflare_deployment": "success",
+  "live_checks": {
+    "/": 200,
+    "/fashion/": 200,
+    "/watches/": 200,
+    "/sitemap.xml": 200,
+    "/admin/": 404
+  }
+}
